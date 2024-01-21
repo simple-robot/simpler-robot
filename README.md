@@ -1,5 +1,5 @@
 <!--suppress HtmlDeprecatedAttribute -->
-<div align="center" hidden="hidden">
+<div align="center">
     <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
     <h2>
         - Simple Robot -
@@ -43,25 +43,40 @@
 
 </div>
 
-<!-- <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" /> -->
-
 ## 简介
 
-**`Simple Robot`** v4 是一个基于 **KMP** 的多平台 Bot 风格事件调度框架（下文简称simbot），
+**`Simple Robot`** v4 是一个基于 **KMP** 的多平台 Bot 风格高性能异步事件调度框架（下文简称simbot），
 提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写 Bot 风格的事件调度应用。
-目前主要应用于对接各种类型的 Bot 应用平台/框架，并提供统一的API实现。
+目前主要应用于对接各种类型的 Bot 应用平台/框架，并提供部分组件库实现。
 
-**`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（**jdk11+**）等JVM平台语言，
-且提供大量 Java 友好 API 和 Spring Boot Starter，协助你快速开发。
+**`simbot4`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发、
+基于 [KMP](https://kotlinlang.org/docs/multiplatform.html) 支持多平台，
+并兼容Java（**jdk11+**）等JVM平台语言，
+且提供大量 Java 友好 API 和 Spring Boot starter，协助你快速开发。
 
-> [!warning]
-> 施工中
+本仓库为 simbot v3、v4 版本的仓库，提供 simbot 标准API的定义、simbot 核心库的实现以及 Spring Boot starter 的实现等核心、基础的内容。
+
+> [!tip]
+> 前往 [GitHub 组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、社群等相关信息！
+
+## 文档
+
+simbot4应用手册: [simbot.forte.love][doc-homepage]
+
+> [!note]
+> 也包括历届版本的文档地址引导
+
+文档引导站&API Doc: [docs.simbot.forte.love](https://docs.simbot.forte.love)
+
+## V3
+
+切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 来查看 simbot3 的开发分支。
 
 ## 协助我们
-为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
+为我们点亮一个 **✨star🌟** 便是能够给予我们继续走下去的最大动力与支持！
 
-- 你可以通过 [**PR**][pr] 为项目代码作出贡献。
-- 你可以通过 [**ISSUES**][issues] 提出一个建议或者反馈一个问题。
+- 你可以通过 [**Pull Request**][pr] 为项目代码作出贡献。
+- 你可以通过 [**Issues**][issues] 提出一个建议或者反馈一个问题。
 - 你可以通过 [**讨论区**][discussions] 与其他人或者simbot开发团队相互友好交流。
 - 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES][issues]、[讨论区][discussions]
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
@@ -78,7 +93,9 @@
 
 ## 特别鸣谢
 
-[<img src=".simbot/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
+<a href="https://www.jetbrains.com/?from=simpler-robot">
+<img src=".simbot/jetbrains.png" width="300" alt="jetbrains" />
+</a>
 
 感谢 [Jetbrains][jetbrains] 为团队提供的免费授权，也希望大家能够支持 [Jetbrains][jetbrains] 及其产品，支持正版。
 
