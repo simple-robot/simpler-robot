@@ -47,7 +47,24 @@ class BotConfigurationTests {
 
     @Serializable
     @SerialName("test.foo")
-    private data class FooConfiguration(var name: String? = null) : SerializableBotConfiguration()
+    private data class FooConfiguration(
+        var name: String? = null,
+        val sub: SubConfig? = null
+    ) : SerializableBotConfiguration() {
+
+        @Serializable
+        @SerialName("sub")
+        sealed class SubConfig {
+            @Serializable
+            @SerialName("default")
+            data object Default : SubConfig()
+
+            @Serializable
+            @SerialName("simple")
+            data class Simple(val name: String = "forte") : SubConfig()
+        }
+
+    }
 
     private data object FooComponent : Component {
         override val id: String
@@ -65,7 +82,8 @@ class BotConfigurationTests {
             configuration is FooConfiguration
 
         override fun register(configuration: SerializableBotConfiguration): FooBot {
-            configuration as? FooConfiguration ?: throw UnsupportedBotConfigurationException(configuration::class.toString())
+            configuration as? FooConfiguration
+                ?: throw UnsupportedBotConfigurationException(configuration::class.toString())
             return FooBot(configuration.name ?: "<NULL>")
         }
 
@@ -96,16 +114,16 @@ class BotConfigurationTests {
 
     @Test
     fun polymorphicBotConfigurationTest() {
-        val configJson = """{"component": "test.foo", "name": "forte"}"""
+        val configJson = """{"component": "test.foo", "name": "forte", "sub": {"type": "default"}}"""
         val json = Json {
             isLenient = true
             ignoreUnknownKeys = true
-            classDiscriminator = Component.CLASS_DISCRIMINATOR
             serializersModule = FooComponent.serializersModule
         }
 
         val configuration = json.decodeFromString(SerializableBotConfiguration.serializer(), configJson)
         assertIs<FooConfiguration>(configuration)
+        assertIs<FooConfiguration.SubConfig.Default>(configuration.sub)
 
         val fooBotPlugin = FooBotPlugin()
         val bot = fooBotPlugin.tryRegister(configuration)
