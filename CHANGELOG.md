@@ -1,3 +1,12 @@
+# v4.0.0-dev14
+> [!warning]
+> 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+
+
+> Release & Pull Notes: [v4.0.0-dev14](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-dev14) 
+
+- fix(api): SerializableBotConfiguration 在 JSON下的多态序列化仅外层使用 `"component"` ([`d696921c`](https://github.com/simple-robot/simpler-robot/commit/d696921c))
+
 # v4.0.0-dev13
 > [!warning]
 > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
