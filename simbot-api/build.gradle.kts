@@ -75,6 +75,7 @@ kotlin {
                 // jvm compile only
                 compileOnly(libs.jetbrains.annotations)
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                compileOnly(libs.kotlinx.serialization.json)
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-core"))
                 api(project(":simbot-commons:simbot-common-collection"))
@@ -118,12 +119,14 @@ kotlin {
         }
 
         nativeMain.dependencies {
+            api(libs.kotlinx.serialization.json)
             api(libs.jetbrains.annotations)
             api(project(":simbot-commons:simbot-common-annotations"))
             api(libs.suspend.reversal.annotations)
         }
 
         jsMain.dependencies {
+            api(libs.kotlinx.serialization.json)
             api(project(":simbot-commons:simbot-common-annotations"))
             api(libs.jetbrains.annotations)
             api(libs.suspend.reversal.annotations)

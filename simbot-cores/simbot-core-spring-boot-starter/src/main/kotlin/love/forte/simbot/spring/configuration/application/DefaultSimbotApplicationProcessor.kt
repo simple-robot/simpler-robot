@@ -30,7 +30,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.*
-import love.forte.simbot.component.Component
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -140,7 +139,6 @@ private class BotAutoLoader(
     @OptIn(ExperimentalSerializationApi::class)
     val json = Json {
         isLenient = true
-        classDiscriminator = Component.CLASS_DISCRIMINATOR
         ignoreUnknownKeys = true
         allowTrailingComma = true
         decodeEnumsCaseInsensitive = true

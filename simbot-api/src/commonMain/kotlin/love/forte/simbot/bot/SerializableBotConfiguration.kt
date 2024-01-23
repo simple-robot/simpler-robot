@@ -23,11 +23,14 @@
 
 package love.forte.simbot.bot
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import love.forte.simbot.bot.NotSerializedBotConfiguration.Companion.resolveType
+import love.forte.simbot.component.Component
 import love.forte.simbot.resource.StringResource
 import kotlin.jvm.JvmStatic
 
@@ -58,9 +61,29 @@ import kotlin.jvm.JvmStatic
  * [NotSerializedBotConfiguration] 是 [SerializableBotConfiguration] 的一个特殊实现，
  * 可在某些无法反序列化的情况下作为默认实现提供。
  *
+ * ## 序列化器
+ *
+ * 目前仅建议使用下述的序列化器，因为它们支持将外层 [SerializableBotConfiguration] 的
+ * `classDiscriminator` 重置为指定的 [`"component"`][Component.CLASS_DISCRIMINATOR]，
+ * 而不影响实现内的其他多态类型。
+ * 如果使用其他序列化器，需要使用 `type` 作为 `classDiscriminator`。
+ *
+ * ### JSON
+ *
+ * 当使用 `JSON` 序列化器时，`class` 为 [`"component"`][Component.CLASS_DISCRIMINATOR] 而不是 `type`。
+ *
+ * ```json
+ * {
+ *   "component": "aaa.bbb",
+ *   ...
+ * }
+ * ```
+ *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
+@JsonClassDiscriminator(Component.CLASS_DISCRIMINATOR)
 public abstract class SerializableBotConfiguration
 
 /**
