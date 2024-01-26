@@ -158,3 +158,5 @@ fabric.properties
 website/.docusaurus
 website/build
 website/node_modules
+
+generated-docs

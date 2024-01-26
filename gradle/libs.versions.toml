@@ -8,12 +8,11 @@ spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.7"
 slf4j = "2.0.7"
-#ksp = "1.9.22-1.0.16"
 ksp = "1.9.22-1.0.17"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.15.3"
 reactor = "3.6.2"
-#
+# simbots
 suspendTransform = "0.7.0-beta1"
 suspendReversal = "0.2.0"
 gradleCommon = "0.2.0"

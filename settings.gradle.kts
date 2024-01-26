@@ -33,6 +33,10 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
+// internals
+include(":internal-processors:interface-uml-processor")
+
+
 include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
 include(":simbot-commons:simbot-common-annotations")

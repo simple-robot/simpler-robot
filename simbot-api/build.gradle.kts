@@ -164,4 +164,14 @@ kotlin {
 
 dependencies {
     add("kspJvm", libs.suspend.reversal.processor)
+    add("kspJvm", project(":internal-processors:interface-uml-processor"))
+}
+
+ksp {
+    // arg("simbot.internal.processor.uml.enable", (!isCi).toString())
+    arg("simbot.internal.processor.uml.enable", "false")
+    arg("simbot.internal.processor.uml.target", "love.forte.simbot.event.Event")
+    // arg("simbot.internal.processor.uml.target", "love.forte.simbot.definition.Actor")
+    arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/event-uml.md").absolutePath)
+    // arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/actor-uml.md").absolutePath)
 }
