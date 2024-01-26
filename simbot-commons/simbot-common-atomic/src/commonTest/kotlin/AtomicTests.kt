@@ -139,12 +139,14 @@ class AtomicTests {
     @Test
     fun compareAsyncTest() = runTest {
         val times = 1000
-        coroutineScope {
-            launch(Dispatchers.Default) { checkAtomicInt(times) }
-            launch(Dispatchers.Default) { checkAtomicLong(times) }
-            launch(Dispatchers.Default) { checkAtomicUInt(times) }
-            launch(Dispatchers.Default) { checkAtomicULong(times) }
-            launch(Dispatchers.Default) { checkAtomicRef(times) }
+        withContext(Dispatchers.Default) {
+            coroutineScope {
+                launch(Dispatchers.Default) { checkAtomicInt(times) }
+                launch(Dispatchers.Default) { checkAtomicLong(times) }
+                launch(Dispatchers.Default) { checkAtomicUInt(times) }
+                launch(Dispatchers.Default) { checkAtomicULong(times) }
+                launch(Dispatchers.Default) { checkAtomicRef(times) }
+            }
         }
     }
 

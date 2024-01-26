@@ -117,8 +117,8 @@ public inline fun EventListenerRegistrar.process(
  * @param typeMismatchResult 事件类型与 [E] 不匹配时的默认返回值
  */
 public inline fun <reified E : Event> EventListenerRegistrar.process(
-    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
+    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
     crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> Unit,
 ): EventListenerRegistrationHandle = register(

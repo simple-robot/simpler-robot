@@ -23,7 +23,9 @@
 
 package love.forte.simbot.common.stageloop
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -37,26 +39,30 @@ class StageLoopTests {
 
     @Test
     fun stageLoopTest() = runTest {
-        val loop = DefaultStageLoop<TestStage>()
-        var l1 = 0
-        var l2 = 0
-        var d1Done = false
-        var d2Done = false
-        val st = Start(onLoop1 = { l1 = it }, onLoop2 = { l2 = it })
-        loop.appendStage(st)
-        loop.loop(condition = {
-            if (it is Done1) {
-                d1Done = true
-            }
-            if (it is Done2) {
-                d2Done = true
-            }
-            it != null
-        })
-        assertEquals(l1, 3)
-        assertEquals(l2, 3)
-        assertTrue(d1Done)
-        assertTrue(d2Done)
+        withContext(Dispatchers.Default) {
+            val loop = DefaultStageLoop<TestStage>()
+            var l1 = 0
+            var l2 = 0
+            var d1Done = false
+            var d2Done = false
+            val st = Start(onLoop1 = { l1 = it }, onLoop2 = { l2 = it })
+            loop.appendStage(st)
+
+            loop.loop(condition = {
+                if (it is Done1) {
+                    d1Done = true
+                }
+                if (it is Done2) {
+                    d2Done = true
+                }
+                it != null
+            })
+
+            assertEquals(l1, 3)
+            assertEquals(l2, 3)
+            assertTrue(d1Done)
+            assertTrue(d2Done)
+        }
     }
 
     sealed class TestStage : Stage<TestStage>()

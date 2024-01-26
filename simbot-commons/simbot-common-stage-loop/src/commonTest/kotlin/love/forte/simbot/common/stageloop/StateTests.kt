@@ -23,7 +23,9 @@
 
 package love.forte.simbot.common.stageloop
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,16 +37,18 @@ import kotlin.test.assertEquals
 class StateTests {
     @Test
     fun stateLoopTest() = runTest {
-        var time = 0
-        val last = Start.loop(onEach = {
-            if (it is Loop) {
-                time = it.time
-            }
-            true
-        })
+        withContext(Dispatchers.Default) {
+            var time = 0
+            val last = Start.loop(onEach = {
+                if (it is Loop) {
+                    time = it.time
+                }
+                true
+            })
 
-        assertEquals(3, time)
-        assertEquals(Done, last)
+            assertEquals(3, time)
+            assertEquals(Done, last)
+        }
     }
 
     sealed class TestState : State<TestState>()

@@ -23,8 +23,10 @@
 
 package love.forte.simbot.suspendrunner
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.suspendrunner.reserve.deferred
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
@@ -42,9 +44,11 @@ class CommonReserveTests {
     @OptIn(InternalSimbotAPI::class)
     @Test
     fun commonReserveTest() = runTest {
-        val reserve = suspendReserve(this, EmptyCoroutineContext) { run() }
-        val value = reserve.transform(deferred()).await()
-        assertEquals(1, value)
+        withContext(Dispatchers.Default) {
+            val reserve = suspendReserve(this, EmptyCoroutineContext) { run() }
+            val value = reserve.transform(deferred()).await()
+            assertEquals(1, value)
+        }
     }
 
     private suspend fun run(): Int {
