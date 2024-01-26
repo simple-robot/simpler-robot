@@ -9,6 +9,8 @@
 
 ## randomID(Random)
 
+(v3)
+
 > [IDTest.kt](simbot-apis/simbot-api/src/test/kotlin/jmh/IdTest.kt)
 
 针对内容：
@@ -28,6 +30,8 @@ IdTest.randomUUIDGenerate                   thrpt   25   1435474.691 ±   39339.
 ```
 
 ## TimeDuration
+
+(v3)
 
 > [DurationTest](simbot-project-tests/simbot-project-test-jmh-duration/src/main/kotlin/love/forte/simbotest/duration/DurationTest.kt)
 
@@ -80,6 +84,8 @@ DurationTest.SecondToMilli:timeUnitSecondToMilli      thrpt    2  220005.341    
 
 ## DurationConvert
 
+(v3)
+
 > [DurationConvertTest](simbot-apis/simbot-api/src/test/kotlin/jmh/DurationConvertTest.kt)
 
 针对内容：
@@ -105,3 +111,11 @@ DurationConvertTest.SecondsDuration:secondsTimeUnit            thrpt       34914
 ```
 
 
+## K2
+
+随手记录
+
+```
+enable:  1m 3s
+disable: 1m 57s
+```
