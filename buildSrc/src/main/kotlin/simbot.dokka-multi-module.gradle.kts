@@ -28,7 +28,7 @@ import java.time.Year
 
 
 /*
- 使用在根配置，配置dokka多模块
+使用在根配置，配置dokka多模块
  */
 
 plugins {

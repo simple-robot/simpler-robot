@@ -74,6 +74,10 @@ subprojects {
         if (hasKtP()) {
 //            apply(plugin = "io.gitlab.arturbosch.detekt")
             applyDetekt()
+            if ("gradle" !in name) {
+                useK2()
+                logger.info("Enable K2 for {}", this)
+            }
         }
     }
 }

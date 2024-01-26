@@ -21,25 +21,7 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
 
-plugins {
-    `java-library`
-    kotlin("jvm")
-    // id("com.github.gmazzo.buildconfig")
-    id("simbot.dokka-module-configuration")
-}
+subprojects {
 
-setup(P.SimbotGradle)
-
-configJavaCompileWithModule("simbot.gradle.suspendtransforms")
-apply(plugin = "simbot-jvm-maven-publish")
-
-kotlin {
-    explicitApi()
-    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    api(libs.suspend.transform.gradle)
 }

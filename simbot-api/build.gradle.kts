@@ -114,6 +114,7 @@ kotlin {
                 implementation(libs.ktor.client.core)
 
                 implementation(kotlin("test-junit5"))
+                implementation(kotlin("reflect"))
                 implementation(libs.ktor.client.cio)
             }
         }

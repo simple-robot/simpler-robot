@@ -21,25 +21,15 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.withType
 
-plugins {
-    `java-library`
-    kotlin("jvm")
-    // id("com.github.gmazzo.buildconfig")
-    id("simbot.dokka-module-configuration")
-}
 
-setup(P.SimbotGradle)
-
-configJavaCompileWithModule("simbot.gradle.suspendtransforms")
-apply(plugin = "simbot-jvm-maven-publish")
-
-kotlin {
-    explicitApi()
-    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    api(libs.suspend.transform.gradle)
+fun Project.useK2(languageVersion: String = "2.0") {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            // useK2
+            this.languageVersion = languageVersion
+        }
+    }
 }
