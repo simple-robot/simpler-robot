@@ -58,3 +58,15 @@ idea {
         isDownloadSources = true
     }
 }
+
+// tasks.withType(KotlinCompile::class.java).configureEach {
+//     kotlinOptions.languageVersion = "1.9"
+// }
+
+// val compileKotlin: KotlinCompile by tasks
+// compileKotlin.kotlinOptions.freeCompilerArgs += listOf(
+//     "-Xjvm-default=all",
+//     // "-opt-in=kotlin.RequiresOptIn",
+//     // see https://youtrack.jetbrains.com/issue/KTIJ-21563
+//     "-Xskip-prerelease-check",
+// )
