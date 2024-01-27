@@ -1,3 +1,13 @@
+# v4.0.0-dev16
+> [!warning]
+> 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+
+
+> Release & Pull Notes: [v4.0.0-dev16](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-dev16) 
+
+- build: 暂时关闭 K2 编译，等待 Kt2.0正式版 ([`b1731939`](https://github.com/simple-robot/simpler-robot/commit/b1731939))
+- fix: BotManagerFactory 没有实现 PluginFactory 的问题 ([`e4699a30`](https://github.com/simple-robot/simpler-robot/commit/e4699a30))
+
 # v4.0.0-dev15
 > [!warning]
 > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
