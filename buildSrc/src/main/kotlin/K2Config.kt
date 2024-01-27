@@ -29,7 +29,8 @@ fun Project.useK2(languageVersion: String = "2.0") {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             // useK2
-            this.languageVersion = languageVersion
+            // TODO 暂时关闭，等待 Kt2.0
+            // this.languageVersion = languageVersion
         }
     }
 }
