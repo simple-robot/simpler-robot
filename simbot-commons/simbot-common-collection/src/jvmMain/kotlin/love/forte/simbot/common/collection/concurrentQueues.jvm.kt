@@ -33,6 +33,9 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     override val size: Int
         get() = queue.size
 
+    override fun isEmpty(): Boolean =
+        queue.isEmpty()
+
     override fun add(value: T) {
         queue.add(value)
     }
@@ -64,6 +67,12 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
 
     override val size: Int
         get() = queueMap.values.sumOf { it.size }
+
+    override fun isEmpty(priority: Int): Boolean =
+        queueMap[priority]?.isEmpty() ?: true
+
+    override fun isEmpty(): Boolean =
+        queueMap.values.all { it.isEmpty() }
 
     override fun add(priority: Int, value: T) {
         val queue = queueMap.computeIfAbsent(priority) { ConcurrentLinkedQueue() }

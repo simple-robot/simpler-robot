@@ -38,6 +38,11 @@ public interface ConcurrentQueue<T> : Iterable<T> {
     public val size: Int
 
     /**
+     * 当前队列是否为空
+     */
+    public fun isEmpty(): Boolean
+
+    /**
      * 添加指定元素
      */
     public fun add(value: T)
@@ -84,6 +89,16 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
      * 获取元素数量
      */
     public val size: Int
+
+    /**
+     * 指定优先级下的队列是否为空
+     */
+    public fun isEmpty(priority: Int): Boolean
+
+    /**
+     * 整个队列是否为空
+     */
+    public fun isEmpty(): Boolean
 
     /**
      * 将具有指定优先级的元素添加到集合中。

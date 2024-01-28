@@ -31,6 +31,9 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     override val size: Int
         get() = list.size
 
+    override fun isEmpty(): Boolean =
+        list.isEmpty()
+
     override fun add(value: T) {
         list.addLast(value)
     }
@@ -59,6 +62,11 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
 
     override val size: Int
         get() = lists.values.sumOf { it.size }
+
+    override fun isEmpty(priority: Int): Boolean =
+        lists[priority]?.isEmpty() ?: true
+
+    override fun isEmpty(): Boolean = lists.values.all { it.isEmpty() }
 
     override fun add(priority: Int, value: T) {
         val list = lists.getOrPut(priority) { ArrayDeque() }

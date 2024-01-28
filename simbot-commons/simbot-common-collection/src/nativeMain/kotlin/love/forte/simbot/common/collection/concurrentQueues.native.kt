@@ -32,6 +32,9 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     override val size: Int
         get() = listRef.value.size
 
+    override fun isEmpty(): Boolean =
+        listRef.value.isEmpty()
+
     override fun add(value: T) {
         listRef.update { old ->
             when (old.size) {
@@ -79,6 +82,13 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
 
     override val size: Int
         get() = lists.value.sumOf { it.list.value.size }
+
+    override fun isEmpty(priority: Int): Boolean =
+        lists.value.find { it.priority == priority }?.list?.value?.isEmpty()
+            ?: true
+
+    override fun isEmpty(): Boolean = lists.value.all { it.list.value.isEmpty() }
+
 
     private fun findByPriority(priority: Int): ListWithPriority<T>? =
         lists.value.find { it.priority == priority }
