@@ -26,7 +26,6 @@ import love.forte.gradle.common.core.project.setup
 plugins {
     `java-library`
     kotlin("jvm")
-    // id("com.github.gmazzo.buildconfig")
     id("simbot.dokka-module-configuration")
 }
 
