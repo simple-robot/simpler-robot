@@ -77,29 +77,25 @@ class StandardDeleteOptionTests {
 
                 assertTrue(contains(IGNORE_ON_FAILURE))
                 assertTrue(contains(IGNORE_ON_NO_SUCH_TARGET))
-                assertFalse(contains(IGNORE_ON_ANY_FAILURE))
                 assertFalse(contains(IGNORE_ON_UNSUPPORTED))
 
                 assertTrue(isIgnoreOnFailure)
                 assertTrue(isIgnoreOnNoSuchTarget)
-                assertFalse(isIgnoreOnAnyFailure)
                 assertFalse(isIgnoreOnUnsupported)
             }
         }
 
-        with(arrayOf<DeleteOption>(IGNORE_ON_ANY_FAILURE, IGNORE_ON_UNSUPPORTED)) {
+        with(arrayOf<DeleteOption>(IGNORE_ON_UNSUPPORTED)) {
             inStandardAnalysis {
                 assertFalse(isEmpty)
                 assertFalse(isFull)
 
                 assertFalse(contains(IGNORE_ON_FAILURE))
                 assertFalse(contains(IGNORE_ON_NO_SUCH_TARGET))
-                assertTrue(contains(IGNORE_ON_ANY_FAILURE))
                 assertTrue(contains(IGNORE_ON_UNSUPPORTED))
 
                 assertFalse(isIgnoreOnFailure)
                 assertFalse(isIgnoreOnNoSuchTarget)
-                assertTrue(isIgnoreOnAnyFailure)
                 assertTrue(isIgnoreOnUnsupported)
             }
         }
@@ -115,7 +111,6 @@ class StandardDeleteOptionTests {
 
                 assertTrue(isIgnoreOnFailure)
                 assertTrue(isIgnoreOnNoSuchTarget)
-                assertTrue(isIgnoreOnAnyFailure)
                 assertTrue(isIgnoreOnUnsupported)
 
             }

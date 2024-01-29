@@ -85,14 +85,17 @@ public enum class StandardDeleteOption : DeleteOption {
     IGNORE_ON_NO_SUCH_TARGET,
 
     /**
-     * 忽略由业务引发的 [DeleteFailureException] 相关异常。
+     * 忽略删除过程中产生的异常。
+     * 不包括 [IGNORE_ON_NO_SUCH_TARGET] 和 [IGNORE_ON_UNSUPPORTED]
+     * 中描述的 [NoSuchElementException] 和 [UnsupportedOperationException]，
+     * 主要针对 [DeleteFailureException] 或参数校验、API请求过程中的异常。
      */
     IGNORE_ON_FAILURE,
 
     /**
-     * 忽略所有由业务引发的异常。
-     * 这不会忽略由于不支持而产生的 [UnsupportedOperationException]。
+     * 使用 [IGNORE_ON_FAILURE]。
      */
+    @Deprecated("This will be removed in a future version", level = DeprecationLevel.ERROR)
     IGNORE_ON_ANY_FAILURE,
 
     /**
@@ -190,6 +193,8 @@ public inline val StandardDeleteOption.StandardAnalysis.isIgnoreOnFailure: Boole
 /**
  * 判断 [StandardDeleteOption.StandardAnalysis] 中是否包含 [StandardDeleteOption.IGNORE_ON_ANY_FAILURE]
  */
+@Deprecated("This will be removed in a future version", level = DeprecationLevel.ERROR)
+@Suppress("DEPRECATION_ERROR", "DeprecatedCallableAddReplaceWith")
 public inline val StandardDeleteOption.StandardAnalysis.isIgnoreOnAnyFailure: Boolean
     get() = StandardDeleteOption.IGNORE_ON_ANY_FAILURE in this
 
@@ -231,6 +236,8 @@ public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnFailure(block:
  * 如果 [StandardDeleteOption.StandardAnalysis] 中是包含 [StandardDeleteOption.IGNORE_ON_ANY_FAILURE] 则执行 [block]
  */
 @OptIn(ExperimentalContracts::class)
+@Suppress("DEPRECATION_ERROR")
+@Deprecated("This will be removed in a future version", level = DeprecationLevel.ERROR)
 public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnAnyFailure(block: () -> Unit): StandardDeleteOption.StandardAnalysis {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
