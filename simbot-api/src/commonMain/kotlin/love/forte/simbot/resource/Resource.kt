@@ -43,6 +43,9 @@ import kotlin.jvm.JvmName
  * 用于描述一个可以被读取字节数据（[data]）的资源。
  * [Resource] 用于代表一些二进制数据或**本地**文件资源。
  *
+ * JVM 中的部分扩展、辅助API通过静态类 `Resources` 提供，
+ * 例如 `Resources.valueOf(...)`。
+ *
  * ## 序列化
  *
  * [Resource] 提供了一个基于 [Base64] 进行序列化操作的 [ResourceBase64Serializer]。

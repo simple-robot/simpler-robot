@@ -21,6 +21,8 @@
  *
  */
 
+@file:JvmName("MessagesUtil")
+@file:JvmMultifileClass
 package love.forte.simbot.message
 
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
