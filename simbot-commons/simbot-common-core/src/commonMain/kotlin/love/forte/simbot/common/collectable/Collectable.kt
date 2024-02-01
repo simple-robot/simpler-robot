@@ -44,6 +44,8 @@ import kotlin.jvm.JvmSynthetic
  *
  * 当 [Collectable] 中实际没有需要被挂起的类型时，考虑对外提供普通可迭代的收集器类型 [IterableCollectable]。
  *
+ * 在 JVM 中，会使用 `Collectables` 静态类提供更多辅助API。
+ *
  * @see IterableCollectable
  *
  * @author ForteScarlet

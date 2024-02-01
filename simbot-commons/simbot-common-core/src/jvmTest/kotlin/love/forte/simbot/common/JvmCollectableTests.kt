@@ -28,8 +28,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.collectable.asFlux
+import love.forte.simbot.common.collectable.transform
+import love.forte.simbot.suspendrunner.reserve.flux
 import reactor.test.StepVerifier
+import java.util.stream.Collectors.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import love.forte.simbot.common.collectable.collect as collectJ
 
 
 /**
@@ -39,10 +44,40 @@ import kotlin.test.Test
 class JvmCollectableTests {
 
     @Test
+    fun collectableCollectTest() {
+        val collectable = flowOf(1, 2, 3, 4, 5).asCollectable()
+
+        val group = collectable.collectJ(
+            filtering(
+                { it > 3 },
+                partitioningBy(
+                    { it % 2 == 0 },
+                    counting()
+                ),
+            )
+        )
+
+        assertEquals(2, group.size)
+        assertEquals(1L, group[true])
+        assertEquals(1L, group[false])
+    }
+
+    @Test
     fun collectableAsFluxTest() {
         val flux =
             flowOf(1, 2, 3).onEach { delay(2) }.asCollectable()
-            .asFlux()
+                .asFlux()
+
+        StepVerifier.create(flux)
+            .expectNext(1, 2, 3)
+            .verifyComplete()
+    }
+
+    @Test
+    fun collectableTransformAsFluxTest() {
+        val flux =
+            flowOf(1, 2, 3).onEach { delay(2) }.asCollectable()
+                .transform(transformer = flux())
 
         StepVerifier.create(flux)
             .expectNext(1, 2, 3)

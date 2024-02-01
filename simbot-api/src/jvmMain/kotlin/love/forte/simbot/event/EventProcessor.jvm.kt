@@ -27,18 +27,17 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.future.future
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.asFlux
+import love.forte.simbot.common.collectable.collectBy
 import love.forte.simbot.common.collection.asIterator
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import reactor.core.publisher.Flux
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.function.Function
 import java.util.stream.Collector
-import java.util.stream.Collector.Characteristics.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 import kotlin.coroutines.CoroutineContext
@@ -54,50 +53,28 @@ import kotlin.coroutines.EmptyCoroutineContext
 public fun EventProcessor.pushAndAsFlux(event: Event): Flux<EventResult> =
     push(event).asFlux()
 
-@Suppress("UNCHECKED_CAST")
-internal suspend fun <T, R> kotlinx.coroutines.flow.Flow<T>.collectBy(
+@Deprecated(
+    "Use collectBy", ReplaceWith(
+        "collectBy(scope, launchContext, collector)",
+        "love.forte.simbot.common.collectable.collectBy"
+    ),
+    DeprecationLevel.HIDDEN
+)
+@JvmName("collectBy")
+internal suspend fun <T, R> Flow<T>.collectBy0(
     scope: CoroutineScope,
     launchContext: CoroutineContext = EmptyCoroutineContext,
     collector: Collector<T, *, R>
-): R {
-    val container = collector.supplier().get()
-    val accumulator = collector.accumulator() as java.util.function.BiConsumer<Any?, T>
-    val characteristics = collector.characteristics()
+): R = collectBy(scope, launchContext, collector)
 
-    if (CONCURRENT in characteristics && UNORDERED in characteristics) {
-        // collect in launch
-        collect { result ->
-            scope.launch(launchContext) { accumulator.accept(container, result) }
-        }
-    } else {
-        collect { result ->
-            accumulator.accept(container, result)
-        }
-    }
-
-    return if (IDENTITY_FINISH in characteristics) {
-        container as R
-    } else {
-        (collector.finisher() as Function<Any?, R>).apply(container)
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-internal suspend fun <T, R> kotlinx.coroutines.flow.Flow<T>.collectBy(collector: Collector<T, *, R>): R {
-    val container = collector.supplier().get()
-    val accumulator = collector.accumulator() as java.util.function.BiConsumer<Any?, T>
-    val characteristics = collector.characteristics()
-
-    collect { result ->
-        accumulator.accept(container, result)
-    }
-
-    return if (IDENTITY_FINISH in characteristics) {
-        container as R
-    } else {
-        (collector.finisher() as Function<Any?, R>).apply(container)
-    }
-}
+@Deprecated(
+    "Use collectBy",
+    ReplaceWith("collectBy(collector)", "love.forte.simbot.common.collectable.collectBy"),
+    DeprecationLevel.HIDDEN
+)
+@JvmName("collectBy")
+internal suspend fun <T, R> Flow<T>.collectBy0(collector: Collector<T, *, R>): R =
+    collectBy(collector)
 
 //region async
 /**

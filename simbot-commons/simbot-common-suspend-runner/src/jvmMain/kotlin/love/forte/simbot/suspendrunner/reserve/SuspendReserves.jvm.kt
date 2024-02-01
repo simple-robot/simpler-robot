@@ -28,9 +28,13 @@ package love.forte.simbot.suspendrunner.reserve
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.reactor.flux
 import kotlinx.coroutines.reactor.mono
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
@@ -99,6 +103,61 @@ public fun <T> mono(): SuspendReserve.Transformer<T, Mono<T>> =
 private object MonoTransformer : SuspendReserve.Transformer<Any?, Mono<*>> {
     override fun <T1> invoke(scope: CoroutineScope, context: CoroutineContext, block: suspend () -> T1): Mono<T1> =
         mono(context.minusKey(Job)) { block() }
+}
+
+/**
+ * 得到一个将 [Flow]<T & Any> 的结果转化为 [Flux] 的响应式转化器。
+ * 需要你的依赖环境中存在
+ * [`kotlinx-coroutines-reactor`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
+ * 依赖。
+ *
+ * 以 `Collectable` 的场景下为例:
+ * ```java
+ * Flux<String> flux = Collectables.transform(foo.collectable, flux());
+ * ```
+ *
+ */
+@Suppress("UNCHECKED_CAST")
+public fun <T : Any> flux(): SuspendReserve.Transformer<Flow<T>, Flux<T>> =
+    FluxTransformer as SuspendReserve.Transformer<Flow<T>, Flux<T>>
+
+private object FluxTransformer : SuspendReserve.Transformer<Flow<Any>, Flux<Any>> {
+    override fun <T1 : Flow<Any>> invoke(
+        scope: CoroutineScope,
+        context: CoroutineContext,
+        block: suspend () -> T1
+    ): Flux<Any> {
+        return flux(context.minusKey(Job)) {
+            block().collect {
+                send(it)
+            }
+        }
+    }
+}
+
+/**
+ * 得到一个将 [Flow]<T> 的结果转化为 [List]。
+ *
+ * 以 `Collectable` 的场景下为例:
+ * ```java
+ * List<String> list = Collectables.transform(collectable, list());
+ * ```
+ *
+ * 注意: 会产生不可避免的将挂起阻塞的行为，但不会使用 `invoke.scope`。
+ *
+ */
+@Suppress("UNCHECKED_CAST")
+public fun <T : Any> list(): SuspendReserve.Transformer<Flow<T>, List<T>> =
+    ListTransformer as SuspendReserve.Transformer<Flow<T>, List<T>>
+
+private object ListTransformer : SuspendReserve.Transformer<Flow<Any?>, List<Any?>> {
+    override fun <T1 : Flow<Any?>> invoke(
+        scope: CoroutineScope,
+        context: CoroutineContext,
+        block: suspend () -> T1
+    ): List<Any?> {
+        return runInNoScopeBlocking(context) { block().toList() }
+    }
 }
 
 /**
