@@ -55,6 +55,8 @@ import kotlin.jvm.JvmStatic
  * - [表情消息][Face]
  * - [emoji][Emoji]
  *
+ * JVM平台中部分扩展、辅助API通过静态类 `StandardMessages` 提供。
+ *
  */
 public sealed interface StandardMessage : Message.Element
 
@@ -240,6 +242,11 @@ public interface Image : StandardMessage
  * 它可能是内存中的一段二进制数据，或本地文件系统中的某个文件。
  *
  * “离线”主要表示此图片并未上传到某个目标平台中，也没有与某个远程服务器互相对应的唯一标识。
+ *
+ * @see OfflineImage.toOfflineImage
+ *
+ * @see OfflineByteArrayImage
+ * @see SimpleOfflineResourceImage
  */
 public interface OfflineImage : Image {
     /**
@@ -260,6 +267,9 @@ public interface OfflineImage : Image {
 
         /**
          * 将给定的 [Resource] 转换为 [OfflineImage]。
+         * 会在适当的情况下转化为一些平台特供的类型，
+         * 并在其他情况下转化为全平台实现
+         * [OfflineByteArrayImage] 或 [SimpleOfflineResourceImage]。
          *
          * @return [OfflineImage] object representing the converted Resource.
          *
@@ -299,6 +309,9 @@ public expect fun Resource.toOfflineResourceImage(): OfflineResourceImage
 
 /**
  * 最基础的、基于 [Resource] 实现的 [OfflineResourceImage]。
+ *
+ * 如果不是明确要使用 [SimpleOfflineResourceImage]，
+ * 那么更建议使用 [OfflineImage.toOfflineImage] 构建 [OfflineImage] 对象。
  *
  * ## 序列化
  *
