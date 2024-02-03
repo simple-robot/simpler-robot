@@ -50,7 +50,7 @@ dependencies {
 
     // detekt
     // 1.23.1
-    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.1")
+    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.5")
 }
 
 idea {
