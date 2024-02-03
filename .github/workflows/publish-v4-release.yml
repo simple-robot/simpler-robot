@@ -34,14 +34,14 @@ jobs:
           #cache: 'gradle'
 
       - name: Run All Tests
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.5
           arguments: assemble test
 
       # setup Gradle
       - name: Gradle Publish Release
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.5
           arguments: | 
@@ -79,7 +79,7 @@ jobs:
 
       # setup Gradle
       - name: Gradle publish snapshot
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.5
           arguments: |
@@ -118,7 +118,7 @@ jobs:
 
       # setup Gradle
       - name: Gradle generate documentation
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.5
           arguments: | 

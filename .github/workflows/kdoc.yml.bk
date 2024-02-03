@@ -27,7 +27,7 @@ jobs:
 
       # setup Gradle
       - name: Gradle generate documentation
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.3
           arguments: |
