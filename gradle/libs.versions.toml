@@ -82,7 +82,7 @@ spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-bo
 #spring-boot-data-redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive", version.ref = "spring-boot" }
 
 # lmax-disruptor
-lmax-disruptor = "com.lmax:disruptor:3.4.4"
+lmax-disruptor = "com.lmax:disruptor:4.0.0"
 
 # jmh
 openjdk-jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref = "openjdk-jmh" }
