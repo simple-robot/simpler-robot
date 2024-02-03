@@ -73,7 +73,177 @@ public actual inline fun <K, V> MutableMap<K, V>.computeValueIfPresent(
 ): V? = internalComputeIfPresentImpl(key, mappingFunction)
 
 /**
- * 通过 [mutableMapOf] 得到一个普通的 [MutableMap]。
- * JS 平台中不需要操心并发问题。
+ * 根据 [key] 删除指定的目标 [target]。
  */
-public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> = mutableMapOf()
+public actual inline fun <K, V> MutableMap<K, V>.removeValue(
+    key: K,
+    crossinline target: () -> V
+): Boolean = internalRemoveValueImpl(key, target)
+
+/**
+ * 通过 [mutableMapOf] 得到一个允许并发修改的 [MutableMap]，
+ */
+public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> =
+    JsConcurrentModifyMutableMap(mutableMapOf()) // mutableMapOf()
+
+private class JsConcurrentModifyMutableMap<K, V>(private val source: MutableMap<K, V>) : MutableMap<K, V> by source {
+    override val keys: MutableSet<K>
+        get() = MutableKeySet(source, source.keys.toSet())
+
+    private class MutableKeySet<K>(private val source: MutableMap<K, *>, private val view: Set<K>) : MutableSet<K>,
+        Set<K> by view {
+        override fun add(element: K): Boolean = throw UnsupportedOperationException()
+        override fun addAll(elements: Collection<K>): Boolean = throw UnsupportedOperationException()
+        override fun clear() {
+            source.clear()
+        }
+
+        override fun remove(element: K): Boolean {
+            return source.remove(element) != null
+        }
+
+        @Suppress("ConvertArgumentToSet")
+        override fun removeAll(elements: Collection<K>): Boolean {
+            return source.keys.removeAll(elements)
+        }
+
+        @Suppress("ConvertArgumentToSet")
+        override fun retainAll(elements: Collection<K>): Boolean {
+            return source.keys.retainAll(elements)
+        }
+
+        override fun iterator(): MutableIterator<K> =
+            MutableMapIterator(view = view.iterator(), mapper = { it }, remover = source::remove)
+    }
+
+
+    override val values: MutableCollection<V>
+        get() = MutableValueCollection(source, source.values.toList())
+
+    private class MutableValueCollection<V>(private val source: MutableMap<*, V>, private val view: List<V>) :
+        MutableCollection<V>, Collection<V> by view {
+        override fun add(element: V): Boolean = throw UnsupportedOperationException()
+        override fun addAll(elements: Collection<V>): Boolean = throw UnsupportedOperationException()
+
+        override fun clear() {
+            source.clear()
+        }
+
+        override fun remove(element: V): Boolean {
+            return source.values.remove(element)
+        }
+
+        @Suppress("ConvertArgumentToSet")
+        override fun removeAll(elements: Collection<V>): Boolean {
+            return source.values.removeAll(elements)
+        }
+
+        @Suppress("ConvertArgumentToSet")
+        override fun retainAll(elements: Collection<V>): Boolean {
+            return source.values.retainAll(elements)
+        }
+
+        override fun iterator(): MutableIterator<V> =
+            MutableMapIterator(view = view.iterator(), mapper = { it }, remover = source.values::remove)
+    }
+
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+        get() = MutableEntrySet(source, source.toMap().entries.toSet())
+
+    private class MutableEntrySet<K, V>(
+        private val source: MutableMap<K, V>,
+        private val view: Set<Map.Entry<K, V>>
+    ) : MutableSet<MutableMap.MutableEntry<K, V>> {
+        override val size: Int
+            get() = view.size
+
+        override fun contains(element: MutableMap.MutableEntry<K, V>): Boolean =
+            source[element.key] == element.value
+
+        override fun containsAll(elements: Collection<MutableMap.MutableEntry<K, V>>): Boolean =
+            all { contains(it) }
+
+        override fun isEmpty(): Boolean = view.isEmpty()
+
+        override fun add(element: MutableMap.MutableEntry<K, V>): Boolean {
+            val (k, v) = element
+            if (source.containsKey(k)) return false
+            source[k] = v
+            return true
+        }
+
+        override fun addAll(elements: Collection<MutableMap.MutableEntry<K, V>>): Boolean {
+            var added = false
+            for (e in elements) {
+                if (add(e) && !added) {
+                    added = true
+                }
+            }
+
+            return added
+        }
+
+        override fun clear() {
+            source.clear()
+        }
+
+        override fun remove(element: MutableMap.MutableEntry<K, V>): Boolean {
+            return source.remove(element.key) != null
+        }
+
+        override fun removeAll(elements: Collection<MutableMap.MutableEntry<K, V>>): Boolean {
+            var removed = false
+            for (e in elements) {
+                if (remove(e) && !removed) {
+                    removed = true
+                }
+            }
+
+            return removed
+        }
+
+        override fun retainAll(elements: Collection<MutableMap.MutableEntry<K, V>>): Boolean {
+            return source.keys.retainAll(elements.mapTo(mutableSetOf()) { it.key })
+        }
+
+        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = MutableMapIterator(view.iterator(),
+            mapper = { (oldKey, oldValue) ->
+
+                object : MutableMap.MutableEntry<K, V> {
+                    override val key: K = oldKey
+                    override var value: V = oldValue
+
+                    override fun setValue(newValue: V): V {
+                        val oldValue1 = value
+                        return source.put(key, newValue).also { value = newValue }
+                            ?: oldValue1
+                    }
+                }
+            },
+            remover = { target ->
+                source.remove(target.key)
+            })
+    }
+
+    private class MutableMapIterator<T, R>(
+        private val view: Iterator<T>,
+        private val mapper: (T) -> R,
+        private val remover: (T) -> Unit
+    ) : MutableIterator<R> {
+        @Suppress("ClassName")
+        private object NO_VALUE
+
+        private var currentValue: Any? = NO_VALUE
+        override fun hasNext(): Boolean = view.hasNext()
+        override fun next(): R = view.next().also { currentValue = it }.let(mapper)
+
+        @Suppress("UNCHECKED_CAST")
+        override fun remove() {
+            val value = currentValue
+            if (value is NO_VALUE) {
+                throw NoSuchElementException()
+            }
+            remover(value as T)
+        }
+    }
+}
