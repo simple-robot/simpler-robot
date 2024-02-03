@@ -25,12 +25,16 @@ package love.forte.simbot.suspendrunner
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.reserve.flux
+import love.forte.simbot.suspendrunner.reserve.list
 import love.forte.simbot.suspendrunner.reserve.mono
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import reactor.test.StepVerifier
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 
 /**
@@ -55,4 +59,29 @@ class JvmReserveTests {
         return 1
     }
 
+
+    @OptIn(InternalSimbotAPI::class)
+    @Test
+    fun jvmReserveFluxTest() = runTest {
+        val reserve = suspendReserve(this, Dispatchers.Default) { flowOf(1, 2, 3) }
+        val flux = reserve.transform(flux())
+
+        StepVerifier.create(flux)
+            .expectNext(1)
+            .expectNext(2)
+            .expectNext(3)
+            .verifyComplete()
+    }
+
+    @OptIn(InternalSimbotAPI::class)
+    @Test
+    fun jvmReserveListTest() = runTest {
+        val reserve = suspendReserve(this, Dispatchers.Default) { flowOf(1, 2, 3) }
+        val list = reserve.transform(list())
+
+        assertEquals(3, list.size)
+        assertEquals(1, list[0])
+        assertEquals(2, list[1])
+        assertEquals(3, list[2])
+    }
 }

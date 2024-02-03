@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import love.forte.simbot.event.collectBy
+import love.forte.simbot.common.collectable.collectBy
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
 import java.util.function.Function
