@@ -82,13 +82,21 @@ public expect inline fun <K, V> MutableMap<K, V>.computeValueIfPresent(
 ): V?
 
 /**
- * 如果平台支持，则得到一个可以并发操作的 [MutableMap]，否则通过 [mutableMapOf] 得到一个普通的 [MutableMap]。
+ * 根据 [key] 删除指定的目标 [target]。
+ */
+public expect inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline target: () -> V): Boolean
+
+/**
+ * 如果平台支持，则得到一个可以并发操作的 [MutableMap]。
+ *
+ * 根据不同的平台实现，得到的 [MutableMap] 允许在迭代过程中
+ * （例如使用 [MutableMap.keys]、[MutableMap.values]、[MutableMap.entries]）
+ * 对原 map 进行修改，而不会引发 [ConcurrentModificationException]，
+ * 但正在迭代的迭代器不保证可以实时感知到已经发生的修改。换言之这种并发修改是弱一致性的。
  *
  * [concurrentMutableMap] 得到的结果可能是弱一致性的。
  */
 public expect fun <K, V> concurrentMutableMap(): MutableMap<K, V>
-
-
 
 @PublishedApi
 internal inline fun <K, V> MutableMap<K, V>.internalMergeImpl(
@@ -154,3 +162,21 @@ internal inline fun <K, V> MutableMap<K, V>.internalComputeIfPresentImpl(key: K,
     return null
 }
 
+
+@PublishedApi
+internal inline fun <K, V> MutableMap<K, V>.internalRemoveValueImpl(
+    key: K,
+    crossinline target: () -> V
+): Boolean {
+    val targetValue = target()
+    val iter = iterator()
+    while (iter.hasNext()) {
+        val entry = iter.next()
+        if (entry.key == key && entry.value == targetValue) {
+            iter.remove()
+            return true
+        }
+    }
+
+    return false
+}

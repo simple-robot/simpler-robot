@@ -101,7 +101,24 @@ class ConcurrentMapTests {
             assertContains(setOf(1, 2), n2.value)
             assertFalse(iterator.hasNext())
         }
+    }
 
+    @Test
+    fun mapConcurrentModifyTest() {
+        with(concurrentMutableMap<Int, Int>()) {
+            put(1, 1)
+            put(2, 2)
+            put(3, 3)
+            val iter = iterator()
+            assertTrue(iter.hasNext())
+            val n1 = iter.next()
+            assertEquals(1, n1.key)
+            assertEquals(1, n1.value)
+            assertTrue(removeValue(2) { 2 })
+            assertTrue(iter.hasNext())
+            // assert no error
+            iter.next()
+        }
     }
 
 }

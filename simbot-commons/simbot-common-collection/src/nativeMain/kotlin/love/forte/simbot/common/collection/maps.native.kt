@@ -107,6 +107,18 @@ public actual inline fun <K, V> MutableMap<K, V>.computeValueIfPresent(
     return internalComputeIfPresentImpl(key, mappingFunction)
 }
 
+
+/**
+ * 根据 [key] 删除指定的目标 [target]。
+ */
+public actual inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline target: () -> V): Boolean {
+    if (this is MutableMapOperators) {
+        return removeValue(key, target())
+    }
+
+    return internalRemoveValueImpl(key, target)
+}
+
 /**
  * 得到一个基于 [AtomicReference] 的 CopyOnWrite Map 实现。
  * 此 Map 中的修改操作是弱一致性的。
@@ -138,6 +150,8 @@ internal interface MutableMapOperators<K, V> : MutableMap<K, V> {
         key: K,
         mappingFunction: (K, V & Any) -> V?
     ): V?
+
+    fun removeValue(key: K, target: V): Boolean
 }
 
 private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : MutableMap<K, V>,
@@ -289,4 +303,15 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
+    override fun removeValue(key: K, target: V): Boolean {
+        var result = false
+        compareAndSetMap { oldMap ->
+            oldMap.toMutableMap().apply {
+                result = internalRemoveValueImpl(key) { target }
+            }
+        }
+
+        return result
+    }
 }
+

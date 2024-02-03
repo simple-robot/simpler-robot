@@ -88,6 +88,12 @@ public actual inline fun <K, V> MutableMap<K, V>.computeValueIfPresent(
 ): V? = computeIfPresent(key) { k, v -> mappingFunction(k, v) }
 
 /**
+ * 根据 [key] 删除指定的目标 [target]。
+ */
+public actual inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline target: () -> V): Boolean =
+    remove(key, target())
+
+/**
  * 得到 [ConcurrentHashMap].
  */
 public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> = ConcurrentHashMap()
