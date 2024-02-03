@@ -1,3 +1,17 @@
+# v4.0.0-dev17
+> [!warning]
+> 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+
+
+> Release & Pull Notes: [v4.0.0-dev17](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-dev17) 
+
+- CI: Upgrade gradle/gradle-build-action@v2 to gradle/gradle-build-action@v3 ([`f93df852`](https://github.com/simple-robot/simpler-robot/commit/f93df852))
+- CI: Upgrade actions/checkout@v3 to actions/checkout@v4、actions/setup-java@v3 to actions/setup-java@v4 ([`6dcadb17`](https://github.com/simple-robot/simpler-robot/commit/6dcadb17))
+- CI: Update dependabot.yml ([`7ea0e53a`](https://github.com/simple-robot/simpler-robot/commit/7ea0e53a))
+- test: 补充部分resource的相关JVM测试 ([`bc4b91c8`](https://github.com/simple-robot/simpler-robot/commit/bc4b91c8))
+- pref: 增加/优化部分 Collectable(s) 相关的API、说明等 ([`78d5503f`](https://github.com/simple-robot/simpler-robot/commit/78d5503f))
+- pref: 增加/优化部分 Message 相关的API、说明等 ([`7909633e`](https://github.com/simple-robot/simpler-robot/commit/7909633e))
+
 # v4.0.0-dev16
 > [!warning]
 > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
