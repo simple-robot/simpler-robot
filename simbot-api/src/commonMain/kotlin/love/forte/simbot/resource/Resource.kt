@@ -119,6 +119,12 @@ private data class ByteArrayResourceImpl(private val raw: ByteArray) : ByteArray
     override fun hashCode(): Int {
         return raw.contentHashCode()
     }
+
+    override fun toString(): String = buildString {
+        append("ByteArrayResource(raw=")
+        raw.joinTo(buffer = this, separator = ", ", prefix = "[", postfix = "]", limit = 8)
+        append(")")
+    }
 }
 
 /**
@@ -142,4 +148,18 @@ public fun String.toStringResource(): StringResource = StringResourceImpl(this)
 private data class StringResourceImpl(private val string: String) : StringResource {
     override fun string(): String = string
     override fun data(): ByteArray = string().encodeToByteArray()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is StringResourceImpl) return false
+
+        if (string != other.string) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return string.hashCode()
+    }
+
+    override fun toString(): String = "StringResource(string=\"$string\")"
 }
