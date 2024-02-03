@@ -40,10 +40,7 @@ import love.forte.simbot.resource.ResourceBase64Serializer
 import love.forte.simbot.suspendrunner.STP
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
-import kotlin.jvm.JvmMultifileClass
-import kotlin.jvm.JvmName
-import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
+import kotlin.jvm.*
 
 /**
  * 一些由核心提供的标准 [Message.Element] 类型。
@@ -232,8 +229,29 @@ public data object AtAll : MentionMessage
  */
 public interface Image : StandardMessage
 
-// 离线图片？
-// 远程图片？
+/**
+ * 一个可以感知到 [ID] 信息的 [Image]。
+ *
+ */
+public interface IDAwareImage : Image {
+    /**
+     * 这个图片的ID。
+     */
+    public val id: ID
+}
+
+/**
+ * 一个可以感知或获取到 url 信息的 [Image]。
+ *
+ */
+@STP
+public interface UrlAwareImage : Image {
+    /**
+     * 获取到这个图片的链接字符串。
+     */
+    public suspend fun url(): String
+}
+
 
 /**
  * 一个离线图片消息元素类型。
@@ -355,13 +373,13 @@ public data class OfflineByteArrayImage(private val data: ByteArray) : OfflineIm
  *
  * @see RemoteIDImage
  */
-public interface RemoteImage : Image {
+public interface RemoteImage : Image, IDAwareImage {
     /**
      * 在远程服务器上的唯一标识。
      *
      * 可能是一个ID，也可能是一个资源定位符（例如图片链接）。
      */
-    public val id: ID
+    override val id: ID
 }
 
 /**
@@ -378,12 +396,12 @@ public data class RemoteIDImage(override val id: ID) : RemoteImage
  *
  * @see RemoteImage
  */
-@STP
-public interface RemoteUrlAwareImage : RemoteImage {
+public interface RemoteUrlAwareImage : RemoteImage, UrlAwareImage {
     /**
      * 获取或查询此图片的链接。
      */
-    public suspend fun url(): String
+    @JvmSynthetic
+    override suspend fun url(): String
 }
 
 //endregion
