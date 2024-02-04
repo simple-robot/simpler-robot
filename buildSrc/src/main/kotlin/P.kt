@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -81,7 +81,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     val versionWithoutSnapshot: Version
 
     init {
-        val mainVersion = version(4, 0, 0) - version("dev18")
+        val mainVersion = version(4, 0, 0) - version("dev19")
 
         fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
             mainVersion
