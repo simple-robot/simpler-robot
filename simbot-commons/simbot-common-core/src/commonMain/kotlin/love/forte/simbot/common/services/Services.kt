@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -78,6 +78,25 @@ public object Services {
     @JvmSynthetic
     public inline fun <reified T : Any> loadProviders(): Sequence<() -> T> = loadProviders(T::class)
 }
+
+/**
+ * 当满足条件 [condition] 时，添加 [providerCreator]。
+ */
+public inline fun <T : Any> Services.addProvider(condition: Boolean, type: KClass<T>, crossinline providerCreator: () -> T) {
+    if (condition) {
+        addProvider(type) { providerCreator() }
+    }
+}
+
+/**
+ * 只有在 **非Jvm** 平台上添加 [providerCreator]。
+ */
+public inline fun <T : Any> Services.addProviderExceptJvm(type: KClass<T>, crossinline providerCreator: () -> T) {
+    addProvider(isJvm, type, providerCreator)
+}
+
+@PublishedApi
+internal expect val isJvm: Boolean
 
 /**
  * 添加一个用于获取 [T] 的函数。
