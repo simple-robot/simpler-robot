@@ -1,3 +1,13 @@
+# v4.0.0-dev18
+> [!warning]
+> 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+
+
+> Release & Pull Notes: [v4.0.0-dev18](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-dev18) 
+
+- fix: 优化/修复 ConcurrentMutableMap 在 Js、WasmJs 下会出现 ConcurrentModificationException 的问题，并为 MutableMap 增加一个扩展 API removeValue(key, value) ([`cec18a17`](https://github.com/simple-robot/simpler-robot/commit/cec18a17))
+- pref: 为 Image 增加更多可扩展的子类型 ([`dfb50514`](https://github.com/simple-robot/simpler-robot/commit/dfb50514))
+
 # v4.0.0-dev17
 > [!warning]
 > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
