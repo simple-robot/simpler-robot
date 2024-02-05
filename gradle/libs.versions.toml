@@ -10,7 +10,7 @@ ktor = "2.3.8"
 slf4j = "2.0.7"
 ksp = "1.9.22-1.0.17"
 # https://square.github.io/kotlinpoet/
-kotlinPoet = "1.15.3"
+kotlinPoet = "1.16.0"
 reactor = "3.6.2"
 # simbots
 suspendTransform = "0.7.0-beta1"
