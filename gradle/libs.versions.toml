@@ -14,7 +14,7 @@ kotlinPoet = "1.15.3"
 reactor = "3.6.2"
 # simbots
 suspendTransform = "0.7.0-beta1"
-suspendReversal = "0.2.0"
+suspendReversal = "0.2.1"
 gradleCommon = "0.2.0"
 
 
