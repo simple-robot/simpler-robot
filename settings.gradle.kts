@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -59,6 +59,9 @@ include(":simbot-quantcat:simbot-quantcat-common")
 include(":simbot-cores:simbot-core-spring-boot-starter-common")
 include(":simbot-cores:simbot-core-spring-boot-starter") // v3
 //include(":simbot-cores:simbot-core-spring-boot-v2-starter")
+
+// extensions
+include(":simbot-extensions:simbot-extension-continuous-session")
 
 // local
 // if (!(System.getProperty("IS_CI") ?: System.getenv("IS_CI")).toBoolean()) {
