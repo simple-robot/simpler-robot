@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -423,7 +423,8 @@ public fun StringFormat.decodeMessagesFromString(string: String): Messages =
 
 
 // TODO delete on stable version
-@Deprecated("仅供临时二进制兼容", level = DeprecationLevel.HIDDEN)
+@Suppress("FunctionName")
+@Deprecated("仅供临时针对v4.0.0-dev16及以下的版本的JVM二进制兼容", level = DeprecationLevel.HIDDEN)
 public object MessagesKt {
     @JvmStatic
     public fun StringFormat.encodeMessagesToString(messages: Messages): String =
@@ -432,6 +433,30 @@ public object MessagesKt {
     @JvmStatic
     public fun StringFormat.decodeMessagesFromString(string: String): Messages =
         decodeFromString(Messages.serializer, string)
+
+    @JvmStatic
+    @JvmName("emptyMessages")
+    public fun emptyMessages_compatible(): Messages = emptyMessages()
+
+    @JvmStatic
+    @JvmName("messagesOf")
+    public fun messagesOf_compatible(element: Message.Element): Messages = messagesOf(element)
+
+    @JvmStatic
+    @JvmName("messagesOf")
+    public fun messagesOf_compatible(vararg elements: Message.Element): Messages = messagesOf(*elements)
+
+    @JvmStatic
+    @JvmName("toMessages")
+    public fun Iterable<Message.Element>.toMessages_compatible(): Messages = toMessages()
+
+    @JvmStatic
+    @JvmName("plus")
+    public fun Message.plus_compatible(other: Message): Messages = plus(other)
+
+    @JvmStatic
+    @JvmName("isNotEmpty")
+    public fun Messages.isNotEmpty_compatible(): Boolean = isNotEmpty()
 }
 
 /**
