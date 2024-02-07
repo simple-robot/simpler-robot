@@ -21,45 +21,146 @@
  *
  */
 
+@file:JvmName("ContinuousSessionContexts")
+@file:JvmMultifileClass
+
 package love.forte.simbot.extension.continuous.session
 
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventResult
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
-
+/**
+ * 使用于 [ContinuousSessionContext.session] 中的 `receiver` 逻辑函数。
+ */
 public fun interface InSession<T, R> {
     public suspend fun ContinuousSessionReceiver<T, R>.invoke()
 }
 
 /**
+ * 持续会话(`continuous session`)管理器，
+ * 用于承载一组 [ContinuousSessionProvider] 和 [ContinuousSessionReceiver]
+ * 的上下文。用于构建与管理 `ContinuousSession`。
+ *
+ * ## 持续会话
+ *
+ * **持续会话(`continuous session`)** 是一种用于解决在同一组逻辑中连续处理多个'事件 [T]'、并响应 '结果 [R]' 的解决方案。
+ * [ContinuousSessionContext] 本身可灵活定制这个所谓 '事件' 的类型，
+ * 其主要应用场景为借助子类型 [EventContinuousSessionContext] 在 simbot 的事件调度中使用。
+ *
+ * 假如，有一个事件类型为 [Int]、响应结果为 [String] 的一组持续会话:
+ *
+ * ```kotlin
+ * // 假设这个 session context 的'事件'类型为 Int, '结果'类型为 String
+ * val context = ContinuousSessionContext<Int, String> = ...
+ * val session = context.session(Key()) { // this: ContinuousSessionReceiver
+ *     // receiver 逻辑在异步中，等待外界的事件推送
+ *     val next = await { it -> it.toString() }
+ * }        ↑                       |
+ *          |-------------|         |
+ *                        |         |
+ *       |--------------- | --------|
+ *       |                |
+ *       ↓                |
+ * val result = session.push(1) // 推送 '事件', 得到 '结果'
+ *
+ * session.join() // session 内逻辑结束后便会正常终止
+ * assertTrue(session.isCompleted)
+ * ```
+ *
+ * 在 simbot 的事件调度中的简单应用:
+ *
+ * ```kotlin
+ * suspend fun handle(handleEvent: Event, sessionContext: EventContinuousSessionContext): EventResult {
+ *    // event: 接收到的事件
+ *    // sessionContext: 假设它是在 application 的 plugins 中获取到的. 可参见 `EventContinuousSessionContext` 的文档说明。
+ *
+ *    val key = computeKey(handleEvent) // 根据 handleEvent, 分配一个与它的唯一会话对应的 key.
+ *    val session = context.session(key, EXISTING) {
+ *        // this: ContinuousSessionReceiver<Event, EventResult>
+ *        // receiver 逻辑在异步中，等待外界的事件推送
+ *        // 此处的逻辑：
+ *        //   如果收到的事件 event 经过 check 的判断后符合要求，
+ *        //   则返回 EventResult.empty(isTruncated = true), 代表此会话已经截取此事件，
+ *        //   不要让事件再向后续的其他处理器传递；
+ *        //   否则（即不符合你的业务逻辑判断的条件）则返回一个 EventResult.invalid(), 代表无效的结果。
+ *        val next = await { event ->
+ *             ↑           if (check(event)) EventResult.empty(isTruncated = true)
+ *             |           else EventResult.invalid()
+ *             |     }
+ *    }        |     \-----------------------------------------------------------/
+ *             |                       |
+ *             |-------------|         |
+ *                           |         |
+ *          |--------------- | --------|
+ *          ↓                |
+ *    return session.push(handleEvent) // 推送 '事件', 得到 '结果'
+ *
+ *    // 直接返回这个结果
+ *    return result
+ *
+ * }
+ * ```
+ *
+ *
+ * @see EventContinuousSessionContext
  *
  * @author ForteScarlet
  */
 public interface ContinuousSessionContext<T, R> {
 
     /**
-     * 创建，冲突
+     * 尝试创建一组 `ContinuousSession` 并返回其中的 [ContinuousSessionProvider]。
+     * 在出现 [key] 冲突时基于 [strategy] 策略处理冲突。
+     *
+     * @param key session 会话的标识。[key] 的类型应当是一个可以保证能够作为一个 hash key  的类型，
+     * 例如基础数据类型(例如 [Int]、[String])、数据类类型(data class)、object 类型等。
+     * @param strategy 当 [key] 出现冲突时的处理策略
+     * @param inSession 在**异步**中进行
+     * @throws ConflictSessionKeyException 如果 [strategy] 为 [ConflictStrategy.FAILURE] 并且出现了冲突
      */
-    public fun session(key: Any, strategy: ConflictStrategy = ConflictStrategy.FAILURE, inSession: InSession<T, R>): ContinuousSessionProvider<T, R>
+    public fun session(
+        key: Any,
+        strategy: ConflictStrategy = ConflictStrategy.FAILURE,
+        inSession: InSession<T, R>
+    ): ContinuousSessionProvider<T, R>
 
+    /**
+     * 尝试创建一组 `ContinuousSession`, 并在出现 [key] 冲突时基于 []
+     */
+    public fun session(
+        key: Any,
+        inSession: InSession<T, R>
+    ): ContinuousSessionProvider<T, R> = session(key, ConflictStrategy.FAILURE, inSession)
+
+
+    /**
+     * 根据 [key] 获取指定的 [ContinuousSessionProvider] 并在找不到时返回 `null`。
+     */
     public operator fun get(key: Any): ContinuousSessionProvider<T, R>?
+
+    public operator fun contains(key: Any): Boolean
 
     public fun remove(key: Any): ContinuousSessionProvider<T, R>?
 
     /**
-     * 创建时的冲突策略
+     * 创建会话时的冲突策略
      */
     public enum class ConflictStrategy {
-        // 报错
+        /**
+         * 如果已经存在相同 `key` 的值，抛出异常 [ConflictSessionKeyException]。
+         *
+         */
         FAILURE,
-        // 关闭旧的
+
+        /**
+         * 关闭旧的现存值，并用提供的新值取代。
+         */
         REPLACE,
-        // 获取旧的
-        OLD // TODO name
+
+        /**
+         * 直接返回旧的现存值，忽略新值
+         */
+        EXISTING
     }
 }
 
-/**
- * 以事件为中心的 [ContinuousSessionContext] 子类型。
- */
-public interface EventContinuousSessionContext : ContinuousSessionContext<Event, EventResult>

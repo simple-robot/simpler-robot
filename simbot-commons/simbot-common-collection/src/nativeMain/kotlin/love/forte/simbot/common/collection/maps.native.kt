@@ -129,7 +129,7 @@ public actual inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline
  *
  */
 public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> =
-    SynchronizedMutableMap(mutableMapOf())
+    SynchronizedMutableMap(mutableMapOf<K, V>())
     // AtomicCopyOnWriteConcurrentMutableMap(emptyMap())
 
 @PublishedApi
@@ -208,7 +208,7 @@ private class SynchronizedMutableMap<K, V>(private val map: MutableMap<K, V>) : 
 }
 
 
-@Deprecated("似乎有Bug")
+@Deprecated("似乎有Bug?")
 private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : MutableMap<K, V>,
     MutableMapOperators<K, V> {
     private open class MapBox<K, out V>(val map: Map<K, V>)

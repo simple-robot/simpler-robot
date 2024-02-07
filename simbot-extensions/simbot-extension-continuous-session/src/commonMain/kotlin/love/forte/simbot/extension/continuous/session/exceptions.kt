@@ -24,6 +24,16 @@
 package love.forte.simbot.extension.continuous.session
 
 /**
+ * 冲突的 session key.
+ */
+public class ConflictSessionKeyException(message: String?) : IllegalArgumentException(message)
+
+/**
+ * 因出现冲突的 session key 而被替换
+ */
+public class ReplacedBecauseOfConflictSessionKeyException(message: String?) : IllegalStateException(message)
+
+/**
  * 当使用 [ContinuousSessionProvider.push] 推送失败时，
  * 会将异常包装在 [SessionPushOnFailureException.cause] 中。
  */

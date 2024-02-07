@@ -21,11 +21,16 @@
  *
  */
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeoutOrNull
+import love.forte.simbot.extension.continuous.session.ContinuousSessionContext
+import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.EXISTING
+import love.forte.simbot.extension.continuous.session.InSession
 import love.forte.simbot.extension.continuous.session.SessionAwaitOnFailureException
 import love.forte.simbot.extension.continuous.session.SessionPushOnFailureException
-import love.forte.simbot.extension.continuous.session.SimpleContinuousSessionContext
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -59,7 +64,7 @@ class ContinuousSessionTest {
         val parentJob = Job()
         coroutineScope {
             val key = Any()
-            val context = SimpleContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+            val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
             val session = context.session(key) {
                 assertEquals(1, await { it.toString() }.also { println("await: $it") })
                 assertEquals(2, await { it.toString() }.also { println("await: $it") })
@@ -79,8 +84,7 @@ class ContinuousSessionTest {
             session.join()
             assertTrue(session.isCompleted)
             assertFalse(session.isCancelled)
-            // TODO error!
-            // assertNull(context[key])
+            assertNull(context[key])
         }
 
         assertTrue(parentJob.isActive)
@@ -91,16 +95,14 @@ class ContinuousSessionTest {
         val parentJob = Job()
         coroutineScope {
             val key = Any()
-            val context = SimpleContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+            val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
             val session = context.session(key) {
                 assertEquals(1, await { it.toString() })// .also { println("await: $it") }
                 val ex = assertFails {
                     await { throw IllegalStateException("error on $it") }// .also { println("await: $it") }
                 }
 
-                //println("await ex = $ex (@${ex.hashCode()})")
                 assertIs<IllegalStateException>(ex)
-                //println("Session done")
             }
 
             // launch {
@@ -109,13 +111,11 @@ class ContinuousSessionTest {
             val ex = assertFails {
                 session.push(2)//.also { println("push 2 result: $it") }
             }
-            //println("push ex = $ex (@${ex.hashCode()})")
             assertIs<SessionAwaitOnFailureException>(ex)
             session.join()
             assertTrue(session.isCompleted)
             assertFalse(session.isCancelled)
-            // TODO error!
-            // assertNull(context[key])
+            assertNull(context[key])
         }
 
         assertTrue(parentJob.isActive)
@@ -124,44 +124,61 @@ class ContinuousSessionTest {
     @Test
     fun sessionAwaitTimeoutTest() = runTest {
         val parentJob = Job()
-        val context = SimpleContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+        val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+
+        val firstTimeoutJob = Job()
 
         coroutineScope {
             val key = Any()
             val session = context.session(key) {
-                val v1 = withContext(Dispatchers.Default) {
-                    withTimeoutOrNull(50.milliseconds) {
-                        await { it.toString() }
-                    }
+                val v1 = withTimeoutOrNull(50.milliseconds) {
+                    await { it.toString() }
                 }
+
                 assertNull(v1, "Expected timeout value to be null, but was: $v1")
+                firstTimeoutJob.complete()
                 assertEquals(1, await { it.toString() })
             }
 
-            withContext(Dispatchers.Default) {
-                delay(100.milliseconds)
-            }
+            firstTimeoutJob.join()
 
             assertEquals("1", session.push(1))
+
             session.join()
+
             assertTrue(session.isCompleted)
             assertFalse(session.isCancelled)
             //println("before context: $context")
             // Expected value to be null, but was: <love.forte.simbot.extension.continuous.session.SimpleSessionImpl@653702a0>.
             // 但是加上 println 就好了
+            // map 改成使用同步锁实现后就行了
             //println(context)
-            assertNull(context[key])
-
-            // val newSession = context.session(key, strategy = ContinuousSessionContext.ConflictStrategy.OLD) {}
-            // println("oldSession: $session")
-            // println("newSession: $newSession")
-            // assertNotEquals(session, newSession)
-        }
-        withContext(Dispatchers.Default) {
+            val gotSession = context[key]
+            assertNull(context[key], "Expect context[$key] to be null, but was: $gotSession")
         }
 
         assertTrue(parentJob.isActive)
     }
 
+    @Test
+    fun sessionGetTest() = runTest {
+        val parentJob = Job()
+        val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+        val key = Any()
+
+
+        val inSession = InSession {
+            suspend fun awaitValue(): Int = await { it.toString() }
+            assertEquals(1, awaitValue())
+            assertEquals(2, awaitValue())
+            assertEquals(3, awaitValue())
+        }
+
+        fun s() = context.session(key, EXISTING, inSession)
+
+        assertEquals("1", s().push(1))
+        assertEquals("2", s().push(2))
+        assertEquals("3", s().push(3))
+    }
 
 }

@@ -21,6 +21,9 @@
  *
  */
 
+@file:JvmName("ContinuousSessionContexts")
+@file:JvmMultifileClass
+
 package love.forte.simbot.extension.continuous.session
 
 import kotlinx.coroutines.*
@@ -36,6 +39,8 @@ import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.C
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 
 /**
@@ -46,6 +51,8 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
     ContinuousSessionContext<T, R> {
     protected val sessions: MutableMap<Any, ContinuousSessionProvider<T, R>> = concurrentMutableMap()
     protected val launchScope: CoroutineScope = CoroutineScope(coroutineContext)
+    protected val subScope: CoroutineScope =
+        if (coroutineContext[Job] == null) launchScope else CoroutineScope(coroutineContext.minusKey(Job))
 
     protected abstract fun computeSession(key: Any, inSession: InSession<T, R>): ContinuousSessionProvider<T, R>
 
@@ -56,48 +63,54 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
     ): ContinuousSessionProvider<T, R> {
         return when (strategy) {
             FAILURE -> {
-                sessions.computeValue(key) { _, old ->
+                sessions.computeValue(key) { k, old ->
                     if (old != null) throw IllegalStateException("Session with key $key already exists")
 
-                    computeSession(key, inSession)
+                    computeSession(k, inSession)
                 }!!
             }
 
             REPLACE -> {
-                sessions.computeValue(key) { _, old ->
-                    old?.cancel(/* TODO REPLACED EXCEPTION? */)
-                    computeSession(key, inSession)
+                sessions.computeValue(key) { k, old ->
+                    old?.cancel(ReplacedBecauseOfConflictSessionKeyException("conflict key $k"))
+                    computeSession(k, inSession)
                 }!!
             }
 
-            OLD -> {
-                sessions.computeValueIfAbsent(key) { computeSession(key, inSession) }
+            EXISTING -> {
+                sessions.computeValueIfAbsent(key) { k -> computeSession(k, inSession) }
             }
         }
     }
 
+    // 是否检测 isActive?
+
     override fun get(key: Any): ContinuousSessionProvider<T, R>? = sessions[key]
+    override fun contains(key: Any): Boolean = sessions.containsKey(key)
     override fun remove(key: Any): ContinuousSessionProvider<T, R>? = sessions[key]
 }
 
+/**
+ * 创建一个 [ContinuousSessionContext] 的基础实现类型。
+ */
+@JvmName("createContinuousSessionContext")
+public fun <T, R> ContinuousSessionContext(coroutineContext: CoroutineContext): ContinuousSessionContext<T, R> =
+    SimpleContinuousSessionContext(coroutineContext)
 
-internal class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineContext) :
+private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineContext) :
     AbstractContinuousSessionContext<T, R>(coroutineContext) {
     private val parentJob = coroutineContext[Job]
-
-    // override fun toString(): String {
-    //     // TODO
-    //     return sessions.toString()
-    // }
 
     override fun computeSession(key: Any, inSession: InSession<T, R>): SimpleSessionImpl<T, R> {
         val job = Job(parentJob)
         val channel = Channel<SessionData<T, R>>()
-        val session = SimpleSessionImpl(key, job, channel, launchScope)
+        val session = SimpleSessionImpl(key, job, channel, subScope)
 
         job.invokeOnCompletion {
-            channel.close(it)
             sessions.removeValue(key) { session }
+        }
+        job.invokeOnCompletion {
+            channel.close(it)
         }
 
         launchScope.launch {
@@ -114,15 +127,16 @@ internal class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineC
     }
 }
 
-internal data class SessionData<T, R>(val value: T, val continuation: CancellableContinuation<R>)
+private data class SessionData<T, R>(val value: T, val continuation: CancellableContinuation<R>)
 
-
-internal class SimpleSessionImpl<T, R>(
+private class SimpleSessionImpl<T, R>(
     private val key: Any,
     private val job: CompletableJob,
     private val channel: Channel<SessionData<T, R>>,
     private val launchScope: CoroutineScope
 ) : ContinuousSession<T, R> {
+    override val coroutineContext: CoroutineContext
+        get() = launchScope.coroutineContext
 
     override val isActive: Boolean
         get() = job.isActive
