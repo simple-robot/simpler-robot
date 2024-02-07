@@ -122,15 +122,10 @@ public actual inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline
 }
 
 /**
- * 得到一个基于 [AtomicReference] 的 CopyOnWrite Map 实现。
- * 此 Map 中的修改操作是弱一致性的。
+ * 得到一个基于可重入同步锁的 concurrent map 实现。
  *
  * 此 Map 的 [entries][MutableMap.entries]、[keys][MutableMap.keys]、[values][MutableMap.values] 都是瞬时副本，
  * 对它们（以及它们的元素）进行修改不会对 Map 本体产生影响。
- *
- * 此 Map 在进行同时大量的修改且元素数量比较多时可能会有较高的损耗。
- *
- * 此 Map 支持 [mergeValue]、[computeValue]、[computeValueIfAbsent]、[computeValueIfPresent]
  *
  */
 public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> =
@@ -213,6 +208,7 @@ private class SynchronizedMutableMap<K, V>(private val map: MutableMap<K, V>) : 
 }
 
 
+@Deprecated("似乎有Bug")
 private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : MutableMap<K, V>,
     MutableMapOperators<K, V> {
     private open class MapBox<K, out V>(val map: Map<K, V>)
