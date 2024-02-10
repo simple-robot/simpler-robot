@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,13 +33,11 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.reactor.asFlux
-import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.asAsync
 import love.forte.simbot.common.collection.asIterator
 import love.forte.simbot.common.function.Action
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
-import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import reactor.core.publisher.Flux
 import java.util.*
@@ -282,21 +280,22 @@ public fun <T> Collectable<T>.toList(): List<T> = when (this) {
 
 /**
  * 将 [Collectable] 异步地收集为 [List]。
- * 如果 [scope] 为 `null`，则会视情况选择使用一个内部的 CoroutineScope 异步调度器
- * (see [runInAsync])
+ * 如果 [scope] 为 `null`，则会视情况使用 [GlobalScope]
  * 或使用 [CompletableFuture.supplyAsync]。
  *
- * @see runInAsync
+ * **注意：如果没有指定 [scope] 且在可能会使用 [GlobalScope] 的情况下，**
+ * **你应当了解 [GlobalScope] 的特性与注意事项。**
+ *
+ * @see GlobalScope
  * @see CompletableFuture.supplyAsync
  */
-@OptIn(InternalSimbotAPI::class)
+@OptIn(DelicateCoroutinesApi::class)
 @JvmOverloads
 public fun <T> Collectable<T>.toListAsync(scope: CoroutineScope? = null): CompletableFuture<List<T>> = when (this) {
     is SynchronouslyIterateCollectable -> scope?.future { toList() }
         ?: CompletableFuture.supplyAsync { toList() }
 
-    else -> scope?.future { asFlow().toList() }
-        ?: runInAsync { asFlow().toList() }
+    else -> (scope ?: GlobalScope).future { asFlow().toList() }
 }
 
 /// collector
@@ -319,14 +318,16 @@ public fun <T, R> Collectable<T>.collect(collector: Collector<T, *, R>): R {
 
 /**
  * 使用 [Collector] **异步地**收集 [Collectable] 中的元素。
- * 如果 [scope] 为 `null`，则会视情况选择使用一个内部的 CoroutineScope 异步调度器
- * (see [runInAsync])
+ * 如果 [scope] 为 `null`，则会视情况使用 [GlobalScope]
  * 或使用 [CompletableFuture.supplyAsync]。
  *
- * @see runInAsync
+ * **注意：如果没有指定 [scope] 且在可能会使用 [GlobalScope] 的情况下，**
+ * **你应当了解 [GlobalScope] 的特性与注意事项。**
+ *
+ * @see GlobalScope
  * @see CompletableFuture.supplyAsync
  */
-@OptIn(InternalSimbotAPI::class)
+@OptIn(DelicateCoroutinesApi::class)
 @JvmOverloads
 public fun <T, R> Collectable<T>.collectAsync(
     scope: CoroutineScope? = null,
@@ -341,9 +342,8 @@ public fun <T, R> Collectable<T>.collectAsync(
                 ?: CompletableFuture.supplyAsync { asSequence().asStream().collect(collector) }
         }
 
-        else -> {
-            scope?.future { asFlow().collectBy(scope = scope, collector = collector) }
-            runInAsync { asFlow().collectBy(scope = this, collector = collector) }
+        else -> (scope ?: GlobalScope).let { s ->
+            s.future { asFlow().collectBy(scope = s, collector = collector) }
         }
     }
 }
@@ -360,14 +360,20 @@ public fun <T, R> Collectable<T>.collectAsync(
  * 对列表等普通的集合类型可以选择其他可能有更多判断与优化的API，
  * 例如 [Collectable.toList]。
  *
+ * @see Collectable.transform
  */
 @OptIn(DelicateCoroutinesApi::class)
 @JvmOverloads
+@Deprecated(
+    "Just use Collectable.transform", ReplaceWith(
+        "transform(scope, EmptyCoroutineContext, transformer)",
+        "kotlin.coroutines.EmptyCoroutineContext"
+    ), level = DeprecationLevel.ERROR
+)
 public fun <T, R> Collectable<T>.transform(
     scope: CoroutineScope = GlobalScope,
     transformer: SuspendReserve.Transformer<Flow<T>, R>
-): R =
-    transformer(scope, EmptyCoroutineContext) { asFlow() }
+): R = transform(scope, EmptyCoroutineContext, transformer)
 
 /// reactor
 
