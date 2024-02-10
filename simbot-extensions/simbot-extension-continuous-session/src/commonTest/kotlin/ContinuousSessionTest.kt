@@ -21,11 +21,9 @@
  *
  */
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withTimeoutOrNull
+import love.forte.simbot.common.coroutines.IOOrDefault
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.EXISTING
 import love.forte.simbot.extension.continuous.session.InSession
@@ -34,88 +32,71 @@ import love.forte.simbot.extension.continuous.session.SessionPushOnFailureExcept
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
-/*
- *     Copyright (c) 2024. ForteScarlet.
- *
- *     Project    https://github.com/simple-robot/simpler-robot
- *     Email      ForteScarlet@163.com
- *
- *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU Lesser General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     Lesser GNU General Public License for more details.
- *
- *     You should have received a copy of the Lesser GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- */
 
 class ContinuousSessionTest {
 
     @Test
     fun sessionPushAndCompletedTest() = runTest {
         val parentJob = Job()
-        coroutineScope {
-            val key = Any()
-            val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
-            val session = context.session(key) {
-                assertEquals(1, await { it.toString() }.also { println("await: $it") })
-                assertEquals(2, await { it.toString() }.also { println("await: $it") })
-                assertEquals(3, await { it.toString() }.also { println("await: $it") })
-                // done
-            }
+        withContext(Dispatchers.IOOrDefault) {
+            coroutineScope {
+                val key = Any()
+                val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+                val session = context.session(key) {
+                    assertEquals(1, await { it.toString() })
+                    assertEquals(2, await { it.toString() })
+                    assertEquals(3, await { it.toString() })
+                    // done
+                }
 
-            assertEquals("1", session.push(1).also { println("push 1 result: $it") })
-            assertEquals("2", session.push(2).also { println("push 2 result: $it") })
-            assertEquals("3", session.push(3).also { println("push 3 result: $it") })
+                assertEquals("1", session.push(1))
+                assertEquals("2", session.push(2))
+                assertEquals("3", session.push(3))
 
-            val ex = assertFails {
-                session.push(4).also { println("push 4 result: $it") }
+                val ex = assertFails {
+                    session.push(4)
+                }
+                ex.printStackTrace()
+                assertIs<SessionPushOnFailureException>(ex)
+                session.join()
+                assertTrue(session.isCompleted)
+                assertFalse(session.isCancelled)
+                assertNull(context[key])
             }
-            ex.printStackTrace()
-            assertIs<SessionPushOnFailureException>(ex)
-            session.join()
-            assertTrue(session.isCompleted)
-            assertFalse(session.isCancelled)
-            assertNull(context[key])
         }
 
         assertTrue(parentJob.isActive)
+        parentJob.cancel()
     }
 
     @Test
     fun sessionPushAndThrowTest() = runTest {
         val parentJob = Job()
-        coroutineScope {
-            val key = Any()
-            val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
-            val session = context.session(key) {
-                assertEquals(1, await { it.toString() })// .also { println("await: $it") }
-                val ex = assertFails {
-                    await { throw IllegalStateException("error on $it") }// .also { println("await: $it") }
+        withContext(Dispatchers.IOOrDefault) {
+            coroutineScope {
+                val key = Any()
+                val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
+                val session = context.session(key) {
+                    assertEquals(1, await { it.toString() })// .also { println("await: $it") }
+                    val ex = assertFails {
+                        await { throw IllegalStateException("error on $it") }// .also { println("await: $it") }
+                    }
+
+                    assertIs<IllegalStateException>(ex)
                 }
 
-                assertIs<IllegalStateException>(ex)
-            }
+                // launch {
+                assertEquals("1", session.push(1)) // .also { println("push 1 result: $it") }
 
-            // launch {
-            assertEquals("1", session.push(1)) // .also { println("push 1 result: $it") }
-
-            val ex = assertFails {
-                session.push(2)//.also { println("push 2 result: $it") }
+                val ex = assertFails {
+                    session.push(2)//.also { println("push 2 result: $it") }
+                }
+                assertIs<SessionAwaitOnFailureException>(ex)
+                session.join()
+                assertTrue(session.isCompleted)
+                assertFalse(session.isCancelled)
+                assertNull(context[key])
             }
-            assertIs<SessionAwaitOnFailureException>(ex)
-            session.join()
-            assertTrue(session.isCompleted)
-            assertFalse(session.isCancelled)
-            assertNull(context[key])
         }
 
         assertTrue(parentJob.isActive)
@@ -128,33 +109,35 @@ class ContinuousSessionTest {
 
         val firstTimeoutJob = Job()
 
-        coroutineScope {
-            val key = Any()
-            val session = context.session(key) {
-                val v1 = withTimeoutOrNull(50.milliseconds) {
-                    await { it.toString() }
+        withContext(Dispatchers.IOOrDefault) {
+            coroutineScope {
+                val key = Any()
+                val session = context.session(key) {
+                    val v1 = withTimeoutOrNull(50.milliseconds) {
+                        await { it.toString() }
+                    }
+
+                    assertNull(v1, "Expected timeout value to be null, but was: $v1")
+                    firstTimeoutJob.complete()
+                    assertEquals(1, await { it.toString() })
                 }
 
-                assertNull(v1, "Expected timeout value to be null, but was: $v1")
-                firstTimeoutJob.complete()
-                assertEquals(1, await { it.toString() })
+                firstTimeoutJob.join()
+
+                assertEquals("1", session.push(1))
+
+                session.join()
+
+                assertTrue(session.isCompleted)
+                assertFalse(session.isCancelled)
+                //println("before context: $context")
+                // Expected value to be null, but was: <love.forte.simbot.extension.continuous.session.SimpleSessionImpl@653702a0>.
+                // 但是加上 println 就好了
+                // map 改成使用同步锁实现后就行了
+                //println(context)
+                val gotSession = context[key]
+                assertNull(context[key], "Expect context[$key] to be null, but was: $gotSession")
             }
-
-            firstTimeoutJob.join()
-
-            assertEquals("1", session.push(1))
-
-            session.join()
-
-            assertTrue(session.isCompleted)
-            assertFalse(session.isCancelled)
-            //println("before context: $context")
-            // Expected value to be null, but was: <love.forte.simbot.extension.continuous.session.SimpleSessionImpl@653702a0>.
-            // 但是加上 println 就好了
-            // map 改成使用同步锁实现后就行了
-            //println(context)
-            val gotSession = context[key]
-            assertNull(context[key], "Expect context[$key] to be null, but was: $gotSession")
         }
 
         assertTrue(parentJob.isActive)

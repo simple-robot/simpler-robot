@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,12 +24,17 @@
 package love.forte.simbot.common.collectable
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.asAsync
 import love.forte.simbot.common.function.Action
+import love.forte.simbot.suspendrunner.reserve.SuspendReserve
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -77,6 +82,42 @@ public interface Collectable<out T> {
      */
     public fun asFlow(): Flow<T>
 
+    /**
+     * 使用 [SuspendReserve.Transformer] 对 [flow][asFlow] 的值进行转化处理。
+     * 例如在 JVM 中，可以使用 `SuspendReserves.flux()` 转化为 `reactor.core.publisher.Flux`
+     * 或使用 `SuspendReserves.list()` 转化为 [List]。
+     *
+     * ```Kotlin
+     * val flux: Flow<Int> = ...
+     * val list = flux.transform(transformer = flux())
+     * ```
+     *
+     * **注意：部分转化器可能会要求运行时存在一些依赖，请注意参考它们的注释与说明。**
+     *
+     * 建议主要使用 [transform] 转化为其他响应式类型，例如 `reactor.core.publisher.Flux`。
+     * 对列表等普通的集合类型可以选择其他可能有更多判断与优化的API，
+     * 例如 Java 使用者可选择 `Collectables.toList`。
+     *
+     * @param scope 提供给 [SuspendReserve.Transformer] 的作用域。默认会使用 [GlobalScope]。
+     * @param context 提供给 [SuspendReserve.Transformer] 的作用域。默认会使用 [EmptyCoroutineContext]。
+     * @param transformer 转化器实现。
+     */
+    public fun <R> transform(scope: CoroutineScope, context: CoroutineContext, transformer: SuspendReserve.Transformer<Flow<T>, R>): R =
+        transformer.invoke(scope, context) { asFlow() }
+
+    /**
+     * 使用 [SuspendReserve.Transformer] 对 [flow][asFlow] 的值进行转化处理。
+     * 更多说明参考全量参数的重载函数。
+     *
+     * 默认使用 [GlobalScope] 作为协程作用域、使用 [EmptyCoroutineContext] 作为协程上下文。
+     *
+     * _Java 友好的接口重载函数_
+     *
+     * @see transformer
+      */
+    @OptIn(DelicateCoroutinesApi::class)
+    public fun <R> transform(transformer: SuspendReserve.Transformer<Flow<T>, R>): R =
+        transform(scope = GlobalScope, context = EmptyCoroutineContext, transformer = transformer)
 }
 
 /**
