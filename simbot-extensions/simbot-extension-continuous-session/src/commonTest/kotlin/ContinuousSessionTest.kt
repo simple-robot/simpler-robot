@@ -21,16 +21,10 @@
  *
  */
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withTimeoutOrNull
-import love.forte.simbot.extension.continuous.session.ContinuousSessionContext
+import love.forte.simbot.extension.continuous.session.*
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.EXISTING
-import love.forte.simbot.extension.continuous.session.InSession
-import love.forte.simbot.extension.continuous.session.SessionAwaitOnFailureException
-import love.forte.simbot.extension.continuous.session.SessionPushOnFailureException
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -179,6 +173,108 @@ class ContinuousSessionTest {
         assertEquals("1", s().push(1))
         assertEquals("2", s().push(2))
         assertEquals("3", s().push(3))
+    }
+
+
+    @Test
+    fun sessionContinuationTest() = runTest {
+        val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
+        val key = Any()
+        val inSession = InSession {
+            val c = await()
+            val value = c.value
+            assertEquals(1, value)
+            val job1 = launch {
+                c.resume(value.toString())
+            }
+
+            val c2 = await()
+            assertEquals(2, c2.value)
+            val job2 = launch {
+                c2.resume(c2.value.toString())
+            }
+
+            job1.join()
+            job2.join()
+        }
+
+        val provider = context.session(key, inSession)
+
+        assertEquals("1", provider.push(1))
+        assertEquals("2", provider.push(2))
+    }
+
+    @Test
+    fun sessionContinuationWithoutResumeTest() = runTest {
+        val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
+        val key = Any()
+        val inSession = InSession {
+            val c = await()
+            val value = c.value
+            assertEquals(1, value)
+            val job = launch {
+                c.resume(value.toString())
+            }
+
+            val c2 = await()
+            assertEquals(2, c2.value)
+            job.join()
+        }
+
+        val provider = context.session(key, inSession)
+
+        assertEquals("1", provider.push(1))
+        val ex = assertFails {
+            provider.push(2)
+        }
+        assertIs<SessionCompletedWithoutResumeException>(ex)
+    }
+
+    @Test
+    fun sessionContinuationWithoutResumeMultiTest() = runTest {
+        val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
+        val key = Any()
+        val inSession = InSession {
+            val c = await()
+            val value = c.value
+            assertEquals(1, value)
+            val job = launch {
+                c.resume(value.toString())
+            }
+
+            val c2 = await()
+            val c3 = await()
+            val c4 = await()
+            val set = setOf(c2.value, c3.value, c4.value)
+            assertContains(set, 2)
+            assertContains(set, 3)
+            assertContains(set, 4)
+            job.join()
+        }
+
+        val provider = context.session(key, inSession)
+
+        assertEquals("1", provider.push(1))
+
+        coroutineScope {
+            withContext(Dispatchers.Default) {
+                launch {
+                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
+                        provider.push(2)
+                    })
+                }
+                launch {
+                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
+                        provider.push(3)
+                    })
+                }
+                launch {
+                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
+                        provider.push(4)
+                    })
+                }
+            }
+        }
     }
 
 }
