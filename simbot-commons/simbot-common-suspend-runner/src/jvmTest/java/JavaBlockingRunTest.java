@@ -57,6 +57,11 @@ public class JavaBlockingRunTest {
         Assertions.assertTrue((now - startNano) > TimeUnit.MILLISECONDS.toNanos(100));
     }
 
+    private void checkDuration(long startNano, long expectDurationNano) {
+        final var now = System.nanoTime();
+        Assertions.assertTrue((now - startNano) > expectDurationNano);
+    }
+
     @Test
     public void blockingRun() {
         final var start = System.nanoTime();
@@ -82,11 +87,12 @@ public class JavaBlockingRunTest {
         final var start = System.nanoTime();
         final var foo = new SuspendFoo();
         final var nameMono = foo.runReserve(EXPECT_NAME).transform(SuspendReserves.mono());
-        final var name = nameMono.block(Duration.ofMillis(150L));
+        final var duration = Duration.ofSeconds(5);
+        final var name = nameMono.block(duration);
         // .subscribeOn(parallelScheduler)
 
         Assertions.assertEquals(name, EXPECT_NAME);
-        checkDuration(start);
+        checkDuration(start, duration.toNanos());
     }
 
     @Test
