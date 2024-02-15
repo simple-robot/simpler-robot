@@ -26,10 +26,8 @@
 
 package love.forte.simbot.extension.continuous.session
 
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DisposableHandle
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.OnCompletion
 import love.forte.simbot.suspendrunner.ST
@@ -43,7 +41,7 @@ import kotlin.jvm.JvmName
 
 /**
  * 一组 `Session` 的元素之一，
- * 用来向 [ContinuousSessionReceiver] 推送事件 [T] 并获悉结果 [R]。
+ * 用来向 [ContinuousSessionReceiver] 推送事件 [T] 并获悉结果 [R] 的“供应者”。
  *
  * ```kotlin
  * val session = context.session(Key()) {
@@ -62,11 +60,11 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
      * 推送一个事件到对应的 [ContinuousSessionReceiver] 中并挂起直到将其
      * [消费][ContinuousSessionReceiver.await] 或被关闭。
      *
-     * @throws SessionPushOnFailureException 如果推送行为本身失败，
-     * 例如session已经结束或关闭。
+     * @throws CancellationException 如果会话已经结束或关闭
+     * @throws SessionPushOnFailureException 如果推送行为本身失败，例如会话已经结束或关闭
      * @throws SessionAwaitOnFailureException 如果推送行为成功、
      * 但是在 [ContinuousSessionReceiver.await] 时出现了异常（例如构造响应结果时出现异常）
-     * @throws
+     * @throws Throwable 任何由 [SessionContinuation.resumeWithException] 直接 resume 的异常本身
      */
     @ST
     public suspend fun push(value: T): R
@@ -96,7 +94,7 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
     public val isCompleted: Boolean
 
     /**
-     * 是否由于 cancel 而完成。
+     * 是否由于 `cancel` 而完成。
      */
     public val isCancelled: Boolean
 
@@ -138,30 +136,94 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
     override val coroutineContext: CoroutineContext
 
     /**
-     * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push]。
+     * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push]，
+     * 并在接收到时恢复一个结果 [result]。
+     *
+     * ```kotlin
+     * val value = await(result)
+     * // ...
+     * ```
+     *
+     * @param result 一个响应 [R]
+     *
+     * @throws CancellationException 如果内部的管道已经被关闭或任务已经结束
+     * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
+     */
+    @ST(asyncSuffix = "asFuture")
+    public suspend fun await(result: R): T
+
+    /**
+     * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push]，
+     * 并在接收到时恢复一个由 [result] 计算的结果。
      *
      * 如果在 [await] 过程中出现异常，会在抛出此异常前，
      * 将此异常使用 [SessionAwaitOnFailureException]
      * 包装并恢复(`resume`)给 [ContinuousSessionProvider.push]。
      *
-     * @param result
+     * ```kotlin
+     * val value = await { v -> v.toResult() /* 根据结果 value 计算一个结果 */ }
+     * // ...
+     * ```
      *
+     * @param result 根据 [推送][ContinuousSessionProvider.push] 得到的结果值计算一个响应 [R]
+     *
+     * @throws CancellationException 如果内部的管道已经被关闭或任务已经结束
+     * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
      */
-    // TODO @ST?
     @ST(asyncSuffix = "asFuture")
     public suspend fun await(result: (T) -> R): T
 
-
+    /**
+     * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push] 结果，
+     * 并将此结果和 推送][ContinuousSessionProvider.push] 处的挂起点打包为 [SessionContinuation]，
+     * 并在稍后通过 [SessionContinuation.resume] 或 [SessionContinuation.resumeWithException] 恢复。
+     *
+     * 与 [await {...}][await] 相比，此函数可以延后 **[推送][ContinuousSessionProvider.push] 挂起点** 的恢复时机，
+     * 用来处理一些更灵活的逻辑。你需要更加了解对挂起点的相关操作，并确保能够在合适的时机**恢复**它。
+     * 否则，还是更建议使用 [await { ... }][await]。
+     *
+     * ```kotlin
+     * val continuation = await()
+     * val value = continuation.value
+     * // 在异步中执行某些任务并稍后恢复结果
+     * launch {
+     *     try {
+     *          val result = runTask(value)
+     *          continuation.resume(result)
+     *     } catch (cause: Throwable) {
+     *          // 出现了异常，恢复一个异常情况下的结果，
+     *          // 比如：
+     *          // continuation.resume(resultOnError(cause))
+     *
+     *          // 或者如此示例，直接恢复一个异常
+     *          // 这样对应的 `push` 处便会抛出此异常
+     *          continuation.resumeWithException(cause)
+     *     }
+     * }.join() // 等待异步任务
+     * ```
+     *
+     * 需要注意，上述示例中我们使用 [Job.join] 挂起了那个异步任务，
+     * 因为如果当 [ContinuousSessionReceiver] 内作用域已经结束 (completed),
+     * 而某个 **[推送][ContinuousSessionProvider.push] 挂起点** 尚未恢复，
+     * 则会直接使用一个异常恢复此挂起点。
+     * 因此，当你要在异步中延后恢复 **[推送][ContinuousSessionProvider.push] 挂起点** 时，
+     * 需要确保 [ContinuousSessionReceiver] 作用域尚未结束，例如使用 [Job.join] 或 [coroutineScope] 等。
+     *
+     * @throws CancellationException 如果内部的管道已经被关闭或任务已经结束
+     * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
+     *
+     * @see SessionContinuation
+     *
+     */
     @ST(asyncSuffix = "asFuture")
     public suspend fun await(): SessionContinuation<T, R>
-    // TODO await 如何延迟响应？
-
 }
 
 /**
  * [ContinuousSessionReceiver.await] 的返回值类型，
  * 可用来获取到本次等待到的 [推送][ContinuousSessionProvider.push] 结果，
  * 并向其恢复一个结果或异常。
+ *
  * [SessionContinuation] 的使用方式类似 [Continuation]，在收到 [SessionContinuation] 时，
  * 应当尽可能快速地通过 [resume] 或 [resumeWithException] 来恢复
  * [推送][ContinuousSessionProvider.push] 处，

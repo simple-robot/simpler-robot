@@ -197,8 +197,26 @@ private class SimpleSessionImpl<T, R>(
         job.cancel(cause?.let { CancellationException("Cancelled: ${it.message}", it) })
     }
 
+    private fun checkJob() {
+        if (!job.isActive) {
+            throw CancellationException("Session (key=$key) is not active")
+        }
+    }
+
+    private suspend fun receive() = channel.receive()
+
+    override suspend fun await(result: R): T {
+        checkJob()
+
+        val (value, continuation) = receive()
+        continuation.resume(result)
+        return value
+    }
+
     override suspend fun await(result: (T) -> R): T {
-        val (value, continuation) = channel.receive()
+        checkJob()
+
+        val (value, continuation) = receive()
         try {
             continuation.resume(result(value))
         } catch (e: Throwable) {
@@ -206,6 +224,16 @@ private class SimpleSessionImpl<T, R>(
             throw e
         }
         return value
+    }
+
+    override suspend fun await(): SessionContinuation<T, R> {
+        checkJob()
+
+        val (value, continuation) = receive()
+        val handle =
+            job.invokeOnCompletion { cause -> continuation.resumeWithException(SessionCompletedWithoutResumeException(cause)) }
+
+        return createSimpleSessionContinuation(value, continuation, handle)
     }
 }
 
