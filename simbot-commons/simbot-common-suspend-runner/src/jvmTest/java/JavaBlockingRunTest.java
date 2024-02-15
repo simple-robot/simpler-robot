@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,8 +23,12 @@
 
 import love.forte.simbot.suspendrunner.SuspendFoo;
 import love.forte.simbot.suspendrunner.reserve.SuspendReserves;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +37,18 @@ import java.util.concurrent.TimeUnit;
  * @author ForteScarlet
  */
 public class JavaBlockingRunTest {
+
+    private static Scheduler parallelScheduler;
+
+    @BeforeAll
+    public static void initScheduler() {
+        parallelScheduler = Schedulers.newParallel("parallel", 4);
+    }
+
+    @AfterAll
+    public static void disposeScheduler() {
+        parallelScheduler.dispose();
+    }
 
     private static final String EXPECT_NAME = "forte";
 
@@ -67,6 +83,7 @@ public class JavaBlockingRunTest {
         final var foo = new SuspendFoo();
         final var nameMono = foo.runReserve(EXPECT_NAME).transform(SuspendReserves.mono());
         final var name = nameMono.block(Duration.ofMillis(150L));
+        // .subscribeOn(parallelScheduler)
 
         Assertions.assertEquals(name, EXPECT_NAME);
         checkDuration(start);
