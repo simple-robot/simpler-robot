@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,9 @@ package love.forte.simbot.suspendrunner/*
  */
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import kotlin.coroutines.CoroutineContext
@@ -60,7 +62,9 @@ class SuspendFoo : CoroutineScope {
 
     @JvmSynthetic
     suspend fun run(name: String): String {
-        delay(100)
+        withContext(Dispatchers.IO) {
+            delay(100)
+        }
         return name
     }
 

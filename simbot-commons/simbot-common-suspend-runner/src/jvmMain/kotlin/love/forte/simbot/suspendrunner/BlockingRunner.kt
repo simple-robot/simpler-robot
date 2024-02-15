@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 
 @file:JvmName("BlockingRunnerKt")
 @file:Suppress("FunctionName")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 package love.forte.simbot.suspendrunner
 
@@ -390,7 +391,7 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
  * 使用在非协程环境下的异步API（例如 [runInAsync] ）中的默认调度器。
  * 会在首次被获取的时候进行实例化。
  *
- * 默认情况下，[DefaultAsyncDispatcherOrNull] 等同于 [DefaultBlockingDispatcherOrNull].
+ * 默认情况下，[DefaultAsyncDispatcherOrNull] 等于 `null`.
  *
  * 存在部分可配置内容：
  *
@@ -440,7 +441,8 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
             } else {
                 logger.debug("Default async dispatcher will use the default blocking dispatcher because all initialization parameters are null")
             }
-            DefaultBlockingDispatcherOrNull
+            // default: null
+            null
         } else {
             createDefaultDispatcher(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix)
         }
@@ -464,8 +466,8 @@ public val DefaultAsyncDispatcher: CoroutineDispatcher
     get() = DefaultAsyncDispatcherOrNull ?: Dispatchers.Default
 
 
-@Suppress("ObjectPropertyName")
-private val `$$DefaultScopeJob` = SupervisorJob()
+// @Suppress("ObjectPropertyName")
+// private val `$$DefaultScopeJob` = SupervisorJob()
 
 /**
  * 默认的异步调用（Java异步，例如 [CompletableFuture] 或 [runInAsync]）上下文。
@@ -473,28 +475,24 @@ private val `$$DefaultScopeJob` = SupervisorJob()
  * [DefaultAsyncContext] 的基本内容如下：
  * - 一个 [CoroutineName]
  * - 如果 [DefaultAsyncDispatcherOrNull] 不为null，则使用它。
- * - 一个全局的 [SupervisorJob]
- *
- * **Warning**: 如果 [DefaultAsyncContext] 中的 [Job] 被关闭，则会导致程序无法再使用
- * 此默认作用域进行异步任务作业。
  *
  */
 @InternalSimbotAPI
 public val DefaultAsyncContext: CoroutineContext by lazy {
     val asyncDispatcher = DefaultAsyncDispatcherOrNull
     if (asyncDispatcher == null) {
-        CoroutineName("def-async") + `$$DefaultScopeJob`
+        CoroutineName("def-async")
     } else {
-        CoroutineName("def-async") + `$$DefaultScopeJob` + asyncDispatcher
+        CoroutineName("def-async") + asyncDispatcher
     }
 }
 
 @Suppress("unused", "ObjectPropertyName")
 @InternalSimbotAPI
+@Deprecated("Unused property", level = DeprecationLevel.ERROR)
 private val `$$DefaultScope`: CoroutineScope by lazy {
     CoroutineScope(DefaultAsyncContext)
 }
-
 
 // region run in blocking strategy
 
@@ -699,16 +697,20 @@ public fun <T> runInAsync(
     context: CoroutineContext = EmptyCoroutineContext,
     block: suspend CoroutineScope.() -> T,
 ): CompletableFuture<T> =
-    scope.future(context) { block() }
+    scope.future(DefaultAsyncContext + context) { block() }
 
 /**
  * 执行一个异步函数，得到 [CompletableFuture].
+ * 默认情况下会使用 [GlobalScope] 作为调度作用域。
  */
+@OptIn(DelicateCoroutinesApi::class)
 @InternalSimbotAPI
 public fun <T> runInAsync(block: suspend CoroutineScope.() -> T): CompletableFuture<T> =
-    runInAsync(scope = `$$DefaultScope`, context = EmptyCoroutineContext, block = block)
+    runInAsync(scope = GlobalScope, context = EmptyCoroutineContext, block = block)
 
 /**
+ * 将 [block] 包装为 [SuspendReserve].
+ * [scope] 如果为 `null` 则会使用 [GlobalScope]。
  * @see SuspendReserve
  */
 @InternalSimbotAPI
@@ -717,9 +719,10 @@ public fun <T> asReserve(
     context: CoroutineContext? = null,
     block: suspend () -> T
 ): SuspendReserve<T> =
-    suspendReserve(scope = scope ?: `$$DefaultScope`, context = context ?: EmptyCoroutineContext, block = block)
+    suspendReserve(scope = scope ?: GlobalScope, context = context ?: EmptyCoroutineContext, block = block)
 
 /**
+ * @param scope 如果为 `null` 则使用 [GlobalScope]。
  * @see asReserve
  */
 @InternalSimbotAPI
@@ -748,7 +751,7 @@ public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInNoScopeBlocki
  */
 @InternalSimbotAPI
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$runInAsync`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
+public fun <T> `$$runInAsync`(block: suspend () -> T, scope: CoroutineScope = GlobalScope): CompletableFuture<T> {
     return runInAsync(scope) { block() }
 }
 
@@ -756,11 +759,14 @@ public fun <T> `$$runInAsync`(block: suspend () -> T, scope: CoroutineScope = `$
  * 供编译器插件使用的异步转化函数。
  *
  * 第二个参数 [CoroutineScope] 可以为null，可以更好的对当前作用域环境进行灵活判断。
+ *
+ * @param scope 可以为null，可以更好的对当前作用域环境进行灵活判断。
+ * 如果为 `null` 则会使用 [GlobalScope]。
  */
 @InternalSimbotAPI
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineScope? = null): CompletableFuture<T> {
-    return runInAsync(scope ?: `$$DefaultScope`) { block() }
+    return runInAsync(scope ?: GlobalScope) { block() }
 }
 
 /**

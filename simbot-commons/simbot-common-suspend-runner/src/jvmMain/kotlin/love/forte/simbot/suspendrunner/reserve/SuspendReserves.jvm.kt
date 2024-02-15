@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.future.future
 import kotlinx.coroutines.reactor.flux
 import kotlinx.coroutines.reactor.mono
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.DefaultBlockingContext
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -56,11 +58,12 @@ public fun <T> block(): SuspendReserve.Transformer<T, T> =
     BlockingTransformer as SuspendReserve.Transformer<T, T>
 
 private object BlockingTransformer : SuspendReserve.Transformer<Any?, Any?> {
+    @OptIn(InternalSimbotAPI::class)
     override fun <T1> invoke(
         scope: CoroutineScope,
         context: CoroutineContext,
         block: suspend () -> T1
-    ): Any? = runInNoScopeBlocking { block() }
+    ): Any? = runInNoScopeBlocking(DefaultBlockingContext + context) { block() }
 }
 
 /**
