@@ -34,6 +34,17 @@ public class ConflictSessionKeyException(message: String?) : IllegalArgumentExce
 public class ReplacedBecauseOfConflictSessionKeyException(message: String?) : IllegalStateException(message)
 
 /**
+ * 当 Session 已经结束、但是某个 continuation 并未被恢复时，使用此异常恢复它。
+ * 如果 session 的结束伴随着异常，此异常会记录在 [cause] 中。
+ *
+ */
+public class SessionCompletedWithoutResumeException : IllegalStateException {
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
+
+/**
  * 当使用 [ContinuousSessionProvider.push] 推送失败时，
  * 会将异常包装在 [SessionPushOnFailureException.cause] 中。
  */
