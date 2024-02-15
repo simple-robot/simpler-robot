@@ -21,13 +21,24 @@
  *
  */
 
+@file:JvmName("ContinuousSessions")
+@file:JvmMultifileClass
+
 package love.forte.simbot.extension.continuous.session
 
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.Job
 import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.OnCompletion
+import love.forte.simbot.suspendrunner.ST
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 
 /**
@@ -57,7 +68,7 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
      * 但是在 [ContinuousSessionReceiver.await] 时出现了异常（例如构造响应结果时出现异常）
      * @throws
      */
-    // TODO @ST?
+    @ST
     public suspend fun push(value: T): R
 
     /**
@@ -92,7 +103,7 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
     /**
      * 挂起直到 `session` 完成任务或被关闭。
      */
-    // TODO @ST?
+    @ST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
 
     /**
@@ -137,10 +148,69 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      *
      */
     // TODO @ST?
+    @ST(asyncSuffix = "asFuture")
     public suspend fun await(result: (T) -> R): T
 
+
+    @ST(asyncSuffix = "asFuture")
+    public suspend fun await(): SessionContinuation<T, R>
     // TODO await 如何延迟响应？
 
+}
+
+/**
+ * [ContinuousSessionReceiver.await] 的返回值类型，
+ * 可用来获取到本次等待到的 [推送][ContinuousSessionProvider.push] 结果，
+ * 并向其恢复一个结果或异常。
+ * [SessionContinuation] 的使用方式类似 [Continuation]，在收到 [SessionContinuation] 时，
+ * 应当尽可能快速地通过 [resume] 或 [resumeWithException] 来恢复
+ * [推送][ContinuousSessionProvider.push] 处，
+ * 并应当尽可能保证能够调用 [resume] 或 [resumeWithException] 一次。
+ */
+public interface SessionContinuation<out T, in R> {
+    /**
+     * 获取本次接收到的 [ContinuousSessionProvider.push] 结果。
+     */
+    public val value: T
+
+    /**
+     * 响应恢复结果 [result] 到本次接收到的 [ContinuousSessionProvider.push]。
+     * 类似于 [Continuation.resume]。
+     */
+    public fun resume(result: R)
+
+    /**
+     * 响应恢复异常 [cause] 到本次接收到的 [ContinuousSessionProvider.push]。
+     * 类似于 [Continuation.resumeWithException]。
+     */
+    public fun resumeWithException(cause: Throwable)
+}
+
+/**
+ * 构建一个基于 [CancellableContinuation] 实现的 [SessionContinuation] 实例。
+ */
+public fun <T, R> createSimpleSessionContinuation(
+    value: T,
+    continuation: CancellableContinuation<R>,
+    handle: DisposableHandle? = null
+): SessionContinuation<T, R> =
+    SimpleSessionContinuation(value, continuation, handle)
+
+
+private class SimpleSessionContinuation<out T, in R>(
+    override val value: T,
+    private val continuation: CancellableContinuation<R>,
+    private val handle: DisposableHandle?
+) : SessionContinuation<T, R> {
+    override fun resume(result: R) {
+        continuation.resume(result)
+        handle?.dispose()
+    }
+
+    override fun resumeWithException(cause: Throwable) {
+        continuation.resumeWithException(cause)
+        handle?.dispose()
+    }
 }
 
 /**
