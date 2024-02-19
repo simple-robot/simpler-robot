@@ -44,6 +44,7 @@ import kotlin.jvm.JvmName
 
 
 /**
+ * 针对 [ContinuousSessionContext] 的基础抽象实现类。
  *
  * @author ForteScarlet
  */

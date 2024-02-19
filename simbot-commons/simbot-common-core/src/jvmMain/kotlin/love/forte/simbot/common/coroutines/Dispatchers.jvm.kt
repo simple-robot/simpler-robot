@@ -20,11 +20,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+@file:JvmName("DispatchersUtil")
+@file:JvmMultifileClass
 
 package love.forte.simbot.common.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.asCoroutineDispatcher
+import love.forte.simbot.annotations.Api4J
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * 得到 [Dispatchers.IO]。
@@ -33,3 +43,40 @@ import kotlinx.coroutines.Dispatchers
  */
 public actual inline val Dispatchers.IOOrDefault: CoroutineDispatcher
     get() = IO
+
+/**
+ * 在支持虚拟线程调度器时使用虚拟线程调度器 (`Executors.newVirtualThreadPerTaskExecutor`)
+ * 作为 [CoroutineDispatcher],
+ * 否则得到 `null`。
+ *
+ */
+public val Dispatchers.Virtual: CoroutineDispatcher? by lazy {
+    runCatching {
+        val handle = MethodHandles.publicLookup().findStatic(
+            Executors::class.java,
+            "newVirtualThreadPerTaskExecutor",
+            MethodType.methodType(ExecutorService::class.java)
+        )
+        (handle.invoke() as Executor).asCoroutineDispatcher()
+    }.getOrNull()
+}
+
+/**
+ * Friendly API for Java.
+ */
+@Api4J
+public val VirtualDispatcher: CoroutineDispatcher? get() = Dispatchers.Virtual
+
+/**
+ * 在支持虚拟线程调度器时使用虚拟线程调度器 (`Executors.newVirtualThreadPerTaskExecutor`)
+ * 作为 [CoroutineDispatcher],
+ * 否则得到 [Dispatchers.IO]。
+ *
+ */
+public val Dispatchers.VirtualOrIO: CoroutineDispatcher by lazy { Dispatchers.Virtual ?: IO }
+
+/**
+ * Friendly API for Java.
+ */
+@Api4J
+public val VirtualOrIODispatcher: CoroutineDispatcher? get() = Dispatchers.VirtualOrIO
