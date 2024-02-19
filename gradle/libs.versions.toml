@@ -100,7 +100,7 @@ ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "kt
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.24"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.25"
 
 # https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
 suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
