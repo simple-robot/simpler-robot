@@ -21,10 +21,14 @@
  *
  */
 
+@file:JvmName("DispatchersUtil")
+@file:JvmMultifileClass
 package love.forte.simbot.common.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 /**
  * 在 JVM 和 native 平台下，得到 `Dispatchers.IO`;
@@ -32,3 +36,4 @@ import kotlinx.coroutines.Dispatchers
  *
  */
 public expect val Dispatchers.IOOrDefault: CoroutineDispatcher
+

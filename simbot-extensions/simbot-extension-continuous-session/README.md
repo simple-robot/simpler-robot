@@ -1,5 +1,8 @@
 # 持续会话扩展
 
+> [!warning]
+> 尚在试验阶段，随时可能删除或被调整
+
 仍在考虑中。
 
 **持续会话需要解决什么？**
@@ -36,7 +39,7 @@ suspend fun inSession(event: Event, sessionContext: ContinuousSessionContext): E
     
     val sessionProvider = sessionContext.session(key) { // this: sessionReceiver
         // 异步中、可挂起
-        val e = await() // event
+        val e = await { it.toResult() } // event
     }
     
     // 向会话推送，然后得到一个结果？

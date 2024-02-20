@@ -28,11 +28,23 @@ package love.forte.simbot.extension.continuous.session
 
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
 /**
  * 使用于 [ContinuousSessionContext.session] 中的 `receiver` 逻辑函数。
+ *
+ * 在 Java 中，可以使用 `InSessions` 中提供的各种静态工厂函数构建它，例如
+ * `InSessions.async`、`InSessions.mono` 等。
+ *
+ * 在 `ContinuousSession` 中使用时，我们强烈建议使用非阻塞的 [InSession] 实现，
+ * 或者为 `ContinuousSession` 的调度器配置为 **虚拟线程调度器** 。
+ *
+ * ```java
+ * var dispatcher = ExecutorsKt.from(Executors.newVirtualThreadPerTaskExecutor());
+ * ```
  */
 public fun interface InSession<T, R> {
+    @JvmSynthetic
     public suspend fun ContinuousSessionReceiver<T, R>.invoke()
 }
 
@@ -94,10 +106,7 @@ public fun interface InSession<T, R> {
  *          |--------------- | --------|
  *          ↓                |
  *    return session.push(handleEvent) // 推送 '事件', 得到 '结果'
- *
  *    // 直接返回这个结果
- *    return result
- *
  * }
  * ```
  *
@@ -115,7 +124,12 @@ public interface ContinuousSessionContext<T, R> {
      * @param key session 会话的标识。[key] 的类型应当是一个可以保证能够作为一个 hash key  的类型，
      * 例如基础数据类型(例如 [Int]、[String])、数据类类型(data class)、object 类型等。
      * @param strategy 当 [key] 出现冲突时的处理策略
-     * @param inSession 在**异步**中进行
+     * @param inSession 在**异步**中进行会话逻辑的函数实例。
+     * 在 Java 中可使用 `InSessions` 中提供的静态工厂函数构建实例，
+     * 例如 `InSessions.async`、`InSessions.mono` 等。
+     * 在 `ContinuousSession` 中使用时，我们强烈建议使用非阻塞的 [InSession] 实现，
+     * 或者为 `ContinuousSession` 的调度器配置为 **虚拟线程调度器** 。
+     *
      * @throws ConflictSessionKeyException 如果 [strategy] 为 [ConflictStrategy.FAILURE] 并且出现了冲突
      */
     public fun session(
@@ -125,21 +139,28 @@ public interface ContinuousSessionContext<T, R> {
     ): ContinuousSessionProvider<T, R>
 
     /**
-     * 尝试创建一组 `ContinuousSession`, 并在出现 [key] 冲突时基于 []
+     * 尝试创建一组 `ContinuousSession`, 并在出现 [key] 冲突时使用 [ConflictStrategy.FAILURE] 作为冲突解决策略。
      */
     public fun session(
         key: Any,
         inSession: InSession<T, R>
     ): ContinuousSessionProvider<T, R> = session(key, ConflictStrategy.FAILURE, inSession)
 
-
     /**
      * 根据 [key] 获取指定的 [ContinuousSessionProvider] 并在找不到时返回 `null`。
      */
     public operator fun get(key: Any): ContinuousSessionProvider<T, R>?
 
+    /**
+     * 判断是否包含某个 [key] 对应的会话。
+     */
     public operator fun contains(key: Any): Boolean
 
+    /**
+     * 移除某个指定 [key] 的会话。
+     * [remove] 仅会从记录中移除，不会使用 [ContinuousSessionProvider.cancel]，
+     * 需要由调用者主动使用。
+     */
     public fun remove(key: Any): ContinuousSessionProvider<T, R>?
 
     /**
@@ -163,4 +184,5 @@ public interface ContinuousSessionContext<T, R> {
         EXISTING
     }
 }
+
 

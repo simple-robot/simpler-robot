@@ -26,6 +26,7 @@
 
 package love.forte.simbot.extension.continuous.session
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationConfiguration
@@ -77,7 +78,8 @@ public interface EventContinuousSessionContext : ContinuousSessionContext<Event,
         ): EventContinuousSessionContext {
             val config = EventContinuousSessionContextConfiguration()
             configurer.invokeWith(config)
-            val newCoroutineContext = config.coroutineContext.mergeWith(context.applicationConfiguration.coroutineContext)
+            val newCoroutineContext =
+                config.coroutineContext.mergeWith(context.applicationConfiguration.coroutineContext)
 
             return EventContinuousSessionContextImpl(newCoroutineContext)
         }
@@ -94,9 +96,28 @@ private class EventContinuousSessionContextImpl(coroutineContext: CoroutineConte
 public class EventContinuousSessionContextConfiguration {
     /**
      * 用于 [EventContinuousSessionContext] 中的协程上下文。
+     *
      * 值来自 [ApplicationConfiguration.coroutineContext]，但不包含 Job。
      * 如果配置后 [coroutineContext] 存在 [Job], 则会基于此以及 [ApplicationConfiguration.coroutineContext]
      * 合成一个新的 [Job]。
+     *
+     * 在 Java 中时，如果你打算在逻辑中使用 **阻塞** API，那么建议为其配置虚拟线程调度器；
+     * 否则，建议在其中使用异步 API，例如 `InSessions.async`。
      */
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
+
+    /**
+     * 为 [coroutineContext] 配置调度器。
+     * 如果为 `null` 则移除调度器。
+     */
+    @OptIn(ExperimentalStdlibApi::class)
+    public var coroutineDispatcher: CoroutineDispatcher?
+        get() = coroutineContext[CoroutineDispatcher]
+        set(value) {
+            if (value == null) {
+                coroutineContext = coroutineContext.minusKey(CoroutineDispatcher)
+            } else {
+                coroutineContext += value
+            }
+        }
 }

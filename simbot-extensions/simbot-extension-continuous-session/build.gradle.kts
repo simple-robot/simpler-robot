@@ -38,7 +38,7 @@ plugins {
 setup(P.SimbotExtension)
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
-// apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()
@@ -74,6 +74,8 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 // implementation(libs.kotlinx.coroutines.debug)
                 implementation(kotlin("test"))
+                implementation(project(":simbot-cores:simbot-core"))
+                implementation(project(":simbot-test"))
             }
         }
 
@@ -81,6 +83,7 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)
                 compileOnly(libs.kotlinx.coroutines.rx2)
@@ -99,6 +102,7 @@ kotlin {
                 implementation(kotlin("test-junit5"))
                 implementation(kotlin("reflect"))
                 implementation(libs.ktor.client.cio)
+                implementation(libs.mockk)
             }
         }
 

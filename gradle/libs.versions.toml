@@ -16,6 +16,8 @@ reactor = "3.6.2"
 suspendTransform = "0.7.0-beta1"
 suspendReversal = "0.2.0"
 gradleCommon = "0.2.0"
+# tests
+mockk = "1.13.9"
 
 
 [libraries]
@@ -119,6 +121,10 @@ suspend-transform-gradle = { module = "love.forte.plugin.suspend-transform:suspe
 gradle-common-core = { group = "love.forte.gradle.common", name = "gradle-common-core", version.ref = "gradleCommon" }
 gradle-common-multiplatform = { group = "love.forte.gradle.common", name = "gradle-common-kotlin-multiplatform", version.ref = "gradleCommon" }
 gradle-common-publication = { group = "love.forte.gradle.common", name = "gradle-common-publication", version.ref = "gradleCommon" }
+
+# mockk
+## https://mockk.io/
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

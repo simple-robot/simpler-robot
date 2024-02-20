@@ -77,7 +77,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     object SimbotLogger : P(GROUP_LOGGER)
     object SimbotGradle : P(GROUP_GRADLE)
     object SimbotQuantcat : P(GROUP_QUANTCAT)
-    object SimbotExtension : P(GROUP_QUANTCAT)
+    object SimbotExtension : P(GROUP_EXTENSION)
 
     final override val version: Version
     val versionWithoutSnapshot: Version
