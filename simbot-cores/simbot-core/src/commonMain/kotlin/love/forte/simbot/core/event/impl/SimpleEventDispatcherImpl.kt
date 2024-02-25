@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -30,10 +30,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.flowOn
 import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.common.attribute.MutableAttributeMap
 import love.forte.simbot.common.attribute.mutableAttributeMapOf
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.PriorityConcurrentQueue
 import love.forte.simbot.common.collection.concurrentMutableMap
 import love.forte.simbot.common.function.ConfigurerFunction
@@ -70,7 +71,7 @@ public open class SimpleEventDispatcherConfigurationImpl : AbstractEventDispatch
  * [SimpleEventInterceptorRegistrationProperties] 的简单实现
  */
 public open class SimpleEventInterceptorRegistrationPropertiesImpl : SimpleEventInterceptorRegistrationProperties {
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 }
 
 /**
@@ -78,7 +79,7 @@ public open class SimpleEventInterceptorRegistrationPropertiesImpl : SimpleEvent
  */
 public open class SimpleEventDispatchInterceptorRegistrationPropertiesImpl :
     SimpleEventDispatchInterceptorRegistrationProperties {
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 }
 
 /**
@@ -87,7 +88,7 @@ public open class SimpleEventDispatchInterceptorRegistrationPropertiesImpl :
 public class SimpleEventListenerRegistrationPropertiesImpl(private val interceptorBuilder: SimpleEventInterceptorsBuilder) :
     SimpleEventListenerRegistrationProperties {
 
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 
     override fun addInterceptor(
         propertiesConsumer: ConfigurerFunction<EventInterceptorRegistrationProperties>?,
@@ -173,7 +174,7 @@ public class SimpleEventInterceptorsInvoker(private val interceptors: Iterable<S
         @Throws(Exception::class)
         override suspend fun invoke(): EventResult {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(this)
+                iterator.next().run { intercept() }
             } else {
                 actualTarget(eventListenerContext)
             }
@@ -184,7 +185,7 @@ public class SimpleEventInterceptorsInvoker(private val interceptors: Iterable<S
         @Throws(Exception::class)
         override suspend fun invoke(eventListenerContext: EventListenerContext): EventResult {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(copy(eventListenerContext))
+                iterator.next().run { copy(eventListenerContext).intercept() }
             } else {
                 actualTarget(eventListenerContext)
             }
@@ -213,7 +214,7 @@ public class SimpleEventDispatchInterceptorsInvoker(private val interceptors: It
     ) : EventDispatchInterceptor.Context {
         override fun invoke(): Flow<EventResult> {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(this)
+                iterator.next().run { intercept() }
             } else {
                 actualTarget(eventContext)
             }
@@ -221,7 +222,7 @@ public class SimpleEventDispatchInterceptorsInvoker(private val interceptors: It
 
         override fun invoke(eventContext: EventContext): Flow<EventResult> {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(copy(eventContext))
+                iterator.next().run { copy(eventContext).intercept() }
             } else {
                 actualTarget(eventContext)
             }
@@ -259,6 +260,7 @@ public fun SimpleEventDispatcherConfigurationImpl.resolveInterceptors(): SimpleE
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 public class SimpleEventDispatcherImpl(
     private val configuration: SimpleEventDispatcherConfiguration,
     private val interceptors: SimpleEventInterceptors,
@@ -328,15 +330,15 @@ public class SimpleEventDispatcherImpl(
     }
 
     private fun eventFlow(context: EventContext): Flow<EventResult> {
-        return if (dispatcherContext == EmptyCoroutineContext) {
-            flow {
-                dispatchInFlowWithoutCoroutineContext(context, this)
-            }
-        } else {
-            flow {
-                dispatchInFlow(context, dispatcherContext, this)
-            }
+        var flow = flow {
+            dispatchInFlow(context, this)
         }
+
+        if (dispatcherContext != EmptyCoroutineContext) {
+            flow = flow.flowOn(dispatcherContext)
+        }
+
+        return flow
     }
 
     private data class EventContextImpl(
@@ -351,30 +353,10 @@ public class SimpleEventDispatcherImpl(
 
     private suspend fun dispatchInFlow(
         context: EventContext,
-        dispatcherContext: CoroutineContext,
         collector: FlowCollector<EventResult>
     ) {
         val listenerIterator = listenersQueue.iterator()
 
-        for (listenerInvoker in listenerIterator) {
-            val lContext = EventListenerContextImpl(context, listenerInvoker.listener)
-            val result = withContext(dispatcherContext) {
-                listenerInvoker.invokeAndCollectedOrErrorResult(lContext)
-            }
-
-            collector.emit(result)
-
-            if (result.isTruncated) {
-                break
-            }
-        }
-    }
-
-    private suspend fun dispatchInFlowWithoutCoroutineContext(
-        context: EventContext,
-        collector: FlowCollector<EventResult>
-    ) {
-        val listenerIterator = listenersQueue.iterator()
         for (listenerInvoker in listenerIterator) {
             val lContext = EventListenerContextImpl(context, listenerInvoker.listener)
             val result = listenerInvoker.invokeAndCollectedOrErrorResult(lContext)
@@ -395,7 +377,8 @@ public class SimpleEventDispatcherImpl(
     }
 }
 
-private data class EventListenerContextImpl(override val context: EventContext, override val listener: EventListener) : EventListenerContext {
+private data class EventListenerContextImpl(override val context: EventContext, override val listener: EventListener) :
+    EventListenerContext {
     @Volatile
     override var plainText: String? = (context.event as? MessageEvent)?.messageContent?.plainText
 }
@@ -413,11 +396,12 @@ private class SimpleEventListenerInvoker(
     }
 
     suspend fun invoke(context: EventListenerContext): EventResult {
-        return interceptorsInvoker?.invoke(context, listener::handle) ?: listener.handle(context)
+        return interceptorsInvoker?.invoke(context, listener::handleWith) ?: listener.handleWith(context)
     }
 
 }
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal expect fun <T : Any> createQueueRegistrationHandle(
     priority: Int,
     queue: PriorityConcurrentQueue<T>,

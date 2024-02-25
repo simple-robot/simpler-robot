@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -27,6 +27,7 @@ import love.forte.gradle.common.core.project.ProjectDetail
 import love.forte.gradle.common.core.project.Version
 import love.forte.gradle.common.core.project.minus
 import love.forte.gradle.common.core.project.version
+import love.forte.gradle.common.core.property.systemProp
 
 inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
@@ -51,6 +52,11 @@ sealed class P(override val group: String) : ProjectDetail() {
      */
     companion object {
         const val GROUP = "love.forte.simbot"
+        const val GROUP_COMMON = "love.forte.simbot.common"
+        const val GROUP_LOGGER = "love.forte.simbot.logger"
+        const val GROUP_GRADLE = "love.forte.simbot.gradle"
+        const val GROUP_QUANTCAT = "love.forte.simbot.quantcat"
+        const val GROUP_EXTENSION = "love.forte.simbot.extension"
 
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
@@ -67,12 +73,17 @@ sealed class P(override val group: String) : ProjectDetail() {
     override val homepage: String get() = HOMEPAGE
 
     object Simbot : P(GROUP)
+    object SimbotCommon : P(GROUP_COMMON)
+    object SimbotLogger : P(GROUP_LOGGER)
+    object SimbotGradle : P(GROUP_GRADLE)
+    object SimbotQuantcat : P(GROUP_QUANTCAT)
+    object SimbotExtension : P(GROUP_EXTENSION)
 
     final override val version: Version
     val versionWithoutSnapshot: Version
 
     init {
-        val mainVersion = version(4, 0, 0) - version("dev1")
+        val mainVersion = version(4, 0, 0) - version("beta1")
 
         fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
             mainVersion
@@ -125,3 +136,5 @@ sealed class P(override val group: String) : ProjectDetail() {
 
 
 }
+
+fun isSimbotLocal(): Boolean = systemProp("SIMBOT_LOCAL").toBoolean()

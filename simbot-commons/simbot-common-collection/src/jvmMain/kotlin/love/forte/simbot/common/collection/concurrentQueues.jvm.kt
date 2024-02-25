@@ -26,8 +26,15 @@ package love.forte.simbot.common.collection
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ConcurrentSkipListMap
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val queue = ConcurrentLinkedQueue<T>()
+
+    override val size: Int
+        get() = queue.size
+
+    override fun isEmpty(): Boolean =
+        queue.isEmpty()
 
     override fun add(value: T) {
         queue.add(value)
@@ -41,6 +48,10 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
         queue.removeIf(predicate)
     }
 
+    override fun clear() {
+        queue.clear()
+    }
+
     override fun iterator(): Iterator<T> = queue.iterator()
 
     override fun toString(): String = queue.toString()
@@ -50,8 +61,18 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private val queueMap = ConcurrentSkipListMap<Int, ConcurrentLinkedQueue<T>>()
+
+    override val size: Int
+        get() = queueMap.values.sumOf { it.size }
+
+    override fun isEmpty(priority: Int): Boolean =
+        queueMap[priority]?.isEmpty() ?: true
+
+    override fun isEmpty(): Boolean =
+        queueMap.values.all { it.isEmpty() }
 
     override fun add(priority: Int, value: T) {
         val queue = queueMap.computeIfAbsent(priority) { ConcurrentLinkedQueue() }
@@ -101,6 +122,10 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
                 }
             }
         }
+    }
+
+    override fun clear() {
+        queueMap.clear()
     }
 
     override fun iterator(): Iterator<T> {

@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2022-2023 ForteScarlet.
+ *     Copyright (c) 2022-2024. ForteScarlet.
  *
- * This file is part of Simple Robot.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * Simple Robot is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library.
  *
- * Simple Robot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
-import org.jetbrains.kotlin.konan.target.HostManager
-import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -35,55 +44,43 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 
 
 plugins {
-    kotlin("multiplatform")
     signing
     `maven-publish`
-}
-
-tasks.withType<JavaCompile> {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
-    options.encoding = "UTF-8"
 }
 
 val p = project
 
 multiplatformConfigPublishing {
-
-    val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-
-    project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-
-    val jarJavadoc by tasks.registering(Jar::class) {
-        group = "documentation"
-        archiveClassifier.set("javadoc")
-        from(tasks.findByName("dokkaHtml"))
-    }
-
-    artifact(jarJavadoc)
+    project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
     releasesRepository = ReleaseRepository
     snapshotRepository = SnapshotRepository
     gpg = Gpg.ofSystemPropOrNull()
 
-    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+    val jarJavadoc by tasks.registering(Jar::class) {
+        group = "documentation"
+        archiveClassifier.set("javadoc")
+        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+            dependsOn(tasks.dokkaHtml)
+            from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+        }
+    }
+
+    artifact(jarJavadoc)
+
+    if (isSimbotLocal()) {
+        logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
         mainHost = null
     }
-//    else {
-//
-//        mainHostSupportedTargets = mainHost?.supports(hostManager) ?: emptySet()
-//    }
 
+    publicationsFromMainHost += listOf("wasm", "wasm32", "wasm_js")
+    mainHostSupportedTargets += listOf("wasm", "wasm32", "wasm_js")
 }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
 val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
 tasks.withType<PublishToMavenRepository>().configureEach {
     mustRunAfter(signingTasks)
-}
-
-fun KonanTarget.supports(hostManager: HostManager): Set<String> {
-    return hostManager.enabledByHost[this]?.mapTo(mutableSetOf()) { target -> target.name } ?: emptySet()
 }
 
 show()
@@ -107,3 +104,6 @@ fun show() {
 
 inline val Project.sourceSets: SourceSetContainer
     get() = extensions.getByName("sourceSets") as SourceSetContainer
+
+internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
+    get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")

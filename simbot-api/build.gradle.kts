@@ -22,28 +22,25 @@
  */
 
 import love.forte.gradle.common.core.project.setup
+import love.forte.gradle.common.kotlin.multiplatform.applyTier1
+import love.forte.gradle.common.kotlin.multiplatform.applyTier2
+import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
     id("simbot.suspend-transform-configure")
     alias(libs.plugins.ksp)
+    id("simbot.dokka-module-configuration")
 }
+// apply(plugin = "simbot.dokka-module-configuration")
 
 setup(P.Simbot)
 
-apply(plugin = "simbot-multiplatform-maven-publish")
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 configJavaCompileWithModule("simbot.api")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()
@@ -52,35 +49,12 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
-    // tier1
-    linuxX64()
-    macosX64()
-    macosArm64()
-    iosSimulatorArm64()
-    iosX64()
-
-    // tier2
-    linuxArm64()
-    watchosSimulatorArm64()
-    watchosX64()
-    watchosArm32()
-    watchosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    iosArm64()
-
-    // tier3
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX86()
-    androidNativeX64()
-    mingwX64()
-    watchosDeviceArm64()
+    applyTier1()
+    applyTier2()
+    applyTier3()
 
     // wasm?
 //    @Suppress("OPT_IN_USAGE")
@@ -101,6 +75,7 @@ kotlin {
                 // jvm compile only
                 compileOnly(libs.jetbrains.annotations)
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                compileOnly(libs.kotlinx.serialization.json)
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-core"))
                 api(project(":simbot-commons:simbot-common-collection"))
@@ -139,14 +114,23 @@ kotlin {
                 implementation(libs.ktor.client.core)
 
                 implementation(kotlin("test-junit5"))
+                implementation(kotlin("reflect"))
                 implementation(libs.ktor.client.cio)
             }
         }
 
+        nativeMain.dependencies {
+            api(libs.kotlinx.serialization.json)
+            api(libs.jetbrains.annotations)
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.suspend.reversal.annotations)
+        }
+
         jsMain.dependencies {
-            implementation(project(":simbot-commons:simbot-common-annotations"))
-            implementation(libs.jetbrains.annotations)
-            implementation(libs.suspend.reversal.annotations)
+            api(libs.kotlinx.serialization.json)
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.jetbrains.annotations)
+            api(libs.suspend.reversal.annotations)
         }
 
         jsTest.dependencies {
@@ -180,4 +164,14 @@ kotlin {
 
 dependencies {
     add("kspJvm", libs.suspend.reversal.processor)
+    add("kspJvm", project(":internal-processors:interface-uml-processor"))
+}
+
+ksp {
+    // arg("simbot.internal.processor.uml.enable", (!isCi).toString())
+    arg("simbot.internal.processor.uml.enable", "false")
+    arg("simbot.internal.processor.uml.target", "love.forte.simbot.event.Event")
+    // arg("simbot.internal.processor.uml.target", "love.forte.simbot.definition.Actor")
+    arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/event-uml.md").absolutePath)
+    // arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/actor-uml.md").absolutePath)
 }

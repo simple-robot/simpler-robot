@@ -26,9 +26,21 @@ package love.forte.simbot.common.collection
 /**
  * 可以并发安全地操作元素地并发队列类型。
  *
+ * 注意：非 JVM 平台的实现仍处于试验阶段。
+ *
  * @author ForteScarlet
  */
+@ExperimentalSimbotCollectionApi
 public interface ConcurrentQueue<T> : Iterable<T> {
+    /**
+     * 获取元素数量
+     */
+    public val size: Int
+
+    /**
+     * 当前队列是否为空
+     */
+    public fun isEmpty(): Boolean
 
     /**
      * 添加指定元素
@@ -51,19 +63,42 @@ public interface ConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
+     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */
     override fun iterator(): Iterator<T>
 
+    /**
+     * 清除其中的所有元素。
+     */
+    public fun clear()
 }
 
 /**
  * 表示一个基于优先级的并发队列，可以根据元素的优先级添加和删除元素。
  *
+ * 注意：非 JVM 平台的实现仍处于试验阶段。
+ *
  * @author ForteScarlet
  */
+@ExperimentalSimbotCollectionApi
 public interface PriorityConcurrentQueue<T> : Iterable<T> {
+    /**
+     * 获取元素数量
+     */
+    public val size: Int
+
+    /**
+     * 指定优先级下的队列是否为空
+     */
+    public fun isEmpty(priority: Int): Boolean
+
+    /**
+     * 整个队列是否为空
+     */
+    public fun isEmpty(): Boolean
 
     /**
      * 将具有指定优先级的元素添加到集合中。
@@ -105,8 +140,15 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
+     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */
     override fun iterator(): Iterator<T>
+
+    /**
+     * 清除其中的所有元素。
+     */
+    public fun clear()
 }

@@ -84,6 +84,8 @@ public interface BotEvent : ComponentEvent {
 
 /**
  * 存在一个 [主要事件中心][content] 的事件类型。
+ *
+ * 一个事件中可以提供的主、次要信息会优先使用 [ContentEvent] 和 [SourceEvent] 提供。
  */
 @STP
 public interface ContentEvent : Event {
@@ -91,6 +93,19 @@ public interface ContentEvent : Event {
      * 这个事件的主要事件中心值。
      */
     public suspend fun content(): Any?
+}
+
+/**
+ * 存在一个 [源头][source] 的事件类型。
+ *
+ * 一个事件中可以提供的主、次要信息会优先使用 [ContentEvent] 和 [SourceEvent] 提供。
+ */
+@STP
+public interface SourceEvent : Event {
+    /**
+     * 这个事件的“源头”。
+     */
+    public suspend fun source(): Any?
 }
 
 /**

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,8 @@
 
 package love.forte.simbot.common.collection
 
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlin.concurrent.AtomicReference
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -107,43 +109,115 @@ public actual inline fun <K, V> MutableMap<K, V>.computeValueIfPresent(
     return internalComputeIfPresentImpl(key, mappingFunction)
 }
 
+
 /**
- * 得到一个基于 [AtomicReference] 的 CopyOnWrite Map 实现。
- * 此 Map 中的修改操作是弱一致性的。
+ * 根据 [key] 删除指定的目标 [target]。
+ */
+public actual inline fun <K, V> MutableMap<K, V>.removeValue(key: K, crossinline target: () -> V): Boolean {
+    if (this is MutableMapOperators) {
+        return removeValue(key, target())
+    }
+
+    return internalRemoveValueImpl(key, target)
+}
+
+/**
+ * 得到一个基于可重入同步锁的 concurrent map 实现。
  *
  * 此 Map 的 [entries][MutableMap.entries]、[keys][MutableMap.keys]、[values][MutableMap.values] 都是瞬时副本，
  * 对它们（以及它们的元素）进行修改不会对 Map 本体产生影响。
  *
- * 此 Map 在进行同时大量的修改且元素数量比较多时可能会有较高的损耗。
- *
- * 此 Map 支持 [mergeValue]、[computeValue]、[computeValueIfAbsent]、[computeValueIfPresent]
- *
  */
 public actual fun <K, V> concurrentMutableMap(): MutableMap<K, V> =
-    AtomicCopyOnWriteConcurrentMutableMap(emptyMap())
+    SynchronizedMutableMap(mutableMapOf<K, V>())
+    // AtomicCopyOnWriteConcurrentMutableMap(emptyMap())
 
 @PublishedApi
-internal interface MutableMapOperators {
-    fun <K, V> MutableMap<K, V>.mergeOperator(
+internal interface MutableMapOperators<K, V> : MutableMap<K, V> {
+    fun mergeOperator(
         key: K,
         value: V & Any,
         remapping: (V & Any, V & Any) -> V?
     ): V?
 
-    fun <K, V> MutableMap<K, V>.computeOperator(key: K, remapping: (K, V?) -> V?): V?
+    fun computeOperator(key: K, remapping: (K, V?) -> V?): V?
 
-    fun <K, V> MutableMap<K, V>.computeIfAbsentOperator(key: K, remapping: (K) -> V): V
+    fun computeIfAbsentOperator(key: K, remapping: (K) -> V): V
 
-    fun <K, V> MutableMap<K, V>.computeIfPresentOperator(
+    fun computeIfPresentOperator(
         key: K,
         mappingFunction: (K, V & Any) -> V?
     ): V?
+
+    fun removeValue(key: K, target: V): Boolean
 }
 
-private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : MutableMap<K, V>, MutableMapOperators {
-    private val mapRef = AtomicReference(initMap.toMap())
+// TODO
+private class SynchronizedMutableMap<K, V>(private val map: MutableMap<K, V>) : MutableMap<K, V>,
+    MutableMapOperators<K, V>, SynchronizedObject() {
+    private inline fun <T> inSync(block: () -> T): T = synchronized(this, block)
 
-    private inline val mapValue get() = mapRef.value
+    override val size: Int
+        get() = inSync { map.size }
+
+    override fun containsKey(key: K): Boolean = inSync { map.containsKey(key) }
+    override fun containsValue(value: V): Boolean = inSync { map.containsValue(value) }
+    override fun get(key: K): V? = inSync { map[key] }
+    override fun isEmpty(): Boolean = inSync { map.isEmpty() }
+
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+        get() = inSync { map.toMutableMap() }.entries
+
+    override val keys: MutableSet<K>
+        get() = inSync { map.toMutableMap() }.keys
+
+    override val values: MutableCollection<V>
+        get() = inSync { map.toMutableMap() }.values
+
+    override fun clear() {
+        inSync { map.clear() }
+    }
+
+    override fun put(key: K, value: V): V? = inSync { map.put(key, value) }
+
+    override fun putAll(from: Map<out K, V>) {
+        inSync { map.putAll(from) }
+    }
+
+    override fun remove(key: K): V? = inSync { map.remove(key) }
+
+    override fun mergeOperator(key: K, value: V & Any, remapping: (V & Any, V & Any) -> V?): V? {
+        return inSync { map.internalMergeImpl(key, value, remapping) }
+    }
+
+    override fun computeOperator(key: K, remapping: (K, V?) -> V?): V? {
+        return inSync { map.internalComputeImpl(key, remapping) }
+    }
+
+    override fun computeIfAbsentOperator(key: K, remapping: (K) -> V): V {
+        return inSync { map.internalComputeIfAbsentImpl(key, remapping) }
+    }
+
+    override fun computeIfPresentOperator(key: K, mappingFunction: (K, V & Any) -> V?): V? {
+        return inSync { map.internalComputeIfPresentImpl(key, mappingFunction) }
+    }
+
+    override fun removeValue(key: K, target: V): Boolean {
+        return inSync { map.internalRemoveValueImpl(key) { target } }
+    }
+}
+
+
+@Deprecated("似乎有Bug?")
+private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : MutableMap<K, V>,
+    MutableMapOperators<K, V> {
+    private open class MapBox<K, out V>(val map: Map<K, V>)
+    private object EmptyMapBox : MapBox<Nothing, Nothing>(emptyMap())
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <K, V> Map<K, V>.box(): MapBox<K, V> = if (isEmpty()) EmptyMapBox as MapBox<K, V> else MapBox(this)
+
+    private val mapRef = AtomicReference(initMap.toMap().box())
 
     @OptIn(ExperimentalContracts::class)
     private inline fun compareAndSetMap(block: (oldValue: Map<K, V>) -> Map<K, V>) {
@@ -151,51 +225,66 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
             callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
         }
         do {
-            val oldValue = mapValue
-            val newValue = block(oldValue)
-        } while (!mapRef.compareAndSet(oldValue, newValue))
+            val oldValueBox = mapRef.value
+            val oldValueMap = oldValueBox.map
+            val newValueMap = block(oldValueMap)
+            val newValueBox = if (newValueMap === oldValueMap) oldValueBox else newValueMap.box()
+        } while (!mapRef.compareAndSet(expected = oldValueBox, newValue = newValueBox))
+        // } while (oldValueBox != mapRef.compareAndExchange(expected = oldValueBox, newValue = newValueBox))
+    }
+
+    private inline fun <T> useMap(block: (oldValue: Map<K, V>) -> T): T {
+        var result: T
+        compareAndSetMap { old ->
+            result = block(old)
+            old
+        }
+        return result
     }
 
     override val size: Int
-        get() = mapValue.size
+        get() = useMap { map -> map.size }
 
-    override fun containsKey(key: K): Boolean =
-        mapValue.containsKey(key)
+    override fun containsKey(key: K): Boolean = useMap { map -> map.containsKey(key) }
+    // mapValue.containsKey(key)
 
-    override fun containsValue(value: V): Boolean =
-        mapValue.containsValue(value)
+    override fun containsValue(value: V): Boolean = useMap { map -> map.containsValue(value) }
+    // mapValue.containsValue(value)
 
-    override fun get(key: K): V? = mapValue[key]
+    // override fun get(key: K): V? = mapValue[key]
+    override fun get(key: K): V? = useMap { map -> map[key] }
 
-    override fun isEmpty(): Boolean =
-        mapValue.isEmpty()
+    override fun isEmpty(): Boolean = useMap { map -> map.isEmpty() }
+    // mapValue.isEmpty()
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
-        get() = mapValue.entries.mapTo(mutableSetOf()) { e ->
-            val value = AtomicReference(e.value)
-            val key = e.key
-            object : MutableMap.MutableEntry<K, V> {
-                override val key: K
-                    get() = key
-                override val value: V
-                    get() = value.value
+        get() = useMap { map ->
+            map.entries.mapTo(mutableSetOf()) { e ->
+                val value = AtomicReference(e.value)
+                val key = e.key
+                object : MutableMap.MutableEntry<K, V> {
+                    override val key: K
+                        get() = key
+                    override val value: V
+                        get() = value.value
 
-                override fun setValue(newValue: V): V {
-                    var oldValue: V
-                    do {
-                        oldValue = value.value
-                    } while (value.compareAndSet(oldValue, newValue))
+                    override fun setValue(newValue: V): V {
+                        var oldValue: V
+                        do {
+                            oldValue = value.value
+                        } while (value.compareAndSet(oldValue, newValue))
 
-                    return oldValue
+                        return oldValue
+                    }
                 }
             }
         }
 
     override val keys: MutableSet<K>
-        get() = mapValue.keys.toMutableSet()
+        get() = useMap { map -> map.keys.toMutableSet() }
 
     override val values: MutableCollection<V>
-        get() = mapValue.values.toMutableList()
+        get() = useMap { map -> map.values.toMutableList() }
 
     override fun clear() {
         compareAndSetMap { emptyMap() }
@@ -230,7 +319,7 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
-    override fun <K, V> MutableMap<K, V>.mergeOperator(
+    override fun mergeOperator(
         key: K,
         value: V & Any,
         remapping: (V & Any, V & Any) -> V?
@@ -245,7 +334,7 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
-    override fun <K, V> MutableMap<K, V>.computeOperator(key: K, remapping: (K, V?) -> V?): V? {
+    override fun computeOperator(key: K, remapping: (K, V?) -> V?): V? {
         var result: V?
         compareAndSetMap { oldMap ->
             oldMap.toMutableMap().apply {
@@ -256,7 +345,7 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
-    override fun <K, V> MutableMap<K, V>.computeIfAbsentOperator(key: K, remapping: (K) -> V): V {
+    override fun computeIfAbsentOperator(key: K, remapping: (K) -> V): V {
         var result: V
         compareAndSetMap { oldMap ->
             oldMap.toMutableMap().apply {
@@ -267,7 +356,7 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
-    override fun <K, V> MutableMap<K, V>.computeIfPresentOperator(
+    override fun computeIfPresentOperator(
         key: K,
         mappingFunction: (K, V & Any) -> V?
     ): V? {
@@ -281,4 +370,15 @@ private class AtomicCopyOnWriteConcurrentMutableMap<K, V>(initMap: Map<K, V>) : 
         return result
     }
 
+    override fun removeValue(key: K, target: V): Boolean {
+        var result = false
+        compareAndSetMap { oldMap ->
+            oldMap.toMutableMap().apply {
+                result = internalRemoveValueImpl(key) { target }
+            }
+        }
+
+        return result
+    }
 }
+

@@ -27,7 +27,6 @@ import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.LifecycleAware
 import love.forte.simbot.common.function.MergeableFactory
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
 import love.forte.simbot.suspendrunner.ST
 
@@ -112,8 +111,7 @@ public interface BotManager : AutoConfigurableBotPlugin, LifecycleAware, Complet
  * @param P 目标类型
  * @param CONF 配置类型。配置类型应是一个可变类，以便于在 DSL 中进行动态配置。
  */
-public interface BotManagerFactory<P : BotManager, CONF : Any> :
-    MergeableFactory<BotManagerFactory.Key, P, CONF, PluginConfigureContext> {
+public interface BotManagerFactory<P : BotManager, CONF : Any> : PluginFactory<P, CONF> {
     /**
      * 用于 [BotManagerFactory] 在内部整合时的标识类型。
      *

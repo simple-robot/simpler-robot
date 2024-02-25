@@ -26,6 +26,7 @@ package love.forte.simbot.test.bot
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.bot.*
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
 import love.forte.simbot.common.coroutines.linkTo
 import love.forte.simbot.common.function.ConfigurerFunction
@@ -41,6 +42,7 @@ import love.forte.simbot.test.component.TestComponent
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 public open class TestBotManager(
     private val component: TestComponent,
     private val configuration: TestBotManagerConfiguration,

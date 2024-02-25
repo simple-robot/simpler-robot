@@ -23,9 +23,11 @@
 
 package love.forte.simbot.core.event.impl
 
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.PriorityConcurrentQueue
 import love.forte.simbot.event.EventListenerRegistrationHandle
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal actual fun <T : Any> createQueueRegistrationHandle(
     priority: Int,
     queue: PriorityConcurrentQueue<T>,
@@ -33,6 +35,7 @@ internal actual fun <T : Any> createQueueRegistrationHandle(
 ): EventListenerRegistrationHandle =
     CountDownEventListenerRegistrationHandle(priority, queue, target)
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 private class CountDownEventListenerRegistrationHandle<T>(
     private val priority: Int,
     private val queue: PriorityConcurrentQueue<T>,

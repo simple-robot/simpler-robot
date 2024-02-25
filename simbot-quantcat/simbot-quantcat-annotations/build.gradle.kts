@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 /*
@@ -36,18 +37,15 @@ import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
  */
 
 plugins {
-    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    `simbot-multiplatform-maven-publish`
     id("simbot.dokka-module-configuration")
 }
 
-repositories {
-    mavenCentral()
-}
+setup(P.SimbotQuantcat)
 
 configJavaCompileWithModule("simbot.quantcat.annotations")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()
@@ -56,8 +54,7 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
     // tier1
@@ -86,7 +83,7 @@ kotlin {
     mingwX64()
     watchosDeviceArm64()
 
-    // wasm
+    // wasm?
 
     withKotlinTargets { target ->
         targets.findByName(target.name)?.compilations?.all {
@@ -122,7 +119,17 @@ kotlin {
         }
 
         jsMain.dependencies {
+            implementation(project(":simbot-api"))
+            implementation(libs.suspend.reversal.annotations)
             implementation(project(":simbot-commons:simbot-common-annotations"))
+            implementation(project(":simbot-quantcat:simbot-quantcat-common"))
+        }
+
+        jsMain.dependencies {
+            api(project(":simbot-api"))
+            api(libs.suspend.reversal.annotations)
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(project(":simbot-quantcat:simbot-quantcat-common"))
         }
     }
 

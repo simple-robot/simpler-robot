@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,14 +21,19 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
+
 plugins {
-    // id("simbot.boot-module-conventions")
-    // `simbot-jvm-maven-publish`
+    `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("simbot.dokka-module-configuration")
 }
 
+setup(P.Simbot)
+
 configJavaCompileWithModule("simbot.spring.common")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
@@ -37,25 +42,11 @@ kotlin {
 
 dependencies {
     compileOnly(project(":simbot-commons:simbot-common-annotations"))
-    api(project(":simbot-quantcat:simbot-quantcat-annotations"))
     api(project(":simbot-quantcat:simbot-quantcat-common"))
     api(project(":simbot-cores:simbot-core"))
 
-    // compileOnly(libs.spring.boot.v3.logging)
-    //
-    // compileOnly(libs.spring.boot.v3.autoconfigure)
-    // compileOnly(libs.spring.boot.v3.configuration.processor)
-    // annotationProcessor(libs.spring.boot.v3.configuration.processor)
-    // kapt(libs.spring.boot.v3.configuration.processor)
-
     compileOnly(libs.javax.annotation.api)
 
-    // testImplementation(libs.spring.boot.v3.test)
     testImplementation(libs.kotlinx.serialization.json)
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
-    // testImplementation(libs.spring.boot.v3.aop)
-    // testImplementation(libs.spring.boot.v3.autoconfigure)
-    // testImplementation(libs.spring.boot.v3.configuration.processor)
 }
 

@@ -59,11 +59,11 @@ public interface Organization : Actor {
      *
      * @throws Exception 可能产生任何异常
      */
-    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember")
+    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
     public suspend fun member(id: ID): Member?
 
     /**
-     * 获取此组织内的所有成员集合。也会包括 bot 自身在组织内的表现。
+     * 获取此组织内的所有成员集合。也会包括 Bot 自身在组织内的表现，除非平台特性无法混淆 Bot 与 [Member]。
      */
     public val members: Collectable<Member>
 
@@ -87,11 +87,11 @@ public interface Organization : Actor {
  *
  * @see Organization
  */
-public interface Member : Actor, SendSupport {
+public interface Member : User, SendSupport {
     /**
      * 此成员的名称。通常是代表它作为一个用户的名称，而不是在某个组织内的“昵称”。
      */
-    public val name: String
+    override val name: String
 
     /**
      * 此成员在组织内的昵称。如果未设置或无法获取则会得到 `null`。

@@ -25,9 +25,11 @@ import love.forte.gradle.common.core.project.setup
 
 plugins {
     idea
-    //id("simbot.dokka-multi-module")
+    id("simbot.dokka-multi-module")
     id("com.github.gmazzo.buildconfig") version "4.1.2" apply false
     id("io.gitlab.arturbosch.detekt")
+    id("simbot.nexus-publish")
+    id("simbot.changelog-generator")
 }
 
 setup(P.Simbot)
@@ -72,6 +74,10 @@ subprojects {
         if (hasKtP()) {
 //            apply(plugin = "io.gitlab.arturbosch.detekt")
             applyDetekt()
+            if ("gradle" !in name) {
+                useK2()
+                logger.info("Enable K2 for {}", this)
+            }
         }
     }
 }
@@ -95,3 +101,5 @@ idea {
         isDownloadSources = true
     }
 }
+
+

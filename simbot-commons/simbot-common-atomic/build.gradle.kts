@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,68 +21,43 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
+import love.forte.gradle.common.kotlin.multiplatform.applyTier1
+import love.forte.gradle.common.kotlin.multiplatform.applyTier2
+import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
-//    `simbot-multiplatform-maven-publish`
     id("simbot.dokka-module-configuration")
-//    id("io.gitlab.arturbosch.detekt")
 }
 
-repositories {
-    mavenCentral()
-}
+setup(P.SimbotCommon)
 
 configJavaCompileWithModule("simbot.common.atomic")
+apply(plugin = "simbot-multiplatform-maven-publish")
+
+configJsTestTasks()
 
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+    configKotlinJvm()
 
     js(IR) {
-        browser()
-        nodejs {
-            testTask {
-            }
-        }
+        configJs()
     }
 
-    // tier1
-    linuxX64()
-    macosX64()
-    macosArm64()
-    iosSimulatorArm64()
-    iosX64()
+    applyTier1()
+    applyTier2()
+    applyTier3()
 
-    // tier2
-    linuxArm64()
-    watchosSimulatorArm64()
-    watchosX64()
-    watchosArm32()
-    watchosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    iosArm64()
-
-    // tier3
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX86()
-    androidNativeX64()
-    mingwX64()
-    watchosDeviceArm64()
-
-    // wasm?
-//    @Suppress("OPT_IN_USAGE")
-//    wasmJs()
-//    @Suppress("OPT_IN_USAGE")
-//    wasmWasi()
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
+    }
 
     withKotlinTargets { target ->
         targets.findByName(target.name)?.compilations?.all {
@@ -107,6 +82,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))
+                implementation(libs.kotlinx.lincheck)
             }
         }
 
@@ -116,4 +92,15 @@ kotlin {
             }
         }
     }
+}
+
+configWasmJsTest()
+
+// https://book.kotlincn.net/text/testing-strategies.html
+tasks.withType<Test> {
+    jvmArgs(
+        "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-exports", "java.base/jdk.internal.util=ALL-UNNAMED",
+        "--add-exports", "java.base/sun.security.action=ALL-UNNAMED"
+    )
 }

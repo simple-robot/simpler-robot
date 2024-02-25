@@ -1,13 +1,24 @@
 /*
- * Copyright (c) 2023 ForteScarlet.
+ *     Copyright (c) 2023-2024. ForteScarlet.
  *
- * This file is part of Simple Robot.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * Simple Robot is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library.
  *
- * Simple Robot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package changelog
@@ -126,7 +137,7 @@ fun Project.generateChangelog(tag: String) {
                 if (lines.isEmpty()) {
                     add(null)
                 } else {
-                    val last = lines.last
+                    val last = lines.last()
                     if (last.message == message) {
                         last.hash.add(0, hash)
                     } else {
@@ -149,6 +160,15 @@ fun Project.generateChangelog(tag: String) {
 
         FileWriter(rootChangelogFile).buffered().use { writer ->
             writer.appendLine("# $tag")
+            if ("-dev" in tag) {
+                writer.appendLine(
+                    """
+                        > [!warning]
+                        > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+                        
+                    """.trimIndent()
+                )
+            }
             writer.appendLine(
                 """
                 

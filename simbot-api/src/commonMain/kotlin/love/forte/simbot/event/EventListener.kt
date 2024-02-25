@@ -21,8 +21,13 @@
  *
  */
 
+@file:JvmName("EventListeners")
+@file:JvmMultifileClass
+
 package love.forte.simbot.event
 
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -41,5 +46,13 @@ public fun interface EventListener {
      */
     @JvmSynthetic
     @Throws(Exception::class)
-    public suspend fun handle(context: EventListenerContext): EventResult
+    public suspend fun EventListenerContext.handle(): EventResult
 }
+
+/**
+ * @see EventListener.handle
+ */
+public suspend fun EventListener.handleWith(context: EventListenerContext): EventResult {
+    return context.run { handle() }
+}
+

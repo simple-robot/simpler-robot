@@ -41,8 +41,7 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
     // tier1

@@ -31,6 +31,7 @@ import org.springframework.core.MethodIntrospector
 import org.springframework.core.annotation.AnnotatedElementUtils
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Method
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.kotlinFunction
 
@@ -52,21 +53,36 @@ internal fun Method.getKotlinFunctionSafely(): KFunction<*>? {
 }
 
 internal inline fun <reified A : Annotation> Class<*>.selectMethodsSafely(): Map<Method, A>? {
+    return selectMethodsSafely(A::class)
+}
+
+internal inline fun <reified A : Annotation> AnnotatedElement.findMergedAnnotationSafely(): A? {
+    return findMergedAnnotationSafely(A::class)
+}
+
+internal inline fun <reified A : Annotation> AnnotatedElement.findRepeatableMergedAnnotationSafely(): Set<A>? {
+    return findRepeatableMergedAnnotationSafely(A::class)
+}
+
+@PublishedApi
+internal fun <A : Annotation> Class<*>.selectMethodsSafely(type: KClass<A>): Map<Method, A>? {
     return runCatching {
         MethodIntrospector.selectMethods(this, MethodIntrospector.MetadataLookup { method ->
-            AnnotatedElementUtils.findMergedAnnotation(method, A::class.java)
+            AnnotatedElementUtils.findMergedAnnotation(method, type.java)
         })
     }.getOrNull()
 }
 
-internal inline fun <reified A : Annotation> AnnotatedElement.findMergedAnnotationSafely(): A? {
+@PublishedApi
+internal fun <A : Annotation> AnnotatedElement.findMergedAnnotationSafely(type: KClass<A>): A? {
     return runCatching {
-        AnnotatedElementUtils.findMergedAnnotation(this, A::class.java)
+        AnnotatedElementUtils.findMergedAnnotation(this, type.java)
     }.getOrNull()
 }
 
-internal inline fun <reified A : Annotation> AnnotatedElement.findRepeatableMergedAnnotationSafely(): Set<A>? {
+@PublishedApi
+internal fun <A : Annotation> AnnotatedElement.findRepeatableMergedAnnotationSafely(type: KClass<A>): Set<A>? {
     return runCatching {
-        AnnotatedElementUtils.findMergedRepeatableAnnotations(this, A::class.java)
+        AnnotatedElementUtils.findMergedRepeatableAnnotations(this, type.java)
     }.getOrNull()
 }

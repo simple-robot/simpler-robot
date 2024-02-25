@@ -31,8 +31,10 @@ import kotlinx.serialization.Transient
 import love.forte.simbot.bot.*
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.Component
 import love.forte.simbot.test.component.TestComponent
+import love.forte.simbot.test.component.TestComponentConfiguration
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -43,9 +45,9 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public open class TestBot(
-    override val component: Component,
-    public val configuration: TestBotConfiguration,
-    coroutineContext: CoroutineContext
+    override var component: Component = TestComponent(TestComponentConfiguration()),
+    public var configuration: TestBotConfiguration = TestBotConfiguration(),
+    coroutineContext: CoroutineContext = configuration.coroutineContext
 ) : JobBasedBot() {
     final override val coroutineContext: CoroutineContext
     final override val job: Job
@@ -57,8 +59,8 @@ public open class TestBot(
         this.coroutineContext = c
     }
 
-    override val id: ID = configuration.id.ID
-    override val name: String = configuration.name
+    override var id: ID = configuration.id.ID
+    override var name: String = configuration.name
 
     override fun isMe(id: ID): Boolean = this.id == id
 
@@ -66,9 +68,9 @@ public open class TestBot(
         isStarted = true
     }
 
-    override val guildRelation: GuildRelation? = null
-    override val groupRelation: GroupRelation? = null
-    override val contactRelation: ContactRelation? = null
+    override var guildRelation: GuildRelation? = null
+    override var groupRelation: GroupRelation? = null
+    override var contactRelation: ContactRelation? = null
 }
 
 /**
@@ -77,8 +79,8 @@ public open class TestBot(
 @Serializable
 @SerialName(TestComponent.ID_VALUE)
 public data class TestBotConfiguration(
-    var id: String,
-    var name: String,
+    var id: String = UUID.random().toString(),
+    var name: String = id,
 ) : SerializableBotConfiguration() {
     @Transient
     var coroutineContext: CoroutineContext = EmptyCoroutineContext

@@ -23,8 +23,8 @@
 
 package love.forte.simbot.spring.configuration.binder
 
-import love.forte.simbot.quantcat.annotations.FilterValue
-import love.forte.simbot.quantcat.annotations.toProperties
+import love.forte.simbot.quantcat.common.annotations.FilterValue
+import love.forte.simbot.quantcat.common.annotations.toProperties
 import love.forte.simbot.quantcat.common.binder.impl.EventParameterBinderFactory
 import love.forte.simbot.quantcat.common.binder.impl.KeywordBinderFactory
 import org.springframework.context.annotation.Bean

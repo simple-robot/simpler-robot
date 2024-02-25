@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,9 @@
  *
  */
 
+@file:JvmName("MessagesUtil")
+@file:JvmMultifileClass
+
 package love.forte.simbot.message
 
 import kotlinx.serialization.KSerializer
@@ -30,10 +33,13 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import love.forte.simbot.message.MessagesBuilder.Companion.create
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -159,10 +165,27 @@ public sealed interface Messages : Message, Iterable<Message.Element> {
          */
         @JvmStatic
         public fun of(iterable: Iterable<Message.Element>): Messages = iterable.toMessages()
+
+        /**
+         * 得到一个用于构建 [Messages] 的构建器 [MessagesBuilder]。
+         *
+         * @see MessagesBuilder.create
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun builder(container: MutableList<Message.Element> = mutableListOf()): MessagesBuilder =
+            MessagesBuilder.create(container)
     }
 }
 
+/**
+ * 判断 [Messages] 中是否存在任何元素。
+ */
+public fun Messages.isNotEmpty(): Boolean = !isEmpty()
 
+/**
+ * 整合平台特别实现的序列化信息。
+ */
 internal expect fun PolymorphicModuleBuilder<Message.Element>.resolvePlatformStandardSerializers()
 
 
@@ -192,7 +215,7 @@ private object EmptyMessages : Messages {
     }
 }
 
-private class SingleElementMessages(private val element: Message.Element) : Messages {
+private class SingleElementMessages(val element: Message.Element) : Messages {
     override fun iterator(): Iterator<Message.Element> = toList().iterator()
 
     override val size: Int
@@ -243,7 +266,7 @@ private class SingleElementMessages(private val element: Message.Element) : Mess
  * 基于 [List] 的 [Messages] 实现。[list] 中至少存在2个元素，不会为空。
  *
  */
-private class ListMessages(private val list: List<Message.Element>) : Messages {
+private class ListMessages(val list: List<Message.Element>) : Messages {
     override fun iterator(): Iterator<Message.Element> = list.iterator()
 
     override val size: Int
@@ -277,6 +300,38 @@ private class ListMessages(private val list: List<Message.Element>) : Messages {
 
     override fun toString(): String = "Messages($list)"
 
+}
+
+/**
+ * 合并两个 [Message] 为 [Messages]。
+ *
+ */
+public operator fun Message.plus(other: Message): Messages {
+    if (this is EmptyMessages || other is EmptyMessages) {
+        val valid = if (this is EmptyMessages) other else this
+        return when (valid) {
+            is Messages -> valid
+            is Message.Element -> messagesOf(valid)
+        }
+    }
+
+    // all valid
+
+    return when {
+        this is Message.Element && other is Message.Element -> messagesOf(this, other)
+        this is Messages -> when (other) {
+            is Messages -> this.plus(other)
+            is Message.Element -> this.plus(other)
+        }
+
+        else -> {
+            other as Messages
+            when (this) {
+                is Messages -> other.plus(this)
+                is Message.Element -> other.plus(this)
+            }
+        }
+    }
 }
 
 /**
@@ -347,24 +402,76 @@ public fun Iterable<Message.Element>.toMessages(): Messages {
 }
 
 /**
- * Builds a list of Messages using the provided container and block.
+ * Encodes the given [messages] object to a String representation using the StringFormat.
  *
- * @param container The mutable list that contains the message elements. Default is an empty list.
- * @param block The lambda expression where the MessagesBuilder functions are called to populate the message elements.
- * @return The built Messages object.
+ * @receiver [StringFormat], e.g. [Json]
+ * @param messages The Messages object that needs to be encoded.
+ * @return The encoded String representation of the Messages object.
  */
-public inline fun buildMessages(
-    container: MutableList<Message.Element> = mutableListOf(),
-    block: MessagesBuilder.() -> Unit
-): Messages = MessagesBuilder.create(container).apply(block).build()
+public fun StringFormat.encodeMessagesToString(messages: Messages): String =
+    encodeToString(Messages.serializer, messages)
 
+/**
+ * Decodes a string representation of Messages using the provided StringFormat.
+ *
+ * @receiver [StringFormat], e.g. [Json]
+ * @param string The string representation of Messages to decode.
+ * @return The deserialized Messages object.
+ */
+public fun StringFormat.decodeMessagesFromString(string: String): Messages =
+    decodeFromString(Messages.serializer, string)
+
+
+// TODO delete on stable version
+@Suppress("FunctionName")
+@Deprecated("仅供临时针对v4.0.0-dev16及以下的版本的JVM二进制兼容", level = DeprecationLevel.HIDDEN)
+public object MessagesKt {
+    @JvmStatic
+    public fun StringFormat.encodeMessagesToString(messages: Messages): String =
+        encodeToString(Messages.serializer, messages)
+
+    @JvmStatic
+    public fun StringFormat.decodeMessagesFromString(string: String): Messages =
+        decodeFromString(Messages.serializer, string)
+
+    @JvmStatic
+    @JvmName("emptyMessages")
+    public fun emptyMessages_compatible(): Messages = emptyMessages()
+
+    @JvmStatic
+    @JvmName("messagesOf")
+    public fun messagesOf_compatible(element: Message.Element): Messages = messagesOf(element)
+
+    @JvmStatic
+    @JvmName("messagesOf")
+    public fun messagesOf_compatible(vararg elements: Message.Element): Messages = messagesOf(*elements)
+
+    @JvmStatic
+    @JvmName("toMessages")
+    public fun Iterable<Message.Element>.toMessages_compatible(): Messages = toMessages()
+
+    @JvmStatic
+    @JvmName("plus")
+    public fun Message.plus_compatible(other: Message): Messages = plus(other)
+
+    @JvmStatic
+    @JvmName("isNotEmpty")
+    public fun Messages.isNotEmpty_compatible(): Boolean = isNotEmpty()
+}
+
+/**
+ * [MessagesBuilder]'s dsl marker.
+ */
+@DslMarker
+@Retention(AnnotationRetention.BINARY)
+public annotation class MessagesBuilderDsl
 
 /**
  * 一个用于动态构建 [Messages] 的构建器。
+ * 使用 [create] 构建。
  */
-public class MessagesBuilder private constructor(private val container: MutableList<Message.Element> = mutableListOf()) {
+public class MessagesBuilder private constructor(private val container: MutableList<Message.Element>) {
     public companion object {
-
         /**
          * Creates a new instance of MessagesBuilder.
          *
@@ -394,6 +501,56 @@ public class MessagesBuilder private constructor(private val container: MutableL
     public fun add(text: String): MessagesBuilder = apply { container.add(text.toText()) }
 
     /**
+     * Add the given messages to the [MessagesBuilder] container.
+     *
+     * @param messages 要添加的消息元素集
+     * @return the updated MessagesBuilder object
+     */
+    public fun addAll(messages: Iterable<Message.Element>): MessagesBuilder = apply {
+        if (messages is Messages) {
+            when (messages) {
+                EmptyMessages -> {
+                    // do nothing.
+                }
+
+                is ListMessages -> {
+                    container.addAll(messages.list)
+                }
+
+                is SingleElementMessages -> {
+                    container.add(messages.element)
+                }
+            }
+        } else {
+            container.addAll(messages)
+        }
+    }
+
+    /**
+     * Add an element to the [MessagesBuilder] container.
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun Message.Element.unaryPlus(): MessagesBuilder = add(this)
+
+    /**
+     * Add a text to the [MessagesBuilder] container.
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun String.unaryPlus(): MessagesBuilder = add(this)
+
+    /**
+     * Add messages to the [MessagesBuilder] container.
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun Iterable<Message.Element>.unaryPlus(): MessagesBuilder = addAll(this)
+
+    /**
      * Build method.
      *
      * This method constructs and returns a Messages object using the container.
@@ -402,21 +559,3 @@ public class MessagesBuilder private constructor(private val container: MutableL
      */
     public fun build(): Messages = container.toMessages()
 }
-
-/**
- * Encodes the given [messages] object to a String representation using the StringFormat.
- *
- * @param messages The Messages object that needs to be encoded.
- * @return The encoded String representation of the Messages object.
- */
-public fun StringFormat.encodeMessagesToString(messages: Messages): String =
-    encodeToString(Messages.serializer, messages)
-
-/**
- * Decodes a string representation of Messages using the provided StringFormat.
- *
- * @param string The string representation of Messages to decode.
- * @return The deserialized Messages object.
- */
-public fun StringFormat.decodeMessagesFromString(string: String): Messages =
-    decodeFromString(Messages.serializer, string)

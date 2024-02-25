@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,10 @@ inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> U
     }
 
     testRuns["test"].executionTask.configure {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            val dir = project.rootProject.layout.buildDirectory.dir("test-reports/html/${project.name}")
+            reports.html.outputLocation.set(dir)
+        }
     }
     block()
 }
@@ -74,8 +77,8 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
     compilerOptions {
         javaParameters = true
         jvmTarget.set(JvmTarget.fromTarget(jdkVersion.toString()))
-        freeCompilerArgs.add("-Xjvm-default=all")
-        freeCompilerArgs.add("-Xjsr305=strict")
+        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
+        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
     }
     block()
 }
@@ -90,8 +93,8 @@ inline fun Project.configJavaCompileWithModule(
         sourceCompatibility = jvmVersion
         targetCompatibility = jvmVersion
 
+        // see https://kotlinlang.org/docs/gradle-configure-project.html#configure-with-java-modules-jpms-enabled
         if (moduleName != null) {
-            modularity.inferModulePath.set(true)
             options.compilerArgumentProviders.add(CommandLineArgumentProvider {
                 // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
                 listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")

@@ -27,6 +27,8 @@ import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.UIntID.Companion.ID
 import love.forte.simbot.common.id.ULongID.Companion.ID
+import java.util.*
+import kotlin.random.asKotlinRandom
 
 /**
  * 提供给 Java 的 [ID] 辅助工具类。
@@ -36,41 +38,77 @@ import love.forte.simbot.common.id.ULongID.Companion.ID
 public object Identifies {
 
     /**
-     * @see [Long.ID]
+     * @see Long.ID
      */
     @JvmStatic
     public fun of(value: Long): LongID = value.ID
 
     /**
-     * @see [ULong.ID]
+     * @see ULong.ID
      */
     @JvmStatic
     @JvmName("ofULong")
     public fun ofULong(value: ULong): ULongID = value.ID
 
     /**
-     * @see [IntID.ID]
+     * @throws NumberFormatException if the string is not a valid representation of a number.
+     * @see ULong.ID
+     */
+    @JvmStatic
+    @JvmName("ofULong")
+    public fun ofULong(value: String): ULongID = value.toULong().ID
+
+    /**
+     * @see IntID.ID
      */
     @JvmStatic
     public fun of(value: Int): IntID = value.ID
 
     /**
-     * @see [UInt.ID]
+     * @see UInt.ID
      */
     @JvmStatic
     @JvmName("ofUInt")
     public fun ofUInt(value: UInt): UIntID = value.ID
 
     /**
-     * @see [String.ID]
+     * @throws NumberFormatException if the string is not a valid representation of a number.
+     * @see UInt.ID
+     */
+    @JvmStatic
+    @JvmName("ofUInt")
+    public fun ofUInt(value: String): UIntID = value.toUInt().ID
+
+    /**
+     * @see String.ID
      */
     @JvmStatic
     public fun of(value: String): StringID = value.ID
 
     /**
-     * @see [CharSequence.ID]
+     * @see CharSequence.ID
      */
     @JvmStatic
     public fun of(value: CharSequence): StringID = value.ID
+
+    /**
+     * @see UUID.random
+     */
+    @JvmStatic
+    @JvmOverloads
+    public fun uuid(random: Random? = null): UUID =
+        if (random == null) UUID.random() else UUID.random(random.asKotlinRandom())
+
+    /**
+     * @see UUID.random
+     */
+    @JvmStatic
+    public fun uuid(random: kotlin.random.Random): UUID = UUID.random(random)
+
+    /**
+     * @see java.util.UUID.simbotUUID
+     */
+    @JvmStatic
+    public fun uuid(javaUuid: java.util.UUID): UUID = javaUuid.simbotUUID
 }
 

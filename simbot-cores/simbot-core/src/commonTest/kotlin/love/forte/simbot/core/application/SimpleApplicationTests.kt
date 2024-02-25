@@ -70,64 +70,64 @@ class SimpleApplicationTests {
                     coroutineContext = CoroutineName("TEST-DIS")
 
                     addDispatchInterceptor {
-                        it.invoke()
+                        invoke()
                     }
 
                     addInterceptor({
                         priority = 1
                     }) {
-                        println("context1: $it")
-                        println("context1.eventListenerContext: ${it.eventListenerContext}")
-                        val res = it.invoke()
-                        println("context1.end: $it")
-                        println("context1.end.eventListenerContext: ${it.eventListenerContext}")
+                        println("context1: $this")
+                        println("context1.eventListenerContext: $eventListenerContext")
+                        val res = this.invoke()
+                        println("context1.end: $this")
+                        println("context1.end.eventListenerContext: $eventListenerContext")
                         res
                     }
                     addInterceptor({
                         priority = 2
                     }) {
-                        println("context2: $it")
-                        println("context2.eventListenerContext: ${it.eventListenerContext}")
-                        val newEventListenerContext = object : EventListenerContext by it.eventListenerContext {
-                            override fun toString(): String = "DeleteEventListenerContext(${it.eventListenerContext})"
+                        println("context2: $this")
+                        println("context2.eventListenerContext: ${eventListenerContext}")
+                        val newEventListenerContext = object : EventListenerContext by eventListenerContext {
+                            override fun toString(): String = "DeleteEventListenerContext(${eventListenerContext})"
                         }
                         println("newEventListenerContext: $newEventListenerContext")
-                        val res = it.invoke(newEventListenerContext)
-                        println("context2.end: $it")
-                        println("context2.end.eventListenerContext: ${it.eventListenerContext}")
+                        val res = this.invoke(newEventListenerContext)
+                        println("context2.end: $this")
+                        println("context2.end.eventListenerContext: ${this.eventListenerContext}")
                         res
                     }
                     addInterceptor({
                         priority = 3
                     }) {
-                        println("context3: $it")
-                        println("context3.eventListenerContext: ${it.eventListenerContext}")
-                        val res = it.invoke()
-                        println("context3.end: $it")
-                        println("context3.end.eventListenerContext: ${it.eventListenerContext}")
+                        println("context3: $this")
+                        println("context3.eventListenerContext: ${this.eventListenerContext}")
+                        val res = this.invoke()
+                        println("context3.end: $this")
+                        println("context3.end.eventListenerContext: ${this.eventListenerContext}")
                         res
                     }
 
                     addInterceptor({
                         priority = 1
                     }) {
-                        it.invoke()
+                        invoke()
                     }
                     addDispatchInterceptor({
                         priority = 1
                     }
                     ) {
-                        it.invoke()
+                        invoke()
                     }
                     addInterceptor({
                         priority = 1
                     }) {
-                        it.invoke()
+                        invoke()
                     }
                     addInterceptor({
                         priority = 1
                     }) {
-                        it.invoke()
+                        invoke()
                     }
                 }
 
@@ -171,10 +171,10 @@ class SimpleApplicationTests {
             val myPlugin = app.plugins.first()
             println(myPlugin)
 
-            app.eventDispatcher.register { context ->
-                println("Context: $context")
-                println("Context.context: ${context.context}")
-                println("Event: ${context.event}")
+            app.eventDispatcher.register {
+                println("Context: $this")
+                println("Context.context: $context")
+                println("Event: $event")
                 EventResult.of()
             }
             app.eventDispatcher.pushAndCollect(TestEvent()) {

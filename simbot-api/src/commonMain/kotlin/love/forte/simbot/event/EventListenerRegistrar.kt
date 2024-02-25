@@ -25,6 +25,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.event.EventResult.Companion.invalid
 
 
 /**
@@ -68,7 +69,7 @@ public interface EventListenerRegistrar {
  * @param E The type of event to register the listener for.
  * @param propertiesConsumer An optional function that consumes the configuration properties of the listener registration.
  *        The function should have the signature `ConfigurerFunction<EventListenerRegistrationProperties>`.
- * @param defaultResult The default result function that will be invoked if the event is not of type `E`.
+ * @param typeMismatchResult The default result function that will be invoked if the event is not of type `E`.
  *        The function should have the signature `EventContext.() -> EventResult`.
  *        By default, it returns an invalid result.
  * @param listenerFunction The listener function that will be invoked when the event is fired.
@@ -79,16 +80,56 @@ public interface EventListenerRegistrar {
  */
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
-    crossinline defaultResult: EventListenerContext.() -> EventResult = { EventResult.invalid },
+    crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> EventResult,
-) {
-    register(
-        propertiesConsumer = propertiesConsumer,
-        listener = { context ->
-            val event = context.event
-            if (event is E) listenerFunction(context, event) else defaultResult(context)
-        })
-}
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        val event = this.event
+        if (event is E) listenerFunction(this, event) else typeMismatchResult(this)
+    })
+
+/**
+ * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
+ * 注册一个事件处理器。
+ * 通过 [process] 注册的事件处理器函数不会要求你返回 [EventResult]，
+ * 取而代之的是始终返回默认的 [defaultResult]，默认为 [EventResult.empty]。
+ *
+ */
+public inline fun EventListenerRegistrar.process(
+    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
+    propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
+    crossinline listenerFunction: suspend EventListenerContext.() -> Unit,
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        listenerFunction()
+        defaultResult()
+    })
+
+/**
+ * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
+ * 注册一个处理特定类型 [E] 的事件处理器。
+ * 通过 [process] 注册的事件处理器函数不会要求你返回 [EventResult]，
+ * 取而代之的是始终返回默认的 [defaultResult]，默认为 [EventResult.empty]。
+ *
+ * @param defaultResult 事件处理后的默认返回值
+ * @param typeMismatchResult 事件类型与 [E] 不匹配时的默认返回值
+ */
+public inline fun <reified E : Event> EventListenerRegistrar.process(
+    propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
+    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
+    crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
+    crossinline listenerFunction: suspend EventListenerContext.(E) -> Unit,
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        val event = this.event
+        if (event is E) {
+            listenerFunction(event)
+            defaultResult()
+        } else typeMismatchResult()
+    })
 
 /**
  * 注册事件监听器的额外属性。
@@ -98,7 +139,7 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
  */
 public interface EventListenerRegistrationProperties {
     /**
-     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.NORMAL]。
+     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.DEFAULT]。
      */
     public var priority: Int
 

@@ -23,6 +23,10 @@
 
 package love.forte.simbot.message
 
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
+
 
 /**
  *
@@ -42,4 +46,11 @@ public sealed interface Message {
     public interface Element : Message
 }
 
-
+/**
+ * Configure polymorphic for [Message.Element].
+ */
+public inline fun SerializersModuleBuilder.messageElementPolymorphic(block: PolymorphicModuleBuilder<Message.Element>.() -> Unit) {
+    polymorphic(Message.Element::class) {
+        block(this)
+    }
+}

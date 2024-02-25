@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,14 +21,19 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
+
 plugins {
-//    id("simbot.simple-module-conventions")
-//    `simbot-jvm-maven-publish`
+    `java-library`
     kotlin("jvm")
     id("com.github.gmazzo.buildconfig")
+    id("simbot.dokka-module-configuration")
 }
 
+setup(P.SimbotLogger)
+
 configJavaCompileWithModule("simbot.logger.slf4j2impl")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
@@ -37,7 +42,7 @@ kotlin {
 
 dependencies {
     api(project(":simbot-logger"))
-    api("com.lmax:disruptor:3.4.4")
+    api(libs.lmax.disruptor)
 }
 
 buildConfig {

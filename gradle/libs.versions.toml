@@ -1,22 +1,33 @@
 [versions]
-kotlinx-coroutines = "1.7.3"
-kotlinx-serialization = "1.6.0"
+kotlin = "1.9.22"
+dokka = "1.9.10"
+kotlinx-coroutines = "1.8.0"
+kotlinx-serialization = "1.6.3"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
-#forte-di = "0.0.3"
-#forte-annotationTool = "0.6.3"
-ktor = "2.3.7"
-
-slf4j = "2.0.7"
-suspendReversal = "0.2.0"
-ksp = "1.9.21-1.0.16"
+ktor = "2.3.8"
+slf4j = "2.0.12"
+ksp = "1.9.22-1.0.17"
 # https://square.github.io/kotlinpoet/
-kotlinPoet = "1.15.3"
+kotlinPoet = "1.16.0"
+reactor = "3.6.2"
+# simbots
+suspendTransform = "0.7.0-beta1"
+suspendReversal = "0.2.0"
+gradleCommon = "0.2.0"
+# tests
+mockk = "1.13.9"
+
 
 [libraries]
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
+
+# dokka
+dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
+dokka-core = { group = "org.jetbrains.dokka", name = "dokka-core", version.ref = "dokka" }
+dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref = "dokka" }
 
 # kotlinx-coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -41,6 +52,7 @@ kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-properties", version.ref = "kotlinx-serialization" }
 charleskorn-kaml = "com.charleskorn.kaml:kaml:0.54.0"
 
+
 # slf4j
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 slf4j-nop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j" }
@@ -63,7 +75,7 @@ spring-boot-v3-dependencies = { group = "org.springframework.boot", name = "spri
 spring-boot-v3-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" } # , version.ref = "spring-boot-v3"
-spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" } # , version.ref = "spring-boot-v3"
+spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v3" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" } # , version.ref = "spring-boot-v3"
@@ -90,7 +102,7 @@ ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "kt
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.19"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.26"
 
 # https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
 suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
@@ -100,5 +112,23 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = 
 # https://square.github.io/kotlinpoet/interop-ksp/
 kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
 
+reactor-core = { group = "io.projectreactor", name = "reactor-core", version.ref = "reactor" }
+
+# suspend transform
+suspend-transform-gradle = { module = "love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle", version.ref = "suspendTransform" }
+
+# gradle-common
+gradle-common-core = { group = "love.forte.gradle.common", name = "gradle-common-core", version.ref = "gradleCommon" }
+gradle-common-multiplatform = { group = "love.forte.gradle.common", name = "gradle-common-kotlin-multiplatform", version.ref = "gradleCommon" }
+gradle-common-publication = { group = "love.forte.gradle.common", name = "gradle-common-publication", version.ref = "gradleCommon" }
+
+# mockk
+## https://mockk.io/
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+[bundles]
+gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
+dokka = ["dokka-plugin", "dokka-core", "dokka-base"]

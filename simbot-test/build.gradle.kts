@@ -25,25 +25,18 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
     id("simbot.suspend-transform-configure")
     alias(libs.plugins.ksp)
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.Simbot)
 
-apply(plugin = "simbot-multiplatform-maven-publish")
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 configJavaCompileWithModule("simbot.test")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()
@@ -52,8 +45,7 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
     // tier1

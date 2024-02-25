@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,32 +21,31 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
+
+
 plugins {
-    // id("simbot.boot-module-conventions")
-    // `simbot-jvm-maven-publish`
-    `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("simbot.dokka-module-configuration")
 }
 
-repositories {
-    mavenCentral()
-}
+setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
     configKotlinJvm(jdkVersion = 17)
 }
 
+
 dependencies {
     implementation(platform(libs.spring.boot.v3.dependencies))
 
     compileOnly(project(":simbot-commons:simbot-common-annotations"))
-    compileOnly(project(":simbot-quantcat:simbot-quantcat-annotations"))
     api(project(":simbot-quantcat:simbot-quantcat-common"))
     api(project(":simbot-cores:simbot-core"))
     api(project(":simbot-cores:simbot-core-spring-boot-starter-common"))
@@ -56,16 +55,14 @@ dependencies {
     compileOnly(libs.spring.boot.v3.logging)
     compileOnly(libs.spring.boot.v3.autoconfigure)
     compileOnly(libs.spring.boot.v3.configuration.processor)
-    //annotationProcessor(libs.spring.boot.v3.configuration.processor)
-    //kapt(libs.spring.boot.v3.configuration.processor)
+    annotationProcessor(libs.spring.boot.v3.configuration.processor)
+    kapt(libs.spring.boot.v3.configuration.processor)
 
     compileOnly(libs.javax.annotation.api)
 
     testImplementation(project(":simbot-commons:simbot-common-annotations"))
     testImplementation(project(":simbot-test"))
     testImplementation(libs.spring.boot.v3.test)
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
     testImplementation(libs.spring.boot.v3.aop)
     testImplementation(libs.spring.boot.v3.autoconfigure)
     testImplementation(libs.spring.boot.v3.configuration.processor)

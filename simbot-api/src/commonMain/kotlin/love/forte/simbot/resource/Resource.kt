@@ -41,11 +41,18 @@ import kotlin.jvm.JvmName
  * 一个**资源**。
  *
  * 用于描述一个可以被读取字节数据（[data]）的资源。
- * 通常代表一些二进制数据或本地文件资源。
+ * [Resource] 用于代表一些二进制数据或**本地**文件资源。
+ *
+ * JVM 中的部分扩展、辅助API通过静态类 `Resources` 提供，
+ * 例如 `Resources.valueOf(...)`。
  *
  * ## 序列化
  *
  * [Resource] 提供了一个基于 [Base64] 进行序列化操作的 [ResourceBase64Serializer]。
+ *
+ * ## 第三方实现不稳定
+ *
+ * [Resource] 主要由内部实现，不保证对第三方实现的稳定与兼容
  *
  * @author ForteScarlet
  */
@@ -57,7 +64,6 @@ public interface Resource {
     @Throws(Exception::class)
     public fun data(): ByteArray
 }
-
 
 /**
  * 通过提供的 [ByteArray] 直接构建一个 [Resource]。
@@ -117,6 +123,12 @@ private data class ByteArrayResourceImpl(private val raw: ByteArray) : ByteArray
     override fun hashCode(): Int {
         return raw.contentHashCode()
     }
+
+    override fun toString(): String = buildString {
+        append("ByteArrayResource(raw=")
+        raw.joinTo(buffer = this, separator = ", ", prefix = "[", postfix = "]", limit = 8)
+        append(")")
+    }
 }
 
 /**
@@ -140,4 +152,18 @@ public fun String.toStringResource(): StringResource = StringResourceImpl(this)
 private data class StringResourceImpl(private val string: String) : StringResource {
     override fun string(): String = string
     override fun data(): ByteArray = string().encodeToByteArray()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is StringResourceImpl) return false
+
+        if (string != other.string) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return string.hashCode()
+    }
+
+    override fun toString(): String = "StringResource(string=\"$string\")"
 }

@@ -23,12 +23,20 @@
 
 package love.forte.simbot.test.event
 
+import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.event.BotEvent
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.test.bot.TestBot
+import love.forte.simbot.test.message.TestMessageContent
 
 /**
  * 用于测试的 [Event] 基类
@@ -47,7 +55,37 @@ public interface BaseTestEvent : Event {
 /**
  * 用于测试的 [Event] 实现
  */
-public open class TestEvent(override val id: ID) : Event, BaseTestEvent
+public open class TestEvent(override val id: ID = UUID.random()) : Event, BaseTestEvent
+
+
+/**
+ * 用于测试的 [MessageEvent] 实现
+ */
+public open class TestMessageEvent(
+    override var id: ID = UUID.random(),
+    override var bot: Bot = TestBot(),
+    override var authorId: ID = UUID.random(),
+    override var messageContent: MessageContent = TestMessageContent(),
+    public var onReplyText: (String) -> TestMessageReceipt = { TestMessageReceipt() },
+    public var onReplyMessage: (Message) -> TestMessageReceipt = { TestMessageReceipt() },
+    public var onReplyMessageContent: (MessageContent) -> TestMessageReceipt = { TestMessageReceipt() },
+) : MessageEvent, BaseTestEvent {
+    override suspend fun reply(text: String): TestMessageReceipt =
+        onReplyText(text)
+
+    override suspend fun reply(message: Message): TestMessageReceipt =
+        onReplyMessage(message)
+
+    override suspend fun reply(messageContent: MessageContent): TestMessageReceipt =
+        onReplyMessageContent(messageContent)
+}
+
+public open class TestMessageReceipt(public var onDelete: (Array<out DeleteOption>) -> Unit = {}) : MessageReceipt {
+    override suspend fun delete(vararg options: DeleteOption) {
+        onDelete(options)
+    }
+
+}
 
 /**
  * 用于测试的 [BotEvent] 实现

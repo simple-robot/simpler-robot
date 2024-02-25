@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -26,20 +26,29 @@
 
 package love.forte.simbot.common.collectable
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.future.future
 import kotlinx.coroutines.reactor.asFlux
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.asAsync
 import love.forte.simbot.common.collection.asIterator
 import love.forte.simbot.common.function.Action
+import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import reactor.core.publisher.Flux
+import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.function.Function
+import java.util.stream.Collector
 import java.util.stream.Collectors
 import java.util.stream.Stream
+import java.util.stream.StreamSupport
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 
@@ -207,6 +216,42 @@ public fun <T> IterableCollectable<T>.asStream(): Stream<T> = asSequence().asStr
  */
 public fun <T> SequenceCollectable<T>.asStream(): Stream<T> = asSequence().asStream()
 
+/**
+ * 将一个 [Collectable] 转化为 [Stream]。
+ * 如果是 [IterableCollectable] 或 [SequenceCollectable]，
+ * 则会使用它们的 `asSequence` 进行转化，
+ * 否则会使用 [Collectable] 中合适的方法进行适当的**阻塞转化**。
+ *
+ * 如果 collectable 不是 [IterableCollectable] 或 [SequenceCollectable]，
+ * 则需要提供 [produceScope] 来将异步的收集器转化为 stream。默认使用 [GlobalScope]。
+ * 注意：请参考并了解有关 [GlobalScope] 的各种注意事项，避免出现预期外的结果或错误。
+ *
+ * @param produceScope 如果 collectable 不是 [IterableCollectable] 或 [SequenceCollectable]，
+ * 则需要提供一个作用域来将异步的收集器转化为 stream。默认使用 [GlobalScope]。
+ * 注意：请参考并了解有关 [GlobalScope] 的各种注意事项，避免出现预期外的结果或错误。
+ */
+@OptIn(DelicateCoroutinesApi::class)
+@JvmOverloads
+public fun <T> Collectable<T>.asStream(produceScope: CoroutineScope? = null): Stream<T> {
+    return when (this) {
+        is IterableCollectable -> asStream()
+        is SequenceCollectable -> asStream()
+        else -> {
+            val scope = produceScope ?: GlobalScope
+            val iter = asFlow().asIterator(
+                producerScope = scope,
+                hasNext = { runInNoScopeBlocking { hasNext() } },
+                next = { runInNoScopeBlocking { next() } })
+
+            StreamSupport.stream(
+                { Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED) },
+                Spliterator.ORDERED,
+                false
+            )
+        }
+    }
+}
+
 
 /**
  * 将 [Stream] 转换为 [Collectable] 的函数.
@@ -220,8 +265,117 @@ private class StreamCollectableImpl<T>(private val stream: Stream<T>) : Sequence
     override fun toList(): List<T> = stream.collect(Collectors.toUnmodifiableList())
 }
 
+/// List
 
-// reactor
+/**
+ * 将 [Collectable] 阻塞地收集为 [List]。
+ * 会根据类型适当地优化与避免阻塞挂起操作。
+ *
+ * @see runInNoScopeBlocking
+ */
+public fun <T> Collectable<T>.toList(): List<T> = when (this) {
+    is SynchronouslyIterateCollectable -> toList()
+    else -> runInNoScopeBlocking { asFlow().toList() }
+}
+
+/**
+ * 将 [Collectable] 异步地收集为 [List]。
+ * 如果 [scope] 为 `null`，则会视情况使用 [GlobalScope]
+ * 或使用 [CompletableFuture.supplyAsync]。
+ *
+ * **注意：如果没有指定 [scope] 且在可能会使用 [GlobalScope] 的情况下，**
+ * **你应当了解 [GlobalScope] 的特性与注意事项。**
+ *
+ * @see GlobalScope
+ * @see CompletableFuture.supplyAsync
+ */
+@OptIn(DelicateCoroutinesApi::class)
+@JvmOverloads
+public fun <T> Collectable<T>.toListAsync(scope: CoroutineScope? = null): CompletableFuture<List<T>> = when (this) {
+    is SynchronouslyIterateCollectable -> scope?.future { toList() }
+        ?: CompletableFuture.supplyAsync { toList() }
+
+    else -> (scope ?: GlobalScope).future { asFlow().toList() }
+}
+
+/// collector
+
+/**
+ * 使用 [Collector] **阻塞地**收集 [Collectable] 中的元素。
+ */
+public fun <T, R> Collectable<T>.collect(collector: Collector<T, *, R>): R {
+    return when (this) {
+        is SynchronouslyIterateCollectable -> when (this) {
+            is SequenceCollectable -> asSequence().asStream().collect(collector)
+            else -> asSequence().asStream().collect(collector)
+        }
+
+        else -> {
+            runInNoScopeBlocking { asFlow().collectBy(collector) }
+        }
+    }
+}
+
+/**
+ * 使用 [Collector] **异步地**收集 [Collectable] 中的元素。
+ * 如果 [scope] 为 `null`，则会视情况使用 [GlobalScope]
+ * 或使用 [CompletableFuture.supplyAsync]。
+ *
+ * **注意：如果没有指定 [scope] 且在可能会使用 [GlobalScope] 的情况下，**
+ * **你应当了解 [GlobalScope] 的特性与注意事项。**
+ *
+ * @see GlobalScope
+ * @see CompletableFuture.supplyAsync
+ */
+@OptIn(DelicateCoroutinesApi::class)
+@JvmOverloads
+public fun <T, R> Collectable<T>.collectAsync(
+    scope: CoroutineScope? = null,
+    collector: Collector<T, *, R>
+): CompletableFuture<R> {
+    return when (this) {
+        is SynchronouslyIterateCollectable -> when (this) {
+            is SequenceCollectable -> scope?.future { asSequence().asStream().collect(collector) }
+                ?: CompletableFuture.supplyAsync { asSequence().asStream().collect(collector) }
+
+            else -> scope?.future { asSequence().asStream().collect(collector) }
+                ?: CompletableFuture.supplyAsync { asSequence().asStream().collect(collector) }
+        }
+
+        else -> (scope ?: GlobalScope).let { s ->
+            s.future { asFlow().collectBy(scope = s, collector = collector) }
+        }
+    }
+}
+
+/// transform
+
+/**
+ * 使用 [SuspendReserve.Transformer] 对 [Collectable.asFlow] 的结果进行转化，
+ * 例如可以使用 `SuspendReserves.flux()` 转化为 [Flux] 或 `SuspendReserves.list()`
+ * 转化为 [List]。
+ * 注意：部分转化器可能会要求运行时存在一些依赖，请注意参考它们的注释与说明。
+ *
+ * 建议主要使用 [transform] 转化为其他响应式类型，例如 [Flux]。
+ * 对列表等普通的集合类型可以选择其他可能有更多判断与优化的API，
+ * 例如 [Collectable.toList]。
+ *
+ * @see Collectable.transform
+ */
+@OptIn(DelicateCoroutinesApi::class)
+@JvmOverloads
+@Deprecated(
+    "Just use Collectable.transform", ReplaceWith(
+        "transform(scope, EmptyCoroutineContext, transformer)",
+        "kotlin.coroutines.EmptyCoroutineContext"
+    ), level = DeprecationLevel.ERROR
+)
+public fun <T, R> Collectable<T>.transform(
+    scope: CoroutineScope = GlobalScope,
+    transformer: SuspendReserve.Transformer<Flow<T>, R>
+): R = transform(scope, EmptyCoroutineContext, transformer)
+
+/// reactor
 
 /**
  * 将 [Collectable] 转化为 [Flux]。
@@ -234,3 +388,55 @@ public fun <T : Any> Collectable<T>.asFlux(): Flux<T> =
     asFlow().asFlux()
 
 
+/**
+ * 使用 [Collector] 收集 [Flow] 中的元素。
+ */
+@Suppress("UNCHECKED_CAST")
+@JvmSynthetic
+public suspend fun <T, R> Flow<T>.collectBy(
+    scope: CoroutineScope,
+    launchContext: CoroutineContext = EmptyCoroutineContext,
+    collector: Collector<T, *, R>
+): R {
+    val container = collector.supplier().get()
+    val accumulator = collector.accumulator() as java.util.function.BiConsumer<Any?, T>
+    val characteristics = collector.characteristics()
+
+    if (Collector.Characteristics.CONCURRENT in characteristics && Collector.Characteristics.UNORDERED in characteristics) {
+        // collect in launch
+        collect { result ->
+            scope.launch(launchContext) { accumulator.accept(container, result) }
+        }
+    } else {
+        collect { result ->
+            accumulator.accept(container, result)
+        }
+    }
+
+    return if (Collector.Characteristics.IDENTITY_FINISH in characteristics) {
+        container as R
+    } else {
+        (collector.finisher() as Function<Any?, R>).apply(container)
+    }
+}
+
+/**
+ * 使用 [Collector] 收集 [Flow] 中的元素。
+ */
+@Suppress("UNCHECKED_CAST")
+@JvmSynthetic
+public suspend fun <T, R> Flow<T>.collectBy(collector: Collector<T, *, R>): R {
+    val container = collector.supplier().get()
+    val accumulator = collector.accumulator() as java.util.function.BiConsumer<Any?, T>
+    val characteristics = collector.characteristics()
+
+    collect { result ->
+        accumulator.accept(container, result)
+    }
+
+    return if (Collector.Characteristics.IDENTITY_FINISH in characteristics) {
+        container as R
+    } else {
+        (collector.finisher() as Function<Any?, R>).apply(container)
+    }
+}

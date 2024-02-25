@@ -49,3 +49,14 @@ public expect fun <T : Any> weakRef(ref: T): WeakRef<T>
  * ```
  */
 public operator fun <T : Any> WeakRef<T>.getValue(o: Any?, property: KProperty<*>): T? = value
+
+/**
+ * [WeakRef] 的无实际弱引用效果的普通实现。
+ * 会直接将 [value] 保存至属性直至调用 [clear]。
+ *
+ */
+public class NonWeakRefImpl<T : Any>(override var value: T?) : WeakRef<T> {
+    override fun clear() {
+        value = null
+    }
+}

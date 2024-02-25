@@ -31,7 +31,7 @@ import love.forte.simbot.ability.SendSupport
  *
  * 一个联系人。
  *
- * 联系人是一种可以与 bot 建立独立会话、进行通讯的行为目标。
+ * 联系人是一种可以与 bot 建立独立会话、进行通讯的行为对象。
  * 联系人可能代表一个其他用户，也可能代表一个与某用户关联的“会话”。
  *
  * ## DeleteSupport
@@ -43,16 +43,9 @@ import love.forte.simbot.ability.SendSupport
  *
  * @author ForteScarlet
  */
-public interface Contact : Actor, SendSupport {
+public interface Contact : User, SendSupport {
     /**
      * 此联系人的名称
      */
-    public val name: String
-
-    /**
-     * 此联系人的头像（如果有的话）。
-     *
-     */
-    public val avatar: String?
-
+    override val name: String
 }

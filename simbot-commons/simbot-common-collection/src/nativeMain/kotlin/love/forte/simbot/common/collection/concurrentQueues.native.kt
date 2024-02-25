@@ -25,8 +25,15 @@ package love.forte.simbot.common.collection
 
 import kotlin.concurrent.AtomicReference
 
+@ExperimentalSimbotCollectionApi
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val listRef: AtomicReference<List<T>> = AtomicReference(emptyList())
+
+    override val size: Int
+        get() = listRef.value.size
+
+    override fun isEmpty(): Boolean =
+        listRef.value.isEmpty()
 
     override fun add(value: T) {
         listRef.update { old ->
@@ -55,11 +62,16 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
         }
     }
 
+    override fun clear() {
+        listRef.update { emptyList() }
+    }
+
     override fun iterator(): Iterator<T> = listRef.value.iterator()
 
     override fun toString(): String = listRef.value.toString()
 }
 
+@ExperimentalSimbotCollectionApi
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private data class ListWithPriority<T>(
         val priority: Int,
@@ -67,6 +79,16 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     )
 
     private val lists = AtomicReference<List<ListWithPriority<T>>>(emptyList())
+
+    override val size: Int
+        get() = lists.value.sumOf { it.list.value.size }
+
+    override fun isEmpty(priority: Int): Boolean =
+        lists.value.find { it.priority == priority }?.list?.value?.isEmpty()
+            ?: true
+
+    override fun isEmpty(): Boolean = lists.value.all { it.list.value.isEmpty() }
+
 
     private fun findByPriority(priority: Int): ListWithPriority<T>? =
         lists.value.find { it.priority == priority }
@@ -249,6 +271,9 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         }
     }
 
+    override fun clear() {
+        lists.update { emptyList() }
+    }
 
     override fun iterator(): Iterator<T> {
         return lists.value.asSequence().flatMap { it.list.value }.iterator()

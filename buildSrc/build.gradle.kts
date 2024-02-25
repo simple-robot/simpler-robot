@@ -32,31 +32,25 @@ repositories {
     mavenLocal()
 }
 
-val kotlinVersion = "1.9.21"
-val dokkaPluginVersion = "1.9.10"
-// val suspendTransformVersion = "0.5.1"
-
-val suspendTransformVersion = "0.6.0-beta3"
-val gradleCommon = "0.2.0"
-val ktor = "2.3.5"
+val kotlinVersion: String = libs.versions.kotlin.get()
 
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
     implementation(kotlin("serialization", kotlinVersion))
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaPluginVersion")
-    implementation("org.jetbrains.dokka:dokka-base:$dokkaPluginVersion")
+    implementation(libs.bundles.dokka)
 
     // see https://github.com/gradle-nexus/publish-plugin
     implementation("io.github.gradle-nexus:publish-plugin:1.3.0")
-    implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:$suspendTransformVersion")
 
-    implementation("love.forte.gradle.common:gradle-common-core:$gradleCommon")
-    implementation("love.forte.gradle.common:gradle-common-kotlin-multiplatform:$gradleCommon")
-    implementation("love.forte.gradle.common:gradle-common-publication:$gradleCommon")
+    // suspend transform
+    implementation(libs.suspend.transform.gradle)
+
+    // gradle common
+    implementation(libs.bundles.gradle.common)
 
     // detekt
     // 1.23.1
-    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.1")
+    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.5")
 }
 
 idea {
@@ -64,3 +58,15 @@ idea {
         isDownloadSources = true
     }
 }
+
+// tasks.withType(KotlinCompile::class.java).configureEach {
+//     kotlinOptions.languageVersion = "1.9"
+// }
+
+// val compileKotlin: KotlinCompile by tasks
+// compileKotlin.kotlinOptions.freeCompilerArgs += listOf(
+//     "-Xjvm-default=all",
+//     // "-opt-in=kotlin.RequiresOptIn",
+//     // see https://youtrack.jetbrains.com/issue/KTIJ-21563
+//     "-Xskip-prerelease-check",
+// )

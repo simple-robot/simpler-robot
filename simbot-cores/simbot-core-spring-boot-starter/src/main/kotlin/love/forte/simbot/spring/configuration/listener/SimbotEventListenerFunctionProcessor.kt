@@ -27,8 +27,8 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.quantcat.annotations.ApplyBinder
-import love.forte.simbot.quantcat.annotations.Listener
+import love.forte.simbot.quantcat.common.annotations.ApplyBinder
+import love.forte.simbot.quantcat.common.annotations.Listener
 import love.forte.simbot.quantcat.common.binder.BinderManager
 import love.forte.simbot.spring.utils.findMergedAnnotationSafely
 import love.forte.simbot.spring.utils.getKotlinFunctionSafely
@@ -48,6 +48,7 @@ import kotlin.reflect.KFunction
 
 /**
  * 用于通过 [Application] 注册 [EventListener] 的函数接口。
+ * 主要是用于通过 [SimbotEventListenerFunctionProcessor] 生成。
  */
 public fun interface SimbotEventListenerResolver {
     public fun resolve(application: Application)

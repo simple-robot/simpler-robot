@@ -23,6 +23,7 @@
 
 @file:JvmName("StandardMessages")
 @file:JvmMultifileClass
+
 package love.forte.simbot.message
 
 import kotlinx.serialization.KSerializer
@@ -36,7 +37,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.message.OfflineFileImage.Companion.toOfflineFileImage
 import love.forte.simbot.message.OfflinePathImage.Companion.toOfflinePathImage
-import love.forte.simbot.message.OfflineURLImage.Companion.toOfflineImage
+import love.forte.simbot.message.OfflineURIImage.Companion.toOfflineImage
 import love.forte.simbot.resource.*
 import java.io.File
 import java.io.IOException
@@ -51,8 +52,8 @@ import kotlin.io.path.readBytes
 /**
  * 将 [Resource] 转化为 [OfflineResourceImage]。
  *
- * 如果 [Resource] 类型为 [FileResource]、[PathResource]、[URLResource]，
- * 则会分别对应地得到 [OfflineFileImage]、[OfflinePathImage]、[OfflineURLImage]，
+ * 如果 [Resource] 类型为 [FileResource]、[PathResource]、[URIResource]，
+ * 则会分别对应地得到 [OfflineFileImage]、[OfflinePathImage]、[OfflineURIImage]，
  *
  * 否则将会使用 [SimpleOfflineResourceImage]。
  *
@@ -61,7 +62,7 @@ public actual fun Resource.toOfflineResourceImage(): OfflineResourceImage {
     return when (this) {
         is FileResource -> toOfflineFileImage()
         is PathResource -> toOfflinePathImage()
-        is URLResource -> toOfflineImage()
+        is URIResource -> toOfflineImage()
         else -> SimpleOfflineResourceImage(this)
     }
 }
@@ -216,73 +217,60 @@ internal object PathSerializer : KSerializer<Path> {
 /**
  * 基于 [URI] 的 [OfflineImage] 实现。
  *
- * [url] 的序列化会通过 [URL.toString] 作为字符串进行。
+ * [uri] 的序列化会通过 [URI.toString] 作为字符串进行。
  *
  */
 @Serializable
-@SerialName("m.std.img.offline.url")
-public data class OfflineURLImage(@Serializable(URLSerializer::class) public val url: URL) : OfflineResourceImage {
+@SerialName("m.std.img.offline.uri")
+public data class OfflineURIImage(
+    @Serializable(URISerializer::class) public val uri: URI
+) : OfflineResourceImage {
     public companion object {
 
         /**
-         * Converts the [URL] object to an [OfflineURLImage] object representing an offline image.
+         * Converts the [URI] object to an [OfflineURIImage] object representing an offline image.
          *
          * @return An OfflineURLImage object representing the offline image.
          */
         @JvmStatic
         @JvmName("of")
-        public fun URL.toOfflineImage(): OfflineURLImage = OfflineURLImage(this)
-
-        /**
-         * Converts the [URI] object to an [OfflineURLImage] object representing an offline image.
-         *
-         * @throws  IllegalArgumentException
-         * If this URL is not absolute. See [URI.toURL]
-         *
-         * @throws  MalformedURLException
-         * If a protocol handler for the URL could not be found,
-         * or if some other error occurred while constructing the URL.
-         * See [URI.toURL]
-         */
-        @JvmStatic
-        @JvmName("of")
-        @Throws(MalformedURLException::class)
-        public fun URI.toOfflineImage(): OfflineURLImage = OfflineURLImage(toURL())
+        public fun URI.toOfflineImage(): OfflineURIImage = OfflineURIImage(this)
 
         @JvmStatic
         @JvmName("of")
-        public fun URLResource.toOfflineImage(): OfflineURLImage =
-            OfflineURLImage(url).also { image ->
+        public fun URIResource.toOfflineImage(): OfflineURIImage =
+            OfflineURIImage(uri).also { image ->
                 image._resource = this
             }
     }
 
     @Transient
-    private var _resource: URLResource? = null
+    private var _resource: URIResource? = null
 
-    override val resource: URLResource
-        get() = _resource ?: url.toResource().also {
+    override val resource: URIResource
+        get() = _resource ?: uri.toResource().also {
             _resource = it
         }
 
     /**
-     * Read bytes from [url].
+     * Read bytes from [uri].
      *
+     * @throws MalformedURLException see [URI.toURL]
      * @throws IOException see [URL.readBytes]
      */
     @Throws(IOException::class)
-    override fun data(): ByteArray = url.readBytes()
+    override fun data(): ByteArray = uri.toURL().readBytes()
 }
 
-internal object URLSerializer : KSerializer<URL> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("URL", PrimitiveKind.STRING)
+internal object URISerializer : KSerializer<URI> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("URI", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): URL {
+    override fun deserialize(decoder: Decoder): URI {
         val str = decoder.decodeString()
-        return URL(str)
+        return URI.create(str)
     }
 
-    override fun serialize(encoder: Encoder, value: URL) {
+    override fun serialize(encoder: Encoder, value: URI) {
         encoder.encodeString(value.toString())
     }
 }

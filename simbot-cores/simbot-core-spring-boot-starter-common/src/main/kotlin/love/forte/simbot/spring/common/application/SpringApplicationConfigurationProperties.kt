@@ -52,7 +52,7 @@ public class SpringApplicationConfigurationProperties {
          * 需要加载的所有组件下它们对应的所有 JSON 格式 的 bot 配置文件。
          * 默认为 [`classpath:simbot-bots/\*.bot.json`][DEFAULT_JSON_RESOURCE_PATTERN]
          */
-        public var configurationJsonResources: MutableSet<String> = mutableSetOf()
+        public var configurationJsonResources: MutableSet<String> = mutableSetOf(DEFAULT_JSON_RESOURCE_PATTERN)
 
         // with types?
 
@@ -106,7 +106,7 @@ public class SpringApplicationConfigurationProperties {
          * 是否在加载 SPI providers 时候也同时加载它们的前置配置。
          * [autoInstallProviders] 为 `true` 时有效。
          */
-        public var autoInstallProviderConfigurers: Boolean = true
+        public var autoInstallProviderConfigures: Boolean = true
     }
 
     /**
@@ -127,7 +127,7 @@ public class SpringApplicationConfigurationProperties {
          * 是否在加载 SPI providers 时候也同时加载它们的前置配置。
          * [autoInstallProviders] 为 `true` 时有效。
          */
-        public var autoInstallProviderConfigurers: Boolean = true
+        public var autoInstallProviderConfigures: Boolean = true
     }
 
     /**
@@ -150,9 +150,9 @@ public class SpringApplicationConfigurationProperties {
 
 public enum class BotAutoStartMode {
     /**
-     * 依次阻塞启动。
+     * 依次同步启动。
      */
-    BLOCK,
+    SYNC,
 
     /**
      * 每个 bot 独立地异步启动。

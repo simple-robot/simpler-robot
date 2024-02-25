@@ -21,7 +21,7 @@
  *
  */
 
-import love.forte.simbot.quantcat.annotations.Filter
+import love.forte.simbot.quantcat.common.annotations.Filter
 
 /**
  *

@@ -60,7 +60,7 @@ public interface MessageReceipt : DeleteSupport {
  * @see SingleMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public sealed class StandardMessageReceipt : MessageReceipt
+public sealed interface StandardMessageReceipt : MessageReceipt
 
 /**
  * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
@@ -68,7 +68,7 @@ public sealed class StandardMessageReceipt : MessageReceipt
  * @see StandardMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public abstract class SingleMessageReceipt : StandardMessageReceipt() {
+public abstract class SingleMessageReceipt : StandardMessageReceipt {
     /**
      * 一个消息回执中存在一个ID.
      *
@@ -85,7 +85,7 @@ public abstract class SingleMessageReceipt : StandardMessageReceipt() {
  * @see SingleMessageReceipt
  * @see aggregation
  */
-public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Iterable<SingleMessageReceipt> {
+public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterable<SingleMessageReceipt> {
     /**
      * 当前聚合消息中包含的所有 [MessageReceipt] 的数量。
      */
@@ -152,7 +152,10 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
  * @param onResult 每一个元素被执行删除后的结果回执，也可能是存在异常的回执。
  * 默认情况下 [onResult] 会直接**忽略异常**。
  */
-public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(vararg options: DeleteOption, onResult: (Result<Unit>) -> Unit = { /* Ignore it. */ }) {
+public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(
+    vararg options: DeleteOption,
+    onResult: (Result<Unit>) -> Unit = { /* Ignore it. */ }
+) {
     for (receipt in this) {
         onResult(kotlin.runCatching { receipt.delete(options = options) })
     }

@@ -27,22 +27,26 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.onLaunch
-import love.forte.simbot.common.id.UUID
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.throwIfError
+import love.forte.simbot.common.id.IntID.Companion.ID
+import love.forte.simbot.event.*
+import love.forte.simbot.message.Face
+import love.forte.simbot.message.messagesOf
+import love.forte.simbot.message.toText
 import love.forte.simbot.plugin.PluginInstaller
 import love.forte.simbot.plugin.createPlugin
-import love.forte.simbot.quantcat.annotations.Listener
+import love.forte.simbot.quantcat.common.annotations.ContentTrim
+import love.forte.simbot.quantcat.common.annotations.Filter
+import love.forte.simbot.quantcat.common.annotations.Listener
 import love.forte.simbot.spring.EnableSimbot
 import love.forte.simbot.spring.configuration.SimbotPluginInstaller
-import love.forte.simbot.test.event.TestEvent
+import love.forte.simbot.test.event.TestMessageEvent
+import love.forte.simbot.test.message.TestMessageContent
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,9 +60,9 @@ import kotlin.coroutines.resume
 open class AppTestMain
 
 private val eventChannel = Channel<Event> { }
-private val continuationDeferred = CompletableDeferred<CancellableContinuation<Int>>()
+private lateinit var continuationDeferred: CompletableDeferred<CancellableContinuation<String?>>
 
-private const val VALUE = 1
+private const val VALUE = " 你好 "
 
 /**
  *
@@ -79,11 +83,33 @@ class AppTest {
     fun launchApplication() {
         runTest {
             val resumed = suspendCancellableCoroutine {
-                continuationDeferred.complete(it)
-                application.launch { eventChannel.send(TestEvent(UUID.random())) }
+                continuationDeferred = CompletableDeferred(it)
+                val event = TestMessageEvent().apply {
+                    messageContent = TestMessageContent(
+                        messages = messagesOf(VALUE.toText())
+                    )
+                }
+                application.launch { eventChannel.send(event) }
             }
 
-            Assertions.assertEquals(VALUE, resumed)
+            Assertions.assertEquals(VALUE.trim(), resumed)
+        }
+    }
+
+    @Test
+    fun launchApplicationDoubleText() {
+        runTest {
+            val resumed = suspendCancellableCoroutine {
+                continuationDeferred = CompletableDeferred(it)
+                val event = TestMessageEvent().apply {
+                    messageContent = TestMessageContent(
+                        messages = messagesOf(VALUE.toText(), Face(1.ID), VALUE.toText())
+                    )
+                }
+                application.launch { eventChannel.send(event) }
+            }
+
+            Assertions.assertEquals((VALUE + VALUE).trim(), resumed)
         }
     }
 }
@@ -97,12 +123,14 @@ private class TestPluginInstaller : SimbotPluginInstaller {
             applicationEventRegistrar.onLaunch { app ->
                 app.launch {
                     eventChannel.consumeEach { event ->
-                        println("Consume!")
                         app.launch {
                             dispatcher.push(event)
-                                .throwIfError()
-                                .catch { e -> e.printStackTrace() }
+                                .onEachError { it.content.printStackTrace(System.out) }
+                                .onEachError { Assertions.assertInstanceOf(InternalTestError::class.java, it.content) }
+                                .filterNotError()
                                 .collect { result ->
+                                    Assertions.assertFalse(result is StandardEventResult.Error)
+
                                     println("Event result: $result")
                                 }
                         }
@@ -120,14 +148,30 @@ private class TestPluginInstaller : SimbotPluginInstaller {
 private class EventListener(private val application: Application) {
 
     @Listener
-    private suspend fun Event.handle(name: String? = "forte") {
+    @ContentTrim
+    private suspend fun Event.handle(context: EventListenerContext, name: String? = "forte") {
         println("Event.id: $id")
+        println("EventListenerContext: $context")
+        println("EventListenerContext.plainText: '${context.plainText}'")
         Assertions.assertEquals("forte", name)
         println("On Event: $this, app: $application")
         val continuation = continuationDeferred.await()
         suspendCancellableCoroutine {
             it.resume(Unit)
-            continuation.resume(VALUE)
+            continuation.resume(context.plainText)
         }
     }
+
+    @Listener
+    @Filter("hello")
+    private fun handleWithErrorButBeFiltered(e: Event) {
+        throw InternalTestError()
+    }
+
+    @Listener
+    private fun handleWithError(e: Event) {
+        throw InternalTestError()
+    }
 }
+
+private class InternalTestError : RuntimeException()

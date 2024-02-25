@@ -60,7 +60,9 @@ public fun interface JBlockingApplicationLauncher<out A : Application> {
 }
 
 private class JBlockingApplicationLauncherImpl<out A : Application>(
-    private val handler: JBlockingApplicationLauncher<A>,
+    // TODO private:
+    //  e: file:///G:/code/simbot/simbot-api/src/jvmMain/kotlin/love/forte/simbot/application/ApplicationFactory.jvm.kt:78:35 Cannot access 'val handler: JBlockingApplicationLauncher<Application>': it is private/*private to this*/ in 'love/forte/simbot/application/JBlockingApplicationLauncherImpl'
+    val handler: JBlockingApplicationLauncher<A>,
     private val handlerContext: CoroutineContext
 ) : ApplicationLauncher<A> {
     override suspend fun launch(): A {
@@ -73,8 +75,8 @@ private class JBlockingApplicationLauncherImpl<out A : Application>(
         if (this === other) return true
         if (other !is JBlockingApplicationLauncherImpl<*>) return false
 
-        if (handler != other.handler) return false
         if (handlerContext != other.handlerContext) return false
+        if (this.handler != other.handler) return false
 
         return true
     }

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +28,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
@@ -40,8 +41,8 @@ import kotlin.jvm.JvmSynthetic
  * ## 协程上下文
  *
  * 当通过 [EventProcessor.push] 推送一个事件并得到一个事件处理链时，
- * 这其中的每一个事件处理器所处上下文可由 [EventDispatcherConfiguration.coroutineContext]
- * 中的配置值或事件处理链 [Flow] 的结果来决定。
+ * 这其中的每一个事件处理器所处上下文会通过 [Flow.flowOn] 运行在
+ * [EventDispatcherConfiguration.coroutineContext] 中。
  *
  * ```kotlin
  * val app = launchApplication(...) {
@@ -58,13 +59,14 @@ import kotlin.jvm.JvmSynthetic
  * }
  *
  * val flow = app.eventDispatcher.push(event)
+ *     // 上游的逻辑会通过 flowOn 运行在 context1 中
  *     .onEach { ... } // 会切换到 context3 上
  *     .flowOn(context3) // 将上游调度器切换至 context3
  *     .onEach { ... } // 会在 collect 所在的默认（当前）环境中
  *     .collect { ... } // 在默认（当前）环境收集结果
  * ```
  *
- * 参考上述示例，协程上下文的使用“优先级”可近似地参考为 `context2` > `context1` > `context3` 。
+ * 参考上述示例，协程上下文的使用“优先级”可“近似地”参考为 `context2` > `context1` > `context3` 。
  *
  * ## Java API
  *
@@ -91,26 +93,12 @@ public interface EventProcessor {
      * 推送一个事件，
      * 得到内部所有事件依次将其处理后得到最终的结果流。
      *
-     * 结果流是 _冷流_ 。
-     *
+     * 结果流是 _冷流_ ，
      * 只有当对结果进行收集时事件才会真正的被处理。
-     * 可以通过响应的流对事件处理量进行控制。
-     *
      * 事件内部实际的调度器由构造 [EventProcessor] 时的配置属性和具体实现为准。
      *
-     * 返回结果的 [Flow] 中每一次事件调度都可能伴随着上下文的切换（通过 [EventDispatcherConfiguration.coroutineContext] 的配置），
-     * 但并非通过 [Flow.flowOn] 进行切换，不会导致实际执行的事件调度逻辑比收集到的逻辑更多。
-     *
-     * ```kotlin
-     * eventDispatcher.push(event)
-     *   .take(3)
-     *   .collect { ... } // flow 中只会执行优先级最高的三个 listener 并收集到它们的结果
-     *
-     * eventDispatcher.push(event)
-     *      .flowOn(Dispatchers.IO) // 切换事件调度流程中的上下文
-     *      .take(3)
-     *      .collect { ... } // flow 中切换了调度上下文，这可能会使所有的listener都被实际上的执行，但是只收集到3个最新的结果。
-     * ```
+     * 返回结果的 [Flow] 会通过 [Flow.flowOn]
+     * 使上游切换到 [EventDispatcherConfiguration.coroutineContext] 中。
      *
      * ## 异常
      *
@@ -178,6 +166,32 @@ public interface EventProcessor {
     }
 }
 
+
+/**
+ * 将事件推送并异步处理。
+ */
+@JvmSynthetic
+public fun EventProcessor.pushAndLaunch(
+    scope: CoroutineScope,
+    event: Event,
+    collector: FlowCollector<EventResult>? = null,
+): Job = scope.launch {
+    with(push(event)) {
+        if (collector != null) collect(collector) else collect()
+    }
+}
+
+/**
+ * 将事件推送并异步处理。
+ */
+@JvmSynthetic
+public inline fun EventProcessor.pushAndLaunchThen(
+    scope: CoroutineScope,
+    event: Event,
+    crossinline useFlow: (Flow<EventResult>) -> Unit
+): Job = scope.launch {
+    useFlow(push(event))
+}
 
 /**
  * 将事件推送并收集处理。

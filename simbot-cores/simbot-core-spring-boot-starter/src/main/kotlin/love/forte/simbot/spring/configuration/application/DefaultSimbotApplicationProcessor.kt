@@ -30,7 +30,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.*
-import love.forte.simbot.component.Component
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -38,6 +37,7 @@ import love.forte.simbot.spring.common.BotAutoStartOnFailureException
 import love.forte.simbot.spring.common.BotConfigResourceLoadOnFailureException
 import love.forte.simbot.spring.common.MismatchConfigurableBotManagerException
 import love.forte.simbot.spring.common.application.*
+import love.forte.simbot.spring.configuration.SimbotEventDispatcherProcessor
 import love.forte.simbot.spring.configuration.listener.SimbotEventListenerResolver
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,13 +63,15 @@ public open class DefaultSimbotSpringApplicationProcessorConfiguration {
         properties: SpringApplicationConfigurationProperties,
         @Autowired(required = false) eventListenerResolvers: List<SimbotEventListenerResolver>? = null,
         @Autowired(required = false) preConfigurer: List<SimbotApplicationPreConfigurer>? = null,
-        @Autowired(required = false) postConfigurer: List<SimbotApplicationPostConfigurer>? = null
+        @Autowired(required = false) postConfigurer: List<SimbotApplicationPostConfigurer>? = null,
+        @Autowired(required = false) eventDispatcherProcessor: SimbotEventDispatcherProcessor,
     ): DefaultSimbotApplicationProcessor =
         DefaultSimbotApplicationProcessor(
             properties = properties,
             eventListenerResolvers = eventListenerResolvers ?: emptyList(),
             preConfigurer = preConfigurer ?: emptyList(),
             postConfigurer = postConfigurer ?: emptyList(),
+            eventDispatcherProcessor
         )
 
     public companion object {
@@ -91,7 +93,8 @@ public class DefaultSimbotApplicationProcessor(
     private val properties: SpringApplicationConfigurationProperties,
     private val eventListenerResolvers: List<SimbotEventListenerResolver>,
     private val preConfigurer: List<SimbotApplicationPreConfigurer>,
-    private val postConfigurer: List<SimbotApplicationPostConfigurer>
+    private val postConfigurer: List<SimbotApplicationPostConfigurer>,
+    private val eventDispatcherProcessor: SimbotEventDispatcherProcessor,
 ) : SimbotApplicationProcessor {
     override fun process(application: SpringApplication) {
         preConfigurer.forEach {
@@ -114,8 +117,8 @@ public class DefaultSimbotApplicationProcessor(
 
 
     private fun process0(application: SpringApplication) {
+        eventDispatcherProcessor.process(application.eventDispatcher)
         loadBots(application)
-
     }
 
     private fun loadBots(application: SpringApplication) {
@@ -136,7 +139,6 @@ private class BotAutoLoader(
     @OptIn(ExperimentalSerializationApi::class)
     val json = Json {
         isLenient = true
-        classDiscriminator = Component.CLASS_DISCRIMINATOR
         ignoreUnknownKeys = true
         allowTrailingComma = true
         decodeEnumsCaseInsensitive = true
@@ -363,7 +365,7 @@ private class BotAutoLoader(
 
         if (autoStartBots) {
             when (autoStartMode) {
-                BotAutoStartMode.BLOCK -> startBotsInBlocking(policy, botList)
+                BotAutoStartMode.SYNC -> startBotsInBlocking(policy, botList)
                 BotAutoStartMode.ASYNC -> startBotsInAsync(policy, botList)
             }
         }
