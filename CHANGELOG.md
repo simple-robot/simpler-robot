@@ -1,3 +1,46 @@
+# v4.0.0-beta1
+
+> Release & Pull Notes: [v4.0.0-beta1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta1) 
+
+- build(deps): bump org.jetbrains.kotlinx:lincheck from 2.25 to 2.26 ([`143dd695`](https://github.com/simple-robot/simpler-robot/commit/143dd695))
+- refactor: 优化 **持续会话** 模块内部分API、Java友好API和注释,并配置其发布; refactor: 在 common-core 模块中增加与虚拟线程相关的辅助API ([`ddbc6494`](https://github.com/simple-robot/simpler-robot/commit/ddbc6494))
+- refactor: 优化/改变 EventProcessor.push 默认实现中的行为：现在会直接使用 flowOn 来指定事件处理器所处的协程上下文 ([`6b67bf98`](https://github.com/simple-robot/simpler-robot/commit/6b67bf98))
+- build(deps): bump kotlinx-serialization from 1.6.2 to 1.6.3 ([`dde23bd5`](https://github.com/simple-robot/simpler-robot/commit/dde23bd5))
+- build(deps): bump kotlinx-coroutines from 1.8.0-RC2 to 1.8.0 ([`1517823e`](https://github.com/simple-robot/simpler-robot/commit/1517823e))
+- refactor: 改善 session 相关API，支持“延后恢复” ([`0d806e3d..613b688c`](https://github.com/simple-robot/simpler-robot/compare/0d806e3d..cc292184))
+
+    <details><summary><code>0d806e3d..613b688c</code></summary>
+
+    - [`0d806e3d`](https://github.com/simple-robot/simpler-robot/commit/0d806e3d)
+    - [`613b688c`](https://github.com/simple-robot/simpler-robot/commit/613b688c)
+
+    </details>
+
+- refactor: (WIP) 调整 session 相关API ([`cc292184`](https://github.com/simple-robot/simpler-robot/commit/cc292184))
+- refactor: 改善 session 相关API，支持“延后恢复” ([`0c053dc9`](https://github.com/simple-robot/simpler-robot/commit/0c053dc9))
+- fix: 修复 `flowCollectable` 错误的返回值类型问题 ([`b6717346`](https://github.com/simple-robot/simpler-robot/commit/b6717346))
+- fix: suspend test timeout ([`0dcbd707`](https://github.com/simple-robot/simpler-robot/commit/0dcbd707))
+- refactor: (WIP) 调整 session 相关API ([`d819f1dc`](https://github.com/simple-robot/simpler-robot/commit/d819f1dc))
+- fix: 修复 `flowCollectable` 错误的返回值类型问题 ([`3d12243f`](https://github.com/simple-robot/simpler-robot/commit/3d12243f))
+- fix: Unit test timeout ([`57be7f21..da5c4b9b`](https://github.com/simple-robot/simpler-robot/compare/57be7f21..eaa1bd7e))
+
+    <details><summary><code>57be7f21..da5c4b9b</code></summary>
+
+    - [`57be7f21`](https://github.com/simple-robot/simpler-robot/commit/57be7f21)
+    - [`da5c4b9b`](https://github.com/simple-robot/simpler-robot/commit/da5c4b9b)
+
+    </details>
+
+- refactor: 将 suspend-transformer 模块的异步相关API和 `Collectable` 的异步相关API内所有的 `CoroutineScope` 参数默认值调整为 `GlobalScope` 并增加与之相关的部分警告或说明 ([`eaa1bd7e`](https://github.com/simple-robot/simpler-robot/commit/eaa1bd7e))
+- fix: 修复 `flowCollectable` 错误的返回值类型问题 ([`4390ca65`](https://github.com/simple-robot/simpler-robot/commit/4390ca65))
+- refactor: 将 suspend-transformer 模块的异步相关API和 `Collectable` 的异步相关API内所有的 `CoroutineScope` 参数默认值调整为 `GlobalScope` 并增加与之相关的部分警告或说明 ([`014d6564`](https://github.com/simple-robot/simpler-robot/commit/014d6564))
+- feat: 实现持续会话的基本内容 ([`c36b9c47`](https://github.com/simple-robot/simpler-robot/commit/c36b9c47))
+- fix: concurrentMap在native上改为使用可重入同步锁实现 ([`7a79552e`](https://github.com/simple-robot/simpler-robot/commit/7a79552e))
+- pref: 优化针对v4.0.0-dev16及以下版本的JVM二进制兼容性 ([`2ed0524a`](https://github.com/simple-robot/simpler-robot/commit/2ed0524a))
+- test: 调整JVMConfig的test相关配置 ([`b83ab3c0`](https://github.com/simple-robot/simpler-robot/commit/b83ab3c0))
+- test: 增加几个使用 lincheck 针对并发相关实现的测试 ([`b52dd18f`](https://github.com/simple-robot/simpler-robot/commit/b52dd18f))
+- pref: 为 Services 增加一个可用来区分JVM的扩展 ([`70ccda3d`](https://github.com/simple-robot/simpler-robot/commit/70ccda3d))
+
 # v4.0.0-dev18
 > [!warning]
 > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
