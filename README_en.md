@@ -92,6 +92,7 @@ to see the development branch of simbot3.
 ## 协助我们
 Lighting up a **✨star🌟** for us is the greatest motivation and support we can give to keep going!
 
+- Go to [CONTRIBUTING](docs/CONTRIBUTING.md) for more information!
 - You can contribute to the project code via [**Pull Request**][pr].
 - You can make a suggestion or give feedback on an issue via [**Issues**][issues].
 - You can communicate with other people or the simbot development team via [**Discussions**][discussions].
