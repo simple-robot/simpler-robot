@@ -1,0 +1,59 @@
+name: Publish V4 KDoc
+on:
+  workflow_dispatch:
+
+
+env:
+  IS_CI: true
+  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
+
+jobs:
+  deploy-doc:
+    name: Deploy V4 API Doc
+    runs-on: macos-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle generate documentation
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.5
+          arguments: |
+            dokkaHtmlMultiModule
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.daemon=false
+        env:
+          SIMBOT_IS_SNAPSHOT: false
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/main-v4
+          publish_dir: ./build/dokka/html
+          destination_dir: main-v4
