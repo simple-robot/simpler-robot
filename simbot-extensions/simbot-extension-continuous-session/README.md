@@ -1,4 +1,4 @@
-# 持续会话扩展
+# Module simbot-extension-continuous-session
 
 > [!warning]
 > 尚在试验阶段，随时可能删除或被调整
