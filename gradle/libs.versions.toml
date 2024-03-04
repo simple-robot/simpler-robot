@@ -6,7 +6,7 @@ kotlinx-serialization = "1.6.3"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
-ktor = "2.3.8"
+ktor = "2.3.9"
 slf4j = "2.0.12"
 ksp = "1.9.22-1.0.17"
 # https://square.github.io/kotlinpoet/
