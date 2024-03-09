@@ -11,6 +11,8 @@ slf4j = "2.0.12"
 ksp = "1.9.22-1.0.17"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
+# https://github.com/Kotlin/kotlinx-benchmark
+kotlinxBenchmark = "0.4.10"
 reactor = "3.6.2"
 # simbots
 suspendTransform = "0.7.0-beta1"
@@ -128,8 +130,13 @@ gradle-common-publication = { group = "love.forte.gradle.common", name = "gradle
 ## https://mockk.io/
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
+# benchmark
+kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
+kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
