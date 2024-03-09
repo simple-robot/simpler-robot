@@ -27,6 +27,7 @@
 package love.forte.simbot.extension.continuous.session
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ClosedSendChannelException
@@ -103,8 +104,14 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
     private val parentJob = coroutineContext[Job]
 
     override fun computeSession(key: Any, inSession: InSession<T, R>): SimpleSessionImpl<T, R> {
-        val job = Job(parentJob)
-        val channel = Channel<SessionData<T, R>>()
+        val job = SupervisorJob(parentJob)
+        val channel = Channel<SessionData<T, R>>(
+            capacity = Channel.RENDEZVOUS,
+            onBufferOverflow = BufferOverflow.SUSPEND,
+            onUndeliveredElement = { (value, c) ->
+                c.cancel(SessionPushOnFailureException("Undelivered value: $value"))
+            })
+
         val session = SimpleSessionImpl(key, job, channel, subScope)
 
         job.invokeOnCompletion {
@@ -232,7 +239,13 @@ private class SimpleSessionImpl<T, R>(
 
         val (value, continuation) = receive()
         val handle =
-            job.invokeOnCompletion { cause -> continuation.resumeWithException(SessionCompletedWithoutResumeException(cause)) }
+            job.invokeOnCompletion { cause ->
+                continuation.resumeWithException(
+                    SessionCompletedWithoutResumeException(
+                        cause
+                    )
+                )
+            }
 
         return createSimpleSessionContinuation(value, continuation, handle)
     }
