@@ -1,11 +1,17 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
-    <h2>
-        - Simple Robot -
-    </h2>
-    <small>
-        ~ simbot v4 ~      
+<a href="https://simbot.forte.love/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".simbot/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".simbot/logo.svg">
+  <img alt="simbot logo" src=".simbot/logo.svg" width="230" />
+</picture>
+</a>
+<h2>
+    - Simple Robot -
+</h2>
+<small>
+    ~ simbot v4 ~      
 </small>
 <br>
     <span>
@@ -113,7 +119,7 @@ Lighting up a **✨star🌟** for us is the greatest motivation and support we c
 ## Special thanks
 
 <a href="https://www.jetbrains.com/?from=simpler-robot">
-<img src=".simbot/jetbrains.png" width="300" alt="jetbrains" />
+<img src=".simbot/jetbrains.svg" width="300" alt="jetbrains" />
 </a>
 
 [jetbrains]: https://www.jetbrains.com/?from=simpler-robot
