@@ -13,7 +13,7 @@ ksp = "1.9.22-1.0.17"
 kotlinPoet = "1.16.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 kotlinxBenchmark = "0.4.10"
-reactor = "3.6.2"
+reactor = "3.6.4"
 # simbots
 suspendTransform = "0.7.0-beta1"
 suspendReversal = "0.2.0"
