@@ -53,32 +53,23 @@
 
 ## 简介
 
-**`Simple Robot`** v4 是一个基于 **KMP** 的多平台 Bot 风格高性能异步事件调度框架（下文简称simbot），
-提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写 Bot 风格的事件调度应用。
-目前主要应用于对接各种类型的 Bot 应用平台/框架，并提供部分组件库实现。
+**`Simple Robot`** (v4) 是一个基于[Kotlin协程](https://github.com/Kotlin/kotlinx.coroutines)
+的[Kotlin多平台](https://kotlinlang.org/docs/multiplatform.html)
+**Bot风格**高性能异步事件调度框架（下文简称simbot），
+异步高效、Java友好~
 
-**`simbot4`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发、
-基于 [KMP](https://kotlinlang.org/docs/multiplatform.html) 支持多平台，
-并兼容Java（**jdk11+**）等JVM平台语言，
-且提供大量 Java 友好 API 和 Spring Boot starter，协助你快速开发。
+simbot提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写**Bot风格**的事件调度应用。
+主要应用于对接各种类型的Bot应用平台/框架，并提供部分组件库实现。
 
-本仓库为 simbot v3、v4 版本的仓库，提供 simbot 标准API的定义、simbot 核心库的实现以及 Spring Boot starter 的实现等核心、基础的内容。
+## 文档与引导
 
-> [!tip]
-> 前往 [GitHub 组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、社群等相关信息！
+- [组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、以及社群等相关信息！
+- [社群](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔
+- [应用手册][doc-homepage]
+- [文档引导站&API文档](https://docs.simbot.forte.love)
 
-## 文档
 
-simbot4应用手册: [simbot.forte.love][doc-homepage]
-
-> [!note]
-> 也包括历届版本的文档地址引导
-
-文档引导站&API Doc: [docs.simbot.forte.love](https://docs.simbot.forte.love)
-
-## V3
-
-切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 来查看 simbot3 的开发分支。
+> 切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 可查看 simbot v3 的历史分支。
 
 ## 协助我们
 为我们点亮一个 **✨star🌟** 便是能够给予我们继续走下去的最大动力与支持！
