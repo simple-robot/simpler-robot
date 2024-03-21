@@ -61,6 +61,59 @@
 simbot提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写**Bot风格**的事件调度应用。
 主要应用于对接各种类型的Bot应用平台/框架，并提供部分组件库实现。
 
+simbot的**平台功能**由组件驱动，安装不同的组件库来获得不同的功能支持。
+
+举个例子，在simbot中使用KOOK和QQ频道：
+
+```Kotlin
+suspend fun main() {
+    val application = launchSimpleApplication {
+        // 安装KOOK和QQ频道组件库
+        useKook()
+        useQQGuild()
+    }
+    
+    application.kookBots {
+        // ... 注册kook bot，并在此之后可处理到kook的相关事件
+        register(...) { ... }.start()
+    }
+    application.qqGuildBots {
+        // ... 注册QQ频道bot，并在此之后可处理到QQ频道的相关事件
+        register(...) { ... }.start()
+    }
+    
+    // 注册各种事件处理器
+    application.listeners {
+        // 注册一个事件处理器
+        // ChatChannelMessageEvent 是由simbot API定义的泛用类型，代表所有子频道消息事件
+        // 其中就包括QQ频道的公域消息事件, 或者KOOK的频道消息事件
+        listen<ChatChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
+
+            // 返回事件处理结果
+            EventResult.empty()
+        }
+
+        // 再注册一个事件处理器
+        // 明确监听QQ频道的公域消息事件
+        // 使用 process 不需要返回值
+        process<QGAtMessageCreateEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
+
+        // 再注册一个事件处理器
+        // 明确监听KOOK的频道消息事件
+        // 使用 process 不需要返回值
+        process<KookChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
+    }
+}
+```
+
 ## 文档与引导
 
 - [组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、以及社群等相关信息！
