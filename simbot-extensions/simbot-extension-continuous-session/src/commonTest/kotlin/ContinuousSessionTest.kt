@@ -53,6 +53,7 @@ class ContinuousSessionTest {
                 val ex = assertFails {
                     session.push(4)
                 }
+                println(ex)
                 ex.printStackTrace()
                 assertIs<SessionPushOnFailureException>(ex)
                 session.join()
