@@ -66,7 +66,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
         return when (strategy) {
             FAILURE -> {
                 sessions.computeValue(key) { k, old ->
-                    if (old != null) throw IllegalStateException("Session with key $key already exists")
+                    if (old != null && old.isActive) throw IllegalStateException("Session with key $key already exists")
 
                     computeSession(k, inSession)
                 }!!
@@ -109,7 +109,7 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
             capacity = Channel.RENDEZVOUS,
             onBufferOverflow = BufferOverflow.SUSPEND,
             onUndeliveredElement = { (value, c) ->
-                c.cancel(SessionPushOnFailureException("Undelivered value: $value"))
+                c.resumeWithException(SessionPushOnFailureException("Undelivered value: $value"))
             })
 
         val session = SimpleSessionImpl(key, job, channel, subScope)
