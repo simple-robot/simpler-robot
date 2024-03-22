@@ -33,7 +33,7 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
 /**
- * An [InputFile](https://core.telegram.org/bots/api#inputfile).
+ * 一个可以向 Ktor 表单请求中输入的文件信息。
  *
  * Tip: Create [InputFile] via static methods in `InputFiles` on JVM.
  *
