@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 dokka = "1.9.20"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
@@ -8,7 +8,7 @@ spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.8"
 slf4j = "2.0.12"
-ksp = "1.9.22-1.0.17"
+ksp = "1.9.23-1.0.19"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
 # https://github.com/Kotlin/kotlinx-benchmark

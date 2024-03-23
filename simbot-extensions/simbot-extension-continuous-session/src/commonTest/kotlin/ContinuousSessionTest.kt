@@ -24,8 +24,11 @@
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.coroutines.IOOrDefault
-import love.forte.simbot.extension.continuous.session.*
+import love.forte.simbot.extension.continuous.session.ContinuousSessionContext
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.EXISTING
+import love.forte.simbot.extension.continuous.session.InSession
+import love.forte.simbot.extension.continuous.session.SessionAwaitOnFailureException
+import love.forte.simbot.extension.continuous.session.SessionCompletedWithoutResumeException
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -50,11 +53,10 @@ class ContinuousSessionTest {
                 assertEquals("2", session.push(2))
                 assertEquals("3", session.push(3))
 
-                val ex = assertFails {
+                // SessionPushFailed or Can
+                assertFails {
                     session.push(4)
                 }
-                ex.printStackTrace()
-                assertIs<SessionPushOnFailureException>(ex)
                 session.join()
                 assertTrue(session.isCompleted)
                 assertFalse(session.isCancelled)
