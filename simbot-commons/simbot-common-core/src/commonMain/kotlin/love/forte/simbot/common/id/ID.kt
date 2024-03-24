@@ -646,9 +646,21 @@ public sealed class NumericalID : ID() {
     public abstract fun toLong(): Long
 
     /**
+     * 将数字值转化为 [ULong]。
+     */
+    public open fun toULong(): ULong =
+        toLong().toULong()
+
+    /**
      * 将数字值转化为 [Int]。类似于 [Number.toInt]
      */
     public abstract fun toInt(): Int
+
+    /**
+     * 将数字值转化为 [UInt]。
+     */
+    public open fun toUInt(): UInt =
+        toInt().toUInt()
 
     /**
      * 将数字值转化为 [Short]。类似于 [Number.toShort]
@@ -683,7 +695,7 @@ public sealed class NumericalID : ID() {
  * - [IntID] 32位有符号整型
  * - [LongID] 64位有符号整型
  *
- * 如果想要作为ID的数字已经超过64位有符号 ([LongID]) 锁能表示的最大数字，
+ * 如果想要作为ID的数字已经超过64位有符号 ([LongID]) 所能表示的最大数字，
  * 那么建议使用其他类型来表示，例如 [ULongID] 或 [StringID]
  *
  *
@@ -698,7 +710,7 @@ public sealed class SignedNumericID : NumericalID()
  * - [UIntID] 32位无符号整型
  * - [ULongID] 64位无符号整型
  *
- * 如果想要作为ID的数字已经超过64位无符号 ([ULongID]) 锁能表示的最大数字，
+ * 如果想要作为ID的数字已经超过64位无符号 ([ULongID]) 所能表示的最大数字，
  * 那么建议使用其他类型来表示，例如 [StringID]
  *
  * 在 Java 中对无符号数字的操作需要有些注意的地方。
@@ -782,6 +794,7 @@ public class UIntID private constructor(@get:JvmName("getValue") public val valu
     override fun toFloat(): Float = value.toFloat()
     override fun toLong(): Long = value.toLong()
     override fun toInt(): Int = value.toInt()
+    override fun toUInt(): UInt = value
     override fun toShort(): Short = value.toShort()
     override fun toByte(): Byte = value.toByte()
     override fun toString(): String = value.toString()
@@ -895,6 +908,7 @@ public class ULongID private constructor(@get:JvmName("getValue") public val val
     override fun toDouble(): Double = value.toDouble()
     override fun toFloat(): Float = value.toFloat()
     override fun toLong(): Long = value.toLong()
+    override fun toULong(): ULong = value
     override fun toInt(): Int = value.toInt()
     override fun toShort(): Short = value.toShort()
     override fun toByte(): Byte = value.toByte()
