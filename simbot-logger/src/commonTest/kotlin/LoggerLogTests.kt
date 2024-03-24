@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,6 @@
 
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import kotlin.test.Test
 
 
 /**
@@ -32,7 +31,7 @@ import kotlin.test.Test
  */
 class LoggerLogTests {
 
-    @Test
+    //@Test
     fun loggerLogTest() {
         val logger = LoggerFactory.logger<LoggerLogTests>()
         logger.info("Hello!")

@@ -1,3 +1,8 @@
+# v4.0.0-beta3
+
+> Release & Pull Notes: [v4.0.0-beta3](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta3) 
+
+
 # v4.0.0-beta2
 
 > Release & Pull Notes: [v4.0.0-beta2](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta2) 
