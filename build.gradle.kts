@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -30,6 +30,10 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("simbot.nexus-publish")
     id("simbot.changelog-generator")
+
+    // https://www.jetbrains.com/help/qodana/code-coverage.html
+    // https://github.com/Kotlin/kotlinx-kover
+    id("org.jetbrains.kotlinx.kover") version "0.7.6"
 }
 
 setup(P.Simbot)
@@ -47,6 +51,8 @@ repositories {
     }
     mavenLocal()
 }
+
+val root = project
 
 subprojects {
     repositories {
@@ -79,7 +85,10 @@ subprojects {
                 logger.info("Enable K2 for {}", this)
             }
         }
+
+        applyKover(root)
     }
+
 }
 
 fun Project.applyDetekt() {
@@ -94,6 +103,18 @@ fun Project.applyDetekt() {
 //             detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 //         }
 //     }
+}
+
+fun Project.applyKover(rp: Project) {
+    val hasKt = (plugins.hasPlugin("org.jetbrains.kotlin.jvm")
+            || plugins.hasPlugin("org.jetbrains.kotlin.multiplatform"))
+
+    if (hasKt) {
+        apply(plugin = "org.jetbrains.kotlinx.kover")
+        rp.dependencies {
+            kover(project(path))
+        }
+    }
 }
 
 idea {

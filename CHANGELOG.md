@@ -1,3 +1,14 @@
+# v4.0.0-beta2
+
+> Release & Pull Notes: [v4.0.0-beta2](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta2) 
+
+- feat(ID): 提供更多与 ID 相关的API ([`72719264`](https://github.com/simple-robot/simpler-robot/commit/72719264))
+- fix: 修复ContinuousSession测试问题 ([`3dd75162`](https://github.com/simple-robot/simpler-robot/commit/3dd75162))
+- fix: 修复ContinuousSession测试超时问题 ([`6086471d`](https://github.com/simple-robot/simpler-robot/commit/6086471d))
+- deps: 更新Kotlin到1.9.23 ([`a93c8d0f`](https://github.com/simple-robot/simpler-robot/commit/a93c8d0f))
+- module: 增加一个模块 common-ktor-inputfile 用来提供更简单的向 Ktor 提供表单文件信息的类型 `InputFile` ([`7df76e50`](https://github.com/simple-robot/simpler-robot/commit/7df76e50))
+- build(deps): bump dokka from 1.9.10 to 1.9.20 ([`12648620`](https://github.com/simple-robot/simpler-robot/commit/12648620))
+
 # v4.0.0-beta1
 
 > Release & Pull Notes: [v4.0.0-beta1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta1) 

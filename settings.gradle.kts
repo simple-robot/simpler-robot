@@ -33,10 +33,13 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
+// benchmarks
+// include(":benchmarks:v4-v3-core-benchmark")
+
 // internals
 include(":internal-processors:interface-uml-processor")
 
-
+// gradle
 include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
 include(":simbot-commons:simbot-common-annotations")
@@ -44,6 +47,7 @@ include(":simbot-commons:simbot-common-collection")
 include(":simbot-commons:simbot-common-atomic")
 include(":simbot-commons:simbot-common-apidefinition")
 include(":simbot-commons:simbot-common-core")
+include(":simbot-commons:simbot-common-ktor-inputfile")
 include(":simbot-commons:simbot-common-suspend-runner")
 include(":simbot-commons:simbot-common-stage-loop")
 include(":simbot-api")

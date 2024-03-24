@@ -27,6 +27,7 @@
 package love.forte.simbot.extension.continuous.session
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ClosedSendChannelException
@@ -65,7 +66,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
         return when (strategy) {
             FAILURE -> {
                 sessions.computeValue(key) { k, old ->
-                    if (old != null) throw IllegalStateException("Session with key $key already exists")
+                    if (old != null && old.isActive) throw IllegalStateException("Session with key $key already exists")
 
                     computeSession(k, inSession)
                 }!!
@@ -103,15 +104,21 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
     private val parentJob = coroutineContext[Job]
 
     override fun computeSession(key: Any, inSession: InSession<T, R>): SimpleSessionImpl<T, R> {
-        val job = Job(parentJob)
-        val channel = Channel<SessionData<T, R>>()
+        val job = SupervisorJob(parentJob)
+        val channel = Channel<SessionData<T, R>>(
+            capacity = Channel.RENDEZVOUS,
+            onBufferOverflow = BufferOverflow.SUSPEND,
+            onUndeliveredElement = { (value, c) ->
+                c.resumeWithException(SessionPushOnFailureException("Undelivered value: $value"))
+            })
+
         val session = SimpleSessionImpl(key, job, channel, subScope)
 
         job.invokeOnCompletion {
             sessions.removeValue(key) { session }
         }
         job.invokeOnCompletion {
-            channel.close(it)
+            channel.cancel(it?.let { e -> CancellationException(e.message, e) })
         }
 
         launchScope.launch {
@@ -156,38 +163,51 @@ private class SimpleSessionImpl<T, R>(
         job.join()
     }
 
-    override suspend fun push(value: T): R = suspendCancellableCoroutine { continuation ->
-        val data = SessionData(value, continuation)
-        launchScope.launch {
-            kotlin.runCatching {
-                channel.send(data)
-            }.onFailure { e ->
-                when (e) {
-                    is ClosedSendChannelException -> {
-                        data.continuation.resumeWithException(
-                            SessionPushOnFailureException("Push to session channel (key=$key) failed: ${e.message}", e)
-                        )
-                    }
+    override suspend fun push(value: T): R {
+        checkJob()
 
-                    is ClosedReceiveChannelException -> {
-                        data.continuation.resumeWithException(
-                            SessionPushOnFailureException("Push to session channel (key=$key) failed: ${e.message}", e)
-                        )
-                    }
-
-                    is CancellationException -> {
-                        data.continuation.cancel(
-                            CancellationException(
-                                "Push to session channel (key=$key) failed: ${e.message}",
-                                e.cause?.let { SessionPushOnFailureException(e.message, it) }
+        return suspendCancellableCoroutine { continuation ->
+            val data = SessionData(value, continuation)
+            launchScope.launch {
+                kotlin.runCatching {
+                    channel.send(data)
+                }.onFailure { e ->
+                    when (e) {
+                        is ClosedSendChannelException -> {
+                            data.continuation.resumeWithException(
+                                SessionPushOnFailureException(
+                                    "Push to session channel (key=$key) failed: ${e.message}",
+                                    e
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    else -> {
-                        data.continuation.resumeWithException(
-                            SessionPushOnFailureException("Push to session channel (key=$key) failed: ${e.message}", e)
-                        )
+                        is ClosedReceiveChannelException -> {
+                            data.continuation.resumeWithException(
+                                SessionPushOnFailureException(
+                                    "Push to session channel (key=$key) failed: ${e.message}",
+                                    e
+                                )
+                            )
+                        }
+
+                        is CancellationException -> {
+                            data.continuation.cancel(
+                                CancellationException(
+                                    "Push to session channel (key=$key) failed: ${e.message}",
+                                    e.cause?.let { SessionPushOnFailureException(e.message, it) }
+                                )
+                            )
+                        }
+
+                        else -> {
+                            data.continuation.resumeWithException(
+                                SessionPushOnFailureException(
+                                    "Push to session channel (key=$key) failed: ${e.message}",
+                                    e
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -232,7 +252,13 @@ private class SimpleSessionImpl<T, R>(
 
         val (value, continuation) = receive()
         val handle =
-            job.invokeOnCompletion { cause -> continuation.resumeWithException(SessionCompletedWithoutResumeException(cause)) }
+            job.invokeOnCompletion { cause ->
+                continuation.resumeWithException(
+                    SessionCompletedWithoutResumeException(
+                        cause
+                    )
+                )
+            }
 
         return createSimpleSessionContinuation(value, continuation, handle)
     }

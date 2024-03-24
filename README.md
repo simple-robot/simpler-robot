@@ -1,10 +1,16 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
-    <h2>
-        - Simple Robot -
-    </h2>
-    <small>
+<a href="https://simbot.forte.love/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".simbot/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".simbot/logo.svg">
+  <img alt="simbot logo" src=".simbot/logo.svg" width="260" />
+</picture>
+</a>
+<h2>
+    - Simple Robot -
+</h2>
+<small>
         ~ simbot v4 ~      
 </small>
 <br>
@@ -47,32 +53,76 @@
 
 ## 简介
 
-**`Simple Robot`** v4 是一个基于 **KMP** 的多平台 Bot 风格高性能异步事件调度框架（下文简称simbot），
-提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写 Bot 风格的事件调度应用。
-目前主要应用于对接各种类型的 Bot 应用平台/框架，并提供部分组件库实现。
+**`Simple Robot`** (v4) 是一个基于[Kotlin协程](https://github.com/Kotlin/kotlinx.coroutines)
+的[Kotlin多平台](https://kotlinlang.org/docs/multiplatform.html)
+**Bot风格**高性能异步事件调度框架（下文简称simbot），
+异步高效、Java友好~
 
-**`simbot4`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发、
-基于 [KMP](https://kotlinlang.org/docs/multiplatform.html) 支持多平台，
-并兼容Java（**jdk11+**）等JVM平台语言，
-且提供大量 Java 友好 API 和 Spring Boot starter，协助你快速开发。
+simbot提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写**Bot风格**的事件调度应用。
+主要应用于对接各种类型的Bot应用平台/框架，并提供部分组件库实现。
 
-本仓库为 simbot v3、v4 版本的仓库，提供 simbot 标准API的定义、simbot 核心库的实现以及 Spring Boot starter 的实现等核心、基础的内容。
+simbot的**平台功能**由组件驱动，安装不同的组件库来获得不同的功能支持。
 
-> [!tip]
-> 前往 [GitHub 组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、社群等相关信息！
+举个例子，在simbot中使用KOOK和QQ频道：
 
-## 文档
+```Kotlin
+suspend fun main() {
+    val application = launchSimpleApplication {
+        // 安装KOOK和QQ频道组件库
+        useKook()
+        useQQGuild()
+    }
+    
+    application.kookBots {
+        // ... 注册kook bot，并在此之后可处理到kook的相关事件
+        register(...) { ... }.start()
+    }
+    application.qqGuildBots {
+        // ... 注册QQ频道bot，并在此之后可处理到QQ频道的相关事件
+        register(...) { ... }.start()
+    }
+    
+    // 注册各种事件处理器
+    application.listeners {
+        // 注册一个事件处理器
+        // ChatChannelMessageEvent 是由simbot API定义的泛用类型，代表所有子频道消息事件
+        // 其中就包括QQ频道的公域消息事件, 或者KOOK的频道消息事件
+        listen<ChatChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
 
-simbot4应用手册: [simbot.forte.love][doc-homepage]
+            // 返回事件处理结果
+            EventResult.empty()
+        }
 
-> [!note]
-> 也包括历届版本的文档地址引导
+        // 再注册一个事件处理器
+        // 明确监听QQ频道的公域消息事件
+        // 使用 process 不需要返回值
+        process<QGAtMessageCreateEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
 
-文档引导站&API Doc: [docs.simbot.forte.love](https://docs.simbot.forte.love)
+        // 再注册一个事件处理器
+        // 明确监听KOOK的频道消息事件
+        // 使用 process 不需要返回值
+        process<KookChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
+    }
+}
+```
 
-## V3
+## 文档与引导
 
-切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 来查看 simbot3 的开发分支。
+- [组织首页](https://github.com/simple-robot/) 了解更多有关组件、文档、以及社群等相关信息！
+- [社群](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔
+- [应用手册][doc-homepage]
+- [文档引导站&API文档](https://docs.simbot.forte.love)
+
+
+> 切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 可查看 simbot v3 的历史分支。
 
 ## 协助我们
 为我们点亮一个 **✨star🌟** 便是能够给予我们继续走下去的最大动力与支持！
@@ -96,7 +146,7 @@ simbot4应用手册: [simbot.forte.love][doc-homepage]
 ## 特别鸣谢
 
 <a href="https://www.jetbrains.com/?from=simpler-robot">
-<img src=".simbot/jetbrains.png" width="300" alt="jetbrains" />
+<img src=".simbot/jetbrains.svg" width="200" alt="jetbrains" />
 </a>
 
 感谢 [Jetbrains][jetbrains] 为团队提供的免费授权，也希望大家能够支持 [Jetbrains][jetbrains] 及其产品，支持正版。

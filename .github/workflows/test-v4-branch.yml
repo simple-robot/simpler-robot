@@ -39,5 +39,5 @@ jobs:
         if: ${{ always() }}
         with:
           name: test-reports-${{ matrix.os }}
-          path: build/test-reports
+          path: '**/build/reports/tests'
           retention-days: 7

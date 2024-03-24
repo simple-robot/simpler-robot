@@ -60,6 +60,14 @@ jobs:
           gradle-version: 8.5
           arguments: assemble allTests --info --warning-mode all --build-cache -Porg.gradle.daemon=false
 
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: test-reports-${{ matrix.os }}
+          path: '**/build/reports/tests'
+          retention-days: 7
+
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v3
         with:

@@ -168,7 +168,9 @@ public interface ContinuousSessionContext<T, R> {
      */
     public enum class ConflictStrategy {
         /**
-         * 如果已经存在相同 `key` 的值，抛出异常 [ConflictSessionKeyException]。
+         * 如果已经存在相同 `key`
+         * 的值且其仍处于活跃状态，
+         * 抛出异常 [ConflictSessionKeyException]。
          *
          */
         FAILURE,

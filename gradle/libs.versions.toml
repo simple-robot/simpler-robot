@@ -1,6 +1,6 @@
 [versions]
-kotlin = "1.9.22"
-dokka = "1.9.10"
+kotlin = "1.9.23"
+dokka = "1.9.20"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
 spring-boot-v2 = "2.7.18"
@@ -8,9 +8,11 @@ spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.8"
 slf4j = "2.0.12"
-ksp = "1.9.22-1.0.17"
+ksp = "1.9.23-1.0.19"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
+# https://github.com/Kotlin/kotlinx-benchmark
+kotlinxBenchmark = "0.4.10"
 reactor = "3.6.2"
 # simbots
 suspendTransform = "0.7.0-beta1"
@@ -91,6 +93,7 @@ openjdk-jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref =
 openjdk-jmh-generator-annprocess = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", version.ref = "openjdk-jmh" }
 
 # ktor
+ktor-io = { group = "io.ktor", name = "ktor-io", version.ref = "ktor" }
 ktor-http = { group = "io.ktor", name = "ktor-http", version.ref = "ktor" }
 
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
@@ -99,6 +102,7 @@ ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
@@ -126,8 +130,13 @@ gradle-common-publication = { group = "love.forte.gradle.common", name = "gradle
 ## https://mockk.io/
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
+# benchmark
+kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
+kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
