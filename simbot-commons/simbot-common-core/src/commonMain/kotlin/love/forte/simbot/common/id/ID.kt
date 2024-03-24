@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,20 +21,26 @@
  *
  */
 
+@file:JvmName("Identifies")
+@file:JvmMultifileClass
+
 package love.forte.simbot.common.id
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.*
+import love.forte.simbot.common.id.IntID.Companion.ID
+import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.UIntID.Companion.ID
+import love.forte.simbot.common.id.ULongID.Companion.ID
 import love.forte.simbot.common.id.UUID.Companion.UUID
 import kotlin.concurrent.Volatile
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.js.JsName
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -54,6 +60,43 @@ import kotlin.random.Random
  * - [ULongID]
  *
  * 它们可以粗略的被归类为字符串类型（ [UUID] 的字面值表现为字符串）和数字类型。
+ *
+ * ## 构造
+ *
+ * 在 Kotlin 中，直接使用各类型的伴生对象提供的扩展属性构建即可：
+ *
+ * ```Kotlin
+ * 100.ID
+ * 100L.ID
+ * 100u.ID
+ * "100".ID
+ * UUID.random()
+ * ```
+ *
+ * 在 Java 中，可以使用 `Identifies` 中提供的构造方法，它们通常被命名为 `of` 或以 `of` 为开头：
+ *
+ * ```Java
+ * Identifies.of(100);
+ * Identifies.of(100L);
+ * Identifies.of("100");
+ * Identifies.ofULong(100L);
+ * Identifies.ofULong("100");
+ * Identifies.uuid();
+ * ```
+ *
+ * 也可以使用具体类型的伴生对象所提供的静态API：
+ *
+ * ```Java
+ * IntID.valueOf(100);
+ * LongID.valueOf(100L);
+ * UIntID.valueOf(100);
+ * ULongID.valueOf(100L);
+ * StringID.valueOf("100");
+ * UUID.random();
+ * ```
+ *
+ * 这些伴生对象提供的静态API与 `Identifies` 中的内容相比缺少了一些辅助性的API，
+ * 例如使用字符串构建无符号ID `ULongID`。
  *
  * ## 序列化
  *
@@ -506,6 +549,59 @@ public class UUID private constructor(
         }
     }
 
+    /**
+     * 直接将 [UUID] 作为一个具有两个 [Long] 的结构体进行序列化的序列化器。
+     */
+    public object StructureSerializer : KSerializer<UUID> {
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("UUID") {
+            element("mostSignificantBits", Long.serializer().descriptor)
+            element("leastSignificantBits", Long.serializer().descriptor)
+        }
+
+        @OptIn(ExperimentalSerializationApi::class)
+        override fun deserialize(decoder: Decoder): UUID {
+            return decoder.decodeStructure(descriptor) {
+                var m = false
+                var l = false
+                var mostSignificantBits: Long = 0
+                var leastSignificantBits: Long = 0
+
+                while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        0 -> {
+                            m = true
+                            mostSignificantBits = decodeLongElement(descriptor, index)
+                        }
+
+                        1 -> {
+                            l = true
+                            leastSignificantBits = decodeLongElement(descriptor, index)
+                        }
+
+                        CompositeDecoder.DECODE_DONE -> break
+                        else -> error("Unexpected index: $index")
+                    }
+                }
+                if (!m || !l) {
+                    val properties = buildList {
+                        if (!m) add("mostSignificantBits")
+                        if (!l) add("leastSignificantBits")
+                    }
+                    throw MissingFieldException(properties, "love.forte.simbot.common.id.UUID")
+                }
+
+                UUID(mostSignificantBits, leastSignificantBits)
+            }
+        }
+
+        override fun serialize(encoder: Encoder, value: UUID) {
+            encoder.encodeStructure(descriptor) {
+                encodeLongElement(descriptor, 0, value.mostSignificantBits)
+                encodeLongElement(descriptor, 1, value.leastSignificantBits)
+            }
+        }
+    }
+
 }
 
 /**
@@ -914,3 +1010,119 @@ private inline fun <reified T : ID> T.idExactEq(other: Any?, orElse: T.(T) -> Bo
  */
 public inline val ID.literal: String
     get() = toString()
+
+/**
+ * 尝试将 [this] 转化为 [Int]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toInt],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toIntOrNull()][String.toIntOrNull]。
+ */
+@JvmOverloads
+@JvmName("toIntOrNull")
+public inline fun ID.toIntOrNull(notNumerical: ID.() -> Int? = { literal.toIntOrNull() }): Int? =
+    (this as? NumericalID)?.toInt() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [Int]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toInt],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toInt()][String.toInt]。
+ */
+@JvmOverloads
+@JvmName("toInt")
+public inline fun ID.toInt(notNumerical: ID.() -> Int = { literal.toInt() }): Int =
+    (this as? NumericalID)?.toInt() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [Long]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toLong],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toLongOrNull()][String.toLongOrNull]。
+ */
+@JvmOverloads
+@JvmName("toLongOrNull")
+public inline fun ID.toLongOrNull(notNumerical: ID.() -> Long? = { literal.toLongOrNull() }): Long? =
+    (this as? NumericalID)?.toLong() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [Long]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toLong],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toLong()][String.toLong]。
+ */
+@JvmOverloads
+@JvmName("toLong")
+public inline fun ID.toLong(notNumerical: ID.() -> Long = { literal.toLong() }): Long =
+    (this as? NumericalID)?.toLong() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [UInt]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toInt].[toUInt][Int.toUInt],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toUIntOrNull()][String.toIntOrNull]。
+ */
+@JvmOverloads
+@JvmName("toUIntOrNull")
+public inline fun ID.toUIntOrNull(notNumerical: ID.() -> UInt? = { literal.toUIntOrNull() }): UInt? =
+    (this as? NumericalID)?.toInt()?.toUInt() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [UInt]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toInt].[toUInt][Int.toUInt],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toUInt()][String.toInt]。
+ */
+@JvmOverloads
+@JvmName("toUInt")
+public inline fun ID.toUInt(notNumerical: ID.() -> UInt = { literal.toUInt() }): UInt =
+    (this as? NumericalID)?.toInt()?.toUInt() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [ULong]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toLong].[toULong][Long.toULong],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toULongOrNull()][String.toLongOrNull]。
+ */
+@JvmOverloads
+@JvmName("toULongOrNull")
+public inline fun ID.toULongOrNull(notNumerical: ID.() -> ULong? = { literal.toULongOrNull() }): ULong? =
+    (this as? NumericalID)?.toLong()?.toULong() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转化为 [ULong]。
+ * 如果为 [NumericalID] 则直接使用 [NumericalID.toLong].[toULong][Long.toULong],
+ * 否则使用 [notNumerical] 转化。默认会尝试使用 [literal.toULong()][String.toLong]。
+ */
+@JvmOverloads
+@JvmName("toULong")
+public inline fun ID.toULong(notNumerical: ID.() -> ULong = { literal.toULong() }): ULong =
+    (this as? NumericalID)?.toLong()?.toULong() ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转为 [IntID] 类型。
+ * 如果不是数字ID，则会使用 [notNumerical] 获取结果。默认使用 [String.toInt]。
+ */
+@JvmOverloads
+@JvmName("toIntID")
+public inline fun ID.toIntID(notNumerical: ID.() -> IntID = { literal.toInt().ID }): IntID =
+    this as? IntID ?: (this as? NumericalID)?.toInt()?.ID ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转为 [UIntID] 类型。
+ * 如果不是数字ID，则会使用 [notNumerical] 获取结果。默认使用 [String.toUInt]。
+ */
+@JvmOverloads
+@JvmName("toUIntID")
+public inline fun ID.toUIntID(notNumerical: ID.() -> UIntID = { literal.toUInt().ID }): UIntID =
+    this as? UIntID ?: (this as? NumericalID)?.toUInt()?.ID ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转为 [LongID] 类型。
+ * 如果不是数字ID，则会使用 [notNumerical] 获取结果。默认使用 [String.toLong]。
+ */
+@JvmOverloads
+@JvmName("toLongID")
+public inline fun ID.toLongID(notNumerical: ID.() -> LongID = { literal.toLong().ID }): LongID =
+    this as? LongID ?: (this as? NumericalID)?.toLong()?.ID ?: notNumerical()
+
+/**
+ * 尝试将 [this] 转为 [ULongID] 类型。
+ * 如果不是数字ID，则会使用 [notNumerical] 获取结果。默认使用 [String.toULong]。
+ */
+@JvmOverloads
+@JvmName("toULongID")
+public inline fun ID.toULongID(notNumerical: ID.() -> ULongID = { literal.toULong().ID }): ULongID =
+    this as? ULongID ?: (this as? NumericalID)?.toULong()?.ID ?: notNumerical()
