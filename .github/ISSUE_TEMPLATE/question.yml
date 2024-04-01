@@ -56,9 +56,10 @@ body:
       description: 如果没有或无对应选项则在后续描述中补充说明
       multiple: true
       options:
-        - mirai(QQ)
         - KOOK
         - QQ频道
+        - Kritor
+        - OneBot
         - Discord
         - Telegram
         - 其他
