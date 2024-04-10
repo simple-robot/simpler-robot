@@ -512,10 +512,10 @@ public class UUID private constructor(
 
 
         private fun doRandom(data: ByteArray): UUID {
-            data[6] = data[6] and 0x0f                    // clear version
-            data[6] = data[6] or 0x40                     // set to version 4
-            data[8] = data[8] and 0x3f                    // clear variant
-            data[8] = (data[8].toInt() or 0x80).toByte()  // set to IETF variant
+            data[6] = data[6] and 0x0f // clear version
+            data[6] = data[6] or 0x40 // set to version 4
+            data[8] = data[8] and 0x3f // clear variant
+            data[8] = (data[8].toInt() or 0x80).toByte() // set to IETF variant
             return fromData(data)
         }
 

@@ -102,7 +102,11 @@ public interface Collectable<out T> {
      * @param context 提供给 [SuspendReserve.Transformer] 的作用域。默认会使用 [EmptyCoroutineContext]。
      * @param transformer 转化器实现。
      */
-    public fun <R> transform(scope: CoroutineScope, context: CoroutineContext, transformer: SuspendReserve.Transformer<Flow<T>, R>): R =
+    public fun <R> transform(
+        scope: CoroutineScope,
+        context: CoroutineContext,
+        transformer: SuspendReserve.Transformer<Flow<T>, R>
+    ): R =
         transformer.invoke(scope, context) { asFlow() }
 
     /**
@@ -114,7 +118,7 @@ public interface Collectable<out T> {
      * _Java 友好的接口重载函数_
      *
      * @see transformer
-      */
+     */
     @OptIn(DelicateCoroutinesApi::class)
     public fun <R> transform(transformer: SuspendReserve.Transformer<Flow<T>, R>): R =
         transform(scope = GlobalScope, context = EmptyCoroutineContext, transformer = transformer)

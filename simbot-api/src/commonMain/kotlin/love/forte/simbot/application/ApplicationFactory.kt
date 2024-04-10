@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -49,7 +49,13 @@ import kotlin.jvm.JvmSynthetic
  *
  * @author ForteScarlet
  */
-public interface ApplicationFactory<out A : Application, C : ApplicationBuilder, L : ApplicationLauncher<A>, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> {
+public interface ApplicationFactory<
+    out A : Application,
+    C : ApplicationBuilder,
+    L : ApplicationLauncher<A>,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > {
 
     /**
      * 通过配置逻辑 [configurer] 构建一个预处理启动器 [ApplicationLauncher]。
@@ -101,8 +107,11 @@ public annotation class ApplicationFactoryConfigurerDSL
  *
  * @see AbstractApplicationFactoryConfigurer
  */
-public interface ApplicationFactoryConfigurer<C : ApplicationBuilder, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> :
-    ComponentInstaller, PluginInstaller {
+public interface ApplicationFactoryConfigurer<
+    C : ApplicationBuilder,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > : ComponentInstaller, PluginInstaller {
 
     /**
      * 配置 [Application] 配置阶段的一些配置信息。
@@ -160,11 +169,17 @@ public interface ApplicationFactoryConfigurer<C : ApplicationBuilder, AER : Appl
  *
  * @see ApplicationFactoryConfigurer
  */
-public abstract class AbstractApplicationFactoryConfigurer<C : ApplicationBuilder, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration>(
+public abstract class AbstractApplicationFactoryConfigurer<
+    C : ApplicationBuilder,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    >(
     protected open val configConfigurers: MutableList<ConfigurerFunction<C>> = mutableListOf(),
     protected open val applicationEventRegistrarConfigurations: MutableList<ConfigurerFunction<AER>> = mutableListOf(),
     protected open val eventDispatcherConfigurers: MutableList<ConfigurerFunction<DC>> = mutableListOf(),
-    protected open val componentFactoriesConfigurator: ComponentFactoriesConfigurator = ComponentFactoriesConfigurator(),
+    protected open val componentFactoriesConfigurator: ComponentFactoriesConfigurator =
+        ComponentFactoriesConfigurator(),
+
     protected open val pluginFactoriesConfigurator: PluginFactoriesConfigurator = PluginFactoriesConfigurator(),
 ) : ApplicationFactoryConfigurer<C, AER, DC> {
     override fun config(configurer: ConfigurerFunction<C>) {

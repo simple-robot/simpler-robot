@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -145,6 +145,7 @@ public abstract class FunctionalBindableEventListener(
         return funcCall(this)
     }
 
+    @Suppress("ThrowsCount")
     private inline fun invokeCall(
         context: EventListenerContext,
         callFunction: (args: Array<Any?>) -> Any?
@@ -155,8 +156,11 @@ public abstract class FunctionalBindableEventListener(
             args[0] = instance
         } else {
             args[0] = binders[0].arg(context).getOrElse { e ->
-                if (e is java.net.BindException) throw e
-                else throw BindException(e)
+                if (e is java.net.BindException) {
+                    throw e
+                } else {
+                    throw BindException(e)
+                }
             }.let { value ->
                 convertValue(value, fullParameters[0])
             }
@@ -166,8 +170,11 @@ public abstract class FunctionalBindableEventListener(
         repeat(binders.size - 1) { i ->
             val index = i + 1
             args[index] = binders[index].arg(context).getOrElse { e ->
-                if (e is java.net.BindException) throw e
-                else throw BindException(e)
+                if (e is java.net.BindException) {
+                    throw e
+                } else {
+                    throw BindException(e)
+                }
             }.let { value ->
                 convertValue(value, fullParameters[index])
             }
@@ -189,14 +196,17 @@ public abstract class FunctionalBindableEventListener(
         val args = LinkedHashMap<KParameter, Any?>(initialSize)
 
         binders.forEachIndexed { i, b ->
-            if (i == 0 && (instance != null && instanceParameter != null)) {
+            if (i == 0 && instance != null && instanceParameter != null) {
                 // include instance.
                 args[instanceParameter] = instance
                 return@forEachIndexed
             }
             val value = b.arg(context).getOrElse { e ->
-                if (e is java.net.BindException) throw e
-                else throw BindException(e)
+                if (e is java.net.BindException) {
+                    throw e
+                } else {
+                    throw BindException(e)
+                }
             }
             if (value != ParameterBinder.Ignore) {
                 val p = fullParameters[i]

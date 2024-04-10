@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,7 @@ public interface EventContext : CoroutineScope {
  *
  * @author ForteScarlet
  */
-public interface  EventListenerContext {
+public interface EventListenerContext {
     /**
      * 整个事件调度流程中的 [EventContext]。
      */

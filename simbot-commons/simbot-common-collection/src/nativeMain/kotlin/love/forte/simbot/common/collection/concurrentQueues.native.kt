@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -104,11 +104,14 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
                 foundList.compareAndSet(expected, newValue)
             } else {
                 val listValue = lists.value
-                val addedNewValue = lists.compareAndSet(listValue, buildList {
-                    addAll(listValue)
-                    add(ListWithPriority(priority = priority, list = AtomicReference(listOf(value))))
-                    sortBy { it.priority }
-                })
+                val addedNewValue = lists.compareAndSet(
+                    listValue,
+                    buildList {
+                        addAll(listValue)
+                        add(ListWithPriority(priority = priority, list = AtomicReference(listOf(value))))
+                        sortBy { it.priority }
+                    }
+                )
 
                 addedNewValue
             }

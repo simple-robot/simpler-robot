@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -110,7 +110,9 @@ public enum class StandardDeleteOption : DeleteOption {
          *
          * @param onEach 在分析每个元素时对它们进行额外的操作。
          */
-        public inline fun Array<out DeleteOption>.standardAnalysis(onEach: (DeleteOption) -> Unit = {}): StandardAnalysis {
+        public inline fun Array<out DeleteOption>.standardAnalysis(
+            onEach: (DeleteOption) -> Unit = {}
+        ): StandardAnalysis {
             var value = 0
             forEach { option ->
                 if (option is StandardDeleteOption) {
@@ -162,8 +164,9 @@ public enum class StandardDeleteOption : DeleteOption {
         /**
          * 判断是否包含所有的 [StandardDeleteOption]
          */
+        @Suppress("UnnecessaryParentheses")
         public val isFull: Boolean
-            get() = value == (0xffff shr (16 - StandardDeleteOption.entries.size))
+            get() = value == 0xffff shr (16 - StandardDeleteOption.entries.size)
     }
 }
 
@@ -208,7 +211,9 @@ public inline val StandardDeleteOption.StandardAnalysis.isIgnoreOnUnsupported: B
  * 如果 [StandardDeleteOption.StandardAnalysis] 中是包含 [StandardDeleteOption.IGNORE_ON_NO_SUCH_TARGET] 则执行 [block]
  */
 @OptIn(ExperimentalContracts::class)
-public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnNoSuchTarget(block: () -> Unit): StandardDeleteOption.StandardAnalysis {
+public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnNoSuchTarget(
+    block: () -> Unit
+): StandardDeleteOption.StandardAnalysis {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
@@ -222,7 +227,8 @@ public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnNoSuchTarget(b
  * 如果 [StandardDeleteOption.StandardAnalysis] 中是包含 [StandardDeleteOption.IGNORE_ON_FAILURE] 则执行 [block]
  */
 @OptIn(ExperimentalContracts::class)
-public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnFailure(block: () -> Unit): StandardDeleteOption.StandardAnalysis {
+public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnFailure(block: () -> Unit):
+    StandardDeleteOption.StandardAnalysis {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
@@ -233,12 +239,14 @@ public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnFailure(block:
 }
 
 /**
- * 如果 [StandardDeleteOption.StandardAnalysis] 中是包含 [StandardDeleteOption.IGNORE_ON_ANY_FAILURE] 则执行 [block]
+ * 如果 [StandardDeleteOption.StandardAnalysis]
+ * 中是包含 [StandardDeleteOption.IGNORE_ON_ANY_FAILURE] 则执行 [block]
  */
 @OptIn(ExperimentalContracts::class)
 @Suppress("DEPRECATION_ERROR")
 @Deprecated("This will be removed in a future version", level = DeprecationLevel.ERROR)
-public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnAnyFailure(block: () -> Unit): StandardDeleteOption.StandardAnalysis {
+public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnAnyFailure(block: () -> Unit):
+    StandardDeleteOption.StandardAnalysis {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }
@@ -252,7 +260,8 @@ public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnAnyFailure(blo
  * 如果 [StandardDeleteOption.StandardAnalysis] 中是包含 [StandardDeleteOption.IGNORE_ON_UNSUPPORTED] 则执行 [block]
  */
 @OptIn(ExperimentalContracts::class)
-public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnUnsupported(block: () -> Unit): StandardDeleteOption.StandardAnalysis {
+public inline fun StandardDeleteOption.StandardAnalysis.ifIgnoreOnUnsupported(block: () -> Unit):
+    StandardDeleteOption.StandardAnalysis {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
     }

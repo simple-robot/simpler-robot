@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -69,7 +69,6 @@ public class RegexValueMatcher(private val originalValue: String, private val is
      * @return 参数提取器。
      */
     override fun getParameters(text: String?): MatchParameters {
-
         return text?.let { t -> regex.matchEntire(t)?.let { result -> MatcherParameters(result) } }
             ?: EmptyFilterParameters
     }
@@ -89,7 +88,7 @@ private class MatcherParameters(matcher: MatchResult) : MatchParameters {
     override fun get(key: String): String? {
         val group = try {
             groups[key] ?: return null
-        } catch (notFound: IllegalArgumentException) {
+        } catch (ignore: IllegalArgumentException) {
             return null
         }
 
@@ -168,7 +167,7 @@ private fun String.toDynamicParametersRegexValue(): String {
 
 
     if (on) {
-        throw IllegalStateException("There is no end flag '}}' for dynamic parameters.")
+        error("There is no end flag '}}' for dynamic parameters.")
     }
 
 

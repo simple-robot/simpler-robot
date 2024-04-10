@@ -46,7 +46,7 @@ kotlin {
 
     sourceSets.configureEach {
         languageSettings {
-            //optIn("love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi")
+            // optIn("love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi")
         }
     }
 
@@ -113,8 +113,11 @@ configWasmJsTest()
 // https://book.kotlincn.net/text/testing-strategies.html
 tasks.withType<Test> {
     jvmArgs(
-        "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED",
-        "--add-exports", "java.base/jdk.internal.util=ALL-UNNAMED",
-        "--add-exports", "java.base/sun.security.action=ALL-UNNAMED"
+        "--add-opens",
+        "java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-exports",
+        "java.base/jdk.internal.util=ALL-UNNAMED",
+        "--add-exports",
+        "java.base/sun.security.action=ALL-UNNAMED"
     )
 }

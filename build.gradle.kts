@@ -105,9 +105,9 @@ detekt {
     // buildUponDefaultConfig = true
     parallel = true
     reportsDir = rootProject.layout.buildDirectory.dir("reports/detekt").get().asFile
-    // if (!isCi) {
-    //     autoCorrect = true
-    // }
+    if (!isCi) {
+        autoCorrect = true
+    }
     basePath = projectDir.absolutePath
 }
 

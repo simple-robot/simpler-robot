@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,12 +33,12 @@ public var LoggerFactory.defaultLoggerLevel: LogLevel by ::defaultLoggerLevel0
 
 @Suppress("MemberVisibilityCanBePrivate")
 public actual object LoggerFactory {
-    
+
     /**
      * 根据名称获取一个 [Logger] 实例。
      */
     public actual fun getLogger(name: String): Logger = getLogger(name, defaultLoggerLevel)
-    
+
     /**
      * 根据名称和日志级别获取一个 [Logger] 实例。
      */

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -71,11 +71,18 @@ private object CollectableReactivelyResultAbilityHolder {
 
     private val reactiveKotlinSupport: Boolean by lazy {
         try {
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.reactive.ReactiveFlowKt"
+            )
             true
         } catch (cnf: ClassNotFoundException) {
             logger.warn(
-                "Uses a result content of type `org.reactivestreams.Publisher`, but does not found `kotlinx-coroutine-reactive`. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` to your classpath, otherwise the reactive API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                "Uses a result content of type `org.reactivestreams.Publisher`, " +
+                    "but does not found `kotlinx-coroutine-reactive`. " +
+                    "Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` " +
+                    "to your classpath, " +
+                    "otherwise the reactive API will not work as a return value " +
+                    "(the `content` of SimpleEventResult) for the simbot listener.",
                 cnf
             )
             false
@@ -92,11 +99,18 @@ private object CollectableReactivelyResultAbilityHolder {
 
     private val reactorKotlinSupport: Boolean by lazy {
         try {
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.reactor.MonoKt"
+            )
             true
         } catch (cnf: ClassNotFoundException) {
             logger.warn(
-                "The reactor API (`reactor.core.publisher.Mono` or `reactor.core.publisher.Flux`) is used, but the `kotlinx-coroutine-reactor` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` to your classpath, otherwise the reactor API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                "The reactor API (`reactor.core.publisher.Mono` or `reactor.core.publisher.Flux`) is used, " +
+                    "but the `kotlinx-coroutine-reactor` is not found. " +
+                    "Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` " +
+                    "to your classpath, " +
+                    "otherwise the reactor API will not work as a return value " +
+                    "(the `content` of SimpleEventResult) for the simbot listener.",
                 cnf
             )
             false
@@ -116,12 +130,20 @@ private object CollectableReactivelyResultAbilityHolder {
 
     private val rx2KotlinSupport: Boolean by lazy {
         try {
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxConvertKt")
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.rx2.RxAwaitKt"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.rx2.RxConvertKt"
+            )
             true
         } catch (cnf: ClassNotFoundException) {
             logger.warn(
-                "The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` to your classpath, otherwise the RxJava 2.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                "The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. " +
+                    "Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` " +
+                    "to your classpath, " +
+                    "otherwise the RxJava 2.x API will not work as a return value " +
+                    "(the `content` of SimpleEventResult) for the simbot listener.",
                 cnf
             )
             false
@@ -130,29 +152,48 @@ private object CollectableReactivelyResultAbilityHolder {
 
     private val rx3Support: Boolean by lazy {
         kotlin.runCatching {
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Completable")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.SingleSource")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.MaybeSource")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.ObservableSource")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Flowable")
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "io.reactivex.rxjava3.core.Completable"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "io.reactivex.rxjava3.core.SingleSource"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "io.reactivex.rxjava3.core.MaybeSource"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "io.reactivex.rxjava3.core.ObservableSource"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "io.reactivex.rxjava3.core.Flowable"
+            )
             true
         }.getOrElse { false }
     }
 
     private val rx3KotlinSupport: Boolean by lazy {
         try {
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
-            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxConvertKt")
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.rx3.RxAwaitKt"
+            )
+            CollectableReactivelyResultAbilityHolder::class.java.classLoader.loadClass(
+                "kotlinx.coroutines.rx3.RxConvertKt"
+            )
             true
         } catch (cnf: ClassNotFoundException) {
             logger.warn(
-                "The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` to your classpath, otherwise the RxJava 3.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                "The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. " +
+                    "Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` " +
+                    "to your classpath, " +
+                    "otherwise the RxJava 3.x API will not work as a return value " +
+                    "(the `content` of SimpleEventResult) for the simbot listener.",
                 cnf
             )
             false
         }
     }
 
+    @Suppress("ReturnCount")
     suspend fun tryCollect(content: Any): Any? {
         when {
             reactorSupport -> {
@@ -176,10 +217,19 @@ private object CollectableReactivelyResultAbilityHolder {
                         return content
                     }
 
-                    is io.reactivex.SingleSource<*> -> return if (rx2KotlinSupport) content.await() else content
-                    is io.reactivex.MaybeSource<*> -> return if (rx2KotlinSupport) content.awaitSingleOrNull() else content
-                    is io.reactivex.ObservableSource<*> -> return if (reactiveKotlinSupport) content.asFlow()
-                        .toList() else content
+                    is io.reactivex.SingleSource<*> ->
+                        return if (rx2KotlinSupport) content.await() else content
+
+                    is io.reactivex.MaybeSource<*> ->
+                        return if (rx2KotlinSupport) content.awaitSingleOrNull() else content
+
+                    is io.reactivex.ObservableSource<*> ->
+                        return if (reactiveKotlinSupport) {
+                            content.asFlow()
+                                .toList()
+                        } else {
+                            content
+                        }
 
                     is io.reactivex.Flowable<*> -> return if (rx2KotlinSupport) content.toList().await() else content
                 }
@@ -198,29 +248,44 @@ private object CollectableReactivelyResultAbilityHolder {
                         return if (rx3KotlinSupport) {
                             @Suppress("UNCHECKED_CAST")
                             (content as io.reactivex.rxjava3.core.SingleSource<Any>).await()
-                        } else content
+                        } else {
+                            content
+                        }
                     }
 
                     is io.reactivex.rxjava3.core.MaybeSource<*> -> {
                         return if (rx3KotlinSupport) {
                             @Suppress("UNCHECKED_CAST")
                             (content as io.reactivex.rxjava3.core.MaybeSource<Any>).awaitSingleOrNull()
-                        } else content
+                        } else {
+                            content
+                        }
                     }
 
-                    is io.reactivex.rxjava3.core.ObservableSource<*> -> return if (rx3KotlinSupport) content.asFlow()
-                        .toList() else content
+                    is io.reactivex.rxjava3.core.ObservableSource<*> -> return if (rx3KotlinSupport) {
+                        content.asFlow()
+                            .toList()
+                    } else {
+                        content
+                    }
 
                     is io.reactivex.rxjava3.core.Flowable<*> -> return if (rx3KotlinSupport) {
                         @Suppress("UNCHECKED_CAST")
                         (content.toList() as io.reactivex.rxjava3.core.Single<List<*>>).await()
-                    } else content
+                    } else {
+                        content
+                    }
                 }
             }
 
             reactiveSupport -> {
                 when (content) {
-                    is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) content.asFlow().toList() else content
+                    is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) {
+                        content.asFlow()
+                            .toList()
+                    } else {
+                        content
+                    }
                 }
             }
         }

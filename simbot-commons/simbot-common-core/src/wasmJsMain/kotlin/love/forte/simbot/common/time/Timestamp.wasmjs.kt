@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ internal actual fun nowInternal(): Timestamp = DateTimestamp(newDate())
 
 
 /**
- * 基于 [kotlin.js.Date] 的 [Timestamp] 实现。
+ * 基于 `Date` 的 [Timestamp] 实现。
  *
  * @author ForteScarlet
  */
@@ -54,5 +54,6 @@ public class DateTimestamp(public val date: JsAny) : Timestamp {
 
 
 private fun newDate(): JsAny = js("new Date()")
+
 @Suppress("UNUSED_PARAMETER")
 private fun getDateTime(date: JsAny): JsNumber = js("date.getTime()")

@@ -52,18 +52,21 @@ import kotlin.jvm.JvmSynthetic
 /**
  * [SimpleEventDispatcherConfiguration] 的简单实现
  */
-public open class SimpleEventDispatcherConfigurationImpl : AbstractEventDispatcherConfiguration(),
+public open class SimpleEventDispatcherConfigurationImpl :
+    AbstractEventDispatcherConfiguration(),
     SimpleEventDispatcherConfiguration {
     /**
      * 继承 [AbstractEventDispatcherConfiguration.interceptors] 并将其对外公开
      */
-    public override val interceptors: MutableList<Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>>
+    public override val interceptors:
+        MutableList<Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>>
         get() = super.interceptors
 
     /**
      * 继承 [AbstractEventDispatcherConfiguration.dispatchInterceptors] 并将其对外公开
      */
-    public override val dispatchInterceptors: MutableList<Pair<EventDispatchInterceptor, ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?>>
+    public override val dispatchInterceptors:
+        MutableList<Pair<EventDispatchInterceptor, ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?>>
         get() = super.dispatchInterceptors
 }
 
@@ -85,8 +88,9 @@ public open class SimpleEventDispatchInterceptorRegistrationPropertiesImpl :
 /**
  * [SimpleEventListenerRegistrationProperties] 的简单实现
  */
-public class SimpleEventListenerRegistrationPropertiesImpl(private val interceptorBuilder: SimpleEventInterceptorsBuilder) :
-    SimpleEventListenerRegistrationProperties {
+public class SimpleEventListenerRegistrationPropertiesImpl(
+    private val interceptorBuilder: SimpleEventInterceptorsBuilder
+) : SimpleEventListenerRegistrationProperties {
 
     override var priority: Int = PriorityConstant.DEFAULT
 
@@ -206,7 +210,9 @@ public class SimpleEventInterceptorsInvoker(private val interceptors: Iterable<S
     }
 }
 
-public class SimpleEventDispatchInterceptorsInvoker(private val interceptors: Iterable<SimpleEventDispatchInterceptorInvoker>) {
+public class SimpleEventDispatchInterceptorsInvoker(
+    private val interceptors: Iterable<SimpleEventDispatchInterceptorInvoker>
+) {
     private class ContextImpl(
         override val eventContext: EventContext,
         val iterator: Iterator<EventDispatchInterceptor>,
@@ -348,8 +354,9 @@ public class SimpleEventDispatcherImpl(
     ) : EventContext
 
 
-    private suspend fun SimpleEventListenerInvoker.invokeAndCollectedOrErrorResult(context: EventListenerContext): EventResult =
-        orErrorResult { invoke(context).collected() }
+    private suspend fun SimpleEventListenerInvoker.invokeAndCollectedOrErrorResult(
+        context: EventListenerContext
+    ): EventResult = orErrorResult { invoke(context).collected() }
 
     private suspend fun dispatchInFlow(
         context: EventContext,

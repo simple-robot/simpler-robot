@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -105,7 +105,12 @@ private class SimpleApplicationImpl(
     }
 
     override fun toString(): String {
-        return "SimpleApplication(isActive=$isActive, isCompleted=$isCompleted, eventDispatcher=$eventDispatcher, components=$components, plugins=$plugins)"
+        return "SimpleApplication(" +
+            "isActive=$isActive, " +
+            "isCompleted=$isCompleted, " +
+            "eventDispatcher=$eventDispatcher, " +
+            "components=$components, " +
+            "plugins=$plugins)"
     }
 }
 
@@ -114,15 +119,36 @@ private class SimpleApplicationImpl(
  *
  */
 public object Simple :
-    ApplicationFactory<SimpleApplication, SimpleApplicationBuilder, SimpleApplicationLauncher, ApplicationEventRegistrar, SimpleEventDispatcherConfiguration> {
+    ApplicationFactory<
+        SimpleApplication,
+        SimpleApplicationBuilder,
+        SimpleApplicationLauncher,
+        ApplicationEventRegistrar,
+        SimpleEventDispatcherConfiguration
+        > {
 
-    override fun create(configurer: ConfigurerFunction<ApplicationFactoryConfigurer<SimpleApplicationBuilder, ApplicationEventRegistrar, SimpleEventDispatcherConfiguration>>?): SimpleApplicationLauncher {
+    override fun create(
+        configurer: ConfigurerFunction<
+            ApplicationFactoryConfigurer<
+                SimpleApplicationBuilder,
+                ApplicationEventRegistrar,
+                SimpleEventDispatcherConfiguration
+                >
+            >?
+    ): SimpleApplicationLauncher {
         return SimpleApplicationLauncherImpl { create0(configurer) }
     }
 
     @OptIn(ExperimentalSimbotAPI::class)
-    private fun create0(configurer: ConfigurerFunction<ApplicationFactoryConfigurer<SimpleApplicationBuilder, ApplicationEventRegistrar, SimpleEventDispatcherConfiguration>>?): SimpleApplicationImpl {
-
+    private fun create0(
+        configurer: ConfigurerFunction<
+            ApplicationFactoryConfigurer<
+                SimpleApplicationBuilder,
+                ApplicationEventRegistrar,
+                SimpleEventDispatcherConfiguration
+                >
+            >?
+    ): SimpleApplicationImpl {
         val simpleConfigurer = SimpleApplicationFactoryConfigurer().invokeBy(configurer)
 
         // 配置信息
@@ -193,11 +219,23 @@ public object Simple :
 
 private class SimpleApplicationFactoryConfigurer(
     public override val configConfigurers: MutableList<ConfigurerFunction<SimpleApplicationBuilder>> = mutableListOf(),
-    public override val applicationEventRegistrarConfigurations: MutableList<ConfigurerFunction<ApplicationEventRegistrar>> = mutableListOf(),
-    public override val eventDispatcherConfigurers: MutableList<ConfigurerFunction<SimpleEventDispatcherConfiguration>> = mutableListOf(),
-    public override val componentFactoriesConfigurator: ComponentFactoriesConfigurator = ComponentFactoriesConfigurator(),
+    public override val applicationEventRegistrarConfigurations:
+    MutableList<ConfigurerFunction<ApplicationEventRegistrar>> =
+        mutableListOf(),
+
+    public override val eventDispatcherConfigurers:
+    MutableList<ConfigurerFunction<SimpleEventDispatcherConfiguration>> =
+        mutableListOf(),
+
+    public override val componentFactoriesConfigurator:
+    ComponentFactoriesConfigurator =
+        ComponentFactoriesConfigurator(),
     public override val pluginFactoriesConfigurator: PluginFactoriesConfigurator = PluginFactoriesConfigurator(),
-) : AbstractApplicationFactoryConfigurer<SimpleApplicationBuilder, ApplicationEventRegistrar, SimpleEventDispatcherConfiguration>(
+) : AbstractApplicationFactoryConfigurer<
+    SimpleApplicationBuilder,
+    ApplicationEventRegistrar,
+    SimpleEventDispatcherConfiguration
+    >(
     configConfigurers,
     applicationEventRegistrarConfigurations,
     eventDispatcherConfigurers,

@@ -21,7 +21,8 @@
  *
  */
 
-@file:JvmMultifileClass @file:JvmName("EventProcessors")
+@file:JvmMultifileClass
+@file:JvmName("EventProcessors")
 
 package love.forte.simbot.event
 
@@ -268,7 +269,9 @@ public fun Flow<EventResult>.throwIfError(): Flow<EventResult> =
  * 处理当前流中经过的每一个
  * [StandardEventResult.Error] 类型的结果。
  */
-public inline fun Flow<EventResult>.onEachError(crossinline action: (StandardEventResult.Error) -> Unit): Flow<EventResult> =
+public inline fun Flow<EventResult>.onEachError(
+    crossinline action: (StandardEventResult.Error) -> Unit
+): Flow<EventResult> =
     onEach { if (it is StandardEventResult.Error) action(it) }
 
 /**

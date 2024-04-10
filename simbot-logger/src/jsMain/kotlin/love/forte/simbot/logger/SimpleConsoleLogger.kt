@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -37,28 +37,28 @@ internal class SimpleConsoleLogger(
     override val level: LogLevel,
 ) : AbstractSimpleLogger() {
     override fun getName(): String = name
-    
-    
+
+
     override fun trace0(formattedLog: String, throwable: Throwable?) {
         console.log("[trace]", "[$displayName]:", formattedLog)
         throwable?.stackTraceToString()?.also { console.log(it) }
     }
-    
+
     override fun debug0(formattedLog: String, throwable: Throwable?) {
         console.log("[debug]", "[$displayName]:", formattedLog)
         throwable?.stackTraceToString()?.also { console.log(it) }
     }
-    
+
     override fun info0(formattedLog: String, throwable: Throwable?) {
         console.info("[$displayName]:", formattedLog)
         throwable?.stackTraceToString()?.also { console.info(it) }
     }
-    
+
     override fun warn0(formattedLog: String, throwable: Throwable?) {
         console.warn("[$displayName]:", formattedLog)
         throwable?.stackTraceToString()?.also { console.warn(it) }
     }
-    
+
     override fun error0(formattedLog: String, throwable: Throwable?) {
         console.error("[$displayName]:", formattedLog)
         throwable?.stackTraceToString()?.also { console.error(it) }

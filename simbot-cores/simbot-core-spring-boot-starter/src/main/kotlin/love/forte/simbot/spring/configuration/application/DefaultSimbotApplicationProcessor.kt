@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -159,12 +159,14 @@ private class BotAutoLoader(
                         resolver.getResources(it).asSequence()
                     } catch (fne: FileNotFoundException) {
                         logger.warn(
-                            "Bot configuration resource path [{}] could not be resolved because of FileNotFoundException(message={}), will be skip.",
+                            "Bot configuration resource path [{}] could not be resolved " +
+                                "because of FileNotFoundException(message={}), will be skip.",
                             it,
                             fne.localizedMessage,
                         )
                         logger.debug(
-                            "Bot configuration resource path [{}] could not be resolved because of FileNotFoundException(message={}), will be skip.",
+                            "Bot configuration resource path [{}] could not be resolved " +
+                                "because of FileNotFoundException(message={}), will be skip.",
                             it,
                             fne.localizedMessage,
                             fne
@@ -283,10 +285,10 @@ private class BotAutoLoader(
         val message = se.localizedMessage
         val errMsg = if (se is SerializationException && message.contains("Polymorphic", ignoreCase = true)) {
             "JSON resource [$resource] fails to deserialize, " +
-                    "and this may be because a component does not support polymorphic configurations, " +
-                    "e.g. the configuration class does not implement ${SerializableBotConfiguration::class}, " +
-                    "the component does not provide polymorphic serialisation information, etc. " +
-                    "The information: $message"
+                "and this may be because a component does not support polymorphic configurations, " +
+                "e.g. the configuration class does not implement ${SerializableBotConfiguration::class}, " +
+                "the component does not provide polymorphic serialisation information, etc. " +
+                "The information: $message"
         } else {
             "JSON resource [$resource] fails to deserialize, The information: $message"
         }
@@ -313,10 +315,10 @@ private class BotAutoLoader(
     ) {
         val message =
             "Failed to register bot " +
-                    "from resource [$resource] " +
-                    "to manager [$botManager] " +
-                    "via configuration [$configuration]. " +
-                    "The information: ${e.localizedMessage}"
+                "from resource [$resource] " +
+                "to manager [$botManager] " +
+                "via configuration [$configuration]. " +
+                "The information: ${e.localizedMessage}"
 
         val ex = BotRegisterFailureException(message, e)
         when (policy) {
@@ -337,8 +339,8 @@ private class BotAutoLoader(
         botManagers: BotManagers
     ) {
         val message = "No registrable BotManager " +
-                "matching configuration [$configuration] (type: ${configuration::class}) " +
-                "from resource [$resource] was found in $botManagers"
+            "matching configuration [$configuration] (type: ${configuration::class}) " +
+            "from resource [$resource] was found in $botManagers"
 
         val ex = MismatchConfigurableBotManagerException(message)
 
@@ -387,7 +389,8 @@ private class BotAutoLoader(
                     } catch (e: Throwable) {
                         val err = BotAutoStartOnFailureException(e)
                         logger.error(
-                            "There are certain bots that have exceptions in asynchronous startups, application will be cancelled",
+                            "There are certain bots that have exceptions in asynchronous startups, " +
+                                "application will be cancelled",
                             err
                         )
                         application.cancel(err)

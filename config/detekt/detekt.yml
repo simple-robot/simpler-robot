@@ -1,12 +1,12 @@
 build:
-  maxIssues: 10000 # 先不限制最大问题
+  maxIssues: 2147483647 # 先不限制最大问题
   excludeCorrectable: false
-  weights:
-    formatting: 0
-    comments: 0
-    complexity: 0
-    LongParameterList: 0
-    style: 0
+#  weights:
+#    formatting: 0
+#    comments: 0
+#    complexity: 0
+#    LongParameterList: 0
+#    style: 0
 
 config:
   validation: true
@@ -131,7 +131,7 @@ complexity:
     active: true
     threshold: 60
   LongParameterList:
-    active: true
+    active: false
     functionThreshold: 6
     constructorThreshold: 7
     ignoreDefaultParameters: false
