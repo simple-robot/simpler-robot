@@ -8,6 +8,10 @@ env:
   IS_CI: true
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   build-v4-test:
     name: Build and test
