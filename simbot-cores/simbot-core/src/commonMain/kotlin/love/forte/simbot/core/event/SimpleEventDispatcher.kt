@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,9 @@ public interface SimpleEventDispatcher : EventDispatcher
  * 构建一个 [SimpleEventDispatcher].
  */
 @ExperimentalSimbotAPI
-public fun createSimpleEventDispatcherImpl(configurer: ConfigurerFunction<SimpleEventDispatcherConfiguration>): SimpleEventDispatcher {
+public fun createSimpleEventDispatcherImpl(
+    configurer: ConfigurerFunction<SimpleEventDispatcherConfiguration>
+): SimpleEventDispatcher {
     val configuration = SimpleEventDispatcherConfigurationImpl()
     configurer.invokeWith(configuration)
     return SimpleEventDispatcherImpl(configuration)
@@ -53,7 +55,9 @@ public fun createSimpleEventDispatcherImpl(configurer: ConfigurerFunction<Simple
  * 构建一个 [SimpleEventDispatcher].
  */
 @ExperimentalSimbotAPI
-public fun createSimpleEventDispatcherImpl(configuration: SimpleEventDispatcherConfigurationImpl): SimpleEventDispatcher {
+public fun createSimpleEventDispatcherImpl(
+    configuration: SimpleEventDispatcherConfigurationImpl
+): SimpleEventDispatcher {
     return SimpleEventDispatcherImpl(configuration)
 }
 

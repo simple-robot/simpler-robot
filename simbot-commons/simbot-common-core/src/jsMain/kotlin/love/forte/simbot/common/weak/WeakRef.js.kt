@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -41,12 +41,13 @@ public actual fun <T : Any> weakRef(ref: T): WeakRef<T> {
     }
 }
 
-private class JsWeakRefImpl<T : Any>(private var weakRef: dynamic /* WeakRef */) : WeakRef<T> {
+private class JsWeakRefImpl<T : Any>(private var weakRef: dynamic) : WeakRef<T> {
+    // WeakRef
     override val value: T?
         get() {
             val r = weakRef
             if (r != null) {
-                return (r.deref().unsafeCast<T?>()).also { if (it == null) weakRef = null }
+                return r.deref().unsafeCast<T?>().also { if (it == null) weakRef = null }
             }
 
             return null
