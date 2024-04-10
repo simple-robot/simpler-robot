@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -92,7 +92,12 @@ public interface Guild : Organization {
      * 根据ID获取一个指定的频道。
      * 如果找不到则会得到 `null`。
      */
-    @ST(blockingBaseName = "getChannel", blockingSuffix = "", asyncBaseName = "getChannel", reserveBaseName = "getChannel")
+    @ST(
+        blockingBaseName = "getChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChannel",
+        reserveBaseName = "getChannel"
+    )
     public suspend fun channel(id: ID): Channel?
 
     /**
@@ -104,7 +109,12 @@ public interface Guild : Organization {
      * 根据ID获取一个指定的聊天频道。
      * 如果找不到则会得到 `null`。
      */
-    @ST(blockingBaseName = "getChatChannel", blockingSuffix = "", asyncBaseName = "getChatChannel", reserveBaseName = "getChatChannel")
+    @ST(
+        blockingBaseName = "getChatChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChatChannel",
+        reserveBaseName = "getChatChannel"
+    )
     public suspend fun chatChannel(id: ID): ChatChannel?
 
     /**

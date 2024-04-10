@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,8 @@ internal actual fun customDispatcher(
             Thread(
                 group,
                 r,
-                name?.let { "$it-${counter.getAndIncrement()}" } ?: "CustomDP-STPE-${counter.getAndIncrement()}").also {
+                name?.let { "$it-${counter.getAndIncrement()}" } ?: "CustomDP-STPE-${counter.getAndIncrement()}"
+            ).also {
                 it.isDaemon = true
             }
         }
@@ -86,7 +87,8 @@ internal actual fun customDispatcher(
         Thread(
             group,
             r,
-            name?.let { "$it-${counter.getAndIncrement()}" } ?: "CustomDP-TPE-${counter.getAndIncrement()}").also {
+            name?.let { "$it-${counter.getAndIncrement()}" } ?: "CustomDP-TPE-${counter.getAndIncrement()}"
+        ).also {
             it.isDaemon = true
         }
     }

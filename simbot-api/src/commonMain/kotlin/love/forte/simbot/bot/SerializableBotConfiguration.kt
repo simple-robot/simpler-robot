@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -89,7 +89,9 @@ public abstract class SerializableBotConfiguration
 /**
  * Configure polymorphic for [SerializableBotConfiguration].
  */
-public inline fun SerializersModuleBuilder.serializableBotConfigurationPolymorphic(block: PolymorphicModuleBuilder<SerializableBotConfiguration>.() -> Unit) {
+public inline fun SerializersModuleBuilder.serializableBotConfigurationPolymorphic(
+    block: PolymorphicModuleBuilder<SerializableBotConfiguration>.() -> Unit
+) {
     polymorphic(SerializableBotConfiguration::class) {
         block(this)
     }

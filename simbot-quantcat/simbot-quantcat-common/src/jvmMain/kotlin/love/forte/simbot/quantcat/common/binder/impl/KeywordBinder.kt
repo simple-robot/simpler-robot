@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -48,9 +48,11 @@ public class KeywordBinderFactory(
         val value = filterValueReader(context) ?: return ParameterBinderResult.empty()
         val paramType = context.parameter.type as? KClass<*>
         return ParameterBinderResult.normal(
-            if (value.required)
+            if (value.required) {
                 KeywordBinder.Required(value.value, paramType)
-            else KeywordBinder.NotRequired(value.value, paramType)
+            } else {
+                KeywordBinder.NotRequired(value.value, paramType)
+            }
         )
     }
 }

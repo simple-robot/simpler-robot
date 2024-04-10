@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 
 @file:JvmName("ComponentUtil")
 @file:JvmMultifileClass
+
 package love.forte.simbot.component
 
 import kotlinx.serialization.modules.SerializersModule
@@ -67,7 +68,8 @@ public fun Collection<Component>.toComponents(): Components = CollectionComponen
 /**
  * @see Components
  */
-private class CollectionComponents(private val collections: Collection<Component>) : Components,
+private class CollectionComponents(private val collections: Collection<Component>) :
+    Components,
     Collection<Component> by collections {
     override val serializersModule: SerializersModule = SerializersModule {
         collections.forEach { include(it.serializersModule) }

@@ -147,7 +147,10 @@ internal inline fun <K, V> MutableMap<K, V>.internalComputeIfAbsentImpl(key: K, 
 }
 
 @PublishedApi
-internal inline fun <K, V> MutableMap<K, V>.internalComputeIfPresentImpl(key: K, mappingFunction: (K, V & Any) -> V?): V? {
+internal inline fun <K, V> MutableMap<K, V>.internalComputeIfPresentImpl(
+    key: K,
+    mappingFunction: (K, V & Any) -> V?
+): V? {
     val old = get(key)
     if (old != null) {
         val newValue = mappingFunction(key, old)

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -54,14 +54,21 @@ public fun interface JBlockingSuspendApplicationEventHandler<in C> {
          */
         @JvmStatic
         @JvmOverloads
-        public fun <C> toHandler(dispatcherContext: CoroutineContext = Dispatchers.IO, handler: JBlockingSuspendApplicationEventHandler<C>): SuspendApplicationEventHandler<C> = handler.toHandlerInternal(dispatcherContext)
+        public fun <C> toHandler(
+            dispatcherContext: CoroutineContext = Dispatchers.IO,
+            handler: JBlockingSuspendApplicationEventHandler<C>
+        ): SuspendApplicationEventHandler<C> = handler.toHandlerInternal(
+            dispatcherContext
+        )
 
-                /**
+        /**
          * 将 [JBlockingSuspendApplicationEventHandler] 转化为 [SuspendApplicationEventHandler]。
          *
          * @param dispatcherContext 执行阻塞API时切换到的上下文。默认会使用 [Dispatchers.IO].
          */
-        private fun <C> JBlockingSuspendApplicationEventHandler<C>.toHandlerInternal(dispatcherContext: CoroutineContext = Dispatchers.IO): SuspendApplicationEventHandler<C> =
+        private fun <C> JBlockingSuspendApplicationEventHandler<C>.toHandlerInternal(
+            dispatcherContext: CoroutineContext = Dispatchers.IO
+        ): SuspendApplicationEventHandler<C> =
             JBlockingSuspendApplicationEventHandlerImpl(this, dispatcherContext)
     }
 }
@@ -116,7 +123,8 @@ public fun interface JAsyncSuspendApplicationEventHandler<in C> {
          * @return The converted [SuspendApplicationEventHandler].
          */
         @JvmStatic
-        public fun <C> toHandler(handler: JAsyncSuspendApplicationEventHandler<C>): SuspendApplicationEventHandler<C> = handler.toHandlerInternal()
+        public fun <C> toHandler(handler: JAsyncSuspendApplicationEventHandler<C>): SuspendApplicationEventHandler<C> =
+            handler.toHandlerInternal()
 
         /**
          * 将 [JAsyncSuspendApplicationEventHandler] 转化为 [SuspendApplicationEventHandler]。

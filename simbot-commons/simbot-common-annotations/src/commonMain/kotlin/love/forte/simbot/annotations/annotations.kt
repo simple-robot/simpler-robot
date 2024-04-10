@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,7 @@ public annotation class InternalSimbotAPI
 @Retention(AnnotationRetention.BINARY)
 @RequiresOptIn(
     message = "一个脆弱的、或者具有复杂的须知、备注、条件的API。" +
-            "这类API通常有很多前提条件以及注意事项，需要谨慎使用。",
+        "这类API通常有很多前提条件以及注意事项，需要谨慎使用。",
     level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented

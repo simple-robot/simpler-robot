@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -125,11 +125,17 @@ public abstract class AbstractEventDispatcherConfiguration : EventDispatcherConf
     override var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
     //region interceptors
-    protected open val interceptors: MutableList<Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>> =
+    protected open val interceptors:
+        MutableList<Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>> =
         mutableListOf()
 
-    protected open val dispatchInterceptors: MutableList<Pair<EventDispatchInterceptor, ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?>> =
-        mutableListOf()
+    protected open val dispatchInterceptors:
+        MutableList<
+            Pair<
+                EventDispatchInterceptor,
+                ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?
+                >
+            > = mutableListOf()
 
     override fun addInterceptor(
         propertiesConsumer: ConfigurerFunction<EventInterceptorRegistrationProperties>?,

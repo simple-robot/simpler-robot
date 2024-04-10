@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -259,7 +259,10 @@ public interface MutableAttributeMap : AttributeMap {
      *
      * @throws ClassCastException 如果类型不匹配
      */
-    public fun <T : Any> safeComputeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, Any) -> T?): Any?
+    public fun <T : Any> safeComputeIfPresent(
+        attribute: Attribute<T>,
+        remappingFunction: (Attribute<T>, Any) -> T?
+    ): Any?
 
     /**
      * 移除对应键名的值。
@@ -267,6 +270,7 @@ public interface MutableAttributeMap : AttributeMap {
      * @throws ClassCastException 如果类型不匹配
      */
     public fun <T : Any> remove(attribute: Attribute<T>): T?
+
     /**
      * 移除对应键名的值。不对返回值进行类型转化。
      */
@@ -322,7 +326,8 @@ private open class AttributeMapImpl(protected open val map: Map<Attribute<*>, An
     }
 }
 
-private class MutableAttributeMapImpl(override val map: MutableMap<Attribute<*>, Any>) : AttributeMapImpl(map),
+private class MutableAttributeMapImpl(override val map: MutableMap<Attribute<*>, Any>) :
+    AttributeMapImpl(map),
     MutableAttributeMap {
     override val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
         get() = map.entries
@@ -338,7 +343,8 @@ private class MutableAttributeMapImpl(override val map: MutableMap<Attribute<*>,
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
         val newValue = map.mergeValue(attribute, value) { old, now ->
-            old as T; now as T
+            old as T
+            now as T
             remapping(old, now)
         }
         return newValue as T

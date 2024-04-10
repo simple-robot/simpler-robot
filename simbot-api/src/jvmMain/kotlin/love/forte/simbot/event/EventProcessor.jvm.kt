@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,8 @@ public fun EventProcessor.pushAndAsFlux(event: Event): Flux<EventResult> =
     push(event).asFlux()
 
 @Deprecated(
-    "Use collectBy", ReplaceWith(
+    "Use collectBy",
+    ReplaceWith(
         "collectBy(scope, launchContext, collector)",
         "love.forte.simbot.common.collectable.collectBy"
     ),
@@ -77,6 +78,7 @@ internal suspend fun <T, R> Flow<T>.collectBy0(collector: Collector<T, *, R>): R
     collectBy(collector)
 
 //region async
+
 /**
  * 推送事件并将结果收集为 [C] 后返回 [CompletableFuture].
  */
@@ -108,6 +110,7 @@ public fun EventProcessor.pushAndCollectToListAsync(
 
 
 //region block
+
 /**
  * 推送事件并将结果转化为 [Stream] 后返回。
  */
@@ -115,7 +118,8 @@ public fun EventProcessor.pushAndAsStream(event: Event, scope: CoroutineScope): 
     val iterator = push(event).asIterator(
         scope,
         hasNext = { runInNoScopeBlocking { hasNext() } },
-        next = { runInNoScopeBlocking { next() } })
+        next = { runInNoScopeBlocking { next() } }
+    )
 
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
 }

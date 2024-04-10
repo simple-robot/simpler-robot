@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +29,11 @@ import love.forte.simbot.event.*
 import love.forte.simbot.spring.common.application.SpringEventDispatcherConfiguration
 import kotlin.coroutines.CoroutineContext
 
+internal typealias EventInterceptorConfigPair =
+    Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>
+
+internal typealias EventDispatchInterceptorConfigPair =
+    Pair<EventDispatchInterceptor, ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?>
 
 /**
  *
@@ -39,6 +44,8 @@ internal class SpringEventDispatcherConfigurationImpl(
 ) : AbstractEventDispatcherConfiguration(),
     SpringEventDispatcherConfiguration {
     override var coroutineContext: CoroutineContext by simple::coroutineContext
-    public override val interceptors: MutableList<Pair<EventInterceptor, ConfigurerFunction<EventInterceptorRegistrationProperties>?>> by simple::interceptors
-    public override val dispatchInterceptors: MutableList<Pair<EventDispatchInterceptor, ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?>> by simple::dispatchInterceptors
+    public override val interceptors:
+        MutableList<EventInterceptorConfigPair> by simple::interceptors
+    public override val dispatchInterceptors:
+        MutableList<EventDispatchInterceptorConfigPair> by simple::dispatchInterceptors
 }

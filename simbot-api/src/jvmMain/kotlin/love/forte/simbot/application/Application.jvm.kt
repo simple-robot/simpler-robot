@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -52,16 +52,24 @@ public fun Application.asCompletableFuture(): CompletableFuture<Unit> =
  * @throws ApplicationLaunchBlockingFailureException 启动过程中产生了任何异常的包装
  */
 @JvmOverloads
-public fun <A : Application, C : AbstractApplicationBuilder, L : ApplicationLauncher<A>, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> launchApplicationBlocking(
+public fun <
+    A : Application,
+    C : AbstractApplicationBuilder,
+    L : ApplicationLauncher<A>,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > launchApplicationBlocking(
     factory: ApplicationFactory<A, C, L, AER, DC>,
     configurer: ConfigurerFunction<ApplicationFactoryConfigurer<C, AER, DC>>? = null
 ): A {
     runCatching {
-        val launcher = factory.create(configurer?.let { c ->
-            toConfigurerFunction {
-                c.invokeWith(this)
+        val launcher = factory.create(
+            configurer?.let { c ->
+                toConfigurerFunction {
+                    c.invokeWith(this)
+                }
             }
-        })
+        )
 
         return runInNoScopeBlocking { launcher.launch() }
     }.getOrElse { e ->

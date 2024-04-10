@@ -41,6 +41,7 @@ public fun <T> emptyCollectable(): Collectable<T> = EmptyCollectable
 
 private data object EmptyCollectable : Collectable<Nothing> {
     override suspend fun collect(collector: Action<Nothing>) {
+        // do nothing.
     }
 
     override fun collectAsync(scope: CoroutineScope, collector: Action<Nothing>): Async<Unit> {

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -77,6 +77,7 @@ public class SimbotLoggerProvider : SLF4JServiceProvider {
     public companion object {
         private val defaultMarkerFactory = BasicMarkerFactory()
         private val defaultMdcAdapter = NOPMDCAdapter()
+
         // see NOPServiceProvider.REQUESTED_API_VERSION
         // field not be final
         @JvmStatic
@@ -102,7 +103,10 @@ internal object InternalSimbotLoggerProvider {
 
         val firstProcessor = processorList.first()
         if (processorList.size > 1) {
-            report("There are multiple SimbotLoggerProcessorsFactory loaded. The firstProcessor [$firstProcessor] will be selected.")
+            report(
+                "There are multiple SimbotLoggerProcessorsFactory loaded. " +
+                    "The firstProcessor [$firstProcessor] will be selected."
+            )
             processorList.forEachIndexed { index, fac ->
                 report("\t${index + 1}. $fac")
             }
@@ -132,6 +136,7 @@ internal object InternalSimbotLoggerProvider {
         return createSimbotLoggerConfiguration(loadJvmArgs, initProperties)
     }
 
+    @Suppress("PrintStackTrace")
     private fun loadFileProperties(): Map<String, String> {
         val fileName = configFileName()
         val file = Path(fileName)

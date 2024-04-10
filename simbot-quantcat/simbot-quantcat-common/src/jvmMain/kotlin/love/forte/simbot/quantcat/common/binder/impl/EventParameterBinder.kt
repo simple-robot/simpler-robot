@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -53,27 +53,27 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
         return when {
             // Event
             classifier.isSubclassOf(Event::class) -> {
-                return ParameterBinderResult.normal(EventInstanceBinder(classifier as KClass<Event>))
+                ParameterBinderResult.normal(EventInstanceBinder(classifier as KClass<Event>))
             }
 
             // EventListener
             classifier.isSubclassOf(EventListener::class) -> {
-                return ParameterBinderResult.normal(EventListenerInstanceBinder)
+                ParameterBinderResult.normal(EventListenerInstanceBinder)
             }
 
             // EventContext
             classifier.isSubclassOf(EventContext::class) -> {
-                return ParameterBinderResult.normal(EventContextInstanceBinder)
+                ParameterBinderResult.normal(EventContextInstanceBinder)
             }
 
             // EventListenerContext
             classifier.isSubclassOf(EventListenerContext::class) -> {
-                return ParameterBinderResult.normal(EventListenerContextInstanceBinder)
+                ParameterBinderResult.normal(EventListenerContextInstanceBinder)
             }
 
             // KFunction from listener
             classifier.isSubclassOf(KFunction::class) -> {
-                return ParameterBinderResult.normal(KFunctionInstanceBinder(context.source))
+                ParameterBinderResult.normal(KFunctionInstanceBinder(context.source))
             }
 
             else -> ParameterBinderResult.empty()
@@ -90,7 +90,12 @@ private class EventInstanceBinder(private val targetType: KClass<Event>) : Param
     override fun arg(context: EventListenerContext): Result<Any?> {
         // 如果当前事件类型是目标类型的子类，提供参数
         return targetType.safeCast(context.event)?.let { Result.success(it) }
-            ?: Result.failure(BindException("The type of EventListenerContext.event is inconsistent with the target type $targetType"))
+            ?: Result.failure(
+                BindException(
+                    "The type of EventListenerContext.event " +
+                        "is inconsistent with the target type $targetType"
+                )
+            )
     }
 }
 

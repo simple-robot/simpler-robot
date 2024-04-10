@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,7 @@ import org.gradle.kotlin.dsl.withType
 
 
 fun Project.useK2(languageVersion: String = "2.0") {
+    logger.warn("暂时关闭K2, 等待稳定版。The input languageVersion = {}", languageVersion)
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             // useK2

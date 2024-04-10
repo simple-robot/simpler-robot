@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -105,7 +105,9 @@ public class ConsoleSimbotLoggerProcessor(configuration: SimbotLoggerConfigurati
         val prefixLevelList = mutableListOf<Pair<String, LogLevel>>()
         val properties = configuration.properties
         properties.forEach { (k, v) ->
-            if (k.length > SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY.length && k.startsWith(SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY)) {
+            if (k.length > SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY.length &&
+                k.startsWith(SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY)
+            ) {
                 val prefix = k.substringAfter("${SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY}.").takeIf { it.isNotBlank() }
                     ?: return@forEach
                 if (prefixSet.add(prefix)) {
@@ -128,7 +130,7 @@ public class ConsoleSimbotLoggerProcessor(configuration: SimbotLoggerConfigurati
         val prop = configuration.properties
         val levelName =
             (prop[SIMBOT_LEVEL_CONSOLE_PROPERTY_KEY] ?: prop[SIMBOT_LEVEL_PROPERTY_KEY])?.stringValue?.uppercase()
-                ?: return (configuration.defaultLevel ?: LogLevel.INFO)
+                ?: return configuration.defaultLevel ?: LogLevel.INFO
         return LogLevel.valueOf(levelName)
     }
 
@@ -141,8 +143,11 @@ public class ConsoleSimbotLoggerProcessor(configuration: SimbotLoggerConfigurati
 
 
 internal fun String.getOnMax(max: Int): String {
-    return if (length <= max) this
-    else this.substring(length - max)
+    return if (length <= max) {
+        this
+    } else {
+        this.substring(length - max)
+    }
 }
 
 internal val LogLevel.color: Color

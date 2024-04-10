@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -247,7 +247,12 @@ public interface ContactRelation {
      *
      * 如果实现者不支持也可能始终得到 `null`。
      */
-    @ST(blockingBaseName = "getContact", blockingSuffix = "", asyncBaseName = "getContact", reserveBaseName = "getContact")
+    @ST(
+        blockingBaseName = "getContact",
+        blockingSuffix = "",
+        asyncBaseName = "getContact",
+        reserveBaseName = "getContact"
+    )
     public suspend fun contact(id: ID): Contact?
 
     /**

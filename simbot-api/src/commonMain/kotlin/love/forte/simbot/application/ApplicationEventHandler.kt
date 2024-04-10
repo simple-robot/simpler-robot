@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -175,11 +175,12 @@ public interface ApplicationLaunchStages {
  * 通过一个 Map 构建得到 [ApplicationLaunchStages]
  *
  */
-public fun applicationLaunchStages(map: Map<ApplicationLaunchStage<*>, Iterable<ApplicationEventHandler>>): ApplicationLaunchStages =
-    MapApplicationLaunchStages(map)
+public fun applicationLaunchStages(map: Map<ApplicationLaunchStage<*>, Iterable<ApplicationEventHandler>>):
+    ApplicationLaunchStages = MapApplicationLaunchStages(map)
 
-private class MapApplicationLaunchStages(private val map: Map<ApplicationLaunchStage<*>, Iterable<ApplicationEventHandler>>) :
-    ApplicationLaunchStages {
+private class MapApplicationLaunchStages(
+    private val map: Map<ApplicationLaunchStage<*>, Iterable<ApplicationEventHandler>>
+) : ApplicationLaunchStages {
     override fun get(stage: ApplicationLaunchStage<*>): Iterable<ApplicationEventHandler>? = map[stage]
 }
 

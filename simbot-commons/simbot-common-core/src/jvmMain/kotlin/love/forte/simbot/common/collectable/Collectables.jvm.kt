@@ -70,7 +70,8 @@ import kotlin.streams.asStream
  *
  * @see FlowSynchronouslyIterateCollectable
  */
-public fun <T> Collectable<T>.asSynchronouslyIterateCollectable(produceScope: CoroutineScope): SynchronouslyIterateCollectable<T> {
+public fun <T> Collectable<T>.asSynchronouslyIterateCollectable(produceScope: CoroutineScope):
+    SynchronouslyIterateCollectable<T> {
     if (this is SynchronouslyIterateCollectable<T>) {
         return this
     }
@@ -88,7 +89,8 @@ public fun <T> Collectable<T>.asSynchronouslyIterateCollectable(produceScope: Co
  * @param produceScope The [CoroutineScope] to use for producing values from the [Flow].
  * @see asSynchronouslyIterateCollectable
  */
-public fun <T> Flow<T>.asFlowSynchronouslyIterateCollectable(produceScope: CoroutineScope): FlowSynchronouslyIterateCollectable<T> {
+public fun <T> Flow<T>.asFlowSynchronouslyIterateCollectable(produceScope: CoroutineScope):
+    FlowSynchronouslyIterateCollectable<T> {
     return FlowSynchronouslyIterateCollectableImpl(produceScope, this)
 }
 
@@ -185,7 +187,8 @@ private class FlowSynchronouslyIterateCollectableImpl<T>(
         return flow.asIterator(
             produceScope,
             hasNext = { runInNoScopeBlocking { hasNext() } },
-            next = { runInNoScopeBlocking { next() } })
+            next = { runInNoScopeBlocking { next() } }
+        )
     }
 
     override fun toList(): List<T> = runInNoScopeBlocking { flow.toList() }
@@ -193,6 +196,7 @@ private class FlowSynchronouslyIterateCollectableImpl<T>(
 
 private data object EmptySynchronouslyIterateCollectable : SynchronouslyIterateCollectable<Nothing> {
     override fun forEach(action: Action<Nothing>) {
+        // do nothing.
     }
 
     override fun asFlow(): Flow<Nothing> = emptyFlow()
@@ -241,7 +245,8 @@ public fun <T> Collectable<T>.asStream(produceScope: CoroutineScope? = null): St
             val iter = asFlow().asIterator(
                 producerScope = scope,
                 hasNext = { runInNoScopeBlocking { hasNext() } },
-                next = { runInNoScopeBlocking { next() } })
+                next = { runInNoScopeBlocking { next() } }
+            )
 
             StreamSupport.stream(
                 { Spliterators.spliteratorUnknownSize(iter, Spliterator.ORDERED) },
@@ -265,7 +270,7 @@ private class StreamCollectableImpl<T>(private val stream: Stream<T>) : Sequence
     override fun toList(): List<T> = stream.collect(Collectors.toUnmodifiableList())
 }
 
-/// List
+// / List
 
 /**
  * 将 [Collectable] 阻塞地收集为 [List]。
@@ -298,7 +303,7 @@ public fun <T> Collectable<T>.toListAsync(scope: CoroutineScope? = null): Comple
     else -> (scope ?: GlobalScope).future { asFlow().toList() }
 }
 
-/// collector
+// / collector
 
 /**
  * 使用 [Collector] **阻塞地**收集 [Collectable] 中的元素。
@@ -348,7 +353,7 @@ public fun <T, R> Collectable<T>.collectAsync(
     }
 }
 
-/// transform
+// / transform
 
 /**
  * 使用 [SuspendReserve.Transformer] 对 [Collectable.asFlow] 的结果进行转化，
@@ -365,17 +370,19 @@ public fun <T, R> Collectable<T>.collectAsync(
 @OptIn(DelicateCoroutinesApi::class)
 @JvmOverloads
 @Deprecated(
-    "Just use Collectable.transform", ReplaceWith(
+    "Just use Collectable.transform",
+    ReplaceWith(
         "transform(scope, EmptyCoroutineContext, transformer)",
         "kotlin.coroutines.EmptyCoroutineContext"
-    ), level = DeprecationLevel.ERROR
+    ),
+    level = DeprecationLevel.ERROR
 )
 public fun <T, R> Collectable<T>.transform(
     scope: CoroutineScope = GlobalScope,
     transformer: SuspendReserve.Transformer<Flow<T>, R>
 ): R = transform(scope, EmptyCoroutineContext, transformer)
 
-/// reactor
+// / reactor
 
 /**
  * 将 [Collectable] 转化为 [Flux]。
@@ -402,7 +409,9 @@ public suspend fun <T, R> Flow<T>.collectBy(
     val accumulator = collector.accumulator() as java.util.function.BiConsumer<Any?, T>
     val characteristics = collector.characteristics()
 
-    if (Collector.Characteristics.CONCURRENT in characteristics && Collector.Characteristics.UNORDERED in characteristics) {
+    if (Collector.Characteristics.CONCURRENT in characteristics &&
+        Collector.Characteristics.UNORDERED in characteristics
+    ) {
         // collect in launch
         collect { result ->
             scope.launch(launchContext) { accumulator.accept(container, result) }

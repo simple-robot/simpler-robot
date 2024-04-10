@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -90,7 +90,8 @@ private class JsConcurrentModifyMutableMap<K, V>(private val source: MutableMap<
     override val keys: MutableSet<K>
         get() = MutableKeySet(source, source.keys.toSet())
 
-    private class MutableKeySet<K>(private val source: MutableMap<K, *>, private val view: Set<K>) : MutableSet<K>,
+    private class MutableKeySet<K>(private val source: MutableMap<K, *>, private val view: Set<K>) :
+        MutableSet<K>,
         Set<K> by view {
         override fun add(element: K): Boolean = throw UnsupportedOperationException()
         override fun addAll(elements: Collection<K>): Boolean = throw UnsupportedOperationException()
@@ -206,7 +207,8 @@ private class JsConcurrentModifyMutableMap<K, V>(private val source: MutableMap<
             return source.keys.retainAll(elements.mapTo(mutableSetOf()) { it.key })
         }
 
-        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = MutableMapIterator(view.iterator(),
+        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = MutableMapIterator(
+            view.iterator(),
             mapper = { (oldKey, oldValue) ->
 
                 object : MutableMap.MutableEntry<K, V> {
@@ -222,7 +224,8 @@ private class JsConcurrentModifyMutableMap<K, V>(private val source: MutableMap<
             },
             remover = { target ->
                 source.remove(target.key)
-            })
+            }
+        )
     }
 
     private class MutableMapIterator<T, R>(

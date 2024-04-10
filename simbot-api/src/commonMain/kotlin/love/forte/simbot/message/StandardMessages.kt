@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -58,6 +58,7 @@ import kotlin.jvm.*
 public sealed interface StandardMessage : Message.Element
 
 //region Text
+
 /**
  * 纯文本消息。代表一段只存在[文本][text]的消息。
  *
@@ -106,8 +107,11 @@ public class Text private constructor(override val text: String) : PlainText {
          */
         @JvmStatic
         public fun of(text: String): Text {
-            return if (text.isEmpty()) empty
-            else Text(text)
+            return if (text.isEmpty()) {
+                empty
+            } else {
+                Text(text)
+            }
         }
     }
 }
@@ -139,6 +143,7 @@ public inline fun Text(block: () -> String): Text = block().toText()
 //endregion
 
 //region At
+
 /**
  * 代表一个描述“提及”的消息。常见表现形式即为 [At]。
  *
@@ -219,6 +224,7 @@ public data object AtAll : MentionMessage
 //endregion
 
 //region Description
+
 /**
  * 一个图片消息元素类型。
  *
@@ -339,7 +345,11 @@ public expect fun Resource.toOfflineResourceImage(): OfflineResourceImage
 @OptIn(ExperimentalEncodingApi::class)
 @Serializable
 @SerialName("m.std.img.offline.resource")
-public data class SimpleOfflineResourceImage(@Serializable(ResourceBase64Serializer::class) override val resource: Resource) :
+public data class SimpleOfflineResourceImage(
+    @Serializable(
+        ResourceBase64Serializer::class
+    ) override val resource: Resource
+) :
     OfflineResourceImage
 
 
@@ -407,6 +417,7 @@ public interface RemoteUrlAwareImage : RemoteImage, UrlAwareImage {
 //endregion
 
 //region Emoticon
+
 /**
  * 表示某种表情符号的消息元素类型。
  * 常见表现形式有某平台的系统表情或一定范围内的 `emoji` 表情。

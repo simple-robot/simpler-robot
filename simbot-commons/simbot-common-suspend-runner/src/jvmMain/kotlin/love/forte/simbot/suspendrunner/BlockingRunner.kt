@@ -64,7 +64,9 @@ public val VirtualThreadDispatcher: CoroutineDispatcher by lazy {
         (handle.invoke() as Executor).asCoroutineDispatcher()
     }.getOrElse { e ->
         throw UnsupportedOperationException(
-            "Virtual thread dispatcher is not support. Mark sure you are using JDK 21+ now or try to provide the dispatcher via 'love.forte.simbot.utils.CustomBlockingDispatcherProvider'",
+            "Virtual thread dispatcher is not support. " +
+                "Mark sure you are using JDK 21+ now or try to provide the dispatcher via " +
+                "'love.forte.simbot.utils.CustomBlockingDispatcherProvider'",
             e
         )
     }
@@ -196,7 +198,10 @@ public abstract class CustomBlockingExecutorProvider : CustomBlockingDispatcherP
 
 private class CustomBlockingDispatcherProviderNotFoundException(
     classLoader: ClassLoader?
-) : RuntimeException("System property 'simbot.runInBlocking.dispatcher' is 'custom', but there is no provider loaded via classLoader $classLoader")
+) : RuntimeException(
+    "System property 'simbot.runInBlocking.dispatcher' is 'custom', " +
+        "but there is no provider loaded via classLoader $classLoader"
+)
 
 
 private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatcher {
@@ -213,7 +218,8 @@ private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatc
     if (services.size > 1) {
         // log
         logger.warn(
-            "System property 'simbot.runInBlocking.dispatcher' is 'custom', and the size of providers are more than 1: {}",
+            "System property 'simbot.runInBlocking.dispatcher' is 'custom', " +
+                "and the size of providers are more than 1: {}",
             services.size
         )
         for ((index, provider) in services.withIndex()) {
@@ -329,7 +335,9 @@ private inline fun initDispatcher(
                     Dispatchers.IO
                 }
 
-                dispatcher eq DISPATCHER_USE_CUSTOM_PROPERTY_VALUE -> loadCustomBlockingDispatcher(Thread.currentThread().contextClassLoader)
+                dispatcher eq DISPATCHER_USE_CUSTOM_PROPERTY_VALUE -> loadCustomBlockingDispatcher(
+                    Thread.currentThread().contextClassLoader
+                )
                 else -> null
             }
 
@@ -434,12 +442,16 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
             if (hasCause) {
                 cause as Throwable
                 logger.debug(
-                    "Default async dispatcher will use the default blocking dispatcher because an exception thrown duration initialization: {}",
+                    "Default async dispatcher will use the default blocking dispatcher " +
+                        "because an exception thrown duration initialization: {}",
                     cause.localizedMessage,
                     cause
                 )
             } else {
-                logger.debug("Default async dispatcher will use the default blocking dispatcher because all initialization parameters are null")
+                logger.debug(
+                    "Default async dispatcher will use the default blocking dispatcher " +
+                        "because all initialization parameters are null"
+                )
             }
             // default: null
             null
@@ -487,7 +499,7 @@ public val DefaultAsyncContext: CoroutineContext by lazy {
     }
 }
 
-@Suppress("unused", "ObjectPropertyName")
+@Suppress("unused", "ObjectPropertyName", "TopLevelPropertyNaming")
 @InternalSimbotAPI
 @Deprecated("Unused property", level = DeprecationLevel.ERROR)
 private val `$$DefaultScope`: CoroutineScope by lazy {
@@ -532,6 +544,7 @@ public fun setRunInBlockingStrategy(strategy: RunInBlockingStrategy) {
 // endregion
 
 // region run in no scope blocking strategy
+
 /**
  * 无作用域的阻塞API所使用的执行策略。
  *
@@ -807,7 +820,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
             // value is a Future.
             @Suppress("UNCHECKED_CAST")
             valueUpdater.updateAndGet(this) { curr ->
-                ((curr as? CompletableFuture<T>) ?: CompletableFuture<T>()).also { f ->
+                (curr as? CompletableFuture<T> ?: CompletableFuture<T>()).also { f ->
                     result.onSuccess { value ->
                         f.complete(value)
                     }.onFailure { e ->
@@ -833,7 +846,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
      * @throws ExecutionException if [ExecutionException.cause] is null
      * @throws Exception [ExecutionException.cause]
      */
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "ReturnCount", "ThrowsCount")
     @Throws(Exception::class)
     fun await(isWaitTimeoutEnabled: Boolean): T {
         val future: CompletableFuture<T>
@@ -841,7 +854,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         // 预期为异步挂起。如果成功，value设置为 CompletableFuture.
         if (signalUpdater.compareAndSet(this, SIGNAL_NONE, SIGNAL_SUSPEND)) {
             future = valueUpdater.updateAndGet(this) { curr ->
-                (curr as? CompletableFuture<T>) ?: CompletableFuture<T>()
+                curr as? CompletableFuture<T> ?: CompletableFuture<T>()
             } as CompletableFuture<T>
         } else {
             // 失败，则获取，或等待结果
@@ -859,7 +872,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
                 return value as T
             }
 
-            throw (value as Throwable)
+            throw value as Throwable
         }
 
         if (!isWaitTimeoutEnabled || (!logIfVirtual && Thread.currentThread().isVirtualThread())) {
@@ -869,9 +882,10 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
                 throw cancellation
             } catch (execution: ExecutionException) {
                 throw execution.cause ?: execution
-            } catch (other: Throwable) {
-                throw other // CompletionException(other)
             }
+            // catch (other: Throwable) {
+            //     throw other // CompletionException(other)
+            // }
         }
 
         var times = 0
@@ -889,7 +903,8 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
                     )
                 } else {
                     logger.warn(
-                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
+                        "Blocking runner has been blocking for at least {}. " +
+                            "Enable debug logging for '{}' for more stack information.",
                         duration.toString(),
                         LOGGER_NAME
                     )
@@ -898,15 +913,16 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
 
             try {
                 return future.get(waitTimeout, TimeUnit.MILLISECONDS)
-            } catch (timeout: TimeoutException) {
+            } catch (ignore: TimeoutException) {
                 times += 1
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (execution: ExecutionException) {
                 throw execution.cause ?: execution
-            } catch (other: Throwable) {
-                throw other // CompletionException(other)
             }
+            // catch (other: Throwable) {
+            //     throw other // CompletionException(other)
+            // }
         }
 
         // done.
@@ -955,10 +971,12 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         init {
             if (isWaitTimeoutEnabled) {
                 logger.info(
-                    "Blocking runner wait timeout is enabled with wait timeout {}. You can enable debug logging for '{}' for more stack information or disable it with the JVM parameter '-D{}=true'.",
+                    "Blocking runner wait timeout is enabled with wait timeout {}. " +
+                        "You can enable debug logging for '$LOGGER_NAME' " +
+                        "for more stack information " +
+                        "or disable it with the JVM parameter " +
+                        "'-D$BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME=true'.",
                     waitTimeout.milliseconds.toString(),
-                    LOGGER_NAME,
-                    BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME
                 )
             } else {
                 logger.debug("Blocking runner wait timeout is disabled.")

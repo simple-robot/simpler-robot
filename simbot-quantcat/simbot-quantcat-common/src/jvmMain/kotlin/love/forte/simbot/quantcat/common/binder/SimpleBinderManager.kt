@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -78,14 +78,25 @@ public class SimpleFunctionalBinderFactory(
  * @throws IllegalArgumentException 参数不符合条件时
  */
 @ExperimentalSimbotAPI
-public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.Context) -> Any?): SimpleFunctionalBinderFactory {
+@Suppress("ThrowsCount")
+public fun KFunction<*>.toBinderFactory(
+    instanceGetter: (ParameterBinderFactory.Context) -> Any?
+): SimpleFunctionalBinderFactory {
     val classifier = this.returnType.classifier
-    if (classifier !is KClass<*>) throw IllegalArgumentException("Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], but $classifier")
+    if (classifier !is KClass<*>) {
+        throw IllegalArgumentException(
+            "Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], " +
+                "but $classifier"
+        )
+    }
 
     val type: Int = when {
         classifier.isSubclassOf(ParameterBinderResult::class) -> 1
         classifier.isSubclassOf(ParameterBinder::class) -> 2
-        else -> throw IllegalArgumentException("Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], but $classifier")
+        else -> throw IllegalArgumentException(
+            "Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], " +
+                "but $classifier"
+        )
     }
 
     val instanceParameter0 = instanceParameter
@@ -94,23 +105,37 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
 
     val contextParameters: KParameter? = when {
         // both
-        extensionReceiverParameter0 != null && valueParameters0.isNotEmpty() -> throw IllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but receiver: $extensionReceiverParameter0 and value parameters size: ${valueParameters0.size}")
+        extensionReceiverParameter0 != null && valueParameters0.isNotEmpty() -> throw IllegalStateException(
+            "The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. " +
+                "but receiver: $extensionReceiverParameter0 and value parameters size: ${valueParameters0.size}"
+        )
 
         // nothing
         extensionReceiverParameter0 == null && valueParameters0.isEmpty() -> null // no parameter
         // throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but parameters was empty.")
 
         // more values
-        extensionReceiverParameter0 == null && valueParameters0.size > 1 -> throw IllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but parameters was more than 1: ${valueParameters0.size}.")
+        extensionReceiverParameter0 == null && valueParameters0.size > 1 -> throw IllegalStateException(
+            "The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. " +
+                "but parameters was more than 1: ${valueParameters0.size}."
+        )
 
         extensionReceiverParameter0 != null -> {
             val typeClass = extensionReceiverParameter0.type.classifier
             if (typeClass !is KClass<*>) {
-                throw IllegalArgumentException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the receiver was: $typeClass")
+                throw IllegalArgumentException(
+                    "The binder function has and can only have one parameter " +
+                        "of type [ParameterBinderFactory.Context]. " +
+                        "but type of the receiver was: $typeClass"
+                )
             }
 
             if (!typeClass.isSubclassOf(ParameterBinderFactory.Context::class)) {
-                throw IllegalArgumentException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the receiver was: $typeClass")
+                throw IllegalArgumentException(
+                    "The binder function has and can only have one parameter " +
+                        "of type [ParameterBinderFactory.Context]. " +
+                        "but type of the receiver was: $typeClass"
+                )
             }
 
             extensionReceiverParameter0
@@ -121,11 +146,19 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
             val singleParameter = valueParameters0.first()
             val typeClass = singleParameter.type.classifier
             if (typeClass !is KClass<*>) {
-                throw IllegalArgumentException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the single parameter was: $typeClass")
+                throw IllegalArgumentException(
+                    "The binder function has and can only have one parameter " +
+                        "of type [ParameterBinderFactory.Context]. " +
+                        "but type of the single parameter was: $typeClass"
+                )
             }
 
             if (!typeClass.isSubclassOf(ParameterBinderFactory.Context::class)) {
-                throw IllegalArgumentException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the single parameter was: $typeClass")
+                throw IllegalArgumentException(
+                    "The binder function has and can only have one parameter " +
+                        "of type [ParameterBinderFactory.Context]. " +
+                        "but type of the single parameter was: $typeClass"
+                )
             }
             singleParameter
         }
@@ -166,8 +199,11 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
                 instanceGetter
             ) { _, _ ->
                 val binder = call() as ParameterBinder?
-                if (binder == null) ParameterBinderResult.empty()
-                else ParameterBinderResult.normal(binder)
+                if (binder == null) {
+                    ParameterBinderResult.empty()
+                } else {
+                    ParameterBinderResult.normal(binder)
+                }
             }
 
             // contextParameters not null
@@ -175,8 +211,11 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
                 instanceGetter
             ) { _, context ->
                 val binder = call(context) as ParameterBinder?
-                if (binder == null) ParameterBinderResult.empty()
-                else ParameterBinderResult.normal(binder)
+                if (binder == null) {
+                    ParameterBinderResult.empty()
+                } else {
+                    ParameterBinderResult.normal(binder)
+                }
             }
 
             // instanceParameter0 not null
@@ -185,8 +224,11 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
                     instanceGetter
                 ) { instance, _ ->
                     val binder = call(instance) as ParameterBinder?
-                    if (binder == null) ParameterBinderResult.empty()
-                    else ParameterBinderResult.normal(binder)
+                    if (binder == null) {
+                        ParameterBinderResult.empty()
+                    } else {
+                        ParameterBinderResult.normal(binder)
+                    }
                 }
 
             // all not null
@@ -197,8 +239,11 @@ public fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.
                     val binder = callBy(
                         mapOf(instanceParameter0 to instance, contextParameters to context)
                     ) as ParameterBinder?
-                    if (binder == null) ParameterBinderResult.empty()
-                    else ParameterBinderResult.normal(binder)
+                    if (binder == null) {
+                        ParameterBinderResult.empty()
+                    } else {
+                        ParameterBinderResult.normal(binder)
+                    }
                 }
         }
     }
