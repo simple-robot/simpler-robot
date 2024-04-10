@@ -96,6 +96,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
  * 创建一个 [ContinuousSessionContext] 的基础实现类型。
  */
 @JvmName("createContinuousSessionContext")
+@Suppress("FunctionNaming")
 public fun <T, R> ContinuousSessionContext(coroutineContext: CoroutineContext): ContinuousSessionContext<T, R> =
     SimpleContinuousSessionContext(coroutineContext)
 
