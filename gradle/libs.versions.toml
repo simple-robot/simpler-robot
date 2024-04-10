@@ -20,7 +20,9 @@ suspendReversal = "0.2.0"
 gradleCommon = "0.2.0"
 # tests
 mockk = "1.13.9"
-
+# detekt
+# https://detekt.dev/docs/intro
+detekt = "1.23.3"
 
 [libraries]
 # jetbrains-annotation
@@ -137,6 +139,7 @@ kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-b
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
