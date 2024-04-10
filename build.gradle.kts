@@ -99,7 +99,7 @@ dependencies {
 
 // config detekt
 detekt {
-    source.setFrom(subprojects.map { it.projectDir })
+    source.setFrom(subprojects.map { it.projectDir.absoluteFile })
     config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
     baseline = rootDir.resolve("config/detekt/baseline.xml")
     // buildUponDefaultConfig = true
