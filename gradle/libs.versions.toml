@@ -107,7 +107,7 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref =
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.26"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.29"
 
 # https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
 suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
