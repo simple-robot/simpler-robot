@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -61,11 +61,11 @@ public interface InputStreamResource : Resource {
 }
 
 /**
- * 在 JVM 平台下对 [StringResource] 的额外扩展，
- * 与 [StringResource] 相比，对相关方法增加了 [Charset] 参数。
+ * JVM 平台下可以**读取**到字符串内容的 [StringReadableResource] 类型。
+ * 与 [StringReadableResource] 相比，对相关方法增加了 [Charset] 参数。
  * 默认情况下使用 [Charsets.UTF_8] 格式编码。
  */
-public interface JVMStringResource : StringResource {
+public interface JvmStringReadableResource : StringReadableResource {
     /**
      * 读取此资源的 [String] 内容。
      * 默认使用 [DEFAULT_CHARSET] 编码。
@@ -94,7 +94,7 @@ public interface JVMStringResource : StringResource {
  *
  * @author forte
  */
-public interface ReaderResource : JVMStringResource {
+public interface ReaderResource : JvmStringReadableResource {
     /**
      * 读取当前资源的字符串数据。
      */
@@ -103,10 +103,10 @@ public interface ReaderResource : JVMStringResource {
 
     /**
      * 获取可用于读取当前资源数据的读取流。
-     * 默认使用 [JVMStringResource.DEFAULT_CHARSET] 编码。
+     * 默认使用 [JvmStringReadableResource.DEFAULT_CHARSET] 编码。
      */
     @Throws(IOException::class)
-    public fun reader(): Reader = reader(JVMStringResource.DEFAULT_CHARSET)
+    public fun reader(): Reader = reader(JvmStringReadableResource.DEFAULT_CHARSET)
 
     /**
      * 获取可用于读取当前资源数据的读取流。
@@ -136,11 +136,11 @@ public interface FileResource : InputStreamResource, ReaderResource {
 
     /**
      * 从与此资源关联的 [File] 创建新的 [Reader]。
-     * 默认使用 [JVMStringResource.DEFAULT_CHARSET] 编码。
+     * 默认使用 [JvmStringReadableResource.DEFAULT_CHARSET] 编码。
      * @throws FileNotFoundException 如果文件不存在
      */
     @Throws(FileNotFoundException::class)
-    override fun reader(): Reader = reader(JVMStringResource.DEFAULT_CHARSET)
+    override fun reader(): Reader = reader(JvmStringReadableResource.DEFAULT_CHARSET)
 
     /**
      * 从与此资源关联的 [File] 创建新的 [Reader]
@@ -158,11 +158,11 @@ public interface FileResource : InputStreamResource, ReaderResource {
 
     /**
      * 将与此资源关联的 [File] 读取为字符串。
-     * 默认使用 [JVMStringResource.DEFAULT_CHARSET] 编码。
+     * 默认使用 [JvmStringReadableResource.DEFAULT_CHARSET] 编码。
      * @throws IOException 如果文件无法读取
      */
     @Throws(IOException::class)
-    override fun string(): String = string(JVMStringResource.DEFAULT_CHARSET)
+    override fun string(): String = string(JvmStringReadableResource.DEFAULT_CHARSET)
 
     /**
      * 将与此资源关联的 [File] 读取为字符串
@@ -175,13 +175,13 @@ public interface FileResource : InputStreamResource, ReaderResource {
 /**
  * Converts a [File] to a [FileResource].
  * [charset] 会作为需要使用编码参数的方法的默认编码。
- * 默认使用 [JVMStringResource.DEFAULT_CHARSET]。
+ * 默认使用 [JvmStringReadableResource.DEFAULT_CHARSET]。
  *
  * @return The converted [FileResource].
  */
 @JvmName("valueOf")
 @JvmOverloads
-public fun File.toResource(charset: Charset = JVMStringResource.DEFAULT_CHARSET): FileResource =
+public fun File.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): FileResource =
     FileResourceImpl(this, charset)
 
 private data class FileResourceImpl(override val file: File, private val charset: Charset) : FileResource {
@@ -261,7 +261,7 @@ public interface PathResource : InputStreamResource, ReaderResource {
 @JvmName("valueOf")
 @JvmOverloads
 public fun Path.toResource(
-    charset: Charset = JVMStringResource.DEFAULT_CHARSET,
+    charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET,
     vararg options: OpenOption
 ): PathResource =
     PathResourceImpl(this, charset, options)
@@ -313,7 +313,7 @@ private data class PathResourceImpl(
  *
  * @author forte
  */
-public interface URIResource : InputStreamResource, JVMStringResource {
+public interface URIResource : InputStreamResource, JvmStringReadableResource {
     /**
      * 与此资源关联的 [URI]
      */
@@ -362,25 +362,25 @@ public interface URIResource : InputStreamResource, JVMStringResource {
  * 取而代之的是 [URL.toResource] 可能会产生 [URISyntaxException]，
  * 因为需要使用 [URL.toURI]。
  *
- * @param charset 需要使用编码格式时的默认编码值，默认为 [JVMStringResource.DEFAULT_CHARSET]。
+ * @param charset 需要使用编码格式时的默认编码值，默认为 [JvmStringReadableResource.DEFAULT_CHARSET]。
  * @throws URISyntaxException see [URL.toURI]
  * @return The converted [URIResource].
  */
 @kotlin.jvm.Throws(URISyntaxException::class)
 @JvmName("valueOf")
 @JvmOverloads
-public fun URL.toResource(charset: Charset = JVMStringResource.DEFAULT_CHARSET): URIResource =
+public fun URL.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): URIResource =
     URIResourceImpl(toURI(), charset, this)
 
 /**
  * Converts the current [URI] to a [URIResource].
  *
- * @param charset 需要使用编码格式时的默认编码值，默认为 [JVMStringResource.DEFAULT_CHARSET]。
+ * @param charset 需要使用编码格式时的默认编码值，默认为 [JvmStringReadableResource.DEFAULT_CHARSET]。
  * @return The converted [URIResource].
  */
 @JvmName("valueOf")
 @JvmOverloads
-public fun URI.toResource(charset: Charset = JVMStringResource.DEFAULT_CHARSET): URIResource =
+public fun URI.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): URIResource =
     URIResourceImpl(this, charset, null)
 
 private class URIResourceImpl(override val uri: URI, val charset: Charset, private var url: URL? = null) : URIResource {
