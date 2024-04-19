@@ -19,7 +19,7 @@ suspendTransform = "0.7.0-beta1"
 suspendReversal = "0.2.0"
 gradleCommon = "0.2.0"
 # tests
-mockk = "1.13.9"
+mockk = "1.13.10"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.3"
