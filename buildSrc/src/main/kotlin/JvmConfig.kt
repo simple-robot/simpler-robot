@@ -95,10 +95,12 @@ inline fun Project.configJavaCompileWithModule(
 
         // see https://kotlinlang.org/docs/gradle-configure-project.html#configure-with-java-modules-jpms-enabled
         if (moduleName != null) {
-            options.compilerArgumentProviders.add(CommandLineArgumentProvider {
-                // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-                listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-            })
+            options.compilerArgumentProviders.add(
+                CommandLineArgumentProvider {
+                    // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
+                    listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+                }
+            )
         }
 
         block()
