@@ -1,8 +1,8 @@
 build:
-  maxIssues: 2147483647 # 先不限制最大问题
+  maxIssues: 0
   excludeCorrectable: false
-#  weights:
-#    formatting: 0
+  weights:
+    formatting: 1
 #    comments: 0
 #    complexity: 0
 #    LongParameterList: 0
