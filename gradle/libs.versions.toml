@@ -8,6 +8,8 @@ spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.8"
 slf4j = "2.0.12"
+# https://kotlinlang.org/docs/ksp-quickstart.html
+# https://github.com/google/ksp
 ksp = "1.9.23-1.0.19"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
@@ -26,7 +28,7 @@ detekt = "1.23.3"
 
 [libraries]
 # jetbrains-annotation
-jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
+jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
 
 # dokka
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
