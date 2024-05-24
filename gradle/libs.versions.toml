@@ -1,7 +1,7 @@
 [versions]
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 dokka = "1.9.20"
-kotlinx-coroutines = "1.8.0"
+kotlinx-coroutines = "1.8.1"
 kotlinx-serialization = "1.6.3"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
@@ -10,18 +10,21 @@ ktor = "2.3.8"
 slf4j = "2.0.12"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "1.9.23-1.0.19"
+ksp = "2.0.0-1.0.21"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 kotlinxBenchmark = "0.4.10"
 reactor = "3.6.2"
 # simbots
-suspendTransform = "0.7.0-beta1"
+suspendTransform = "0.8.0-beta1"
 suspendReversal = "0.2.0"
-gradleCommon = "0.2.0"
+gradleCommon = "0.3.0"
 # tests
 mockk = "1.13.10"
+# binary-compatibility-validator
+# https://github.com/Kotlin/binary-compatibility-validator
+binary-compatibility-validator = "0.15.0-Beta.2"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.3"
@@ -137,11 +140,14 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 # benchmark
 kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
 
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# binary-compatibility-validator
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

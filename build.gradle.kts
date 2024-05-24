@@ -74,20 +74,6 @@ subprojects {
             return@afterEvaluate
         }
 
-        fun Project.hasKtP(): Boolean {
-            return plugins.findPlugin("org.jetbrains.kotlin.jvm") != null ||
-                plugins.findPlugin("org.jetbrains.kotlin.multiplatform") != null
-        }
-
-        if (hasKtP()) {
-//            apply(plugin = "io.gitlab.arturbosch.detekt")
-            // applyDetekt()
-            if ("gradle" !in name) {
-                useK2()
-                logger.info("Enable K2 for {}", this)
-            }
-        }
-
         applyKover(root)
     }
 

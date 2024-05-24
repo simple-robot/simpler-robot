@@ -22,16 +22,10 @@
  */
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.withType
 
 
+@Deprecated("Kt is already applied")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 fun Project.useK2(languageVersion: String = "2.0") {
-    logger.warn("暂时关闭K2, 等待稳定版。The input languageVersion = {}", languageVersion)
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            // useK2
-            // TODO 暂时关闭，等待 Kt2.0
-            // this.languageVersion = languageVersion
-        }
-    }
+    // Nothing.
 }

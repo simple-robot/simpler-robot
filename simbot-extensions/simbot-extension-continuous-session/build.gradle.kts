@@ -110,14 +110,14 @@ kotlin {
             api(libs.kotlinx.serialization.json)
             api(libs.jetbrains.annotations)
             api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.suspend.reversal.annotations)
+
         }
 
         jsMain.dependencies {
             api(libs.kotlinx.serialization.json)
             api(project(":simbot-commons:simbot-common-annotations"))
             api(libs.jetbrains.annotations)
-            api(libs.suspend.reversal.annotations)
+
         }
 
         jsTest.dependencies {

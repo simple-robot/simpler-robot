@@ -22,7 +22,7 @@
  */
 
 import love.forte.gradle.common.core.project.setup
-import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -80,11 +80,11 @@ kotlin {
 //    @Suppress("OPT_IN_USAGE")
 //    wasmWasi()
 
-    withKotlinTargets { target ->
-        targets.findByName(target.name)?.compilations?.all {
-            // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
-            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes"
+        )
     }
 
     sourceSets {
@@ -94,9 +94,9 @@ kotlin {
                 compileOnly(libs.jetbrains.annotations)
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-api"))
-                compileOnly(libs.suspend.reversal.annotations)
+
                 // suspend reversal annotations
-                // compileOnly(libs.suspend.reversal.annotations)
+
             }
         }
         commonTest {
