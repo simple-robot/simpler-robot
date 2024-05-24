@@ -1,0 +1,40 @@
+public abstract interface class love/forte/simbot/common/apidefinition/ApiDefinition {
+	public abstract fun getBody ()Ljava/lang/Object;
+	public fun getHeaders ()Lio/ktor/http/Headers;
+	public abstract fun getMethod ()Lio/ktor/http/HttpMethod;
+	public abstract fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+	public abstract fun getUrl ()Lio/ktor/http/Url;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/BodyComputableApiDefinition : love/forte/simbot/common/apidefinition/RestApiDefinition {
+	public fun <init> ()V
+	protected abstract fun createBody ()Ljava/lang/Object;
+	public fun getBody ()Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/DeleteApiDefinition : love/forte/simbot/common/apidefinition/RestApiDefinition {
+	public fun <init> ()V
+	public fun getBody ()Ljava/lang/Object;
+	public fun getMethod ()Lio/ktor/http/HttpMethod;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/GetApiDefinition : love/forte/simbot/common/apidefinition/RestApiDefinition {
+	public fun <init> ()V
+	public fun getBody ()Ljava/lang/Object;
+	public fun getMethod ()Lio/ktor/http/HttpMethod;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/PostApiDefinition : love/forte/simbot/common/apidefinition/BodyComputableApiDefinition {
+	public fun <init> ()V
+	public fun getMethod ()Lio/ktor/http/HttpMethod;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/PutApiDefinition : love/forte/simbot/common/apidefinition/BodyComputableApiDefinition {
+	public fun <init> ()V
+	public fun getMethod ()Lio/ktor/http/HttpMethod;
+}
+
+public abstract class love/forte/simbot/common/apidefinition/RestApiDefinition : love/forte/simbot/common/apidefinition/ApiDefinition {
+	public fun <init> ()V
+}
+

@@ -1,0 +1,15 @@
+public abstract interface annotation class love/forte/simbot/annotations/Api4J : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/annotations/Api4Js : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/annotations/ExperimentalSimbotAPI : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/annotations/FragileSimbotAPI : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/annotations/InternalSimbotAPI : java/lang/annotation/Annotation {
+}
+

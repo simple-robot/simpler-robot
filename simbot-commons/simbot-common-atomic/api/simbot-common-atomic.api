@@ -1,0 +1,108 @@
+public abstract interface class love/forte/simbot/common/atomic/AtomicBoolean {
+	public abstract fun compareAndExchange (ZZ)Z
+	public abstract fun compareAndSet (ZZ)Z
+	public abstract fun getAndSet (Z)Z
+	public abstract fun getValue ()Z
+	public abstract fun setValue (Z)V
+}
+
+public abstract interface class love/forte/simbot/common/atomic/AtomicInt {
+	public abstract fun compareAndExchange (II)I
+	public abstract fun compareAndSet (II)Z
+	public abstract fun decrementAndGet (I)I
+	public static synthetic fun decrementAndGet$default (Llove/forte/simbot/common/atomic/AtomicInt;IILjava/lang/Object;)I
+	public abstract fun getAndDecrement (I)I
+	public static synthetic fun getAndDecrement$default (Llove/forte/simbot/common/atomic/AtomicInt;IILjava/lang/Object;)I
+	public abstract fun getAndIncrement (I)I
+	public static synthetic fun getAndIncrement$default (Llove/forte/simbot/common/atomic/AtomicInt;IILjava/lang/Object;)I
+	public abstract fun getAndSet (I)I
+	public abstract fun getValue ()I
+	public abstract fun incrementAndGet (I)I
+	public static synthetic fun incrementAndGet$default (Llove/forte/simbot/common/atomic/AtomicInt;IILjava/lang/Object;)I
+	public abstract fun setValue (I)V
+}
+
+public abstract interface class love/forte/simbot/common/atomic/AtomicLong {
+	public abstract fun compareAndExchange (JJ)J
+	public abstract fun compareAndSet (JJ)Z
+	public abstract fun decrementAndGet (J)J
+	public static synthetic fun decrementAndGet$default (Llove/forte/simbot/common/atomic/AtomicLong;JILjava/lang/Object;)J
+	public abstract fun getAndDecrement (J)J
+	public static synthetic fun getAndDecrement$default (Llove/forte/simbot/common/atomic/AtomicLong;JILjava/lang/Object;)J
+	public abstract fun getAndIncrement (J)J
+	public static synthetic fun getAndIncrement$default (Llove/forte/simbot/common/atomic/AtomicLong;JILjava/lang/Object;)J
+	public abstract fun getAndSet (J)J
+	public abstract fun getValue ()J
+	public abstract fun incrementAndGet (J)J
+	public static synthetic fun incrementAndGet$default (Llove/forte/simbot/common/atomic/AtomicLong;JILjava/lang/Object;)J
+	public abstract fun setValue (J)V
+}
+
+public abstract interface class love/forte/simbot/common/atomic/AtomicRef {
+	public abstract fun compareAndExchange (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun compareAndSet (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public abstract fun getAndSet (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun setValue (Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/common/atomic/AtomicUInt {
+	public abstract fun compareAndExchange-YcLip9I (II)I
+	public abstract fun compareAndSet-feOb9K0 (II)Z
+	public abstract fun decrementAndGet-IKrLr70 (I)I
+	public static synthetic fun decrementAndGet-IKrLr70$default (Llove/forte/simbot/common/atomic/AtomicUInt;IILjava/lang/Object;)I
+	public abstract fun getAndDecrement-IKrLr70 (I)I
+	public static synthetic fun getAndDecrement-IKrLr70$default (Llove/forte/simbot/common/atomic/AtomicUInt;IILjava/lang/Object;)I
+	public abstract fun getAndIncrement-IKrLr70 (I)I
+	public static synthetic fun getAndIncrement-IKrLr70$default (Llove/forte/simbot/common/atomic/AtomicUInt;IILjava/lang/Object;)I
+	public abstract fun getAndSet-IKrLr70 (I)I
+	public abstract fun getValue-pVg5ArA ()I
+	public abstract fun incrementAndGet-IKrLr70 (I)I
+	public static synthetic fun incrementAndGet-IKrLr70$default (Llove/forte/simbot/common/atomic/AtomicUInt;IILjava/lang/Object;)I
+	public abstract fun setValue-WZ4Q5Ns (I)V
+}
+
+public abstract interface class love/forte/simbot/common/atomic/AtomicULong {
+	public abstract fun compareAndExchange-oku0oEs (JJ)J
+	public abstract fun compareAndSet-PWzV0Is (JJ)Z
+	public abstract fun decrementAndGet-PUiSbYQ (J)J
+	public static synthetic fun decrementAndGet-PUiSbYQ$default (Llove/forte/simbot/common/atomic/AtomicULong;JILjava/lang/Object;)J
+	public abstract fun getAndDecrement-PUiSbYQ (J)J
+	public static synthetic fun getAndDecrement-PUiSbYQ$default (Llove/forte/simbot/common/atomic/AtomicULong;JILjava/lang/Object;)J
+	public abstract fun getAndIncrement-PUiSbYQ (J)J
+	public static synthetic fun getAndIncrement-PUiSbYQ$default (Llove/forte/simbot/common/atomic/AtomicULong;JILjava/lang/Object;)J
+	public abstract fun getAndSet-PUiSbYQ (J)J
+	public abstract fun getValue-s-VKNKU ()J
+	public abstract fun incrementAndGet-PUiSbYQ (J)J
+	public static synthetic fun incrementAndGet-PUiSbYQ$default (Llove/forte/simbot/common/atomic/AtomicULong;JILjava/lang/Object;)J
+	public abstract fun setValue-VKZWuLQ (J)V
+}
+
+public final class love/forte/simbot/common/atomic/Atomics {
+	public static final fun atomic (I)Llove/forte/simbot/common/atomic/AtomicInt;
+	public static final fun atomic (J)Llove/forte/simbot/common/atomic/AtomicLong;
+	public static final fun atomic (Z)Llove/forte/simbot/common/atomic/AtomicBoolean;
+	public static final fun atomic-VKZWuLQ (J)Llove/forte/simbot/common/atomic/AtomicULong;
+	public static final fun atomic-WZ4Q5Ns (I)Llove/forte/simbot/common/atomic/AtomicUInt;
+	public static final fun atomicRef (Ljava/lang/Object;)Llove/forte/simbot/common/atomic/AtomicRef;
+	public static final fun atomicUL-VKZWuLQ (J)Llove/forte/simbot/common/atomic/AtomicULong;
+	public static final fun minusAssign (Llove/forte/simbot/common/atomic/AtomicInt;I)V
+	public static final fun minusAssign (Llove/forte/simbot/common/atomic/AtomicLong;J)V
+	public static final fun minusAssign-2TYgG_w (Llove/forte/simbot/common/atomic/AtomicULong;J)V
+	public static final fun minusAssign-Qn1smSk (Llove/forte/simbot/common/atomic/AtomicUInt;I)V
+	public static final fun plusAssign (Llove/forte/simbot/common/atomic/AtomicInt;I)V
+	public static final fun plusAssign (Llove/forte/simbot/common/atomic/AtomicLong;J)V
+	public static final fun plusAssign-2TYgG_w (Llove/forte/simbot/common/atomic/AtomicULong;J)V
+	public static final fun plusAssign-Qn1smSk (Llove/forte/simbot/common/atomic/AtomicUInt;I)V
+	public static final fun update (Llove/forte/simbot/common/atomic/AtomicInt;Lkotlin/jvm/functions/Function1;)I
+	public static final fun update (Llove/forte/simbot/common/atomic/AtomicLong;Lkotlin/jvm/functions/Function1;)J
+	public static final fun update (Llove/forte/simbot/common/atomic/AtomicRef;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun update (Llove/forte/simbot/common/atomic/AtomicUInt;Lkotlin/jvm/functions/Function1;)I
+	public static final fun update (Llove/forte/simbot/common/atomic/AtomicULong;Lkotlin/jvm/functions/Function1;)J
+	public static final fun updateAndGet (Llove/forte/simbot/common/atomic/AtomicInt;Lkotlin/jvm/functions/Function1;)I
+	public static final fun updateAndGet (Llove/forte/simbot/common/atomic/AtomicLong;Lkotlin/jvm/functions/Function1;)J
+	public static final fun updateAndGet (Llove/forte/simbot/common/atomic/AtomicRef;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun updateAndGet (Llove/forte/simbot/common/atomic/AtomicUInt;Lkotlin/jvm/functions/Function1;)I
+	public static final fun updateAndGet (Llove/forte/simbot/common/atomic/AtomicULong;Lkotlin/jvm/functions/Function1;)J
+}
+

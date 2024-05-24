@@ -1,0 +1,440 @@
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/ApplyBinder : java/lang/annotation/Annotation {
+	public abstract fun factories ()[Ljava/lang/Class;
+	public abstract fun value ()[Ljava/lang/String;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Binder : java/lang/annotation/Annotation {
+	public abstract fun id ()Ljava/lang/String;
+	public abstract fun scope ()Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+}
+
+public final class love/forte/simbot/quantcat/common/annotations/Binder$Scope : java/lang/Enum {
+	public static final field DEFAULT Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+	public static final field GLOBAL Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+	public static final field SPECIFY Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+	public static fun values ()[Llove/forte/simbot/quantcat/common/annotations/Binder$Scope;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/ContentTrim : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Filter : java/lang/annotation/Annotation {
+	public abstract fun ifNullPass ()Z
+	public abstract fun matchType ()Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public abstract fun mode ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public abstract fun priority ()I
+	public abstract fun targets ()[Llove/forte/simbot/quantcat/common/annotations/Filter$Targets;
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Filter$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Llove/forte/simbot/quantcat/common/annotations/Filter;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Filter$Targets : java/lang/annotation/Annotation {
+	public static final field Companion Llove/forte/simbot/quantcat/common/annotations/Filter$Targets$Companion;
+	public static final field NON_PREFIX Ljava/lang/String;
+	public abstract fun actors ()[Ljava/lang/String;
+	public abstract fun atBot ()Z
+	public abstract fun ats ()[Ljava/lang/String;
+	public abstract fun authors ()[Ljava/lang/String;
+	public abstract fun bots ()[Ljava/lang/String;
+	public abstract fun chatRooms ()[Ljava/lang/String;
+	public abstract fun components ()[Ljava/lang/String;
+	public abstract fun contacts ()[Ljava/lang/String;
+	public abstract fun groups ()[Ljava/lang/String;
+	public abstract fun guilds ()[Ljava/lang/String;
+	public abstract fun organizations ()[Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/annotations/Filter$Targets$Companion {
+	public static final field NON_PREFIX Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/annotations/FilterKt {
+	public static final fun toProperties (Llove/forte/simbot/quantcat/common/annotations/Filter$Targets;)Llove/forte/simbot/quantcat/common/filter/FilterTargetsProperties;
+	public static final fun toProperties (Llove/forte/simbot/quantcat/common/annotations/Filter;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/FilterValue : java/lang/annotation/Annotation {
+	public abstract fun required ()Z
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/annotations/FilterValueKt {
+	public static final fun toProperties (Llove/forte/simbot/quantcat/common/annotations/FilterValue;)Llove/forte/simbot/quantcat/common/filter/FilterValueProperties;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Interceptor : java/lang/annotation/Annotation {
+	public abstract fun priority ()I
+	public abstract fun value ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Interceptor$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Llove/forte/simbot/quantcat/common/annotations/Interceptor;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/Listener : java/lang/annotation/Annotation {
+	public abstract fun id ()Ljava/lang/String;
+	public abstract fun priority ()I
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/annotations/MultiFilter : java/lang/annotation/Annotation {
+	public abstract fun matchType ()Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context {
+	public abstract fun getSource ()Lkotlin/reflect/KFunction;
+}
+
+public class love/forte/simbot/quantcat/common/binder/BindException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/BinderManager {
+	public abstract fun get (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;
+	public abstract fun getGlobalBinderFactorySize ()I
+	public abstract fun getGlobals ()Ljava/util/List;
+	public abstract fun getNormalBinderFactorySize ()I
+}
+
+public abstract class love/forte/simbot/quantcat/common/binder/FunctionalBindableEventListener : love/forte/simbot/quantcat/common/listener/FunctionalEventListener {
+	public fun <init> (Ljava/lang/Object;Lkotlin/reflect/KFunction;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/reflect/KFunction;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun convertValue (Ljava/lang/Object;Lkotlin/reflect/KParameter;)Ljava/lang/Object;
+	protected abstract fun getBinders ()[Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public final fun getCaller ()Lkotlin/reflect/KFunction;
+	public fun handle (Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun match (Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun resultProcess (Ljava/lang/Object;)Llove/forte/simbot/event/EventResult;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/ParameterBinder {
+	public abstract fun arg-IoAF18A (Llove/forte/simbot/event/EventListenerContext;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinder$Ignore {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/binder/ParameterBinder$Ignore;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/ParameterBinderFactory : love/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory {
+	public fun getPriority ()I
+	public abstract fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context : love/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context {
+	public abstract fun getParameter ()Lkotlin/reflect/KParameter;
+	public fun getParameterType ()Ljava/lang/Class;
+	public abstract fun getSource ()Lkotlin/reflect/KFunction;
+	public fun getSourceMethod ()Ljava/lang/reflect/Method;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/binder/ParameterBinderFactoryContainer {
+	public abstract fun get (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;
+	public abstract fun getGlobals ()Ljava/util/List;
+	public abstract fun resolveFunctionToBinderFactory (Ljava/lang/String;Lkotlin/reflect/KFunction;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;
+	public static synthetic fun resolveFunctionToBinderFactory$default (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactoryContainer;Ljava/lang/String;Lkotlin/reflect/KFunction;ILjava/lang/Object;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;
+}
+
+public abstract class love/forte/simbot/quantcat/common/binder/ParameterBinderResult {
+	public static final field Companion Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Companion;
+	public static final fun empty ()Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Empty;
+	public abstract fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public fun getPriority ()I
+	public static final fun normal (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static final fun normal (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static final fun only (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static final fun only (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static final fun spare (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static final fun spare (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$Companion {
+	public final fun empty ()Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Empty;
+	public final fun normal (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public final fun normal (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static synthetic fun normal$default (Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Companion;Llove/forte/simbot/quantcat/common/binder/ParameterBinder;IILjava/lang/Object;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public final fun only (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public final fun only (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static synthetic fun only$default (Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Companion;Llove/forte/simbot/quantcat/common/binder/ParameterBinder;IILjava/lang/Object;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public final fun spare (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public final fun spare (Llove/forte/simbot/quantcat/common/binder/ParameterBinder;I)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+	public static synthetic fun spare$default (Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Companion;Llove/forte/simbot/quantcat/common/binder/ParameterBinder;IILjava/lang/Object;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$Empty : love/forte/simbot/quantcat/common/binder/ParameterBinderResult {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult$Empty;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$Normal : love/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty {
+	public fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public fun getPriority ()I
+}
+
+public abstract class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty : love/forte/simbot/quantcat/common/binder/ParameterBinderResult {
+	public abstract fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$Only : love/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty {
+	public fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public fun getPriority ()I
+}
+
+public final class love/forte/simbot/quantcat/common/binder/ParameterBinderResult$Spare : love/forte/simbot/quantcat/common/binder/ParameterBinderResult$NotEmpty {
+	public fun getBinder ()Llove/forte/simbot/quantcat/common/binder/ParameterBinder;
+	public fun getPriority ()I
+}
+
+public final class love/forte/simbot/quantcat/common/binder/impl/EmptyBinder : love/forte/simbot/quantcat/common/binder/ParameterBinder {
+	public fun <init> (Lkotlin/reflect/KParameter;)V
+	public fun arg-IoAF18A (Llove/forte/simbot/event/EventListenerContext;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/impl/EventParameterBinderFactory : love/forte/simbot/quantcat/common/binder/ParameterBinderFactory {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/binder/impl/EventParameterBinderFactory;
+	public synthetic fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+	public fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/impl/KeywordBinderFactory : love/forte/simbot/quantcat/common/binder/ParameterBinderFactory {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+	public fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+}
+
+public final class love/forte/simbot/quantcat/common/binder/impl/MergedBinder : love/forte/simbot/quantcat/common/binder/ParameterBinder {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Lkotlin/reflect/KParameter;)V
+	public fun arg-IoAF18A (Llove/forte/simbot/event/EventListenerContext;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/quantcat/common/convert/ConvertException : java/lang/ClassCastException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/quantcat/common/filter/FilterMode : java/lang/Enum {
+	public static final field INTERCEPTOR Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public static final field IN_LISTENER Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public static fun values ()[Llove/forte/simbot/quantcat/common/filter/FilterMode;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/FilterProperties {
+	public fun <init> (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Z
+	public final fun component6 ()Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public final fun copy (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
+	public static synthetic fun copy$default (Llove/forte/simbot/quantcat/common/filter/FilterProperties;Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;ILjava/lang/Object;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIfNullPass ()Z
+	public final fun getMatchType ()Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public final fun getMode ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
+	public final fun getPriority ()I
+	public final fun getTargets ()Ljava/util/List;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/FilterTargetsProperties {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Z)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Ljava/util/List;
+	public final fun component11 ()Z
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Ljava/util/List;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Z)Llove/forte/simbot/quantcat/common/filter/FilterTargetsProperties;
+	public static synthetic fun copy$default (Llove/forte/simbot/quantcat/common/filter/FilterTargetsProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;ZILjava/lang/Object;)Llove/forte/simbot/quantcat/common/filter/FilterTargetsProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActors ()Ljava/util/List;
+	public final fun getAtBot ()Z
+	public final fun getAts ()Ljava/util/List;
+	public final fun getAuthors ()Ljava/util/List;
+	public final fun getBots ()Ljava/util/List;
+	public final fun getChatRooms ()Ljava/util/List;
+	public final fun getComponents ()Ljava/util/List;
+	public final fun getContacts ()Ljava/util/List;
+	public final fun getGroups ()Ljava/util/List;
+	public final fun getGuilds ()Ljava/util/List;
+	public final fun getOrganizations ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/FilterValueProperties {
+	public fun <init> (Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun copy (Ljava/lang/String;Z)Llove/forte/simbot/quantcat/common/filter/FilterValueProperties;
+	public static synthetic fun copy$default (Llove/forte/simbot/quantcat/common/filter/FilterValueProperties;Ljava/lang/String;ZILjava/lang/Object;)Llove/forte/simbot/quantcat/common/filter/FilterValueProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRequired ()Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/MatchType : java/lang/Enum {
+	public static final field REGEX_CONTAINS Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field REGEX_MATCHES Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field TEXT_CONTAINS Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field TEXT_ENDS_WITH Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field TEXT_EQUALS Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field TEXT_EQUALS_IGNORE_CASE Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static final field TEXT_STARTS_WITH Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isPlainText ()Z
+	public final fun match (Llove/forte/simbot/quantcat/common/keyword/Keyword;Ljava/lang/String;)Z
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/filter/MatchType;
+	public static fun values ()[Llove/forte/simbot/quantcat/common/filter/MatchType;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/MultiFilterMatchType : java/lang/Enum {
+	public static final field ALL Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+	public static final field ANY Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+	public static final field Companion Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType$Companion;
+	public static final field NONE Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+	public static final fun getDefault ()Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+	public static fun values ()[Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+}
+
+public final class love/forte/simbot/quantcat/common/filter/MultiFilterMatchType$Companion {
+	public final fun getDefault ()Llove/forte/simbot/quantcat/common/filter/MultiFilterMatchType;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory {
+	public abstract fun create (Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Context;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Context {
+	public abstract fun findAnnotation (Lkotlin/reflect/KClass;)Ljava/lang/annotation/Annotation;
+	public abstract fun findAnnotations (Lkotlin/reflect/KClass;)Ljava/util/List;
+	public abstract fun getFunction ()Lkotlin/reflect/KFunction;
+	public abstract fun getPriority ()I
+}
+
+public abstract class love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result {
+	public static final field Companion Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Companion;
+	public fun <init> ()V
+	public static final fun build (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result;
+	public static final fun builder ()Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Builder;
+	public abstract fun getConfiguration ()Llove/forte/simbot/common/function/ConfigurerFunction;
+	public abstract fun getInterceptor ()Llove/forte/simbot/event/EventInterceptor;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Builder {
+	public abstract fun build ()Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result;
+	public abstract fun configuration (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Builder;
+	public abstract fun interceptor (Llove/forte/simbot/event/EventInterceptor;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Builder;
+}
+
+public final class love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Companion {
+	public final fun build (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result;
+	public final fun builder ()Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result$Builder;
+}
+
+public final class love/forte/simbot/quantcat/common/interceptor/impl/ContentTrimEventInterceptorFactory : love/forte/simbot/quantcat/common/interceptor/impl/StandardAnnotationEventInterceptorFactory {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/interceptor/impl/ContentTrimEventInterceptorFactory;
+	public fun create (Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Context;)Llove/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory$Result;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/quantcat/common/interceptor/impl/StandardAnnotationEventInterceptorFactory : love/forte/simbot/quantcat/common/interceptor/AnnotationEventInterceptorFactory {
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/EmptyFilterParameterMatcher : love/forte/simbot/quantcat/common/keyword/ValueMatcher {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/keyword/EmptyFilterParameterMatcher;
+	public fun getOriginal ()Ljava/lang/String;
+	public fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
+	public fun getRegex ()Lkotlin/text/Regex;
+	public fun matches (Ljava/lang/String;)Z
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/EmptyFilterParameters : love/forte/simbot/quantcat/common/keyword/MatchParameters {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/keyword/EmptyFilterParameters;
+	public fun get (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/EmptyKeyword : love/forte/simbot/quantcat/common/keyword/Keyword {
+	public static final field INSTANCE Llove/forte/simbot/quantcat/common/keyword/EmptyKeyword;
+	public fun getRegex ()Lkotlin/text/Regex;
+	public fun getRegexValueMatcher ()Llove/forte/simbot/quantcat/common/keyword/ValueMatcher;
+	public fun getText ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/keyword/Keyword {
+	public abstract fun getRegex ()Lkotlin/text/Regex;
+	public abstract fun getRegexValueMatcher ()Llove/forte/simbot/quantcat/common/keyword/ValueMatcher;
+	public abstract fun getText ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/KeywordListAttributeKt {
+	public static final fun getKeywordListAttribute ()Llove/forte/simbot/common/attribute/Attribute;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/keyword/KeywordMatcher {
+	public abstract fun test (Llove/forte/simbot/quantcat/common/keyword/Keyword;Ljava/lang/String;)Z
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/keyword/MatchParameters {
+	public abstract fun get (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/RegexValueMatcher : love/forte/simbot/quantcat/common/keyword/ValueMatcher {
+	public fun <init> (Ljava/lang/String;Z)V
+	public fun getOriginal ()Ljava/lang/String;
+	public fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
+	public fun getRegex ()Lkotlin/text/Regex;
+	public fun matches (Ljava/lang/String;)Z
+}
+
+public final class love/forte/simbot/quantcat/common/keyword/SimpleKeyword : love/forte/simbot/quantcat/common/keyword/Keyword {
+	public fun <init> (Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getRegex ()Lkotlin/text/Regex;
+	public fun getRegexValueMatcher ()Llove/forte/simbot/quantcat/common/keyword/ValueMatcher;
+	public fun getText ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/quantcat/common/keyword/ValueMatcher {
+	public abstract fun getOriginal ()Ljava/lang/String;
+	public abstract fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
+	public abstract fun getRegex ()Lkotlin/text/Regex;
+	public abstract fun matches (Ljava/lang/String;)Z
+}
+
+public abstract class love/forte/simbot/quantcat/common/listener/FunctionalEventListener : love/forte/simbot/event/EventListener {
+	public fun <init> ()V
+	protected abstract fun getCaller ()Lkotlin/reflect/KFunction;
+}
+

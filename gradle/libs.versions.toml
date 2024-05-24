@@ -22,9 +22,6 @@ suspendReversal = "0.2.0"
 gradleCommon = "0.3.0"
 # tests
 mockk = "1.13.10"
-# binary-compatibility-validator
-# https://github.com/Kotlin/binary-compatibility-validator
-binary-compatibility-validator = "0.15.0-Beta.2"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.3"
@@ -146,8 +143,13 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# Kover
+# https://www.jetbrains.com/help/qodana/code-coverage.html
+# https://github.com/Kotlin/kotlinx-kover
+kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.0" }
 # binary-compatibility-validator
-kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
+# https://github.com/Kotlin/binary-compatibility-validator
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.15.0-Beta.2" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
