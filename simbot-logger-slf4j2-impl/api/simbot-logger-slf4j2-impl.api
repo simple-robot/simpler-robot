@@ -1,0 +1,305 @@
+public final class love/forte/simbot/logger/slf4j2/ConsoleSimbotLoggerProcessor : love/forte/simbot/logger/slf4j2/SimbotLoggerProcessor {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/ConsoleSimbotLoggerProcessor$Companion;
+	public fun <init> (Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)V
+	public fun doHandle (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+	public fun isLevelEnabled (Ljava/lang/String;Lorg/slf4j/event/Level;Lorg/slf4j/Marker;)Z
+}
+
+public final class love/forte/simbot/logger/slf4j2/ConsoleSimbotLoggerProcessor$Companion {
+}
+
+public final class love/forte/simbot/logger/slf4j2/DefaultSimbotLoggerProcessorsFactory : love/forte/simbot/logger/slf4j2/SimbotLoggerProcessorsFactory {
+	public static final field INSTANCE Llove/forte/simbot/logger/slf4j2/DefaultSimbotLoggerProcessorsFactory;
+	public fun getProcessors (Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Ljava/util/List;
+}
+
+public final class love/forte/simbot/logger/slf4j2/DispatchMode : java/lang/Enum {
+	public static final field ASYNC Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/DispatchMode$Companion;
+	public static final field DISRUPTOR Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public static final field SYNC Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public static final fun find (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public static fun values ()[Llove/forte/simbot/logger/slf4j2/DispatchMode;
+}
+
+public final class love/forte/simbot/logger/slf4j2/DispatchMode$Companion {
+	public final fun find (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/DispatchMode;
+}
+
+public final class love/forte/simbot/logger/slf4j2/LogInfo {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/LogInfo$Companion;
+	public fun <init> (Lorg/slf4j/event/Level;Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Thread;J)V
+	public final fun getArgs ()[Ljava/lang/Object;
+	public final fun getError ()Ljava/lang/Throwable;
+	public final fun getFormattedMsg ()Ljava/lang/String;
+	public final fun getFullName ()Ljava/lang/String;
+	public final fun getLevel ()Lorg/slf4j/event/Level;
+	public final fun getMarker ()Lorg/slf4j/Marker;
+	public final fun getMsg ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getThread ()Ljava/lang/Thread;
+	public final fun getTimestamp ()J
+}
+
+public final class love/forte/simbot/logger/slf4j2/LogInfo$Companion {
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLogger : org/slf4j/Logger {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/SimbotLogger$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public fun debug (Ljava/lang/String;)V
+	public fun debug (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun debug (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun debug (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun debug (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun debug (Lorg/slf4j/Marker;Ljava/lang/String;)V
+	public fun debug (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun debug (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun debug (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun debug (Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun error (Ljava/lang/String;)V
+	public fun error (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun error (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun error (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun error (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun error (Lorg/slf4j/Marker;Ljava/lang/String;)V
+	public fun error (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun error (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun error (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun error (Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;)V
+	public final fun getFullyQualifiedCallerName ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public fun info (Ljava/lang/String;)V
+	public fun info (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun info (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun info (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun info (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun info (Lorg/slf4j/Marker;Ljava/lang/String;)V
+	public fun info (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun info (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun info (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun info (Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun isDebugEnabled ()Z
+	public fun isDebugEnabled (Lorg/slf4j/Marker;)Z
+	public fun isErrorEnabled ()Z
+	public fun isErrorEnabled (Lorg/slf4j/Marker;)Z
+	public fun isInfoEnabled ()Z
+	public fun isInfoEnabled (Lorg/slf4j/Marker;)Z
+	public fun isTraceEnabled ()Z
+	public fun isTraceEnabled (Lorg/slf4j/Marker;)Z
+	public fun isWarnEnabled ()Z
+	public fun isWarnEnabled (Lorg/slf4j/Marker;)Z
+	public fun trace (Ljava/lang/String;)V
+	public fun trace (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun trace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun trace (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun trace (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun trace (Lorg/slf4j/Marker;Ljava/lang/String;)V
+	public fun trace (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun trace (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun trace (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun trace (Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun warn (Ljava/lang/String;)V
+	public fun warn (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun warn (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun warn (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun warn (Lorg/slf4j/Marker;Ljava/lang/String;)V
+	public fun warn (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun warn (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun warn (Lorg/slf4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun warn (Lorg/slf4j/Marker;Ljava/lang/String;[Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLogger$Companion {
+}
+
+public abstract class love/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration$Companion;
+	public static final field DEBUG_PROPERTY Ljava/lang/String;
+	public static final field DEFAULT_LEVEL_PROPERTY Ljava/lang/String;
+	public static final field DISPATCH_MODE_PROPERTY Ljava/lang/String;
+	public static final field JVM_PROPERTY_PREFIX Ljava/lang/String;
+	public fun <init> ()V
+	public fun get (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration$Property;
+	public abstract fun getDebug ()Z
+	public abstract fun getDefaultLevel ()Lorg/slf4j/event/Level;
+	public abstract fun getDispatcherMode ()Llove/forte/simbot/logger/slf4j2/DispatchMode;
+	public abstract fun getPrefixLevelList ()Ljava/util/List;
+	public abstract fun getProperties ()Ljava/util/Map;
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration$Companion {
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration$PrefixLogLevel {
+	public abstract fun getLevel ()Lorg/slf4j/event/Level;
+	public abstract fun getPrefix ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration$Property {
+	public abstract fun getKey ()Ljava/lang/String;
+	public abstract fun getStringValue ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerFactory : org/slf4j/ILoggerFactory {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/SimbotLoggerFactory$Companion;
+	public fun <init> (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)V
+	public fun getLogger (Ljava/lang/String;)Lorg/slf4j/Logger;
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerFactory$Companion {
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/SimbotLoggerProcessor {
+	public abstract fun doHandle (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+	public abstract fun isLevelEnabled (Ljava/lang/String;Lorg/slf4j/event/Level;Lorg/slf4j/Marker;)Z
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerProcessorKt {
+	public static final fun doHandleIfLevelEnabled (Llove/forte/simbot/logger/slf4j2/SimbotLoggerProcessor;Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/SimbotLoggerProcessorsFactory {
+	public abstract fun getProcessors (Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Ljava/util/List;
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerProvider : org/slf4j/spi/SLF4JServiceProvider {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/SimbotLoggerProvider$Companion;
+	public fun <init> ()V
+	public fun getLoggerFactory ()Lorg/slf4j/ILoggerFactory;
+	public fun getMDCAdapter ()Lorg/slf4j/spi/MDCAdapter;
+	public fun getMarkerFactory ()Lorg/slf4j/IMarkerFactory;
+	public fun getRequestedApiVersion ()Ljava/lang/String;
+	public fun initialize ()V
+}
+
+public final class love/forte/simbot/logger/slf4j2/SimbotLoggerProvider$Companion {
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/BackGroundColor : java/lang/Enum, love/forte/simbot/logger/slf4j2/color/Color {
+	public static final field BLACK Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field BLUE Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/color/BackGroundColor$Companion;
+	public static final field DARK_GREEN Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field DARK_RED Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field GREEN Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field PURPLE Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field WHITE Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final field YELLOW Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static final fun getColor (I)Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public fun getColorIndex ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun getPrefix ()Ljava/lang/String;
+	public fun getSuffix ()Ljava/lang/String;
+	public fun isBackGround ()Z
+	public fun isFont ()Z
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+	public static fun values ()[Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/BackGroundColor$Companion {
+	public final fun getColor (I)Llove/forte/simbot/logger/slf4j2/color/BackGroundColor;
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/color/Color {
+	public abstract fun getColorIndex ()I
+	public abstract fun getPrefix ()Ljava/lang/String;
+	public abstract fun getSuffix ()Ljava/lang/String;
+	public abstract fun isBackGround ()Z
+	public abstract fun isFont ()Z
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/Color$DefaultImpls {
+	public static fun isBackGround (Llove/forte/simbot/logger/slf4j2/color/Color;)Z
+	public static fun isFont (Llove/forte/simbot/logger/slf4j2/color/Color;)Z
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/ColorKt {
+	public static final fun appendColor (Ljava/lang/StringBuilder;Llove/forte/simbot/logger/slf4j2/color/Color;C)Ljava/lang/StringBuilder;
+	public static final fun appendColor (Ljava/lang/StringBuilder;Llove/forte/simbot/logger/slf4j2/color/Color;Ljava/lang/String;)Ljava/lang/StringBuilder;
+	public static final fun appendColorPrefix (Ljava/lang/StringBuilder;Llove/forte/simbot/logger/slf4j2/color/Color;)Ljava/lang/StringBuilder;
+	public static final fun appendColorSuffix (Ljava/lang/StringBuilder;Llove/forte/simbot/logger/slf4j2/color/Color;)Ljava/lang/StringBuilder;
+	public static final fun decorativeColor (Ljava/lang/String;Llove/forte/simbot/logger/slf4j2/color/Color;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/FontColor : java/lang/Enum, love/forte/simbot/logger/slf4j2/color/Color {
+	public static final field BLACK Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field BLUE Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/color/FontColor$Companion;
+	public static final field DARK_GREEN Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field GREEN Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field PURPLE Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field RED Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field WHITE Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final field YELLOW Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static final fun getColor (I)Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public fun getColorIndex ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public fun getPrefix ()Ljava/lang/String;
+	public fun getSuffix ()Ljava/lang/String;
+	public fun isBackGround ()Z
+	public fun isFont ()Z
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/logger/slf4j2/color/FontColor;
+	public static fun values ()[Llove/forte/simbot/logger/slf4j2/color/FontColor;
+}
+
+public final class love/forte/simbot/logger/slf4j2/color/FontColor$Companion {
+	public final fun getColor (I)Llove/forte/simbot/logger/slf4j2/color/FontColor;
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/AsyncDispatcher : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher {
+	public static final field CORE_POOL_SIZE_KEY Ljava/lang/String;
+	public static final field DAEMON_KEY Ljava/lang/String;
+	public static final field Factory Llove/forte/simbot/logger/slf4j2/dispatcher/AsyncDispatcher$Factory;
+	public static final field KEEP_ALIVE_TIME_MS_KEY Ljava/lang/String;
+	public static final field MAXIMUM_POOL_SIZE_KEY Ljava/lang/String;
+	public static final field PREFIX_KEY Ljava/lang/String;
+	public static final field THREAD_GROUP_NAME_KEY Ljava/lang/String;
+	public static final field TIME_UNIT_KEY Ljava/lang/String;
+	public fun <init> (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)V
+	public fun close ()V
+	public fun onLog (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/AsyncDispatcher$Factory : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcherFactory {
+	public fun create (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Llove/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher;
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/DisruptorDispatcher : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher {
+	public static final field Companion Llove/forte/simbot/logger/slf4j2/dispatcher/DisruptorDispatcher$Companion;
+	public static final field PREFIX_KEY Ljava/lang/String;
+	public static final field RING_BUFFER_SIZE_KEY Ljava/lang/String;
+	public static final field THREAD_GROUP_NAME_KEY Ljava/lang/String;
+	public fun close ()V
+	public fun onLog (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/DisruptorDispatcher$Companion : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcherFactory {
+	public fun create (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Llove/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher;
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher : java/io/Closeable {
+	public abstract fun close ()V
+	public abstract fun onLog (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+}
+
+public abstract interface class love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcherFactory {
+	public abstract fun create (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Llove/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher;
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/SyncDispatcher : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher {
+	public static final field Factory Llove/forte/simbot/logger/slf4j2/dispatcher/SyncDispatcher$Factory;
+	public fun <init> (Ljava/util/List;)V
+	public fun close ()V
+	public fun onLog (Llove/forte/simbot/logger/slf4j2/LogInfo;)V
+}
+
+public final class love/forte/simbot/logger/slf4j2/dispatcher/SyncDispatcher$Factory : love/forte/simbot/logger/slf4j2/dispatcher/LogDispatcherFactory {
+	public fun create (Ljava/util/List;Llove/forte/simbot/logger/slf4j2/SimbotLoggerConfiguration;)Llove/forte/simbot/logger/slf4j2/dispatcher/LogDispatcher;
+}
+

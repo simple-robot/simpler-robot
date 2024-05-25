@@ -1,0 +1,89 @@
+public final class love/forte/simbot/suspendrunner/BlockingRunnerKt {
+	public static final fun runInBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun runInBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun runInNoScopeBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun runInNoScopeBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun runInNoScopeTimeoutBlocking (JLkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun runInNoScopeTimeoutBlocking$default (JLkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun runInTimeoutBlocking (JLkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static synthetic fun runInTimeoutBlocking$default (JLkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/suspendrunner/CustomBlockingDispatcherProvider {
+	public fun <init> ()V
+	public abstract fun blockingDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+}
+
+public abstract class love/forte/simbot/suspendrunner/CustomBlockingExecutorProvider : love/forte/simbot/suspendrunner/CustomBlockingDispatcherProvider {
+	public fun <init> ()V
+	public final fun blockingDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public abstract fun blockingExecutor ()Ljava/util/concurrent/Executor;
+}
+
+public final class love/forte/simbot/suspendrunner/DefaultBlockingDispatcherTaskRejectedExecutionException : java/util/concurrent/RejectedExecutionException {
+	public fun <init> (Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)V
+	public final fun getExecutor ()Ljava/util/concurrent/Executor;
+	public final fun getRunnable ()Ljava/lang/Runnable;
+}
+
+public abstract interface class love/forte/simbot/suspendrunner/InvokeStrategy {
+	public abstract fun invoke (Lkotlin/jvm/functions/Function1;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Llove/forte/simbot/suspendrunner/InvokeStrategy;Lkotlin/jvm/functions/Function1;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/suspendrunner/Reserve {
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)V
+	public final fun async ()Ljava/util/concurrent/CompletableFuture;
+	public final fun block ()Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/suspendrunner/RunInBlockingException : java/lang/RuntimeException {
+	public synthetic fun <init> (Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface annotation class love/forte/simbot/suspendrunner/SuspendTrans : java/lang/annotation/Annotation {
+	public abstract fun asyncAsProperty ()Z
+	public abstract fun asyncBaseName ()Ljava/lang/String;
+	public abstract fun asyncSuffix ()Ljava/lang/String;
+	public abstract fun blockingAsProperty ()Z
+	public abstract fun blockingBaseName ()Ljava/lang/String;
+	public abstract fun blockingSuffix ()Ljava/lang/String;
+	public abstract fun reserveAsProperty ()Z
+	public abstract fun reserveBaseName ()Ljava/lang/String;
+	public abstract fun reserveSuffix ()Ljava/lang/String;
+}
+
+public abstract interface annotation class love/forte/simbot/suspendrunner/SuspendTransProperty : java/lang/annotation/Annotation {
+	public abstract fun asyncAsProperty ()Z
+	public abstract fun asyncBaseName ()Ljava/lang/String;
+	public abstract fun asyncSuffix ()Ljava/lang/String;
+	public abstract fun blockingAsProperty ()Z
+	public abstract fun blockingBaseName ()Ljava/lang/String;
+	public abstract fun blockingSuffix ()Ljava/lang/String;
+	public abstract fun jsPromiseAsProperty ()Z
+	public abstract fun jsPromiseBaseName ()Ljava/lang/String;
+	public abstract fun jsPromiseSuffix ()Ljava/lang/String;
+	public abstract fun reserveAsProperty ()Z
+	public abstract fun reserveBaseName ()Ljava/lang/String;
+	public abstract fun reserveSuffix ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/suspendrunner/reserve/SuspendReserve {
+	public abstract fun transform (Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer {
+	public abstract fun invoke (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/suspendrunner/reserve/SuspendReserves {
+	public static final fun async ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun block ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun deferred ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun flux ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun list ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun mono ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun rx2Maybe ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+	public static final fun rx3Maybe ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve$Transformer;
+}
+

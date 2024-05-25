@@ -1,0 +1,48 @@
+public final class love/forte/simbot/logger/LoggerFactory {
+	public static final field INSTANCE Llove/forte/simbot/logger/LoggerFactory;
+	public static final fun getLogger (Ljava/lang/Class;)Lorg/slf4j/Logger;
+	public static final fun getLogger (Ljava/lang/String;)Lorg/slf4j/Logger;
+	public static final fun getLogger (Lkotlin/reflect/KClass;)Lorg/slf4j/Logger;
+}
+
+public final class love/forte/simbot/logger/LoggerKt {
+	public static final fun getName (Lorg/slf4j/Logger;)Ljava/lang/String;
+	public static final fun isDebugEnabled (Lorg/slf4j/Logger;)Z
+	public static final fun isErrorEnabled (Lorg/slf4j/Logger;)Z
+	public static final fun isInfoEnabled (Lorg/slf4j/Logger;)Z
+	public static final fun isTraceEnabled (Lorg/slf4j/Logger;)Z
+	public static final fun isWarnEnabled (Lorg/slf4j/Logger;)Z
+}
+
+public abstract class love/forte/simbot/logger/internal/AbstractSimpleLogger : org/slf4j/Logger {
+	public fun <init> ()V
+	public fun debug (Ljava/lang/String;)V
+	public fun debug (Ljava/lang/String;[Ljava/lang/Object;)V
+	protected abstract fun debug0 (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun debug0$default (Llove/forte/simbot/logger/internal/AbstractSimpleLogger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public fun error (Ljava/lang/String;)V
+	public fun error (Ljava/lang/String;[Ljava/lang/Object;)V
+	protected abstract fun error0 (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun error0$default (Llove/forte/simbot/logger/internal/AbstractSimpleLogger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	protected abstract fun getDisplayName ()Ljava/lang/String;
+	protected abstract fun getLevel ()Lorg/slf4j/event/Level;
+	public abstract fun getName ()Ljava/lang/String;
+	public fun info (Ljava/lang/String;)V
+	public fun info (Ljava/lang/String;[Ljava/lang/Object;)V
+	protected abstract fun info0 (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun info0$default (Llove/forte/simbot/logger/internal/AbstractSimpleLogger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public fun isDebugEnabled ()Z
+	public fun isErrorEnabled ()Z
+	public fun isInfoEnabled ()Z
+	public fun isTraceEnabled ()Z
+	public fun isWarnEnabled ()Z
+	public fun trace (Ljava/lang/String;)V
+	public fun trace (Ljava/lang/String;[Ljava/lang/Object;)V
+	protected abstract fun trace0 (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun trace0$default (Llove/forte/simbot/logger/internal/AbstractSimpleLogger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public fun warn (Ljava/lang/String;)V
+	public fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
+	protected abstract fun warn0 (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun warn0$default (Llove/forte/simbot/logger/internal/AbstractSimpleLogger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+}
+

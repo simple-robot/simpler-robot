@@ -41,6 +41,12 @@ jobs:
 
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@main
+        with:
+          upload-result: true
+          github-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }} # read the steps about it below
           GITHUB_TOKEN: ${{ secrets.FORLIY_ACCESS_TOKEN }}
+
+
+

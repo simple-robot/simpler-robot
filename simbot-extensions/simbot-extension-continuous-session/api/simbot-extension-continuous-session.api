@@ -1,0 +1,166 @@
+public abstract class love/forte/simbot/extension/continuous/session/AbstractContinuousSessionContext : love/forte/simbot/extension/continuous/session/ContinuousSessionContext {
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	protected abstract fun computeSession (Ljava/lang/Object;Llove/forte/simbot/extension/continuous/session/InSession;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public fun contains (Ljava/lang/Object;)Z
+	public fun get (Ljava/lang/Object;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	protected final fun getLaunchScope ()Lkotlinx/coroutines/CoroutineScope;
+	protected final fun getSessions ()Ljava/util/Map;
+	protected final fun getSubScope ()Lkotlinx/coroutines/CoroutineScope;
+	public fun remove (Ljava/lang/Object;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public fun session (Ljava/lang/Object;Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;Llove/forte/simbot/extension/continuous/session/InSession;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+}
+
+public final class love/forte/simbot/extension/continuous/session/AbstractContinuousSessionContext$inlined$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/extension/continuous/session/AbstractContinuousSessionContext$inlined$sam$i$java_util_function_Function$0 : java/util/function/Function {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/AsyncInSession : love/forte/simbot/extension/continuous/session/InSession {
+	public abstract fun async (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)Ljava/util/concurrent/CompletionStage;
+	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/AsyncInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/BlockInSession : love/forte/simbot/extension/continuous/session/InSession {
+	public abstract fun block (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)V
+	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/BlockInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/extension/continuous/session/ConflictSessionKeyException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/ContinuousSession : love/forte/simbot/extension/continuous/session/ContinuousSessionProvider, love/forte/simbot/extension/continuous/session/ContinuousSessionReceiver {
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/ContinuousSessionContext {
+	public abstract fun contains (Ljava/lang/Object;)Z
+	public abstract fun get (Ljava/lang/Object;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public abstract fun remove (Ljava/lang/Object;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public abstract fun session (Ljava/lang/Object;Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;Llove/forte/simbot/extension/continuous/session/InSession;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public fun session (Ljava/lang/Object;Llove/forte/simbot/extension/continuous/session/InSession;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+	public static synthetic fun session$default (Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext;Ljava/lang/Object;Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;Llove/forte/simbot/extension/continuous/session/InSession;ILjava/lang/Object;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionProvider;
+}
+
+public final class love/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy : java/lang/Enum {
+	public static final field EXISTING Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;
+	public static final field FAILURE Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;
+	public static final field REPLACE Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;
+	public static fun values ()[Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext$ConflictStrategy;
+}
+
+public final class love/forte/simbot/extension/continuous/session/ContinuousSessionContexts {
+	public static final fun createContinuousSessionContext (Lkotlin/coroutines/CoroutineContext;)Llove/forte/simbot/extension/continuous/session/ContinuousSessionContext;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/ContinuousSessionProvider : love/forte/simbot/ability/CompletionAware {
+	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
+	public fun cancel ()V
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun isActive ()Z
+	public abstract fun isCancelled ()Z
+	public abstract fun isCompleted ()Z
+	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun joinBlocking ()V
+	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun onCompletion (Llove/forte/simbot/ability/OnCompletion;)V
+	public abstract synthetic fun push (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pushAsync (Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun pushBlocking (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun pushReserve (Ljava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/ContinuousSessionReceiver : kotlinx/coroutines/CoroutineScope {
+	public abstract synthetic fun await (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun await (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun await (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun awaitAsFuture ()Ljava/util/concurrent/CompletableFuture;
+	public fun awaitAsFuture (Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun awaitAsFuture (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
+	public fun awaitBlocking ()Llove/forte/simbot/extension/continuous/session/SessionContinuation;
+	public fun awaitBlocking (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun awaitBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun awaitReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun awaitReserve (Ljava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun awaitReserve (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public final class love/forte/simbot/extension/continuous/session/ContinuousSessions {
+	public static final fun createSimpleSessionContinuation (Ljava/lang/Object;Lkotlinx/coroutines/CancellableContinuation;Lkotlinx/coroutines/DisposableHandle;)Llove/forte/simbot/extension/continuous/session/SessionContinuation;
+	public static synthetic fun createSimpleSessionContinuation$default (Ljava/lang/Object;Lkotlinx/coroutines/CancellableContinuation;Lkotlinx/coroutines/DisposableHandle;ILjava/lang/Object;)Llove/forte/simbot/extension/continuous/session/SessionContinuation;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/EventContinuousSessionContext : love/forte/simbot/extension/continuous/session/ContinuousSessionContext, love/forte/simbot/plugin/Plugin {
+	public static final field Factory Llove/forte/simbot/extension/continuous/session/EventContinuousSessionContext$Factory;
+}
+
+public final class love/forte/simbot/extension/continuous/session/EventContinuousSessionContext$Factory : love/forte/simbot/plugin/PluginFactory {
+	public synthetic fun create (Ljava/lang/Object;Llove/forte/simbot/common/function/ConfigurerFunction;)Ljava/lang/Object;
+	public fun create (Llove/forte/simbot/plugin/PluginConfigureContext;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/extension/continuous/session/EventContinuousSessionContext;
+	public synthetic fun getKey ()Llove/forte/simbot/common/function/MergeableFactory$Key;
+	public fun getKey ()Llove/forte/simbot/plugin/PluginFactory$Key;
+}
+
+public final class love/forte/simbot/extension/continuous/session/EventContinuousSessionContextConfiguration {
+	public fun <init> ()V
+	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getCoroutineDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public final fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public final fun setCoroutineDispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)V
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/InSession {
+	public abstract synthetic fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/extension/continuous/session/InSessions {
+	public static final fun async (Llove/forte/simbot/extension/continuous/session/AsyncInSession;)Llove/forte/simbot/extension/continuous/session/InSession;
+	public static final fun block (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/extension/continuous/session/BlockInSession;)Llove/forte/simbot/extension/continuous/session/InSession;
+	public static final fun block (Llove/forte/simbot/extension/continuous/session/BlockInSession;)Llove/forte/simbot/extension/continuous/session/InSession;
+	public static synthetic fun block$default (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/extension/continuous/session/BlockInSession;ILjava/lang/Object;)Llove/forte/simbot/extension/continuous/session/InSession;
+	public static final fun mono (Llove/forte/simbot/extension/continuous/session/MonoInSession;)Llove/forte/simbot/extension/continuous/session/InSession;
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/MonoInSession : love/forte/simbot/extension/continuous/session/InSession {
+	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/MonoInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun mono (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)Lreactor/core/publisher/Mono;
+}
+
+public final class love/forte/simbot/extension/continuous/session/ReplacedBecauseOfConflictSessionKeyException : java/lang/IllegalStateException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/extension/continuous/session/SessionAwaitOnFailureException : java/lang/IllegalStateException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/extension/continuous/session/SessionCompletedWithoutResumeException : java/lang/IllegalStateException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/extension/continuous/session/SessionContinuation {
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun resume (Ljava/lang/Object;)V
+	public abstract fun resumeWithException (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/extension/continuous/session/SessionPushOnFailureException : java/lang/IllegalStateException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+

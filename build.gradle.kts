@@ -27,15 +27,16 @@ import love.forte.gradle.common.core.project.setup
 plugins {
     idea
     id("simbot.dokka-multi-module")
-    id("com.github.gmazzo.buildconfig") version "4.1.2" apply false
+    id("com.github.gmazzo.buildconfig") version "5.3.5" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
     id("simbot.changelog-generator")
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
-    id("org.jetbrains.kotlinx.kover") version "0.7.6"
+    alias(libs.plugins.kotlinxKover)
 
+    alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
 }
 
 setup(P.Simbot)
@@ -74,20 +75,6 @@ subprojects {
             return@afterEvaluate
         }
 
-        fun Project.hasKtP(): Boolean {
-            return plugins.findPlugin("org.jetbrains.kotlin.jvm") != null ||
-                plugins.findPlugin("org.jetbrains.kotlin.multiplatform") != null
-        }
-
-        if (hasKtP()) {
-//            apply(plugin = "io.gitlab.arturbosch.detekt")
-            // applyDetekt()
-            if ("gradle" !in name) {
-                useK2()
-                logger.info("Enable K2 for {}", this)
-            }
-        }
-
         applyKover(root)
     }
 
@@ -97,7 +84,7 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libs.versions.detekt.get()}")
 }
 
-// config detekt
+//region config detekt
 detekt {
     source.setFrom(subprojects.map { it.projectDir.absoluteFile })
     config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
@@ -145,6 +132,28 @@ fun Project.applyKover(rp: Project) {
             kover(project(path))
         }
     }
+}
+//endregion
+
+apiValidation {
+    ignoredPackages.add("*.internal.*")
+
+    this.ignoredProjects.addAll(
+        listOf(
+            "interface-uml-processor",
+            "simbot-test",
+        )
+    )
+
+    // 实验性和内部API可能无法保证二进制兼容
+    nonPublicMarkers.addAll(
+        listOf(
+            "love.forte.simbot.annotations.ExperimentalSimbotAPI",
+            "love.forte.simbot.annotations.InternalSimbotAPI",
+        ),
+    )
+
+    apiDumpDirectory = "api"
 }
 
 idea {

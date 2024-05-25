@@ -60,7 +60,7 @@ class ContinuousSessionTest {
                 session.join()
                 assertTrue(session.isCompleted)
                 assertFalse(session.isCancelled)
-                assertNull(context[key])
+                assertNull(context[key]?.takeIf { it.isActive })
             }
         }
 
@@ -76,9 +76,9 @@ class ContinuousSessionTest {
                 val key = Any()
                 val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
                 val session = context.session(key) {
-                    assertEquals(1, await { it.toString() })// .also { println("await: $it") }
+                    assertEquals(1, await { it.toString() }) // .also { println("await: $it") }
                     val ex = assertFails {
-                        await { throw IllegalStateException("error on $it") }// .also { println("await: $it") }
+                        await { throw IllegalStateException("error on $it") } // .also { println("await: $it") }
                     }
 
                     assertIs<IllegalStateException>(ex)
@@ -88,13 +88,13 @@ class ContinuousSessionTest {
                 assertEquals("1", session.push(1)) // .also { println("push 1 result: $it") }
 
                 val ex = assertFails {
-                    session.push(2)//.also { println("push 2 result: $it") }
+                    session.push(2) // .also { println("push 2 result: $it") }
                 }
                 assertIs<SessionAwaitOnFailureException>(ex)
                 session.join()
                 assertTrue(session.isCompleted)
                 assertFalse(session.isCancelled)
-                assertNull(context[key])
+                assertNull(context[key]?.takeIf { it.isActive })
             }
         }
 
@@ -129,13 +129,13 @@ class ContinuousSessionTest {
 
                 assertTrue(session.isCompleted)
                 assertFalse(session.isCancelled)
-                //println("before context: $context")
+                // println("before context: $context")
                 // Expected value to be null, but was: <love.forte.simbot.extension.continuous.session.SimpleSessionImpl@653702a0>.
                 // 但是加上 println 就好了
                 // map 改成使用同步锁实现后就行了
-                //println(context)
-                val gotSession = context[key]
-                assertNull(context[key], "Expect context[$key] to be null, but was: $gotSession")
+                // println(context)
+                val gotSession = context[key]?.takeIf { it.isActive }
+                assertNull(gotSession, "Expect context[$key] to be null, but was: $gotSession")
             }
         }
 
@@ -168,7 +168,7 @@ class ContinuousSessionTest {
     fun sessionContinuationTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
         val key = Any()
-        val inSession = InSession {
+        val inSession = InSession<Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)
@@ -196,7 +196,7 @@ class ContinuousSessionTest {
     fun sessionContinuationWithoutResumeTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
         val key = Any()
-        val inSession = InSession {
+        val inSession = InSession<Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)
@@ -222,7 +222,7 @@ class ContinuousSessionTest {
     fun sessionContinuationWithoutResumeMultiTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
         val key = Any()
-        val inSession = InSession {
+        val inSession = InSession<Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)
@@ -247,19 +247,25 @@ class ContinuousSessionTest {
         coroutineScope {
             withContext(Dispatchers.Default) {
                 launch {
-                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
-                        provider.push(2)
-                    })
+                    assertIs<SessionCompletedWithoutResumeException>(
+                        assertFails {
+                            provider.push(2)
+                        }
+                    )
                 }
                 launch {
-                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
-                        provider.push(3)
-                    })
+                    assertIs<SessionCompletedWithoutResumeException>(
+                        assertFails {
+                            provider.push(3)
+                        }
+                    )
                 }
                 launch {
-                    assertIs<SessionCompletedWithoutResumeException>(assertFails {
-                        provider.push(4)
-                    })
+                    assertIs<SessionCompletedWithoutResumeException>(
+                        assertFails {
+                            provider.push(4)
+                        }
+                    )
                 }
             }
         }

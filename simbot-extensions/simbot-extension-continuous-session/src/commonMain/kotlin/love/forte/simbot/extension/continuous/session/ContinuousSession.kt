@@ -149,7 +149,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * @throws CancellationException 如果内部的管道已经被关闭或任务已经结束
      * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
      */
-    @ST(asyncSuffix = "asFuture")
+    @ST(asyncSuffix = "AsFuture")
     public suspend fun await(result: R): T
 
     /**
@@ -170,7 +170,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * @throws CancellationException 如果内部的管道已经被关闭或任务已经结束
      * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
      */
-    @ST(asyncSuffix = "asFuture")
+    @ST(asyncSuffix = "AsFuture")
     public suspend fun await(result: (T) -> R): T
 
     /**
@@ -215,7 +215,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * @see SessionContinuation
      *
      */
-    @ST(asyncSuffix = "asFuture")
+    @ST(asyncSuffix = "AsFuture")
     public suspend fun await(): SessionContinuation<T, R>
 }
 

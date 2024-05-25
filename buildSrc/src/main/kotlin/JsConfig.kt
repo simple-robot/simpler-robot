@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ inline fun KotlinJsTargetDsl.configJs(
 
     if (browser) {
         browser {
-            testTask{
+            testTask {
                 useKarma {
                     useChromeHeadless()
                     // useConfigDirectory(File(project.rootProject.projectDir, "karma"))
@@ -71,19 +71,20 @@ fun Project.configJsTestTasks() {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 inline fun KotlinWasmJsTargetDsl.configWasmJs(
     nodeJs: Boolean = true,
     browser: Boolean = true,
     block: () -> Unit = {}
 ) {
-    if (nodeJs && isLinux) {
+    // if (nodeJs && isLinux) {
         // win in candy node `21.0.0-v8-canary202309143a48826a08` is not supported
         // nodejs()
-    }
+    // }
 
     if (browser) {
         browser {
-            testTask{
+            testTask {
                 useKarma {
                     useChromeHeadless()
                     // useConfigDirectory(File(project.rootProject.projectDir, "karma"))
@@ -101,8 +102,8 @@ inline fun Project.configWasmJsTest(block: () -> Unit = {}) {
         // see https://youtrack.jetbrains.com/issue/KT-63014/Running-tests-with-wasmJs-in-1.9.20-requires-Chrome-Canary#focus=Comments-27-8321383.0-0
         rootProject.the<NodeJsRootExtension>().apply {
             // nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-            nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-            nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+            version = "21.0.0-v8-canary202309143a48826a08"
+            downloadBaseUrl = "https://nodejs.org/download/v8-canary"
         }
 
         tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
