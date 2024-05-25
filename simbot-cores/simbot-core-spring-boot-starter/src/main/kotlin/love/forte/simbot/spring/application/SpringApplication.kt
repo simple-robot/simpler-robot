@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -48,12 +48,28 @@ import love.forte.simbot.spring.common.application.*
  * Factory for [SpringApplication].
  */
 public object Spring : SpringApplicationFactory {
-    override fun create(configurer: ConfigurerFunction<ApplicationFactoryConfigurer<SpringApplicationBuilder, SpringApplicationEventRegistrar, SpringEventDispatcherConfiguration>>?): SpringApplicationLauncher {
+    override fun create(
+        configurer: ConfigurerFunction<
+            ApplicationFactoryConfigurer<
+                SpringApplicationBuilder,
+                SpringApplicationEventRegistrar,
+                SpringEventDispatcherConfiguration
+                >
+            >?
+    ): SpringApplicationLauncher {
         return SpringApplicationLauncherImpl { create0(configurer) }
     }
 
     @OptIn(ExperimentalSimbotAPI::class)
-    private fun create0(configurer: ConfigurerFunction<ApplicationFactoryConfigurer<SpringApplicationBuilder, SpringApplicationEventRegistrar, SpringEventDispatcherConfiguration>>?): SpringApplicationImpl {
+    private fun create0(
+        configurer: ConfigurerFunction<
+            ApplicationFactoryConfigurer<
+                SpringApplicationBuilder,
+                SpringApplicationEventRegistrar,
+                SpringEventDispatcherConfiguration
+                >
+            >?
+    ): SpringApplicationImpl {
         val springConfigurer = SpringApplicationFactoryConfigurer().invokeBy(configurer)
         val configuration = springConfigurer.createConfigInternal(SpringApplicationBuilder())
 
@@ -136,11 +152,21 @@ private class SpringApplicationLauncherImpl(
 
 private class SpringApplicationFactoryConfigurer(
     public override val configConfigurers: MutableList<ConfigurerFunction<SpringApplicationBuilder>> = mutableListOf(),
-    public override val applicationEventRegistrarConfigurations: MutableList<ConfigurerFunction<SpringApplicationEventRegistrar>> = mutableListOf(),
-    public override val eventDispatcherConfigurers: MutableList<ConfigurerFunction<SpringEventDispatcherConfiguration>> = mutableListOf(),
-    public override val componentFactoriesConfigurator: ComponentFactoriesConfigurator = ComponentFactoriesConfigurator(),
+
+    public override val applicationEventRegistrarConfigurations:
+    MutableList<ConfigurerFunction<SpringApplicationEventRegistrar>> = mutableListOf(),
+
+    public override val eventDispatcherConfigurers:
+    MutableList<ConfigurerFunction<SpringEventDispatcherConfiguration>> = mutableListOf(),
+
+    public override val componentFactoriesConfigurator:
+    ComponentFactoriesConfigurator = ComponentFactoriesConfigurator(),
     public override val pluginFactoriesConfigurator: PluginFactoriesConfigurator = PluginFactoriesConfigurator(),
-) : AbstractApplicationFactoryConfigurer<SpringApplicationBuilder, SpringApplicationEventRegistrar, SpringEventDispatcherConfiguration>(
+) : AbstractApplicationFactoryConfigurer<
+    SpringApplicationBuilder,
+    SpringApplicationEventRegistrar,
+    SpringEventDispatcherConfiguration
+    >(
     configConfigurers,
     applicationEventRegistrarConfigurations,
     eventDispatcherConfigurers,

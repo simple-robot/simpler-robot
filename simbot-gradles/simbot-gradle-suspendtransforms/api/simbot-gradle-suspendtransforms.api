@@ -1,0 +1,15 @@
+public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransforms {
+	public static final field INSTANCE Llove/forte/simbot/gradle/suspendtransforms/SuspendTransforms;
+	public final fun getJsPromiseTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmAsyncTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmBlockingTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmReserveTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmSuspendTransPropTransformerForAsync ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmSuspendTransPropTransformerForBlocking ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmSuspendTransPropTransformerForReserve ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getSuspendTransTransformerForJsPromise ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getSuspendTransTransformerForJvmAsync ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getSuspendTransTransformerForJvmBlocking ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getSuspendTransTransformerForJvmReserve ()Llove/forte/plugin/suspendtrans/Transformer;
+}
+

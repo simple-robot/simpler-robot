@@ -47,7 +47,7 @@ import kotlin.random.asKotlinRandom
 public annotation class ID4J
 
 /**
- * 
+ *
  * @see Long.ID
  */
 @JvmName("of")
@@ -63,7 +63,7 @@ public fun longIDOf(value: Long): LongID = value.ID
 public fun uLongIDOf(value: String): ULongID = value.toULong().ID
 
 /**
- * 
+ *
  * @see IntID.ID
  */
 @JvmName("of")
@@ -71,7 +71,7 @@ public fun uLongIDOf(value: String): ULongID = value.toULong().ID
 public fun intIDOf(value: Int): IntID = value.ID
 
 /**
- * 
+ *
  * @see UInt.ID
  */
 @JvmName("ofUInt")
@@ -79,7 +79,7 @@ public fun intIDOf(value: Int): IntID = value.ID
 public fun uIntIDOf(value: UInt): UIntID = value.ID
 
 /**
- * 
+ *
  * @throws NumberFormatException if the string is not a valid representation of a number.
  * @see UInt.ID
  */
@@ -88,7 +88,7 @@ public fun uIntIDOf(value: UInt): UIntID = value.ID
 public fun uIntIDOf(value: String): UIntID = value.toUInt().ID
 
 /**
- * 
+ *
  * @see String.ID
  */
 @JvmName("of")
@@ -96,7 +96,7 @@ public fun uIntIDOf(value: String): UIntID = value.toUInt().ID
 public fun stringIDOf(value: String): StringID = value.ID
 
 /**
- * 
+ *
  * @see CharSequence.ID
  */
 @JvmName("of")
@@ -104,7 +104,7 @@ public fun stringIDOf(value: String): StringID = value.ID
 public fun stringIDOf(value: CharSequence): StringID = value.ID
 
 /**
- * 
+ *
  * @see UUID.random
  */
 @JvmName("uuid")

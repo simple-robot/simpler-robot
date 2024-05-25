@@ -66,7 +66,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
         return when (strategy) {
             FAILURE -> {
                 sessions.computeValue(key) { k, old ->
-                    if (old != null && old.isActive) throw IllegalStateException("Session with key $key already exists")
+                    if (old != null && old.isActive) error("Session with key $key already exists")
 
                     computeSession(k, inSession)
                 }!!
@@ -96,6 +96,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
  * 创建一个 [ContinuousSessionContext] 的基础实现类型。
  */
 @JvmName("createContinuousSessionContext")
+@Suppress("FunctionNaming")
 public fun <T, R> ContinuousSessionContext(coroutineContext: CoroutineContext): ContinuousSessionContext<T, R> =
     SimpleContinuousSessionContext(coroutineContext)
 
@@ -110,7 +111,8 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
             onBufferOverflow = BufferOverflow.SUSPEND,
             onUndeliveredElement = { (value, c) ->
                 c.resumeWithException(SessionPushOnFailureException("Undelivered value: $value"))
-            })
+            }
+        )
 
         val session = SimpleSessionImpl(key, job, channel, subScope)
 

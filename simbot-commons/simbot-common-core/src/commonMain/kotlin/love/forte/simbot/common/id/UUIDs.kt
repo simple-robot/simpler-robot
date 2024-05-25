@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,7 @@
 package love.forte.simbot.common.id
 
 // 以下内容参考自JDK `java.util.UUID`
+
 /*
  * Copyright (c) 2003, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -84,7 +85,8 @@ public inline fun <T> String.toUUIDSigs(block: (most: Long, least: Long) -> T): 
     return block(mostSigBits, leastSigBits)
 }
 
-//// 以下内容参考自 `kotlin.text` 中相关实现
+// 以下内容参考自 `kotlin.text` 中相关实现
+
 /*
  * Copyright 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
@@ -95,13 +97,14 @@ public inline fun <T> String.toUUIDSigs(block: (most: Long, least: Long) -> T): 
  */
 @PublishedApi
 internal fun checkRadix(radix: Int): Int {
-    if (radix !in 2..36) {
-        throw IllegalArgumentException("radix $radix was not in valid range ${2..36}")
+    require(radix in 2..36) {
+        "radix $radix was not in valid range 2..36"
     }
     return radix
 }
 
 @PublishedApi
+@Suppress("ReturnCount", "ThrowsCount", "ThrowingExceptionsWithoutMessageOrCause", "UseRequire")
 internal fun String.toLong(begin: Int, end: Int, radix: Int): Long {
     checkRadix(radix)
 
@@ -113,8 +116,8 @@ internal fun String.toLong(begin: Int, end: Int, radix: Int): Long {
     val limit: Long
 
     val firstChar = this[0]
-    if (firstChar < '0') {  // Possible leading sign
-        if (length == 1) return 0L  // non-digit (possible sign) only, no digits after
+    if (firstChar < '0') { // Possible leading sign
+        if (length == 1) return 0L // non-digit (possible sign) only, no digits after
 
         start = begin + 1
 
@@ -138,7 +141,7 @@ internal fun String.toLong(begin: Int, end: Int, radix: Int): Long {
     }
 
 
-    val limitForMaxRadix = (-Long.MAX_VALUE) / 36
+    val limitForMaxRadix = -Long.MAX_VALUE / 36
 
     var limitBeforeMul = limitForMaxRadix
     var result = 0L
@@ -233,14 +236,15 @@ private fun binarySearchRange(array: IntArray, needle: Int): Int {
     while (bottom <= top) {
         middle = (bottom + top) / 2
         value = array[middle]
-        if (needle > value)
+        if (needle > value) {
             bottom = middle + 1
-        else if (needle == value)
+        } else if (needle == value) {
             return middle
-        else
+        } else {
             top = middle - 1
+        }
     }
-    return middle - (if (needle < value) 1 else 0)
+    return middle - if (needle < value) 1 else 0
 }
 
 /**
@@ -255,7 +259,8 @@ private fun Char.digitToIntImpl(): Int {
 }
 
 
-//// 下述代码参考自 JDK `java.lang.Long`
+// // 下述代码参考自 JDK `java.lang.Long`
+
 /*
  * Copyright (c) 1994, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -299,8 +304,8 @@ private const val MASK = 15
  * @param offset the offset in the destination buffer to start at
  * @param len the number of characters to write
  */
-/* byte[]/LATIN1 version */
 private fun formatUnsignedLong0(value: Long, buf: ByteArray, offset: Int, len: Int) {
+    /* byte[]/LATIN1 version */
     var v = value
     var charPos = offset + len
     do {

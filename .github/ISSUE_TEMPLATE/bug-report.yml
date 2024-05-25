@@ -70,11 +70,13 @@ body:
       description: 请尽可能准确的选择使用的组件
       multiple: true
       options:
-        - mirai (QQ)
         - KOOK
         - QQ频道
+        - Kritor
+        - OneBot
         - Discord
         - Telegram
+        - mirai
         - 其他
          
   - type: textarea

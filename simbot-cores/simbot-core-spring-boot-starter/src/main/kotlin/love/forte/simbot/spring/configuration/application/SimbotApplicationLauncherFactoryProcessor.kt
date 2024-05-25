@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -51,8 +51,8 @@ public fun interface SimbotApplicationLauncherFactoryProcessor {
 public open class DefaultSimbotApplicationLauncherFactoryProcessorConfiguration {
     @Bean(DEFAULT_SIMBOT_APPLICATION_LAUNCHER_FACTORY_PROCESSOR_BEAN_NAME)
     @ConditionalOnMissingBean(SimbotApplicationLauncherFactoryProcessor::class)
-    public open fun defaultSimbotApplicationLauncherFactoryProcessor(): DefaultSimbotApplicationLauncherFactoryProcessor =
-        DefaultSimbotApplicationLauncherFactoryProcessor
+    public open fun defaultSimbotApplicationLauncherFactoryProcessor():
+        DefaultSimbotApplicationLauncherFactoryProcessor = DefaultSimbotApplicationLauncherFactoryProcessor
 
     public companion object {
         public const val DEFAULT_SIMBOT_APPLICATION_LAUNCHER_FACTORY_PROCESSOR_BEAN_NAME: String =

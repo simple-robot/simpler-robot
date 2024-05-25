@@ -1,3 +1,10 @@
+# v4.0.0-RC1
+
+> Release & Pull Notes: [v4.0.0-RC1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC1) 
+
+- build(deps): bump io.mockk:mockk from 1.13.9 to 1.13.10 ([`e3b846ec`](https://github.com/simple-robot/simpler-robot/commit/e3b846ec))
+- build(deps): bump org.jetbrains.kotlinx:lincheck from 2.26 to 2.30 ([`443e1f0b`](https://github.com/simple-robot/simpler-robot/commit/443e1f0b))
+
 # v4.0.0-beta3
 
 > Release & Pull Notes: [v4.0.0-beta3](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-beta3) 

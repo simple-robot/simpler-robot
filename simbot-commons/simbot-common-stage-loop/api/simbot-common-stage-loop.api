@@ -1,0 +1,31 @@
+public abstract class love/forte/simbot/common/stageloop/Stage {
+	public fun <init> ()V
+	public abstract fun invoke (Llove/forte/simbot/common/stageloop/StageLoop;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/common/stageloop/StageLoop {
+	public abstract fun appendStage (Llove/forte/simbot/common/stageloop/Stage;)V
+	public abstract fun getCurrentStage ()Llove/forte/simbot/common/stageloop/Stage;
+	public abstract fun invoke (Llove/forte/simbot/common/stageloop/Stage;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun poll ()Llove/forte/simbot/common/stageloop/Stage;
+}
+
+public final class love/forte/simbot/common/stageloop/StageLoop_jvmKt {
+	public static final fun DefaultStageLoop ()Llove/forte/simbot/common/stageloop/StageLoop;
+}
+
+public final class love/forte/simbot/common/stageloop/StageLoopsKt {
+	public static final fun loop (Llove/forte/simbot/common/stageloop/StageLoop;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun loop$default (Llove/forte/simbot/common/stageloop/StageLoop;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/common/stageloop/State {
+	public fun <init> ()V
+	public abstract fun invoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/common/stageloop/StatesKt {
+	public static final fun loop (Llove/forte/simbot/common/stageloop/State;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun loop$default (Llove/forte/simbot/common/stageloop/State;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+

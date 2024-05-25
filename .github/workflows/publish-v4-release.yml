@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: test-reports-${{ matrix.os }}
+          name: test-reports-${{ runner.os }}
           path: '**/build/reports/tests'
           retention-days: 7
 

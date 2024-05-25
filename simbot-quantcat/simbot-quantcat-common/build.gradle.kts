@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
-import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 /*
  * Copyright (c) 2023 ForteScarlet.
@@ -64,11 +64,11 @@ kotlin {
     applyTier2()
     applyTier3()
 
-    withKotlinTargets { target ->
-        targets.findByName(target.name)?.compilations?.all {
-            // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
-            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes"
+        )
     }
 
     sourceSets {
@@ -76,7 +76,7 @@ kotlin {
             dependencies {
                 compileOnly(project(":simbot-api"))
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
-                compileOnly(libs.suspend.reversal.annotations)
+
             }
         }
 
@@ -100,13 +100,13 @@ kotlin {
         jsMain.dependencies {
             api(project(":simbot-api"))
             api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.suspend.reversal.annotations)
+
         }
 
         nativeMain.dependencies {
             api(project(":simbot-api"))
             api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.suspend.reversal.annotations)
+
         }
     }
 

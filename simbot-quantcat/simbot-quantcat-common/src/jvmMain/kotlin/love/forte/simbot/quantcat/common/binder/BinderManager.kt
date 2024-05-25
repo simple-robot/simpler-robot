@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -27,22 +27,22 @@ package love.forte.simbot.quantcat.common.binder
  * Binder管理器。
  */
 public interface BinderManager {
-    
+
     /**
      * 普通的binder工厂的数量。
      */
     public val normalBinderFactorySize: Int
-    
+
     /**
      * 全局性的binder工厂的数量。
      */
     public val globalBinderFactorySize: Int
-    
+
     /**
      * 根据ID获取一个指定的普通binder工厂。
      */
     public operator fun get(id: String): ParameterBinderFactory?
-    
+
     /**
      * 获取所有的全局binder工厂。
      */

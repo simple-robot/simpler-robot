@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -22,15 +22,10 @@
  */
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.withType
 
 
+@Deprecated("Kt is already applied")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
 fun Project.useK2(languageVersion: String = "2.0") {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            // useK2
-            // TODO 暂时关闭，等待 Kt2.0
-            // this.languageVersion = languageVersion
-        }
-    }
+    // Nothing.
 }

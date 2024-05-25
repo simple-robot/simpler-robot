@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
-import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -42,6 +42,7 @@ setup(P.Simbot)
 configJavaCompileWithModule("simbot.api")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
@@ -62,12 +63,18 @@ kotlin {
 //    @Suppress("OPT_IN_USAGE")
 //    wasmWasi()
 
-    withKotlinTargets { target ->
-        targets.findByName(target.name)?.compilations?.all {
-            // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
-            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-        }
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes"
+        )
     }
+
+    // withKotlinTargets { target ->
+    // targets.findByName(target.name)?.compilations?.all {
+    //     // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+    //     kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
+    // }
+    // }
 
     sourceSets {
         commonMain {
@@ -82,7 +89,7 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.serialization.core)
                 // suspend reversal annotations
-                compileOnly(libs.suspend.reversal.annotations)
+
             }
         }
         commonTest {
@@ -123,14 +130,14 @@ kotlin {
             api(libs.kotlinx.serialization.json)
             api(libs.jetbrains.annotations)
             api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.suspend.reversal.annotations)
+
         }
 
         jsMain.dependencies {
             api(libs.kotlinx.serialization.json)
             api(project(":simbot-commons:simbot-common-annotations"))
             api(libs.jetbrains.annotations)
-            api(libs.suspend.reversal.annotations)
+
         }
 
         jsTest.dependencies {
@@ -163,7 +170,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspJvm", libs.suspend.reversal.processor)
+    // add("kspJvm", libs.suspend.reversal.processor)
     add("kspJvm", project(":internal-processors:interface-uml-processor"))
 }
 

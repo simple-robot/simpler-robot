@@ -1,0 +1,63 @@
+public final class love/forte/simbot/common/collection/Collections_jvmKt {
+	public static final fun createConcurrentQueue ()Llove/forte/simbot/common/collection/ConcurrentQueue;
+	public static final fun createPriorityConcurrentQueue ()Llove/forte/simbot/common/collection/PriorityConcurrentQueue;
+	public static final fun toImmutable (Ljava/util/Collection;)Ljava/util/Collection;
+}
+
+public abstract interface class love/forte/simbot/common/collection/ConcurrentQueue : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun add (Ljava/lang/Object;)V
+	public abstract fun clear ()V
+	public abstract fun getSize ()I
+	public abstract fun isEmpty ()Z
+	public abstract fun iterator ()Ljava/util/Iterator;
+	public abstract fun remove (Ljava/lang/Object;)V
+	public abstract fun removeIf (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class love/forte/simbot/common/collection/ExperimentalSimbotCollectionApi : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/common/collection/FlowsKt {
+	public static final fun asIterator (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Iterator;
+}
+
+public final class love/forte/simbot/common/collection/MapsKt {
+	public static final fun internalComputeIfAbsentImpl (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun internalComputeIfPresentImpl (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun internalComputeImpl (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun internalMergeImpl (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun internalRemoveValueImpl (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Z
+}
+
+public final class love/forte/simbot/common/collection/Maps_jvmKt {
+	public static final fun computeValue (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun computeValueIfAbsent (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun computeValueIfPresent (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun concurrentMutableMap ()Ljava/util/Map;
+	public static final fun mergeValue (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static final fun removeValue (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Z
+}
+
+public final class love/forte/simbot/common/collection/Maps_jvmKt$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/common/collection/Maps_jvmKt$sam$i$java_util_function_Function$0 : java/util/function/Function {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/common/collection/PriorityConcurrentQueue : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun add (ILjava/lang/Object;)V
+	public abstract fun clear ()V
+	public abstract fun getSize ()I
+	public abstract fun isEmpty ()Z
+	public abstract fun isEmpty (I)Z
+	public abstract fun iterator ()Ljava/util/Iterator;
+	public abstract fun remove (ILjava/lang/Object;)V
+	public abstract fun remove (Ljava/lang/Object;)V
+	public abstract fun removeIf (ILkotlin/jvm/functions/Function1;)V
+	public abstract fun removeIf (Lkotlin/jvm/functions/Function1;)V
+}
+

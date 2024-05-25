@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -37,7 +37,11 @@ import kotlin.coroutines.CoroutineContext
  * @property block the suspend function block that represents the reserve logic
  */
 @Deprecated("Use SuspendReserve")
-public class Reserve<out T>(private val scope: CoroutineScope, private val context: CoroutineContext, private val block: suspend () -> T) {
+public class Reserve<out T>(
+    private val scope: CoroutineScope,
+    private val context: CoroutineContext,
+    private val block: suspend () -> T
+) {
 
     /**
      * Executes the given block of code in a no-scope blocking manner.

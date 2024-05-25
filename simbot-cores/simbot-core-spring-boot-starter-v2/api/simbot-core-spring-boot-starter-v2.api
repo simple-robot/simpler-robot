@@ -1,0 +1,392 @@
+public abstract interface annotation class love/forte/simbot/spring2/EnableSimbot : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/spring2/application/Spring : love/forte/simbot/spring/common/application/SpringApplicationFactory {
+	public static final field INSTANCE Llove/forte/simbot/spring2/application/Spring;
+	public synthetic fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/ApplicationLauncher;
+	public fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessor : love/forte/simbot/spring2/configuration/SimbotComponentInstallProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessor$Companion;
+	public fun <init> (ZZLjava/util/List;Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/component/ComponentInstaller;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_COMPONENT_INSTALL_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotComponentInstallProcessor (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;)Llove/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessor;
+	public static synthetic fun defaultSimbotComponentInstallProcessor$default (Llove/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessorConfiguration;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotComponentInstallProcessorConfiguration$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessor : love/forte/simbot/spring2/configuration/SimbotDispatcherProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessor$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_DISPATCHER_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotDispatcherProcessor (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Llove/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessor;
+	public static synthetic fun defaultSimbotDispatcherProcessor$default (Llove/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessorConfiguration;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotDispatcherProcessorConfiguration$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessor : love/forte/simbot/spring2/configuration/SimbotEventDispatcherProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessor$Companion;
+	public fun <init> (Llove/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarProcessor;Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/event/EventDispatcher;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_EVENT_DISPATCHER_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotEventDispatcherProcessor (Llove/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarProcessor;Ljava/util/List;)Llove/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessor;
+	public static synthetic fun defaultSimbotEventDispatcherProcessor$default (Llove/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessorConfiguration;Llove/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarProcessor;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotEventDispatcherProcessorConfiguration$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessor : love/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessor$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/event/EventListenerRegistrar;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_EVENT_LISTENER_REGISTRAR_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotEventListenerRegistrarProcessor (Ljava/util/List;Ljava/util/List;)Llove/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessor;
+	public static synthetic fun defaultSimbotEventListenerRegistrarProcessor$default (Llove/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessorConfiguration;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotEventListenerRegistrarProcessorConfiguration$Companion {
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessor : love/forte/simbot/spring2/configuration/SimbotPluginInstallProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessor$Companion;
+	public fun <init> (ZZLjava/util/List;Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/plugin/PluginInstaller;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_PLUGIN_INSTALL_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotPluginInstallProcessor (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;)Llove/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessor;
+	public static synthetic fun defaultSimbotPluginInstallProcessor$default (Llove/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessorConfiguration;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/DefaultSimbotPluginInstallProcessorConfiguration$Companion {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotComponentInstallProcessor {
+	public abstract fun process (Llove/forte/simbot/component/ComponentInstaller;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotComponentInstaller {
+	public abstract fun install (Llove/forte/simbot/component/ComponentInstaller;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotDispatcherConfigurer {
+	public abstract fun configure (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotDispatcherProcessor {
+	public abstract fun process (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotEventDispatcherPostConfigurer {
+	public abstract fun configure (Llove/forte/simbot/event/EventDispatcher;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotEventDispatcherProcessor {
+	public abstract fun process (Llove/forte/simbot/event/EventDispatcher;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarPostConfigurer {
+	public abstract fun configure (Llove/forte/simbot/event/EventListenerRegistrar;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotEventListenerRegistrarProcessor {
+	public abstract fun process (Llove/forte/simbot/event/EventListenerRegistrar;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotPluginInstallProcessor {
+	public abstract fun process (Llove/forte/simbot/plugin/PluginInstaller;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/SimbotPluginInstaller {
+	public abstract fun install (Llove/forte/simbot/plugin/PluginInstaller;)V
+}
+
+public class love/forte/simbot/spring2/configuration/SimbotSpringPropertiesConfiguration {
+	public fun <init> ()V
+	public fun springApplicationConfigurationProperties ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactory : love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactory {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationProcessor;Llove/forte/simbot/spring2/configuration/SimbotDispatcherProcessor;Llove/forte/simbot/spring2/configuration/SimbotComponentInstallProcessor;Llove/forte/simbot/spring2/configuration/SimbotPluginInstallProcessor;)V
+	public fun process (Llove/forte/simbot/spring2/application/Spring;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessor : love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactoryProcessor {
+	public static final field INSTANCE Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessor;
+	public fun process (Llove/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactory;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_APPLICATION_LAUNCHER_FACTORY_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotApplicationLauncherFactoryProcessor ()Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactoryProcessorConfiguration$Companion {
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationProcessor : love/forte/simbot/spring2/configuration/application/SimbotApplicationProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationProcessor$Companion;
+	public fun <init> (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/SimbotEventDispatcherProcessor;)V
+	public fun process (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationLauncherFactoryConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationLauncherFactoryConfiguration$Companion;
+	public static final field DEFAULT_SPRING_APPLICATION_LAUNCHER_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSpringApplicationLauncherProcessor (Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationProcessor;Llove/forte/simbot/spring2/configuration/SimbotDispatcherProcessor;Llove/forte/simbot/spring2/configuration/SimbotComponentInstallProcessor;Llove/forte/simbot/spring2/configuration/SimbotPluginInstallProcessor;)Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactory;
+	public static synthetic fun defaultSpringApplicationLauncherProcessor$default (Llove/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationLauncherFactoryConfiguration;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationProcessor;Llove/forte/simbot/spring2/configuration/SimbotDispatcherProcessor;Llove/forte/simbot/spring2/configuration/SimbotComponentInstallProcessor;Llove/forte/simbot/spring2/configuration/SimbotPluginInstallProcessor;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationLauncherFactory;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationLauncherFactoryConfiguration$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_APPLICATION_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotApplicationProcessor (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/SimbotEventDispatcherProcessor;)Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationProcessor;
+	public static synthetic fun defaultSimbotApplicationProcessor$default (Llove/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring2/configuration/SimbotEventDispatcherProcessor;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/application/DefaultSimbotApplicationProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/application/SimbotApplicationConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/SimbotApplicationConfiguration$Companion;
+	public static final field SPRING_APPLICATION_BEAN_NAME Ljava/lang/String;
+	public static final field SPRING_APPLICATION_LAUNCHER_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun springApplication (Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;)Llove/forte/simbot/spring/common/application/SpringApplication;
+	public fun springApplicationLauncher (Llove/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactory;Llove/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactoryProcessor;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public final class love/forte/simbot/spring2/configuration/application/SimbotApplicationConfiguration$Companion {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationConfigurer {
+	public abstract fun configure (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherConfigurer {
+	public abstract fun configure (Llove/forte/simbot/application/ApplicationFactoryConfigurer;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactory {
+	public abstract fun process (Llove/forte/simbot/spring2/application/Spring;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactoryProcessor {
+	public abstract fun process (Llove/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherFactory;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherPostConfigurer : love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherConfigurer {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherPreConfigurer : love/forte/simbot/spring2/configuration/application/SimbotApplicationLauncherConfigurer {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationPostConfigurer : love/forte/simbot/spring2/configuration/application/SimbotApplicationConfigurer {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationPreConfigurer : love/forte/simbot/spring2/configuration/application/SimbotApplicationConfigurer {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/application/SimbotApplicationProcessor {
+	public abstract fun process (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+}
+
+public class love/forte/simbot/spring2/configuration/application/SimbotApplicationRunner : org/springframework/boot/ApplicationRunner, org/springframework/context/ApplicationContextAware {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/application/SimbotApplicationRunner$Companion;
+	public fun <init> (Llove/forte/simbot/spring/common/application/SpringApplication;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Llove/forte/simbot/spring2/configuration/application/SimbotApplicationProcessor;)V
+	public fun run (Lorg/springframework/boot/ApplicationArguments;)V
+	public fun setApplicationContext (Lorg/springframework/context/ApplicationContext;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/application/SimbotApplicationRunner$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/binder/DefaultBinderManagerProvidersConfiguration {
+	public fun <init> ()V
+	public fun eventParameterBinderFactory ()Llove/forte/simbot/quantcat/common/binder/impl/EventParameterBinderFactory;
+	public fun keywordBinderFactory ()Llove/forte/simbot/quantcat/common/binder/impl/KeywordBinderFactory;
+}
+
+public class love/forte/simbot/spring2/configuration/binder/DuplicateBinderIdException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/binder/ParameterBinderManagerBuilder {
+	public abstract fun addBinderFactory (Ljava/lang/String;Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;)V
+	public abstract fun addBinderFactory (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/binder/ParameterBinderManagerBuilderConfigurer {
+	public abstract fun configure (Llove/forte/simbot/spring2/configuration/binder/ParameterBinderManagerBuilder;)V
+}
+
+public class love/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor : org/springframework/context/annotation/ConfigurationClassPostProcessor {
+	public static final field BINDER_MANAGER_BEAN_NAME Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$Companion;
+	protected field registry Lorg/springframework/beans/factory/support/BeanDefinitionRegistry;
+	public fun <init> ()V
+	protected fun getRegistry ()Lorg/springframework/beans/factory/support/BeanDefinitionRegistry;
+	public fun postProcessBeanDefinitionRegistry (Lorg/springframework/beans/factory/support/BeanDefinitionRegistry;)V
+	public fun postProcessBeanFactory (Lorg/springframework/beans/factory/config/ConfigurableListableBeanFactory;)V
+	protected fun resolveCandidate (Lorg/springframework/beans/factory/config/ConfigurableListableBeanFactory;Ljava/lang/String;Ljava/lang/Class;Llove/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$ParameterBinderManagerBuilderImpl;)V
+	protected fun resolveConfigurer (Lorg/springframework/beans/factory/config/ConfigurableListableBeanFactory;Ljava/lang/String;Ljava/lang/Class;Llove/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$ParameterBinderManagerBuilderImpl;)V
+	protected fun resolveFactoryInstance (Lorg/springframework/beans/factory/config/ConfigurableListableBeanFactory;Ljava/lang/String;Ljava/lang/Class;Llove/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$ParameterBinderManagerBuilderImpl;)V
+	protected fun resolveFactoryWithBinder (Llove/forte/simbot/quantcat/common/annotations/Binder;Ljava/lang/String;Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;Llove/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$ParameterBinderManagerBuilderImpl;)V
+	protected fun setRegistry (Lorg/springframework/beans/factory/support/BeanDefinitionRegistry;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$Companion {
+}
+
+protected class love/forte/simbot/spring2/configuration/binder/ResolveBinderManagerProcessor$ParameterBinderManagerBuilderImpl : love/forte/simbot/spring2/configuration/binder/ParameterBinderManagerBuilder {
+	public fun <init> ()V
+	public fun addBinderFactory (Ljava/lang/String;Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;)V
+	public fun addBinderFactory (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory;)V
+	public fun getGlobalBinders ()Ljava/util/List;
+	public fun getIdBinders ()Ljava/util/Map;
+}
+
+public final class love/forte/simbot/spring2/configuration/binder/SpringAutoInjectBinderFactory : love/forte/simbot/quantcat/common/binder/ParameterBinderFactory {
+	public fun <init> (Lorg/springframework/beans/factory/BeanFactory;)V
+	public synthetic fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+	public fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
+}
+
+public class love/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessor : love/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationProcessor {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessor$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/spring/common/application/SpringApplicationBuilder;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessor$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_APPLICATION_CONFIGURATION_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotApplicationConfigurationProcessor (Ljava/util/List;)Llove/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessor;
+	public static synthetic fun defaultSimbotApplicationConfigurationProcessor$default (Llove/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessorConfiguration;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessor;
+}
+
+public final class love/forte/simbot/spring2/configuration/config/DefaultSimbotApplicationConfigurationProcessorConfiguration$Companion {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationConfigurer {
+	public abstract fun configure (Llove/forte/simbot/spring/common/application/SpringApplicationBuilder;)V
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/config/SimbotApplicationConfigurationProcessor {
+	public abstract fun process (Llove/forte/simbot/spring/common/application/SpringApplicationBuilder;)V
+}
+
+public abstract class love/forte/simbot/spring2/configuration/listener/KFunctionEventListener : love/forte/simbot/quantcat/common/binder/FunctionalBindableEventListener {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/listener/KFunctionEventListener$Companion;
+	public static final field RAW_BINDERS_ATTRIBUTE_NAME Ljava/lang/String;
+	public static final field RAW_FUNCTION_ATTRIBUTE_NAME Ljava/lang/String;
+	public static final field RAW_LISTEN_TARGET_ATTRIBUTE_NAME Ljava/lang/String;
+	public static final field RawBindersAttribute Llove/forte/simbot/common/attribute/Attribute;
+	public static final field RawFunctionAttribute Llove/forte/simbot/common/attribute/Attribute;
+	public static final field RawListenTargetAttribute Llove/forte/simbot/common/attribute/Attribute;
+	public fun <init> (Ljava/lang/Object;Lkotlin/reflect/KFunction;)V
+	public abstract fun getAttributes ()Llove/forte/simbot/common/attribute/AttributeMap;
+}
+
+public final class love/forte/simbot/spring2/configuration/listener/KFunctionEventListener$Companion {
+}
+
+public class love/forte/simbot/spring2/configuration/listener/SimbotEventListenerFunctionProcessor : org/springframework/context/annotation/ConfigurationClassPostProcessor, org/springframework/context/ApplicationContextAware {
+	public static final field Companion Llove/forte/simbot/spring2/configuration/listener/SimbotEventListenerFunctionProcessor$Companion;
+	public fun <init> ()V
+	public fun postProcessBeanDefinitionRegistry (Lorg/springframework/beans/factory/support/BeanDefinitionRegistry;)V
+	public fun postProcessBeanFactory (Lorg/springframework/beans/factory/config/ConfigurableListableBeanFactory;)V
+	public fun setApplicationContext (Lorg/springframework/context/ApplicationContext;)V
+}
+
+public final class love/forte/simbot/spring2/configuration/listener/SimbotEventListenerFunctionProcessor$Companion {
+}
+
+public abstract interface class love/forte/simbot/spring2/configuration/listener/SimbotEventListenerResolver {
+	public abstract fun resolve (Llove/forte/simbot/application/Application;)V
+}
+
+public final class love/forte/simbot/spring2/utils/ConfigurableListableBeanFactoryUtilsKt {
+	public static final fun findMergedAnnotationSafely (Ljava/lang/reflect/AnnotatedElement;Lkotlin/reflect/KClass;)Ljava/lang/annotation/Annotation;
+	public static final fun findRepeatableMergedAnnotationSafely (Ljava/lang/reflect/AnnotatedElement;Lkotlin/reflect/KClass;)Ljava/util/Set;
+	public static final fun selectMethodsSafely (Ljava/lang/Class;Lkotlin/reflect/KClass;)Ljava/util/Map;
+}
+
+public abstract interface annotation class love/forte/simbot/spring2/warn/MigratingSpringBootVersion : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/spring2/warn/MigratingSpringBootVersionKt {
+	public static final field MIGRATING_SPRING_BOOT_VERSION_WARNING Ljava/lang/String;
+}
+
+public class love/forte/simbot/spring2/warn/MigratingSpringBootVersionWarningPrinter : org/springframework/boot/CommandLineRunner, org/springframework/core/Ordered {
+	public static final field Companion Llove/forte/simbot/spring2/warn/MigratingSpringBootVersionWarningPrinter$Companion;
+	public fun <init> ()V
+	public fun getOrder ()I
+	public fun run ([Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/spring2/warn/MigratingSpringBootVersionWarningPrinter$Companion {
+}
+

@@ -10,3 +10,6 @@ misc.xml
 statistic.xml
 modules.xml
 .name
+aws.xml
+deployment.xml
+webServers.xml

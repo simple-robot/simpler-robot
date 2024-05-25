@@ -116,7 +116,10 @@ class IDTests {
         val uuid = UUID.from(mv, lv)
         val jsonString = Json.encodeToString(UUID.StructureSerializer, uuid)
         assertEquals("""{"mostSignificantBits":$mv,"leastSignificantBits":$lv}""", jsonString)
-        val decodedUUID = Json.decodeFromString(UUID.StructureSerializer, """{"mostSignificantBits":$mv,"leastSignificantBits":$lv}""")
+        val decodedUUID = Json.decodeFromString(
+            UUID.StructureSerializer,
+            """{"mostSignificantBits":$mv,"leastSignificantBits":$lv}"""
+        )
         assertEquals(uuid, decodedUUID)
 
         val err = assertFails {

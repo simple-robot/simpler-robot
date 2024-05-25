@@ -1,0 +1,2492 @@
+public abstract interface class love/forte/simbot/ability/CompletionAware {
+	public abstract fun onCompletion (Llove/forte/simbot/ability/OnCompletion;)V
+}
+
+public class love/forte/simbot/ability/DeleteFailureException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/ability/DeleteOption {
+}
+
+public abstract interface class love/forte/simbot/ability/DeleteSupport {
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun deleteBlocking ([Llove/forte/simbot/ability/DeleteOption;)V
+	public fun deleteReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/ability/DeleteSupports {
+	public static final fun ifIgnoreOnAnyFailure-6yohGmw (ILkotlin/jvm/functions/Function0;)I
+	public static final fun ifIgnoreOnFailure-6yohGmw (ILkotlin/jvm/functions/Function0;)I
+	public static final fun ifIgnoreOnNoSuchTarget-6yohGmw (ILkotlin/jvm/functions/Function0;)I
+	public static final fun ifIgnoreOnUnsupported-6yohGmw (ILkotlin/jvm/functions/Function0;)I
+	public static final fun isIgnoreOnAnyFailure--EroimE (I)Z
+	public static final fun isIgnoreOnFailure--EroimE (I)Z
+	public static final fun isIgnoreOnNoSuchTarget--EroimE (I)Z
+	public static final fun isIgnoreOnUnsupported--EroimE (I)Z
+}
+
+public abstract interface class love/forte/simbot/ability/EventMentionAware {
+	public abstract fun isMention (Llove/forte/simbot/event/Event;)Z
+}
+
+public abstract interface class love/forte/simbot/ability/LifecycleAware {
+	public abstract fun isActive ()Z
+	public abstract fun isCompleted ()Z
+}
+
+public abstract interface class love/forte/simbot/ability/MentionedTargetAware {
+	public abstract fun isMentioned (Llove/forte/simbot/common/id/ID;)Z
+}
+
+public abstract interface class love/forte/simbot/ability/OnCompletion {
+	public abstract fun invoke (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/ability/ReplySupport {
+	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun replyAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/ability/SendSupport {
+	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/ability/StandardDeleteOption : java/lang/Enum, love/forte/simbot/ability/DeleteOption {
+	public static final field Companion Llove/forte/simbot/ability/StandardDeleteOption$Companion;
+	public static final field IGNORE_ON_ANY_FAILURE Llove/forte/simbot/ability/StandardDeleteOption;
+	public static final field IGNORE_ON_FAILURE Llove/forte/simbot/ability/StandardDeleteOption;
+	public static final field IGNORE_ON_NO_SUCH_TARGET Llove/forte/simbot/ability/StandardDeleteOption;
+	public static final field IGNORE_ON_UNSUPPORTED Llove/forte/simbot/ability/StandardDeleteOption;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/ability/StandardDeleteOption;
+	public static fun values ()[Llove/forte/simbot/ability/StandardDeleteOption;
+}
+
+public final class love/forte/simbot/ability/StandardDeleteOption$Companion {
+	public final fun inStandardAnalysis-6bCWJ4M ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)I
+	public static synthetic fun inStandardAnalysis-6bCWJ4M$default (Llove/forte/simbot/ability/StandardDeleteOption$Companion;[Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)I
+	public final fun standardAnalysis-lEC9akc ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;)I
+	public static synthetic fun standardAnalysis-lEC9akc$default (Llove/forte/simbot/ability/StandardDeleteOption$Companion;[Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)I
+}
+
+public final class love/forte/simbot/ability/StandardDeleteOption$StandardAnalysis {
+	public static final synthetic fun box-impl (I)Llove/forte/simbot/ability/StandardDeleteOption$StandardAnalysis;
+	public static fun constructor-impl (I)I
+	public static final fun contains-impl (ILlove/forte/simbot/ability/StandardDeleteOption;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public static final fun isEmpty-impl (I)Z
+	public static final fun isFull-impl (I)Z
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public abstract class love/forte/simbot/application/AbstractApplicationBuilder : love/forte/simbot/application/ApplicationBuilder {
+	public fun <init> ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+}
+
+public abstract class love/forte/simbot/application/AbstractApplicationEventRegistrar : love/forte/simbot/application/ApplicationEventRegistrar {
+	public fun <init> ()V
+	public fun addEventHandler (Llove/forte/simbot/application/ApplicationLaunchStage;Llove/forte/simbot/application/ApplicationEventHandler;)V
+	protected fun getEvents ()Ljava/util/Map;
+}
+
+public abstract class love/forte/simbot/application/AbstractApplicationFactoryConfigurer : love/forte/simbot/application/ApplicationFactoryConfigurer {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/component/ComponentFactoriesConfigurator;Llove/forte/simbot/plugin/PluginFactoriesConfigurator;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/component/ComponentFactoriesConfigurator;Llove/forte/simbot/plugin/PluginFactoriesConfigurator;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun config (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	protected fun createAllComponents (Llove/forte/simbot/component/ComponentConfigureContext;)Ljava/util/List;
+	protected fun createAllPlugins (Llove/forte/simbot/plugin/PluginConfigureContext;)Ljava/util/List;
+	protected final fun createConfig (Llove/forte/simbot/application/ApplicationBuilder;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/application/ApplicationConfiguration;
+	public fun eventDispatcher (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	protected fun getApplicationEventRegistrarConfigurations ()Ljava/util/List;
+	protected fun getComponentFactoriesConfigurator ()Llove/forte/simbot/component/ComponentFactoriesConfigurator;
+	protected fun getConfigConfigurers ()Ljava/util/List;
+	protected fun getEventDispatcherConfigurers ()Ljava/util/List;
+	protected fun getPluginFactoriesConfigurator ()Llove/forte/simbot/plugin/PluginFactoriesConfigurator;
+	public fun install (Llove/forte/simbot/component/ComponentFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public fun install (Llove/forte/simbot/plugin/PluginFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public fun stageEvents (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+}
+
+public abstract interface class love/forte/simbot/application/Application : kotlinx/coroutines/CoroutineScope, love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware {
+	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
+	public fun cancel ()V
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun getBotManagers ()Llove/forte/simbot/bot/BotManagers;
+	public abstract fun getComponents ()Llove/forte/simbot/component/Components;
+	public abstract fun getConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
+	public abstract fun getPlugins ()Llove/forte/simbot/plugin/Plugins;
+	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun joinBlocking ()V
+	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationBuilder {
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationConfiguration {
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationEventHandler {
+}
+
+public final class love/forte/simbot/application/ApplicationEventHandlerKt {
+	public static final fun applicationLaunchStages (Ljava/util/Map;)Llove/forte/simbot/application/ApplicationLaunchStages;
+	public static final fun onCancelled (Llove/forte/simbot/application/ApplicationEventRegistrar;Llove/forte/simbot/application/NormalApplicationEventHandler;)V
+	public static final fun onLaunch (Llove/forte/simbot/application/ApplicationEventRegistrar;Llove/forte/simbot/application/SuspendApplicationEventHandler;)V
+	public static final fun onRequestCancel (Llove/forte/simbot/application/ApplicationEventRegistrar;Llove/forte/simbot/application/NormalApplicationEventHandler;)V
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationEventRegistrar {
+	public abstract fun addEventHandler (Llove/forte/simbot/application/ApplicationLaunchStage;Llove/forte/simbot/application/ApplicationEventHandler;)V
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationFactory {
+	public fun create ()Llove/forte/simbot/application/ApplicationLauncher;
+	public abstract fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationFactoryConfigurer : love/forte/simbot/component/ComponentInstaller, love/forte/simbot/plugin/PluginInstaller {
+	public abstract fun config (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public abstract fun eventDispatcher (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public fun install (Llove/forte/simbot/component/ComponentFactory;)V
+	public abstract fun install (Llove/forte/simbot/component/ComponentFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public fun install (Llove/forte/simbot/plugin/PluginFactory;)V
+	public abstract fun install (Llove/forte/simbot/plugin/PluginFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public abstract fun stageEvents (Llove/forte/simbot/common/function/ConfigurerFunction;)V
+}
+
+public abstract interface annotation class love/forte/simbot/application/ApplicationFactoryConfigurerDSL : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/application/ApplicationLaunchBlockingFailureException : java/lang/RuntimeException {
+}
+
+public abstract class love/forte/simbot/application/ApplicationLaunchStage {
+}
+
+public final class love/forte/simbot/application/ApplicationLaunchStage$Cancelled : love/forte/simbot/application/ApplicationLaunchStage {
+	public static final field INSTANCE Llove/forte/simbot/application/ApplicationLaunchStage$Cancelled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/application/ApplicationLaunchStage$Launch : love/forte/simbot/application/ApplicationLaunchStage {
+	public static final field INSTANCE Llove/forte/simbot/application/ApplicationLaunchStage$Launch;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/application/ApplicationLaunchStage$RequestCancel : love/forte/simbot/application/ApplicationLaunchStage {
+	public static final field INSTANCE Llove/forte/simbot/application/ApplicationLaunchStage$RequestCancel;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationLaunchStages {
+	public abstract fun get (Llove/forte/simbot/application/ApplicationLaunchStage;)Ljava/lang/Iterable;
+}
+
+public abstract interface class love/forte/simbot/application/ApplicationLauncher {
+	public abstract synthetic fun launch (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun launchIn (Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/common/async/Async;
+	public fun launchInGlobal ()Llove/forte/simbot/common/async/Async;
+}
+
+public final class love/forte/simbot/application/Applications {
+	public static final fun asCompletableFuture (Llove/forte/simbot/application/Application;)Ljava/util/concurrent/CompletableFuture;
+	public static final synthetic fun launchApplication (Llove/forte/simbot/application/ApplicationFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun launchApplication$default (Llove/forte/simbot/application/ApplicationFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun launchApplicationAsync (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/application/ApplicationFactory;)Llove/forte/simbot/common/async/Async;
+	public static final fun launchApplicationAsync (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/common/async/Async;
+	public static final fun launchApplicationAsync (Llove/forte/simbot/application/ApplicationFactory;)Llove/forte/simbot/common/async/Async;
+	public static final fun launchApplicationAsync (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/common/async/Async;
+	public static synthetic fun launchApplicationAsync$default (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)Llove/forte/simbot/common/async/Async;
+	public static synthetic fun launchApplicationAsync$default (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)Llove/forte/simbot/common/async/Async;
+	public static final fun launchApplicationBlocking (Llove/forte/simbot/application/ApplicationFactory;)Llove/forte/simbot/application/Application;
+	public static final fun launchApplicationBlocking (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/Application;
+	public static synthetic fun launchApplicationBlocking$default (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)Llove/forte/simbot/application/Application;
+	public static final fun listeners (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class love/forte/simbot/application/JAsyncApplicationLauncher {
+	public static final field Companion Llove/forte/simbot/application/JAsyncApplicationLauncher$Companion;
+	public abstract fun launch ()Ljava/util/concurrent/CompletionStage;
+	public static fun toEventListener (Llove/forte/simbot/application/JAsyncApplicationLauncher;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
+public final class love/forte/simbot/application/JAsyncApplicationLauncher$Companion {
+	public final fun toEventListener (Llove/forte/simbot/application/JAsyncApplicationLauncher;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/application/JAsyncSuspendApplicationEventHandler {
+	public static final field Companion Llove/forte/simbot/application/JAsyncSuspendApplicationEventHandler$Companion;
+	public abstract fun invoke (Ljava/lang/Object;)Ljava/util/concurrent/CompletionStage;
+	public static fun toHandler (Llove/forte/simbot/application/JAsyncSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+}
+
+public final class love/forte/simbot/application/JAsyncSuspendApplicationEventHandler$Companion {
+	public final fun toHandler (Llove/forte/simbot/application/JAsyncSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+}
+
+public abstract interface class love/forte/simbot/application/JBlockingApplicationLauncher {
+	public static final field Companion Llove/forte/simbot/application/JBlockingApplicationLauncher$Companion;
+	public abstract fun launch ()Llove/forte/simbot/application/Application;
+	public static fun toEventListener (Llove/forte/simbot/application/JBlockingApplicationLauncher;)Llove/forte/simbot/application/ApplicationLauncher;
+	public static fun toEventListener (Llove/forte/simbot/application/JBlockingApplicationLauncher;Lkotlin/coroutines/CoroutineContext;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
+public final class love/forte/simbot/application/JBlockingApplicationLauncher$Companion {
+	public final fun toEventListener (Llove/forte/simbot/application/JBlockingApplicationLauncher;)Llove/forte/simbot/application/ApplicationLauncher;
+	public final fun toEventListener (Llove/forte/simbot/application/JBlockingApplicationLauncher;Lkotlin/coroutines/CoroutineContext;)Llove/forte/simbot/application/ApplicationLauncher;
+	public static synthetic fun toEventListener$default (Llove/forte/simbot/application/JBlockingApplicationLauncher$Companion;Llove/forte/simbot/application/JBlockingApplicationLauncher;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/application/JBlockingSuspendApplicationEventHandler {
+	public static final field Companion Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler$Companion;
+	public abstract fun invoke (Ljava/lang/Object;)V
+	public static fun toHandler (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+	public static fun toHandler (Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+}
+
+public final class love/forte/simbot/application/JBlockingSuspendApplicationEventHandler$Companion {
+	public final fun toHandler (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+	public final fun toHandler (Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+	public static synthetic fun toHandler$default (Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler$Companion;Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;ILjava/lang/Object;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
+}
+
+public abstract interface class love/forte/simbot/application/NormalApplicationEventHandler : love/forte/simbot/application/ApplicationEventHandler {
+	public abstract fun invoke (Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/application/SuspendApplicationEventHandler : love/forte/simbot/application/ApplicationEventHandler {
+	public abstract synthetic fun invoke (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/bot/AutoConfigurableBotPlugin : love/forte/simbot/bot/BotPlugin {
+	public abstract fun configurable (Llove/forte/simbot/bot/SerializableBotConfiguration;)Z
+	public abstract fun register (Llove/forte/simbot/bot/SerializableBotConfiguration;)Llove/forte/simbot/bot/Bot;
+}
+
+public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware, love/forte/simbot/bot/BotRelations, love/forte/simbot/common/id/IDContainer {
+	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
+	public fun cancel ()V
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun getComponent ()Llove/forte/simbot/component/Component;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
+	public abstract fun isStarted ()Z
+	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun joinBlocking ()V
+	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun startBlocking ()V
+	public fun startReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public class love/forte/simbot/bot/BotException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/bot/BotManager : love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware, love/forte/simbot/bot/AutoConfigurableBotPlugin {
+	public abstract fun all ()Lkotlin/sequences/Sequence;
+	public fun all (Llove/forte/simbot/common/id/ID;)Lkotlin/sequences/Sequence;
+	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public static synthetic fun cancel$default (Llove/forte/simbot/bot/BotManager;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public fun find (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/bot/Bot;
+	public abstract fun get (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/bot/Bot;
+	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun joinBlocking ()V
+	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/bot/BotManagerFactory : love/forte/simbot/plugin/PluginFactory {
+}
+
+public abstract interface class love/forte/simbot/bot/BotManagerFactory$Key : love/forte/simbot/plugin/PluginFactory$Key {
+}
+
+public final class love/forte/simbot/bot/BotManagerUtil {
+	public static final fun toBotManagers (Ljava/util/Collection;)Llove/forte/simbot/bot/BotManagers;
+}
+
+public abstract interface class love/forte/simbot/bot/BotManagers : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun allBots ()Lkotlin/sequences/Sequence;
+}
+
+public abstract interface class love/forte/simbot/bot/BotPlugin : love/forte/simbot/plugin/Plugin {
+}
+
+public final class love/forte/simbot/bot/BotPluginKt {
+	public static final fun tryRegister (Llove/forte/simbot/bot/AutoConfigurableBotPlugin;Llove/forte/simbot/bot/SerializableBotConfiguration;)Llove/forte/simbot/bot/Bot;
+	public static final fun tryRegister (Llove/forte/simbot/bot/AutoConfigurableBotPlugin;Llove/forte/simbot/bot/SerializableBotConfiguration;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public class love/forte/simbot/bot/BotRegisterFailureException : love/forte/simbot/bot/BotException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/bot/BotRelations {
+	public abstract fun getContactRelation ()Llove/forte/simbot/bot/ContactRelation;
+	public abstract fun getGroupRelation ()Llove/forte/simbot/bot/GroupRelation;
+	public abstract fun getGuildRelation ()Llove/forte/simbot/bot/GuildRelation;
+}
+
+public class love/forte/simbot/bot/ConflictBotException : love/forte/simbot/bot/BotException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/bot/ContactRelation {
+	public abstract synthetic fun contact (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun contactCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Contact;
+	public fun getContactAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getContactCount ()I
+	public fun getContactCountAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContactCountReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getContactReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getContacts ()Llove/forte/simbot/common/collectable/Collectable;
+}
+
+public abstract interface class love/forte/simbot/bot/GroupRelation {
+	public fun getGroup (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/ChatGroup;
+	public fun getGroupAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getGroupCount ()I
+	public fun getGroupCountAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getGroupCountReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getGroupReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getGroups ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun group (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun groupCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/bot/GuildRelation {
+	public fun getGuild (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Guild;
+	public fun getGuildAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getGuildCount ()I
+	public fun getGuildCountAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getGuildCountReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getGuildReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun guild (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/bot/JobBasedBot : love/forte/simbot/bot/Bot {
+	public fun <init> ()V
+	public fun cancel (Ljava/lang/Throwable;)V
+	protected abstract fun getJob ()Lkotlinx/coroutines/Job;
+	public final fun getOnJoin ()Lkotlinx/coroutines/selects/SelectClause0;
+	public fun isActive ()Z
+	public fun isCompleted ()Z
+	public fun isStarted ()Z
+	public synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun onCompletion (Llove/forte/simbot/ability/OnCompletion;)V
+	protected fun setStarted (Z)V
+}
+
+public abstract class love/forte/simbot/bot/JobBasedBotManager : love/forte/simbot/bot/BotManager {
+	public fun <init> ()V
+	public fun cancel (Ljava/lang/Throwable;)V
+	protected abstract fun getJob ()Lkotlinx/coroutines/Job;
+	public fun isActive ()Z
+	public fun isCompleted ()Z
+	public synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun onCompletion (Llove/forte/simbot/ability/OnCompletion;)V
+}
+
+public class love/forte/simbot/bot/NoSuchBotException : love/forte/simbot/bot/BotException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/bot/NotSerializedBotConfiguration : love/forte/simbot/bot/SerializableBotConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/NotSerializedBotConfiguration$Companion;
+	public fun <init> (Llove/forte/simbot/resource/StringResource;Ljava/lang/String;)V
+	public final fun component1 ()Llove/forte/simbot/resource/StringResource;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Llove/forte/simbot/resource/StringResource;Ljava/lang/String;)Llove/forte/simbot/bot/NotSerializedBotConfiguration;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/NotSerializedBotConfiguration;Llove/forte/simbot/resource/StringResource;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/bot/NotSerializedBotConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getText ()Llove/forte/simbot/resource/StringResource;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun resolveType (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/bot/NotSerializedBotConfiguration$Companion {
+	public final fun resolveType (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/bot/SerializableBotConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/SerializableBotConfiguration$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Llove/forte/simbot/bot/SerializableBotConfiguration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/bot/SerializableBotConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/SerializableBotConfigurationKt {
+	public static final fun serializableBotConfigurationPolymorphic (Lkotlinx/serialization/modules/SerializersModuleBuilder;Lkotlin/jvm/functions/Function1;)V
+}
+
+public class love/forte/simbot/bot/UnsupportedBotConfigurationException : java/lang/IllegalArgumentException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract class love/forte/simbot/bot/configuration/DispatcherConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public abstract fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public static final synthetic fun write$Self (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Custom : love/forte/simbot/bot/configuration/DispatcherConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$Companion;
+	public fun <init> (ILjava/lang/Integer;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)V
+	public synthetic fun <init> (ILjava/lang/Integer;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/Integer;
+	public final fun component3 ()Ljava/lang/Long;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public final fun copy (ILjava/lang/Integer;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom;ILjava/lang/Integer;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILjava/lang/Object;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCoreThreads ()I
+	public final fun getDemote ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public final fun getKeepAliveMillis ()Ljava/lang/Long;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getMaxThreads ()Ljava/lang/Integer;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Default : love/forte/simbot/bot/configuration/DispatcherConfiguration$KotlinCoroutineDispatchers {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Default;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$IO : love/forte/simbot/bot/configuration/DispatcherConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO$Companion;
+	public fun <init> ()V
+	public fun <init> (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public final fun copy (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILjava/lang/Object;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDemote ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$IO$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$IO$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/bot/configuration/DispatcherConfiguration$KotlinCoroutineDispatchers : love/forte/simbot/bot/configuration/DispatcherConfiguration {
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Main : love/forte/simbot/bot/configuration/DispatcherConfiguration$KotlinCoroutineDispatchers {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Main;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Unconfined : love/forte/simbot/bot/configuration/DispatcherConfiguration$KotlinCoroutineDispatchers {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Unconfined;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual : love/forte/simbot/bot/configuration/DispatcherConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$Companion;
+	public fun <init> ()V
+	public fun <init> (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public final fun copy (Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILjava/lang/Object;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDemote ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
+	public fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/bot/configuration/ProxyConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/ProxyConfiguration$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public abstract fun getValue ()Llove/forte/simbot/bot/configuration/ProxyValue;
+	public static final synthetic fun write$Self (Llove/forte/simbot/bot/configuration/ProxyConfiguration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Http : love/forte/simbot/bot/configuration/ProxyConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getUrl ()Ljava/lang/String;
+	public fun getValue ()Llove/forte/simbot/bot/configuration/ProxyValue$Http;
+	public synthetic fun getValue ()Llove/forte/simbot/bot/configuration/ProxyValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Http$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Http$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks : love/forte/simbot/bot/configuration/ProxyConfiguration {
+	public static final field Companion Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks$Companion;
+	public fun <init> (Ljava/lang/String;I)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun copy (Ljava/lang/String;I)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks;Ljava/lang/String;IILjava/lang/Object;)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()I
+	public fun getValue ()Llove/forte/simbot/bot/configuration/ProxyValue$Socks;
+	public synthetic fun getValue ()Llove/forte/simbot/bot/configuration/ProxyValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/bot/configuration/ProxyValue {
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyValue$Http : love/forte/simbot/bot/configuration/ProxyValue {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Llove/forte/simbot/bot/configuration/ProxyValue$Http;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/ProxyValue$Http;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/bot/configuration/ProxyValue$Http;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getUrl ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/bot/configuration/ProxyValue$Socks : love/forte/simbot/bot/configuration/ProxyValue {
+	public fun <init> (Ljava/lang/String;I)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun copy (Ljava/lang/String;I)Llove/forte/simbot/bot/configuration/ProxyValue$Socks;
+	public static synthetic fun copy$default (Llove/forte/simbot/bot/configuration/ProxyValue$Socks;Ljava/lang/String;IILjava/lang/Object;)Llove/forte/simbot/bot/configuration/ProxyValue$Socks;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/component/Component {
+	public static final field CLASS_DISCRIMINATOR Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/component/Component$Companion;
+	public abstract fun getId ()Ljava/lang/String;
+	public abstract fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class love/forte/simbot/component/Component$Companion {
+	public static final field CLASS_DISCRIMINATOR Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/ComponentAlreadyExistsException : love/forte/simbot/component/ComponentException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/component/ComponentConfigureContext {
+	public abstract fun getApplicationConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
+	public abstract fun getApplicationEventRegistrar ()Llove/forte/simbot/application/ApplicationEventRegistrar;
+}
+
+public class love/forte/simbot/component/ComponentException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/component/ComponentFactoriesConfigurator : love/forte/simbot/common/function/MergeableFactoriesConfigurator {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class love/forte/simbot/component/ComponentFactory : love/forte/simbot/common/function/MergeableFactory {
+}
+
+public abstract interface class love/forte/simbot/component/ComponentFactory$Key : love/forte/simbot/common/function/MergeableFactory$Key {
+}
+
+public abstract interface class love/forte/simbot/component/ComponentFactoryConfigurerProvider {
+	public abstract fun configure (Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/component/ComponentFactoryProvider {
+	public fun loadConfigurers ()Lkotlin/sequences/Sequence;
+	public fun loadConfigures ()Lkotlin/sequences/Sequence;
+	public abstract fun provide ()Llove/forte/simbot/component/ComponentFactory;
+}
+
+public final class love/forte/simbot/component/ComponentFactoryProviders {
+	public static final fun addComponentFactoryProvider (Lkotlin/jvm/functions/Function0;)V
+	public static final fun clearComponentFactoryProviders ()V
+	public static final fun findAndInstallAllComponents (Llove/forte/simbot/component/ComponentInstaller;Z)V
+	public static final fun loadComponentFactoriesFromProviders (Ljava/lang/ClassLoader;Z)Lkotlin/sequences/Sequence;
+	public static final fun loadComponentFactoriesFromProviders (Z)Lkotlin/sequences/Sequence;
+	public static final fun loadComponentProviders ()Lkotlin/sequences/Sequence;
+	public static final fun loadComponentProviders (Ljava/lang/ClassLoader;)Lkotlin/sequences/Sequence;
+}
+
+public abstract interface class love/forte/simbot/component/ComponentInstaller {
+	public fun install (Llove/forte/simbot/component/ComponentFactory;)V
+	public abstract fun install (Llove/forte/simbot/component/ComponentFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+}
+
+public final class love/forte/simbot/component/ComponentUtil {
+	public static final fun toComponents (Ljava/util/Collection;)Llove/forte/simbot/component/Components;
+}
+
+public abstract interface class love/forte/simbot/component/Components : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun findById (Ljava/lang/String;)Llove/forte/simbot/component/Component;
+	public abstract fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class love/forte/simbot/component/NoSuchComponentException : love/forte/simbot/component/ComponentException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/definition/Actor : kotlinx/coroutines/CoroutineScope, love/forte/simbot/common/id/IDContainer {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract interface class love/forte/simbot/definition/Category {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getName ()Ljava/lang/String;
+	public fun getNameAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getNameReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun name (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/definition/Channel : love/forte/simbot/definition/Actor {
+	public abstract fun getCategory ()Llove/forte/simbot/definition/Category;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/ChatChannel : love/forte/simbot/definition/Channel, love/forte/simbot/definition/ChatRoom {
+}
+
+public abstract interface class love/forte/simbot/definition/ChatGroup : love/forte/simbot/definition/ChatRoom, love/forte/simbot/definition/Organization {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/ChatRoom : love/forte/simbot/ability/SendSupport, love/forte/simbot/definition/Actor {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/Contact : love/forte/simbot/ability/SendSupport, love/forte/simbot/definition/User {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/Guild : love/forte/simbot/definition/Organization {
+	public abstract synthetic fun channel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun chatChannel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Channel;
+	public fun getChannelAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getChannels ()Llove/forte/simbot/common/collectable/Collectable;
+	public fun getChatChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/ChatChannel;
+	public fun getChatChannelAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getChatChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getChatChannels ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/Member : love/forte/simbot/ability/SendSupport, love/forte/simbot/definition/User {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getNick ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/definition/Organization : love/forte/simbot/definition/Actor {
+	public abstract synthetic fun botAsMember (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getBotAsMember ()Llove/forte/simbot/definition/Member;
+	public fun getBotAsMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBotAsMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getMembers ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getOwnerId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getRoles ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun member (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/definition/Role {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun isAdmin ()Z
+}
+
+public abstract interface class love/forte/simbot/definition/User : love/forte/simbot/definition/Actor {
+	public abstract fun getAvatar ()Ljava/lang/String;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/event/AbstractEventDispatcherConfiguration : love/forte/simbot/event/EventDispatcherConfiguration {
+	public fun <init> ()V
+	public fun addDispatchInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventDispatchInterceptor;)V
+	public fun addInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventInterceptor;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	protected fun getDispatchInterceptors ()Ljava/util/List;
+	protected fun getInterceptors ()Ljava/util/List;
+	public fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+}
+
+public abstract interface class love/forte/simbot/event/ActorAuthorAwareMessageEvent : love/forte/simbot/event/AuthorAwareMessageEvent {
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
+	public fun getAuthor ()Llove/forte/simbot/definition/Actor;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ActorEvent : love/forte/simbot/event/BotEvent, love/forte/simbot/event/ContentEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/AuthorAwareMessageEvent : love/forte/simbot/event/MessageEvent {
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/BotEvent : love/forte/simbot/event/ComponentEvent {
+	public abstract fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getComponent ()Llove/forte/simbot/component/Component;
+}
+
+public abstract interface class love/forte/simbot/event/BotRegisteredEvent : love/forte/simbot/event/BotStageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/BotStageEvent : love/forte/simbot/event/BotEvent {
+	public abstract fun getBot ()Llove/forte/simbot/bot/Bot;
+}
+
+public abstract interface class love/forte/simbot/event/BotStartedEvent : love/forte/simbot/event/BotStageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/ChangeEvent : love/forte/simbot/event/ContentEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getContent ()Ljava/lang/Object;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChannelEvent : love/forte/simbot/event/ActorEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/ChatChannelEvent : love/forte/simbot/event/ChannelEvent, love/forte/simbot/event/ChatRoomEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContent ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatChannelMessageEvent : love/forte/simbot/event/ChatChannelEvent, love/forte/simbot/event/ChatRoomMessageEvent, love/forte/simbot/event/MemberAuthorAwareMessageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupEvent : love/forte/simbot/event/ChatRoomEvent, love/forte/simbot/event/OrganizationEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupJoinRequestEvent : love/forte/simbot/event/ChatGroupEvent, love/forte/simbot/event/OrganizationJoinRequestEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMemberDecreaseEvent : love/forte/simbot/event/ChatGroupMemberIncreaseOrDecreaseEvent, love/forte/simbot/event/MemberDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMemberEvent : love/forte/simbot/event/MemberEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMemberIncreaseEvent : love/forte/simbot/event/ChatGroupMemberIncreaseOrDecreaseEvent, love/forte/simbot/event/MemberIncreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMemberIncreaseOrDecreaseEvent : love/forte/simbot/event/ChatGroupEvent, love/forte/simbot/event/MemberIncreaseOrDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMemberMessageEvent : love/forte/simbot/event/MemberEvent, love/forte/simbot/event/MessageEvent {
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/ChatGroupMessageEvent : love/forte/simbot/event/ChatGroupEvent, love/forte/simbot/event/ChatRoomMessageEvent, love/forte/simbot/event/MemberAuthorAwareMessageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/ChatRoomEvent : love/forte/simbot/event/ActorEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ChatRoomMessageEvent : love/forte/simbot/event/ChatRoomEvent, love/forte/simbot/event/MessageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/ComponentEvent : love/forte/simbot/event/Event {
+	public abstract fun getComponent ()Llove/forte/simbot/component/Component;
+}
+
+public abstract interface class love/forte/simbot/event/ContactEvent : love/forte/simbot/event/ActorEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Contact;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/ContactMessageEvent : love/forte/simbot/event/ContactEvent, love/forte/simbot/event/MessageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/ContentEvent : love/forte/simbot/event/Event {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getContent ()Ljava/lang/Object;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/Event : love/forte/simbot/common/id/IDContainer {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public abstract interface class love/forte/simbot/event/EventContext : kotlinx/coroutines/CoroutineScope {
+	public abstract fun getAttributes ()Llove/forte/simbot/common/attribute/MutableAttributeMap;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getEvent ()Llove/forte/simbot/event/Event;
+}
+
+public abstract interface class love/forte/simbot/event/EventDispatchInterceptor {
+	public abstract fun intercept (Llove/forte/simbot/event/EventDispatchInterceptor$Context;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public abstract interface class love/forte/simbot/event/EventDispatchInterceptor$Context {
+	public abstract fun getEventContext ()Llove/forte/simbot/event/EventContext;
+	public abstract fun invoke ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun invoke (Llove/forte/simbot/event/EventContext;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public abstract interface class love/forte/simbot/event/EventDispatchInterceptorRegistrationProperties {
+	public abstract fun getPriority ()I
+	public abstract fun setPriority (I)V
+}
+
+public abstract interface class love/forte/simbot/event/EventDispatcher : love/forte/simbot/event/EventListenerContainer, love/forte/simbot/event/EventListenerRegistrar, love/forte/simbot/event/EventProcessor {
+}
+
+public abstract interface class love/forte/simbot/event/EventDispatcherConfiguration {
+	public abstract fun addDispatchInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventDispatchInterceptor;)V
+	public fun addDispatchInterceptor (Llove/forte/simbot/event/EventDispatchInterceptor;)V
+	public abstract fun addInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventInterceptor;)V
+	public fun addInterceptor (Llove/forte/simbot/event/EventInterceptor;)V
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+}
+
+public abstract interface annotation class love/forte/simbot/event/EventDispatcherConfigurationDSL : java/lang/annotation/Annotation {
+}
+
+public abstract interface class love/forte/simbot/event/EventInterceptor {
+	public abstract synthetic fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/EventInterceptor$Context {
+	public abstract fun getEventListenerContext ()Llove/forte/simbot/event/EventListenerContext;
+	public abstract synthetic fun invoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun invoke (Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/EventInterceptorRegistrationProperties {
+	public abstract fun getPriority ()I
+	public abstract fun setPriority (I)V
+}
+
+public final class love/forte/simbot/event/EventInterceptors {
+	public static final fun async (Llove/forte/simbot/event/JAsyncEventInterceptor;)Llove/forte/simbot/event/JAsyncEventInterceptor;
+	public static final fun block (Llove/forte/simbot/event/JBlockEventInterceptor;)Llove/forte/simbot/event/JBlockEventInterceptor;
+}
+
+public abstract interface class love/forte/simbot/event/EventListener {
+	public abstract synthetic fun handle (Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/EventListenerContainer {
+	public abstract fun getListeners ()Lkotlin/sequences/Sequence;
+}
+
+public abstract interface class love/forte/simbot/event/EventListenerContext {
+	public abstract fun getContext ()Llove/forte/simbot/event/EventContext;
+	public fun getEvent ()Llove/forte/simbot/event/Event;
+	public abstract fun getListener ()Llove/forte/simbot/event/EventListener;
+	public abstract fun getPlainText ()Ljava/lang/String;
+	public abstract fun setPlainText (Ljava/lang/String;)V
+}
+
+public abstract interface class love/forte/simbot/event/EventListenerRegistrar {
+	public abstract fun dispose (Llove/forte/simbot/event/EventListener;)V
+	public abstract fun register (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventListener;)Llove/forte/simbot/event/EventListenerRegistrationHandle;
+	public fun register (Llove/forte/simbot/event/EventListener;)Llove/forte/simbot/event/EventListenerRegistrationHandle;
+}
+
+public final class love/forte/simbot/event/EventListenerRegistrarKt {
+	public static final fun process (Llove/forte/simbot/event/EventListenerRegistrar;Lkotlin/jvm/functions/Function0;Llove/forte/simbot/common/function/ConfigurerFunction;Lkotlin/jvm/functions/Function2;)Llove/forte/simbot/event/EventListenerRegistrationHandle;
+	public static synthetic fun process$default (Llove/forte/simbot/event/EventListenerRegistrar;Lkotlin/jvm/functions/Function0;Llove/forte/simbot/common/function/ConfigurerFunction;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Llove/forte/simbot/event/EventListenerRegistrationHandle;
+}
+
+public abstract interface class love/forte/simbot/event/EventListenerRegistrationHandle {
+	public abstract fun dispose ()V
+}
+
+public abstract interface class love/forte/simbot/event/EventListenerRegistrationProperties {
+	public abstract fun addInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventInterceptor;)V
+	public fun addInterceptor (Llove/forte/simbot/event/EventInterceptor;)V
+	public abstract fun getPriority ()I
+	public abstract fun setPriority (I)V
+}
+
+public final class love/forte/simbot/event/EventListeners {
+	public static final fun async (Ljava/lang/Class;Llove/forte/simbot/event/TypedJAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun async (Llove/forte/simbot/event/JAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun block (Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun block (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun block (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun block (Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static synthetic fun block$default (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+	public static synthetic fun block$default (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+	public static final fun handleWith (Llove/forte/simbot/event/EventListener;Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/EventProcessor {
+	public abstract fun push (Llove/forte/simbot/event/Event;)Lkotlinx/coroutines/flow/Flow;
+	public fun pushAndLaunch (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/event/Event;)Lkotlinx/coroutines/Job;
+}
+
+public final class love/forte/simbot/event/EventProcessors {
+	public static final fun filterNotEmpty (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun filterNotEmptyResult (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun filterNotError (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun filterNotInvalid (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun filterOnlyValid (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun onEachError (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun pushAndAsFlux (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;)Lreactor/core/publisher/Flux;
+	public static final fun pushAndAsStream (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/CoroutineScope;)Ljava/util/stream/Stream;
+	public static final synthetic fun pushAndCollect (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun pushAndCollect$default (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun pushAndCollectToAsync (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun pushAndCollectToAsync (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/CoroutineScope;Ljava/util/stream/Collector;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun pushAndCollectToBlocking (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun pushAndCollectToBlocking (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Ljava/util/stream/Collector;)Ljava/lang/Object;
+	public static final fun pushAndCollectToListAsync (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/CoroutineScope;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun pushAndCollectToListBlocking (Llove/forte/simbot/event/EventProcessor;Llove/forte/simbot/event/Event;)Ljava/util/List;
+	public static final synthetic fun pushAndLaunch (Llove/forte/simbot/event/EventProcessor;Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/flow/FlowCollector;)Lkotlinx/coroutines/Job;
+	public static synthetic fun pushAndLaunch$default (Llove/forte/simbot/event/EventProcessor;Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/event/Event;Lkotlinx/coroutines/flow/FlowCollector;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public static final synthetic fun pushAndLaunchThen (Llove/forte/simbot/event/EventProcessor;Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/event/Event;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Job;
+	public static final fun takeWhileNotEmpty (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun takeWhileNotEmptyResult (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun takeWhileNotError (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun takeWhileNotInvalid (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun throwIfError (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public abstract interface class love/forte/simbot/event/EventResult {
+	public static final field Companion Llove/forte/simbot/event/EventResult$Companion;
+	public static fun empty ()Llove/forte/simbot/event/EventResult;
+	public static fun empty (Z)Llove/forte/simbot/event/EventResult;
+	public static fun error (Ljava/lang/Throwable;)Llove/forte/simbot/event/StandardEventResult$Error;
+	public static fun error (Ljava/lang/Throwable;Z)Llove/forte/simbot/event/StandardEventResult$Error;
+	public abstract fun getContent ()Ljava/lang/Object;
+	public static fun invalid ()Llove/forte/simbot/event/EventResult;
+	public abstract fun isTruncated ()Z
+	public static fun of ()Llove/forte/simbot/event/EventResult;
+	public static fun of (Ljava/lang/Object;)Llove/forte/simbot/event/EventResult;
+	public static fun of (Ljava/lang/Object;Z)Llove/forte/simbot/event/EventResult;
+}
+
+public final class love/forte/simbot/event/EventResult$Companion {
+	public final fun empty ()Llove/forte/simbot/event/EventResult;
+	public final fun empty (Z)Llove/forte/simbot/event/EventResult;
+	public static synthetic fun empty$default (Llove/forte/simbot/event/EventResult$Companion;ZILjava/lang/Object;)Llove/forte/simbot/event/EventResult;
+	public final fun error (Ljava/lang/Throwable;)Llove/forte/simbot/event/StandardEventResult$Error;
+	public final fun error (Ljava/lang/Throwable;Z)Llove/forte/simbot/event/StandardEventResult$Error;
+	public static synthetic fun error$default (Llove/forte/simbot/event/EventResult$Companion;Ljava/lang/Throwable;ZILjava/lang/Object;)Llove/forte/simbot/event/StandardEventResult$Error;
+	public final synthetic fun getInvalid ()Llove/forte/simbot/event/EventResult;
+	public final fun invalid ()Llove/forte/simbot/event/EventResult;
+	public final fun of ()Llove/forte/simbot/event/EventResult;
+	public final fun of (Ljava/lang/Object;)Llove/forte/simbot/event/EventResult;
+	public final fun of (Ljava/lang/Object;Z)Llove/forte/simbot/event/EventResult;
+	public static synthetic fun of$default (Llove/forte/simbot/event/EventResult$Companion;Ljava/lang/Object;ZILjava/lang/Object;)Llove/forte/simbot/event/EventResult;
+}
+
+public final class love/forte/simbot/event/EventResultKt {
+	public static final fun collectCollectableReactivelyToResult (Llove/forte/simbot/event/StandardEventResult$CollectableReactivelyResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun collected (Llove/forte/simbot/event/EventResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isEmpty (Llove/forte/simbot/event/EventResult;)Z
+}
+
+public final class love/forte/simbot/event/EventResult_jvmKt {
+	public static final fun collectCollectableReactively (Llove/forte/simbot/event/StandardEventResult$CollectableReactivelyResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/GroupMemberChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/ChatGroupMemberEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/GuildEvent : love/forte/simbot/event/OrganizationEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/GuildJoinRequestEvent : love/forte/simbot/event/GuildEvent, love/forte/simbot/event/OrganizationJoinRequestEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/GuildMemberEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberDecreaseEvent : love/forte/simbot/event/GuildMemberIncreaseOrDecreaseEvent, love/forte/simbot/event/MemberDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberEvent : love/forte/simbot/event/MemberEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberIncreaseEvent : love/forte/simbot/event/GuildMemberIncreaseOrDecreaseEvent, love/forte/simbot/event/MemberIncreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberIncreaseOrDecreaseEvent : love/forte/simbot/event/GuildEvent, love/forte/simbot/event/MemberIncreaseOrDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/GuildMemberMessageEvent : love/forte/simbot/event/MemberEvent, love/forte/simbot/event/MessageEvent {
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/JAsyncEventInterceptor : love/forte/simbot/event/EventInterceptor {
+	public fun createContext (Llove/forte/simbot/event/EventInterceptor$Context;)Llove/forte/simbot/event/JAsyncEventInterceptor$Context;
+	public synthetic fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun intercept (Llove/forte/simbot/event/JAsyncEventInterceptor$Context;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun intercept$suspendImpl (Llove/forte/simbot/event/JAsyncEventInterceptor;Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/event/JAsyncEventInterceptor$Context {
+	public fun <init> (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlinx/coroutines/CoroutineScope;)V
+	public final fun component1 ()Llove/forte/simbot/event/EventInterceptor$Context;
+	public final fun component2 ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun copy (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/event/JAsyncEventInterceptor$Context;
+	public static synthetic fun copy$default (Llove/forte/simbot/event/JAsyncEventInterceptor$Context;Llove/forte/simbot/event/EventInterceptor$Context;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Llove/forte/simbot/event/JAsyncEventInterceptor$Context;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getSource ()Llove/forte/simbot/event/EventInterceptor$Context;
+	public fun hashCode ()I
+	public final fun invoke ()Ljava/util/concurrent/CompletableFuture;
+	public final fun invoke (Llove/forte/simbot/event/EventListenerContext;)Ljava/util/concurrent/CompletableFuture;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/event/JAsyncEventListener {
+	public static final field Companion Llove/forte/simbot/event/JAsyncEventListener$Companion;
+	public fun emptyResult ()Ljava/util/concurrent/CompletionStage;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;)Ljava/util/concurrent/CompletionStage;
+	public fun invalidResult ()Ljava/util/concurrent/CompletionStage;
+	public fun result (Llove/forte/simbot/event/EventResult;)Ljava/util/concurrent/CompletionStage;
+	public static fun toListener (Llove/forte/simbot/event/JAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/JAsyncEventListener$Companion {
+	public final fun toListener (Llove/forte/simbot/event/JAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/event/JBlockEventInterceptor : love/forte/simbot/event/EventInterceptor {
+	public synthetic fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun intercept (Llove/forte/simbot/event/JBlockEventInterceptor$Context;)Llove/forte/simbot/event/EventResult;
+	public static synthetic fun intercept$suspendImpl (Llove/forte/simbot/event/JBlockEventInterceptor;Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/event/JBlockEventInterceptor$Context {
+	public fun <init> (Llove/forte/simbot/event/EventInterceptor$Context;)V
+	public final fun component1 ()Llove/forte/simbot/event/EventInterceptor$Context;
+	public final fun copy (Llove/forte/simbot/event/EventInterceptor$Context;)Llove/forte/simbot/event/JBlockEventInterceptor$Context;
+	public static synthetic fun copy$default (Llove/forte/simbot/event/JBlockEventInterceptor$Context;Llove/forte/simbot/event/EventInterceptor$Context;ILjava/lang/Object;)Llove/forte/simbot/event/JBlockEventInterceptor$Context;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSource ()Llove/forte/simbot/event/EventInterceptor$Context;
+	public fun hashCode ()I
+	public final fun invoke ()Llove/forte/simbot/event/EventResult;
+	public final fun invoke (Llove/forte/simbot/event/EventListenerContext;)Llove/forte/simbot/event/EventResult;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/event/JBlockEventListener {
+	public static final field Companion Llove/forte/simbot/event/JBlockEventListener$Companion;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;)Llove/forte/simbot/event/EventResult;
+	public static fun toListener (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static fun toListener (Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/JBlockEventListener$Companion {
+	public final fun toListener (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public final fun toListener (Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static synthetic fun toListener$default (Llove/forte/simbot/event/JBlockEventListener$Companion;Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/event/MemberAuthorAwareMessageEvent : love/forte/simbot/event/ActorAuthorAwareMessageEvent {
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
+	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
+	public fun getAuthor ()Llove/forte/simbot/definition/Member;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/MemberChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/MemberEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/MemberDecreaseEvent : love/forte/simbot/event/MemberIncreaseOrDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember ()Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/MemberEvent : love/forte/simbot/event/ActorEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/MemberIncreaseEvent : love/forte/simbot/event/MemberIncreaseOrDecreaseEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember ()Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/MemberIncreaseOrDecreaseEvent : love/forte/simbot/event/OrganizationChangeEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember ()Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/MemberMessageEvent : love/forte/simbot/event/MemberEvent, love/forte/simbot/event/MessageEvent {
+}
+
+public abstract interface class love/forte/simbot/event/MessageContentAwareEvent : love/forte/simbot/event/Event {
+	public abstract fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
+}
+
+public abstract interface class love/forte/simbot/event/MessageEvent : love/forte/simbot/ability/ReplySupport, love/forte/simbot/event/BotEvent, love/forte/simbot/event/MessageContentAwareEvent {
+	public abstract fun getAuthorId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
+}
+
+public abstract interface class love/forte/simbot/event/OrganizationChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/OrganizationEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/OrganizationEvent : love/forte/simbot/event/ActorEvent {
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/event/OrganizationJoinRequestEvent : love/forte/simbot/event/OrganizationEvent {
+	public fun getRequester ()Llove/forte/simbot/definition/User;
+	public fun getRequesterAsync ()Ljava/util/concurrent/CompletableFuture;
+	public abstract fun getRequesterId ()Llove/forte/simbot/common/id/ID;
+	public fun getRequesterReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun requester (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/OrganizationRequestEvent : love/forte/simbot/event/OrganizationEvent, love/forte/simbot/event/RequestEvent {
+}
+
+public abstract interface class love/forte/simbot/event/OrganizationSourceEvent : love/forte/simbot/event/BotEvent, love/forte/simbot/event/SourceEvent {
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/event/RequestEvent : love/forte/simbot/event/BotEvent {
+	public abstract synthetic fun accept (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun acceptAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun acceptBlocking ()V
+	public fun acceptReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getMessage ()Ljava/lang/String;
+	public abstract fun getType ()Llove/forte/simbot/event/RequestEvent$Type;
+	public abstract synthetic fun reject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rejectAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun rejectBlocking ()V
+	public fun rejectReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/event/RequestEvent$Type : java/lang/Enum {
+	public static final field PASSIVE Llove/forte/simbot/event/RequestEvent$Type;
+	public static final field PROACTIVE Llove/forte/simbot/event/RequestEvent$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/event/RequestEvent$Type;
+	public static fun values ()[Llove/forte/simbot/event/RequestEvent$Type;
+}
+
+public abstract interface class love/forte/simbot/event/SourceEvent : love/forte/simbot/event/Event {
+	public fun getSource ()Ljava/lang/Object;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/event/StandardEventResult : love/forte/simbot/event/EventResult {
+}
+
+public abstract class love/forte/simbot/event/StandardEventResult$CollectableReactivelyResult : love/forte/simbot/event/StandardEventResult {
+	public fun <init> ()V
+	public abstract fun collected (Ljava/lang/Object;)Llove/forte/simbot/event/EventResult;
+	public abstract fun getContent ()Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Empty : love/forte/simbot/event/StandardEventResult$EmptyResult {
+	public static final field Companion Llove/forte/simbot/event/StandardEventResult$Empty$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public static final fun instance ()Llove/forte/simbot/event/StandardEventResult$Empty;
+	public static final fun instance (Z)Llove/forte/simbot/event/StandardEventResult$Empty;
+	public fun isTruncated ()Z
+	public fun toString ()Ljava/lang/String;
+	public static final fun truncated ()Llove/forte/simbot/event/StandardEventResult$Empty;
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Empty$Companion {
+	public final fun instance ()Llove/forte/simbot/event/StandardEventResult$Empty;
+	public final fun instance (Z)Llove/forte/simbot/event/StandardEventResult$Empty;
+	public static synthetic fun instance$default (Llove/forte/simbot/event/StandardEventResult$Empty$Companion;ZILjava/lang/Object;)Llove/forte/simbot/event/StandardEventResult$Empty;
+	public final fun truncated ()Llove/forte/simbot/event/StandardEventResult$Empty;
+}
+
+public abstract class love/forte/simbot/event/StandardEventResult$EmptyResult : love/forte/simbot/event/StandardEventResult {
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Error : love/forte/simbot/event/StandardEventResult {
+	public static final field Companion Llove/forte/simbot/event/StandardEventResult$Error$Companion;
+	public synthetic fun <init> (Ljava/lang/Throwable;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun isTruncated ()Z
+	public static final fun of (Ljava/lang/Throwable;)Llove/forte/simbot/event/StandardEventResult$Error;
+	public static final fun of (Ljava/lang/Throwable;Z)Llove/forte/simbot/event/StandardEventResult$Error;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Error$Companion {
+	public final fun of (Ljava/lang/Throwable;)Llove/forte/simbot/event/StandardEventResult$Error;
+	public final fun of (Ljava/lang/Throwable;Z)Llove/forte/simbot/event/StandardEventResult$Error;
+	public static synthetic fun of$default (Llove/forte/simbot/event/StandardEventResult$Error$Companion;Ljava/lang/Throwable;ZILjava/lang/Object;)Llove/forte/simbot/event/StandardEventResult$Error;
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Invalid : love/forte/simbot/event/StandardEventResult$EmptyResult {
+	public static final field INSTANCE Llove/forte/simbot/event/StandardEventResult$Invalid;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun isTruncated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/event/StandardEventResult$Simple : love/forte/simbot/event/StandardEventResult$CollectableReactivelyResult {
+	public fun <init> (Ljava/lang/Object;Z)V
+	public fun collected (Ljava/lang/Object;)Llove/forte/simbot/event/EventResult;
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Z
+	public final fun copy (Ljava/lang/Object;Z)Llove/forte/simbot/event/StandardEventResult$Simple;
+	public static synthetic fun copy$default (Llove/forte/simbot/event/StandardEventResult$Simple;Ljava/lang/Object;ZILjava/lang/Object;)Llove/forte/simbot/event/StandardEventResult$Simple;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun isTruncated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/event/TypedJAsyncEventListener {
+	public static final field Companion Llove/forte/simbot/event/TypedJAsyncEventListener$Companion;
+	public fun emptyResult ()Ljava/util/concurrent/CompletionStage;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;Llove/forte/simbot/event/Event;)Ljava/util/concurrent/CompletionStage;
+	public fun invalidResult ()Ljava/util/concurrent/CompletionStage;
+	public fun result (Llove/forte/simbot/event/EventResult;)Ljava/util/concurrent/CompletionStage;
+	public static fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/TypedJAsyncEventListener$Companion {
+	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJAsyncEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/event/TypedJBlockEventListener {
+	public static final field Companion Llove/forte/simbot/event/TypedJBlockEventListener$Companion;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;Llove/forte/simbot/event/Event;)Llove/forte/simbot/event/EventResult;
+	public static fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static fun toListener (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/TypedJBlockEventListener$Companion {
+	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public final fun toListener (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static synthetic fun toListener$default (Llove/forte/simbot/event/TypedJBlockEventListener$Companion;Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract class love/forte/simbot/message/AggregatedMessageReceipt : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/StandardMessageReceipt {
+	public fun <init> ()V
+	public fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAll ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun get (I)Llove/forte/simbot/message/SingleMessageReceipt;
+	public abstract fun getSize ()I
+	public fun iterator ()Ljava/util/Iterator;
+}
+
+public final class love/forte/simbot/message/At : love/forte/simbot/message/MentionMessage {
+	public static final field Companion Llove/forte/simbot/message/At$Companion;
+	public static final field DEFAULT_AT_TYPE Ljava/lang/String;
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public fun <init> (Llove/forte/simbot/common/id/ID;Ljava/lang/String;)V
+	public fun <init> (Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/At;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/message/At;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOriginContent ()Ljava/lang/String;
+	public final fun getTarget ()Llove/forte/simbot/common/id/ID;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun of (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/At;
+	public static final fun of (Llove/forte/simbot/common/id/ID;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public static final fun of (Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public static final fun of (Llove/forte/simbot/common/id/IDContainer;)Llove/forte/simbot/message/At;
+	public static final fun of (Llove/forte/simbot/common/id/IDContainer;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public static final fun of (Llove/forte/simbot/common/id/IDContainer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/At$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/At$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/At;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/At;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/At$Companion {
+	public final fun of (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/At;
+	public final fun of (Llove/forte/simbot/common/id/ID;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public final fun of (Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public final fun of (Llove/forte/simbot/common/id/IDContainer;)Llove/forte/simbot/message/At;
+	public final fun of (Llove/forte/simbot/common/id/IDContainer;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public final fun of (Llove/forte/simbot/common/id/IDContainer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/message/At;
+	public static synthetic fun of$default (Llove/forte/simbot/message/At$Companion;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/message/At;
+	public static synthetic fun of$default (Llove/forte/simbot/message/At$Companion;Llove/forte/simbot/common/id/IDContainer;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/message/At;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/AtAll : love/forte/simbot/message/MentionMessage {
+	public static final field INSTANCE Llove/forte/simbot/message/AtAll;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/EmoticonMessage {
+	public static final field Companion Llove/forte/simbot/message/Emoji$Companion;
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun copy (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/Emoji;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/Emoji;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/message/Emoji;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/Emoji$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/Emoji$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/Emoji;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/Emoji;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/Emoji$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/EmoticonMessage : love/forte/simbot/message/StandardMessage {
+}
+
+public final class love/forte/simbot/message/Face : love/forte/simbot/message/EmoticonMessage {
+	public static final field Companion Llove/forte/simbot/message/Face$Companion;
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun copy (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/Face;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/Face;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/message/Face;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/Face$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/Face$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/Face;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/Face;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/Face$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/IDAwareImage : love/forte/simbot/message/Image {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract interface class love/forte/simbot/message/Image : love/forte/simbot/message/StandardMessage {
+}
+
+public abstract interface class love/forte/simbot/message/JvmOfflineImageResolver : love/forte/simbot/message/OfflineImageResolver {
+	public abstract fun resolveFile (Llove/forte/simbot/message/OfflineFileImage;Ljava/lang/Object;)V
+	public abstract fun resolvePath (Llove/forte/simbot/message/OfflinePathImage;Ljava/lang/Object;)V
+	public abstract fun resolveURI (Llove/forte/simbot/message/OfflineURIImage;Ljava/lang/Object;)V
+	public fun resolveUnknown (Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
+	public abstract fun resolveUnknownInternal (Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
+}
+
+public abstract class love/forte/simbot/message/JvmOfflineImageValueResolver : love/forte/simbot/message/JvmOfflineImageResolver, love/forte/simbot/message/OfflineImageValueResolver, love/forte/simbot/resource/JvmResourceResolver {
+	public fun <init> ()V
+	public final fun resolveByteArray (Llove/forte/simbot/message/OfflineByteArrayImage;Ljava/lang/Object;)V
+	public final fun resolveByteArray (Llove/forte/simbot/resource/ByteArrayResource;Ljava/lang/Object;)V
+	public abstract fun resolveByteArray ([BLjava/lang/Object;)V
+	public abstract fun resolveFile (Ljava/io/File;Ljava/lang/Object;)V
+	public final fun resolveFile (Llove/forte/simbot/message/OfflineFileImage;Ljava/lang/Object;)V
+	public final fun resolveFile (Llove/forte/simbot/resource/FileResource;Ljava/lang/Object;)V
+	public abstract fun resolvePath (Ljava/nio/file/Path;Ljava/lang/Object;)V
+	public final fun resolvePath (Llove/forte/simbot/message/OfflinePathImage;Ljava/lang/Object;)V
+	public final fun resolvePath (Llove/forte/simbot/resource/PathResource;Ljava/lang/Object;)V
+	public final fun resolveResource (Llove/forte/simbot/message/OfflineResourceImage;Ljava/lang/Object;)V
+	public abstract fun resolveString (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun resolveString (Llove/forte/simbot/resource/StringResource;Ljava/lang/Object;)V
+	public fun resolveURI (Ljava/net/URI;Ljava/lang/Object;)V
+	public final fun resolveURI (Llove/forte/simbot/message/OfflineURIImage;Ljava/lang/Object;)V
+	public final fun resolveURI (Llove/forte/simbot/resource/URIResource;Ljava/lang/Object;)V
+	public abstract fun resolveURINotFileScheme (Ljava/net/URI;Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/message/MentionMessage : love/forte/simbot/message/StandardMessage {
+}
+
+public abstract interface class love/forte/simbot/message/Message {
+}
+
+public abstract interface class love/forte/simbot/message/Message$Element : love/forte/simbot/message/Message {
+}
+
+public abstract interface class love/forte/simbot/message/MessageContent : love/forte/simbot/ability/DeleteSupport {
+	public abstract fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessages ()Llove/forte/simbot/message/Messages;
+	public abstract fun getPlainText ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/message/MessageContentKt {
+	public static final fun getSafePlainText (Llove/forte/simbot/message/MessageContent;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/message/MessageKt {
+	public static final fun messageElementPolymorphic (Lkotlinx/serialization/modules/SerializersModuleBuilder;Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class love/forte/simbot/message/MessageReceipt : love/forte/simbot/ability/DeleteSupport {
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/message/MessageReceiptKt {
+	public static final fun deleteAllSafely (Llove/forte/simbot/message/AggregatedMessageReceipt;[Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deleteAllSafely$default (Llove/forte/simbot/message/AggregatedMessageReceipt;[Llove/forte/simbot/ability/DeleteOption;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/message/MessageReceipts {
+	public static final fun aggregation (Ljava/lang/Iterable;)Llove/forte/simbot/message/AggregatedMessageReceipt;
+	public static final fun aggregation (Ljava/util/Collection;)Llove/forte/simbot/message/AggregatedMessageReceipt;
+	public static final fun aggregation (Ljava/util/List;)Llove/forte/simbot/message/AggregatedMessageReceipt;
+}
+
+public abstract interface class love/forte/simbot/message/Messages : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/Message {
+	public static final field Companion Llove/forte/simbot/message/Messages$Companion;
+	public static fun builder ()Llove/forte/simbot/message/MessagesBuilder;
+	public static fun builder (Ljava/util/List;)Llove/forte/simbot/message/MessagesBuilder;
+	public abstract fun contains (Llove/forte/simbot/message/Message$Element;)Z
+	public static fun empty ()Llove/forte/simbot/message/Messages;
+	public abstract fun getSize ()I
+	public abstract fun isEmpty ()Z
+	public abstract fun iterator ()Ljava/util/Iterator;
+	public static fun of (Ljava/lang/Iterable;)Llove/forte/simbot/message/Messages;
+	public static fun of (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static fun of ([Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public abstract fun plus (Ljava/lang/Iterable;)Llove/forte/simbot/message/Messages;
+	public abstract fun plus (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static fun serializer ()Lkotlinx/serialization/KSerializer;
+	public static fun standardSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public abstract fun toList ()Ljava/util/List;
+}
+
+public final class love/forte/simbot/message/Messages$Companion {
+	public final fun builder ()Llove/forte/simbot/message/MessagesBuilder;
+	public final fun builder (Ljava/util/List;)Llove/forte/simbot/message/MessagesBuilder;
+	public static synthetic fun builder$default (Llove/forte/simbot/message/Messages$Companion;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun empty ()Llove/forte/simbot/message/Messages;
+	public final fun of (Ljava/lang/Iterable;)Llove/forte/simbot/message/Messages;
+	public final fun of (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public final fun of ([Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public final fun standardSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class love/forte/simbot/message/MessagesBuilder {
+	public static final field Companion Llove/forte/simbot/message/MessagesBuilder$Companion;
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun add (Ljava/lang/String;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun add (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun addAll (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun build ()Llove/forte/simbot/message/Messages;
+	public static final fun create ()Llove/forte/simbot/message/MessagesBuilder;
+	public static final fun create (Ljava/util/List;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun unaryPlus (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun unaryPlus (Ljava/lang/String;)Llove/forte/simbot/message/MessagesBuilder;
+	public final fun unaryPlus (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesBuilder;
+}
+
+public final class love/forte/simbot/message/MessagesBuilder$Companion {
+	public final fun create ()Llove/forte/simbot/message/MessagesBuilder;
+	public final fun create (Ljava/util/List;)Llove/forte/simbot/message/MessagesBuilder;
+	public static synthetic fun create$default (Llove/forte/simbot/message/MessagesBuilder$Companion;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/message/MessagesBuilder;
+}
+
+public abstract interface annotation class love/forte/simbot/message/MessagesBuilderDsl : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/message/MessagesBuilders {
+	public static final fun buildMessages (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/message/Messages;
+	public static synthetic fun buildMessages$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/message/Messages;
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/Iterable;)V
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/String;)V
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Llove/forte/simbot/message/Message$Element;)V
+}
+
+public final class love/forte/simbot/message/MessagesKt {
+	public static final field INSTANCE Llove/forte/simbot/message/MessagesKt;
+	public static final fun decodeMessagesFromString (Lkotlinx/serialization/StringFormat;Ljava/lang/String;)Llove/forte/simbot/message/Messages;
+	public static final fun emptyMessages ()Llove/forte/simbot/message/Messages;
+	public static final fun encodeMessagesToString (Lkotlinx/serialization/StringFormat;Llove/forte/simbot/message/Messages;)Ljava/lang/String;
+	public static final fun isNotEmpty (Llove/forte/simbot/message/Messages;)Z
+	public static final fun messagesOf (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static final fun messagesOf ([Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static final fun plus (Llove/forte/simbot/message/Message;Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/Messages;
+	public static final fun toMessages (Ljava/lang/Iterable;)Llove/forte/simbot/message/Messages;
+}
+
+public final class love/forte/simbot/message/MessagesUtil {
+	public static final fun decodeMessagesFromString (Lkotlinx/serialization/StringFormat;Ljava/lang/String;)Llove/forte/simbot/message/Messages;
+	public static final fun emptyMessages ()Llove/forte/simbot/message/Messages;
+	public static final fun encodeMessagesToString (Lkotlinx/serialization/StringFormat;Llove/forte/simbot/message/Messages;)Ljava/lang/String;
+	public static final fun isNotEmpty (Llove/forte/simbot/message/Messages;)Z
+	public static final fun messagesOf (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static final fun messagesOf ([Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/Messages;
+	public static final fun plus (Llove/forte/simbot/message/Message;Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/Messages;
+	public static final fun toMessages (Ljava/lang/Iterable;)Llove/forte/simbot/message/Messages;
+}
+
+public final class love/forte/simbot/message/OfflineByteArrayImage : love/forte/simbot/message/OfflineImage {
+	public static final field Companion Llove/forte/simbot/message/OfflineByteArrayImage$Companion;
+	public fun <init> ([B)V
+	public final fun copy ([B)Llove/forte/simbot/message/OfflineByteArrayImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/OfflineByteArrayImage;[BILjava/lang/Object;)Llove/forte/simbot/message/OfflineByteArrayImage;
+	public fun data ()[B
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/OfflineByteArrayImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/OfflineByteArrayImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/OfflineByteArrayImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/OfflineByteArrayImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/OfflineByteArrayImage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/OfflineFileImage : love/forte/simbot/message/OfflineResourceImage {
+	public static final field Companion Llove/forte/simbot/message/OfflineFileImage$Companion;
+	public synthetic fun <init> (Ljava/io/File;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun data ()[B
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFile ()Ljava/io/File;
+	public fun getResource ()Llove/forte/simbot/resource/FileResource;
+	public synthetic fun getResource ()Llove/forte/simbot/resource/Resource;
+	public fun hashCode ()I
+	public static final fun of (Ljava/io/File;)Llove/forte/simbot/message/OfflineFileImage;
+	public static final fun of (Llove/forte/simbot/resource/FileResource;)Llove/forte/simbot/message/OfflineFileImage;
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/OfflineFileImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/OfflineFileImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/OfflineFileImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/OfflineFileImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/OfflineFileImage$Companion {
+	public final fun of (Ljava/io/File;)Llove/forte/simbot/message/OfflineFileImage;
+	public final fun of (Llove/forte/simbot/resource/FileResource;)Llove/forte/simbot/message/OfflineFileImage;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/OfflineImage : love/forte/simbot/message/Image {
+	public static final field Companion Llove/forte/simbot/message/OfflineImage$Companion;
+	public abstract fun data ()[B
+	public static fun ofBytes ([B)Llove/forte/simbot/message/OfflineImage;
+	public static fun ofResource (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineImage;
+}
+
+public final class love/forte/simbot/message/OfflineImage$Companion {
+	public final fun ofBytes ([B)Llove/forte/simbot/message/OfflineImage;
+	public final fun ofResource (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineImage;
+}
+
+public abstract interface class love/forte/simbot/message/OfflineImageResolver {
+	public static final field Companion Llove/forte/simbot/message/OfflineImageResolver$Companion;
+	public static fun resolve (Llove/forte/simbot/message/OfflineImageResolver;Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
+	public abstract fun resolveByteArray (Llove/forte/simbot/message/OfflineByteArrayImage;Ljava/lang/Object;)V
+	public abstract fun resolveResource (Llove/forte/simbot/message/OfflineResourceImage;Ljava/lang/Object;)V
+	public abstract fun resolveUnknown (Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/message/OfflineImageResolver$Companion {
+	public final fun resolve (Llove/forte/simbot/message/OfflineImageResolver;Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/message/OfflineImageValueResolver : love/forte/simbot/message/OfflineImageResolver, love/forte/simbot/resource/ResourceResolver {
+	public fun resolveByteArray (Llove/forte/simbot/message/OfflineByteArrayImage;Ljava/lang/Object;)V
+	public fun resolveByteArray (Llove/forte/simbot/resource/ByteArrayResource;Ljava/lang/Object;)V
+	public abstract fun resolveByteArray ([BLjava/lang/Object;)V
+	public fun resolveResource (Llove/forte/simbot/message/OfflineResourceImage;Ljava/lang/Object;)V
+	public abstract fun resolveString (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun resolveString (Llove/forte/simbot/resource/StringResource;Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/message/OfflinePathImage : love/forte/simbot/message/OfflineResourceImage {
+	public static final field Companion Llove/forte/simbot/message/OfflinePathImage$Companion;
+	public fun <init> (Ljava/nio/file/Path;)V
+	public final fun component1 ()Ljava/nio/file/Path;
+	public final fun copy (Ljava/nio/file/Path;)Llove/forte/simbot/message/OfflinePathImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/OfflinePathImage;Ljava/nio/file/Path;ILjava/lang/Object;)Llove/forte/simbot/message/OfflinePathImage;
+	public fun data ()[B
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPath ()Ljava/nio/file/Path;
+	public fun getResource ()Llove/forte/simbot/resource/PathResource;
+	public synthetic fun getResource ()Llove/forte/simbot/resource/Resource;
+	public fun hashCode ()I
+	public static final fun of (Ljava/nio/file/Path;)Llove/forte/simbot/message/OfflinePathImage;
+	public static final fun of (Llove/forte/simbot/resource/PathResource;)Llove/forte/simbot/message/OfflinePathImage;
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/OfflinePathImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/OfflinePathImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/OfflinePathImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/OfflinePathImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/OfflinePathImage$Companion {
+	public final fun of (Ljava/nio/file/Path;)Llove/forte/simbot/message/OfflinePathImage;
+	public final fun of (Llove/forte/simbot/resource/PathResource;)Llove/forte/simbot/message/OfflinePathImage;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/OfflineResourceImage : love/forte/simbot/message/OfflineImage {
+	public fun data ()[B
+	public abstract fun getResource ()Llove/forte/simbot/resource/Resource;
+}
+
+public final class love/forte/simbot/message/OfflineURIImage : love/forte/simbot/message/OfflineResourceImage {
+	public static final field Companion Llove/forte/simbot/message/OfflineURIImage$Companion;
+	public fun <init> (Ljava/net/URI;)V
+	public final fun component1 ()Ljava/net/URI;
+	public final fun copy (Ljava/net/URI;)Llove/forte/simbot/message/OfflineURIImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/OfflineURIImage;Ljava/net/URI;ILjava/lang/Object;)Llove/forte/simbot/message/OfflineURIImage;
+	public fun data ()[B
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getResource ()Llove/forte/simbot/resource/Resource;
+	public fun getResource ()Llove/forte/simbot/resource/URIResource;
+	public final fun getUri ()Ljava/net/URI;
+	public fun hashCode ()I
+	public static final fun of (Ljava/net/URI;)Llove/forte/simbot/message/OfflineURIImage;
+	public static final fun of (Llove/forte/simbot/resource/URIResource;)Llove/forte/simbot/message/OfflineURIImage;
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/OfflineURIImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/OfflineURIImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/OfflineURIImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/OfflineURIImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/OfflineURIImage$Companion {
+	public final fun of (Ljava/net/URI;)Llove/forte/simbot/message/OfflineURIImage;
+	public final fun of (Llove/forte/simbot/resource/URIResource;)Llove/forte/simbot/message/OfflineURIImage;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/PlainText : love/forte/simbot/message/StandardMessage {
+	public abstract fun getText ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/message/RemoteIDImage : love/forte/simbot/message/RemoteImage {
+	public static final field Companion Llove/forte/simbot/message/RemoteIDImage$Companion;
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun copy (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/RemoteIDImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/RemoteIDImage;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/message/RemoteIDImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/RemoteIDImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/RemoteIDImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/RemoteIDImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/RemoteIDImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/RemoteIDImage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/RemoteImage : love/forte/simbot/message/IDAwareImage, love/forte/simbot/message/Image {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract interface class love/forte/simbot/message/RemoteUrlAwareImage : love/forte/simbot/message/RemoteImage, love/forte/simbot/message/UrlAwareImage {
+	public abstract synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/message/SimpleOfflineResourceImage : love/forte/simbot/message/OfflineResourceImage {
+	public static final field Companion Llove/forte/simbot/message/SimpleOfflineResourceImage$Companion;
+	public fun <init> (Llove/forte/simbot/resource/Resource;)V
+	public final fun component1 ()Llove/forte/simbot/resource/Resource;
+	public final fun copy (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/SimpleOfflineResourceImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/SimpleOfflineResourceImage;Llove/forte/simbot/resource/Resource;ILjava/lang/Object;)Llove/forte/simbot/message/SimpleOfflineResourceImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getResource ()Llove/forte/simbot/resource/Resource;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/SimpleOfflineResourceImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/SimpleOfflineResourceImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/SimpleOfflineResourceImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/SimpleOfflineResourceImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/SimpleOfflineResourceImage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/message/SingleMessageReceipt : love/forte/simbot/message/StandardMessageReceipt {
+	public fun <init> ()V
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract interface class love/forte/simbot/message/StandardMessage : love/forte/simbot/message/Message$Element {
+}
+
+public abstract interface class love/forte/simbot/message/StandardMessageReceipt : love/forte/simbot/message/MessageReceipt {
+}
+
+public final class love/forte/simbot/message/StandardMessages {
+	public static final fun Text ()Llove/forte/simbot/message/Text;
+	public static final fun Text (Lkotlin/jvm/functions/Function0;)Llove/forte/simbot/message/Text;
+	public static final fun toOfflineResourceImage (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineResourceImage;
+	public static final fun toText (Ljava/lang/String;)Llove/forte/simbot/message/Text;
+}
+
+public final class love/forte/simbot/message/Text : love/forte/simbot/message/PlainText {
+	public static final field Companion Llove/forte/simbot/message/Text$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;)Llove/forte/simbot/message/Text;
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/Text$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/Text$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/Text;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/Text;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/Text$Companion {
+	public final fun of (Ljava/lang/String;)Llove/forte/simbot/message/Text;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/message/UrlAwareImage : love/forte/simbot/message/Image {
+	public fun getUrl ()Ljava/lang/String;
+	public fun getUrlAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getUrlReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/plugin/AbstractJPlugin : love/forte/simbot/plugin/SimplePlugin {
+	public static final field Companion Llove/forte/simbot/plugin/AbstractJPlugin$Companion;
+	public fun <init> (Llove/forte/simbot/plugin/AbstractJPlugin$Key;)V
+	public static final fun createKey (Ljava/lang/String;)Llove/forte/simbot/plugin/AbstractJPlugin$Key;
+	public fun getKey ()Llove/forte/simbot/plugin/AbstractJPlugin$Key;
+	public synthetic fun getKey ()Llove/forte/simbot/plugin/SimplePlugin$Key;
+}
+
+public final class love/forte/simbot/plugin/AbstractJPlugin$Companion {
+	public final fun createKey (Ljava/lang/String;)Llove/forte/simbot/plugin/AbstractJPlugin$Key;
+}
+
+public abstract class love/forte/simbot/plugin/AbstractJPlugin$Factory : love/forte/simbot/plugin/PluginFactory {
+	public fun <init> (Ljava/lang/String;)V
+	public synthetic fun create (Ljava/lang/Object;Llove/forte/simbot/common/function/ConfigurerFunction;)Ljava/lang/Object;
+	protected abstract fun create (Llove/forte/simbot/plugin/PluginConfigureContext;Ljava/lang/Object;)Llove/forte/simbot/plugin/AbstractJPlugin;
+	public final fun create (Llove/forte/simbot/plugin/PluginConfigureContext;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/plugin/AbstractJPlugin;
+	protected abstract fun createConfig ()Ljava/lang/Object;
+	public synthetic fun getKey ()Llove/forte/simbot/common/function/MergeableFactory$Key;
+	public fun getKey ()Llove/forte/simbot/plugin/PluginFactory$Key;
+}
+
+public abstract interface class love/forte/simbot/plugin/AbstractJPlugin$Key : love/forte/simbot/plugin/SimplePlugin$Key {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/plugin/Plugin {
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginConfigureContext {
+	public abstract fun getApplicationConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
+	public abstract fun getApplicationEventRegistrar ()Llove/forte/simbot/application/ApplicationEventRegistrar;
+	public abstract fun getComponents ()Llove/forte/simbot/component/Components;
+	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
+}
+
+public final class love/forte/simbot/plugin/PluginCreatorKt {
+	public static final fun nameBasedPluginKey (Ljava/lang/String;)Llove/forte/simbot/plugin/SimplePlugin$Key;
+	public static final fun simplePlugin (Llove/forte/simbot/plugin/SimplePlugin$Key;Ljava/lang/Object;)Llove/forte/simbot/plugin/SimplePlugin;
+}
+
+public final class love/forte/simbot/plugin/PluginFactoriesConfigurator : love/forte/simbot/common/function/MergeableFactoriesConfigurator {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginFactory : love/forte/simbot/common/function/MergeableFactory {
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginFactory$Key : love/forte/simbot/common/function/MergeableFactory$Key {
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginFactoryConfigurerProvider {
+	public abstract fun configure (Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginFactoryProvider {
+	public fun configurersLoader ()Lkotlin/sequences/Sequence;
+	public fun loadConfigures ()Lkotlin/sequences/Sequence;
+	public abstract fun provide ()Llove/forte/simbot/plugin/PluginFactory;
+}
+
+public final class love/forte/simbot/plugin/PluginFactoryProviders {
+	public static final fun addPluginFactoryProvider (Lkotlin/jvm/functions/Function0;)V
+	public static final fun clearPluginFactoryProviders ()V
+	public static final fun findAndInstallAllPlugins (Llove/forte/simbot/plugin/PluginInstaller;Z)V
+	public static final fun loadPluginFactoriesFromProviders (Ljava/lang/ClassLoader;Z)Lkotlin/sequences/Sequence;
+	public static final fun loadPluginFactoriesFromProviders (Z)Lkotlin/sequences/Sequence;
+	public static final fun loadPluginProviders ()Lkotlin/sequences/Sequence;
+	public static final fun loadPluginProviders (Ljava/lang/ClassLoader;)Lkotlin/sequences/Sequence;
+}
+
+public abstract interface class love/forte/simbot/plugin/PluginInstaller {
+	public fun install (Llove/forte/simbot/plugin/PluginFactory;)V
+	public abstract fun install (Llove/forte/simbot/plugin/PluginFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+}
+
+public final class love/forte/simbot/plugin/PluginUtil {
+	public static final fun toPlugins (Ljava/util/Collection;)Llove/forte/simbot/plugin/Plugins;
+}
+
+public abstract interface class love/forte/simbot/plugin/Plugins : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
+}
+
+public abstract interface class love/forte/simbot/plugin/SimplePlugin : love/forte/simbot/plugin/Plugin {
+	public abstract fun getKey ()Llove/forte/simbot/plugin/SimplePlugin$Key;
+}
+
+public abstract interface class love/forte/simbot/plugin/SimplePlugin$Key : love/forte/simbot/plugin/PluginFactory$Key {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/resource/AbstractJvmResourceResolver : love/forte/simbot/resource/JvmResourceResolver {
+	public fun <init> ()V
+	public final fun resolveUnknown (Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+}
+
+public abstract class love/forte/simbot/resource/AbstractJvmResourceValueResolver : love/forte/simbot/resource/JvmResourceValueResolver {
+	public fun <init> ()V
+	public final fun resolveByteArray (Llove/forte/simbot/resource/ByteArrayResource;Ljava/lang/Object;)V
+	public final fun resolveFile (Llove/forte/simbot/resource/FileResource;Ljava/lang/Object;)V
+	public final fun resolvePath (Llove/forte/simbot/resource/PathResource;Ljava/lang/Object;)V
+	public final fun resolveString (Llove/forte/simbot/resource/StringResource;Ljava/lang/Object;)V
+	public final fun resolveURI (Llove/forte/simbot/resource/URIResource;Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/resource/ByteArrayResource : love/forte/simbot/resource/Resource {
+	public abstract fun data ()[B
+}
+
+public abstract interface class love/forte/simbot/resource/FileResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/ReaderResource {
+	public fun data ()[B
+	public abstract fun getFile ()Ljava/io/File;
+	public fun inputStream ()Ljava/io/InputStream;
+	public fun reader ()Ljava/io/Reader;
+	public abstract fun reader (Ljava/nio/charset/Charset;)Ljava/io/Reader;
+	public fun string ()Ljava/lang/String;
+	public abstract fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/resource/InputStreamResource : love/forte/simbot/resource/Resource {
+	public fun data ()[B
+	public abstract fun inputStream ()Ljava/io/InputStream;
+}
+
+public abstract interface class love/forte/simbot/resource/JvmResourceResolver : love/forte/simbot/resource/ResourceResolver {
+	public abstract fun resolveFile (Llove/forte/simbot/resource/FileResource;Ljava/lang/Object;)V
+	public abstract fun resolvePath (Llove/forte/simbot/resource/PathResource;Ljava/lang/Object;)V
+	public abstract fun resolveURI (Llove/forte/simbot/resource/URIResource;Ljava/lang/Object;)V
+	public fun resolveUnknown (Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+	public abstract fun resolveUnknownInternal (Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/resource/JvmResourceValueResolver : love/forte/simbot/resource/JvmResourceResolver {
+	public fun resolveByteArray (Llove/forte/simbot/resource/ByteArrayResource;Ljava/lang/Object;)V
+	public abstract fun resolveByteArray ([BLjava/lang/Object;)V
+	public abstract fun resolveFile (Ljava/io/File;Ljava/lang/Object;)V
+	public fun resolveFile (Llove/forte/simbot/resource/FileResource;Ljava/lang/Object;)V
+	public abstract fun resolvePath (Ljava/nio/file/Path;Ljava/lang/Object;)V
+	public fun resolvePath (Llove/forte/simbot/resource/PathResource;Ljava/lang/Object;)V
+	public abstract fun resolveString (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun resolveString (Llove/forte/simbot/resource/StringResource;Ljava/lang/Object;)V
+	public fun resolveURI (Ljava/net/URI;Ljava/lang/Object;)V
+	public fun resolveURI (Llove/forte/simbot/resource/URIResource;Ljava/lang/Object;)V
+	public abstract fun resolveURINotFileScheme (Ljava/net/URI;Ljava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/resource/JvmStringReadableResource : love/forte/simbot/resource/StringReadableResource {
+	public static final field Companion Llove/forte/simbot/resource/JvmStringReadableResource$Companion;
+	public static final field DEFAULT_CHARSET Ljava/nio/charset/Charset;
+	public fun string ()Ljava/lang/String;
+	public abstract fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/resource/JvmStringReadableResource$Companion {
+}
+
+public abstract interface class love/forte/simbot/resource/PathResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/ReaderResource {
+	public fun data ()[B
+	public abstract fun getPath ()Ljava/nio/file/Path;
+	public abstract fun inputStream ()Ljava/io/InputStream;
+	public abstract fun reader (Ljava/nio/charset/Charset;)Ljava/io/Reader;
+	public abstract fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/resource/ReaderResource : love/forte/simbot/resource/JvmStringReadableResource {
+	public fun reader ()Ljava/io/Reader;
+	public abstract fun reader (Ljava/nio/charset/Charset;)Ljava/io/Reader;
+	public fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/resource/Resource {
+	public abstract fun data ()[B
+}
+
+public final class love/forte/simbot/resource/ResourceBase64Serializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Llove/forte/simbot/resource/ResourceBase64Serializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/resource/Resource;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/resource/Resource;)V
+}
+
+public abstract interface class love/forte/simbot/resource/ResourceResolver {
+	public static final field Companion Llove/forte/simbot/resource/ResourceResolver$Companion;
+	public static fun resolve (Llove/forte/simbot/resource/ResourceResolver;Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+	public abstract fun resolveByteArray (Llove/forte/simbot/resource/ByteArrayResource;Ljava/lang/Object;)V
+	public abstract fun resolveString (Llove/forte/simbot/resource/StringResource;Ljava/lang/Object;)V
+	public abstract fun resolveUnknown (Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/resource/ResourceResolver$Companion {
+	public final fun resolve (Llove/forte/simbot/resource/ResourceResolver;Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V
+}
+
+public final class love/forte/simbot/resource/Resources {
+	public static final fun valueOf (Ljava/io/File;)Llove/forte/simbot/resource/FileResource;
+	public static final fun valueOf (Ljava/io/File;Ljava/nio/charset/Charset;)Llove/forte/simbot/resource/FileResource;
+	public static final fun valueOf (Ljava/lang/String;)Llove/forte/simbot/resource/StringResource;
+	public static final fun valueOf (Ljava/net/URI;)Llove/forte/simbot/resource/URIResource;
+	public static final fun valueOf (Ljava/net/URI;Ljava/nio/charset/Charset;)Llove/forte/simbot/resource/URIResource;
+	public static final fun valueOf (Ljava/net/URL;)Llove/forte/simbot/resource/URIResource;
+	public static final fun valueOf (Ljava/net/URL;Ljava/nio/charset/Charset;)Llove/forte/simbot/resource/URIResource;
+	public static final fun valueOf (Ljava/nio/file/Path;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;)Llove/forte/simbot/resource/PathResource;
+	public static final fun valueOf (Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Llove/forte/simbot/resource/PathResource;
+	public static final fun valueOf ([B)Llove/forte/simbot/resource/ByteArrayResource;
+	public static synthetic fun valueOf$default (Ljava/io/File;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/FileResource;
+	public static synthetic fun valueOf$default (Ljava/net/URI;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/URIResource;
+	public static synthetic fun valueOf$default (Ljava/net/URL;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/URIResource;
+	public static synthetic fun valueOf$default (Ljava/nio/file/Path;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;ILjava/lang/Object;)Llove/forte/simbot/resource/PathResource;
+}
+
+public abstract interface class love/forte/simbot/resource/StringReadableResource : love/forte/simbot/resource/Resource {
+	public abstract fun string ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/resource/StringResource : love/forte/simbot/resource/StringReadableResource {
+	public abstract fun string ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/resource/URIResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/JvmStringReadableResource {
+	public abstract fun getUri ()Ljava/net/URI;
+	public abstract fun inputStream ()Ljava/io/InputStream;
+	public fun string ()Ljava/lang/String;
+	public abstract fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
+}
+

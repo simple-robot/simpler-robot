@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -155,7 +155,8 @@ internal class KFunctionEventListenerProcessor {
                     interceptors.forEach { (config, interceptor) ->
                         addInterceptor(config, interceptor)
                     }
-                }, listener
+                },
+                listener
             )
 
             logger.debug("Registered listener {} (annotated id={}) from bean named {}", listener, id, beanName)
@@ -207,7 +208,7 @@ internal class KFunctionEventListenerProcessor {
                         // not empty.
                         when (result) {
                             is ParameterBinderResult.Normal -> {
-                                if (bindList.isEmpty() || (bindList.first() !is ParameterBinderResult.Only)) {
+                                if (bindList.isEmpty() || bindList.first() !is ParameterBinderResult.Only) {
                                     bindList.add(result)
                                 }
                             }
@@ -330,9 +331,11 @@ internal class KFunctionEventListenerProcessor {
                     if (matcher.invoke(eventListenerContext)) invoke() else invalid()
                 }
 
-                onInterceptor(EventInterceptorData({
-                    this.priority = priority
-                }, interceptor))
+                onInterceptor(
+                    EventInterceptorData({
+                        this.priority = priority
+                    }, interceptor)
+                )
             }
         }
 
@@ -358,7 +361,9 @@ internal class KFunctionEventListenerProcessor {
                 factory = applicationContext.getBean(factoryType.java)
             } catch (noBean: NoSuchBeanDefinitionException) {
                 logger.debug(
-                    "Type of factory {} in @Interceptor on function {} was not found in spring ApplicationContext, try to create an instance",
+                    "Type of factory {} in @Interceptor on function {} " +
+                        "was not found in spring ApplicationContext, " +
+                        "try to create an instance",
                     factoryType,
                     this
                 )
@@ -382,7 +387,8 @@ internal class KFunctionEventListenerProcessor {
 
             if (f == null) {
                 val msg =
-                    "Can't to get or create an instance for listener annotated interceptor factory $factoryType on function $this"
+                    "Can't to get or create an instance for listener " +
+                        "annotated interceptor factory $factoryType on function $this"
 
                 throw ListenerInterceptorFactoryInstantiationFailedException(msg).apply {
                     errs.forEach { addSuppressed(it) }
@@ -434,7 +440,10 @@ private fun resolveBinderFactoryInstance(
     type: KClass<out BaseParameterBinderFactory<*>>
 ): ParameterBinderFactory {
     if (!type.isSubclassOf(ParameterBinderFactory::class)) {
-        throw IllegalArgumentException("The types in ApplyBinder.factories must be ParameterBinderFactory, but found: $type")
+        throw IllegalArgumentException(
+            "The types in ApplyBinder.factories must be ParameterBinderFactory, " +
+                "but found: $type"
+        )
     }
 
     type as KClass<out ParameterBinderFactory>
@@ -493,20 +502,22 @@ private fun KFunction<*>.listenTarget(): KClass<out Event> {
                 }
 
                 else -> {
-                    throw MultipleIncompatibleTypesEventException(buildString {
-                        append("Current Event types link of function [${this@listenTarget}] is: \n[")
-                        typeLink.forEachIndexed { index, t ->
-                            append("(")
-                            append(t)
-                            append(")")
-                            if (index != typeLink.lastIndex) {
-                                append(" -> ")
+                    throw MultipleIncompatibleTypesEventException(
+                        buildString {
+                            append("Current Event types link of function [${this@listenTarget}] is: \n[")
+                            typeLink.forEachIndexed { index, t ->
+                                append("(")
+                                append(t)
+                                append(")")
+                                if (index != typeLink.lastIndex) {
+                                    append(" -> ")
+                                }
                             }
+                            append("], \nbut now: ")
+                            append(it.type.classifier).append("(").append(it)
+                            append("), it !is ").append(typeLink.last())
                         }
-                        append("], \nbut now: ")
-                        append(it.type.classifier).append("(").append(it)
-                        append("), it !is ").append(typeLink.last())
-                    })
+                    )
                 }
             }
         }
@@ -538,7 +549,9 @@ private fun keywordMatcher(listenerAttributeMap: MutableAttributeMap, fp: Filter
                 if (!matchType.match(keyword, content)) {
                     return@m false
                 }
-            } else return@m ifNullPass
+            } else {
+                return@m ifNullPass
+            }
         }
 
         // 匹配关键词本身没有, 直接放行.

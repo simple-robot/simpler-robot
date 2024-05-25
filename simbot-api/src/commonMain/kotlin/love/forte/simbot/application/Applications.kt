@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,13 @@ import kotlin.jvm.JvmSynthetic
  *
  */
 @JvmSynthetic
-public suspend inline fun <A : Application, C : AbstractApplicationBuilder, L : ApplicationLauncher<A>, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> launchApplication(
+public suspend inline fun <
+    A : Application,
+    C : AbstractApplicationBuilder,
+    L : ApplicationLauncher<A>,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > launchApplication(
     factory: ApplicationFactory<A, C, L, AER, DC>,
     crossinline configurer: ApplicationFactoryConfigurer<C, AER, DC>.() -> Unit = {}
 ): A {
@@ -65,17 +71,25 @@ public suspend inline fun <A : Application, C : AbstractApplicationBuilder, L : 
  * 构建一个 [Application] 并异步地启动它。
  */
 @JvmOverloads
-public fun <A : Application, C : AbstractApplicationBuilder, L : ApplicationLauncher<A>, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> launchApplicationAsync(
+public fun <
+    A : Application,
+    C : AbstractApplicationBuilder,
+    L : ApplicationLauncher<A>,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > launchApplicationAsync(
     scope: CoroutineScope,
     factory: ApplicationFactory<A, C, L, AER, DC>,
     configurer: ConfigurerFunction<ApplicationFactoryConfigurer<C, AER, DC>>? = null
 ): Async<A> {
     val launcher = runCatching {
-        factory.create(configurer?.let { c ->
-            toConfigurerFunction {
-                c.invokeWith(this)
+        factory.create(
+            configurer?.let { c ->
+                toConfigurerFunction {
+                    c.invokeWith(this)
+                }
             }
-        })
+        )
     }.getOrElse { e ->
         return CompletableDeferred<A>().apply {
             completeExceptionally(e)
@@ -91,7 +105,13 @@ public fun <A : Application, C : AbstractApplicationBuilder, L : ApplicationLaun
  */
 @OptIn(DelicateCoroutinesApi::class)
 @JvmOverloads
-public fun <A : Application, C : AbstractApplicationBuilder, L : ApplicationLauncher<A>, AER : ApplicationEventRegistrar, DC : EventDispatcherConfiguration> launchApplicationAsync(
+public fun <
+    A : Application,
+    C : AbstractApplicationBuilder,
+    L : ApplicationLauncher<A>,
+    AER : ApplicationEventRegistrar,
+    DC : EventDispatcherConfiguration
+    > launchApplicationAsync(
     factory: ApplicationFactory<A, C, L, AER, DC>,
     configurer: ConfigurerFunction<ApplicationFactoryConfigurer<C, AER, DC>>? = null
 ): Async<A> = launchApplicationAsync(scope = GlobalScope, factory = factory, configurer = configurer)

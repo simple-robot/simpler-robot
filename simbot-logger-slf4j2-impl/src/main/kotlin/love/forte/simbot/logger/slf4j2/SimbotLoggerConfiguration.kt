@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -233,7 +233,7 @@ public enum class DispatchMode(internal val factory: LogDispatcherFactory) {
         public fun find(name: String): DispatchMode? {
             try {
                 return DispatchMode.valueOf(name)
-            } catch (illArg: IllegalArgumentException) {
+            } catch (ignore: IllegalArgumentException) {
                 // not found
             }
 
@@ -241,7 +241,7 @@ public enum class DispatchMode(internal val factory: LogDispatcherFactory) {
 
             try {
                 return DispatchMode.valueOf(name0)
-            } catch (illArg: IllegalArgumentException) {
+            } catch (ignore: IllegalArgumentException) {
                 // also not found
             }
 
@@ -251,7 +251,7 @@ public enum class DispatchMode(internal val factory: LogDispatcherFactory) {
 }
 
 
-//// impls
+// // impls
 
 
 private data class PropertyImpl(override val key: String, private val value: String) :

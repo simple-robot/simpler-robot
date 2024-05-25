@@ -1,0 +1,151 @@
+public class love/forte/simbot/spring/common/BotAutoStartOnFailureException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public class love/forte/simbot/spring/common/BotConfigResourceLoadOnFailureException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public class love/forte/simbot/spring/common/MismatchConfigurableBotManagerException : java/util/NoSuchElementException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public class love/forte/simbot/spring/common/MultipleIncompatibleTypesEventException : java/lang/IllegalArgumentException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/spring/common/application/ApplicationLaunchMode : java/lang/Enum {
+	public static final field NONE Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;
+	public static final field THREAD Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;
+	public static fun values ()[Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;
+}
+
+public final class love/forte/simbot/spring/common/application/BotAutoStartMode : java/lang/Enum {
+	public static final field ASYNC Llove/forte/simbot/spring/common/application/BotAutoStartMode;
+	public static final field SYNC Llove/forte/simbot/spring/common/application/BotAutoStartMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/spring/common/application/BotAutoStartMode;
+	public static fun values ()[Llove/forte/simbot/spring/common/application/BotAutoStartMode;
+}
+
+public final class love/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy : java/lang/Enum {
+	public static final field ERROR Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public static final field ERROR_LOG Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public static final field IGNORE Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public static final field WARN Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public static fun values ()[Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+}
+
+public final class love/forte/simbot/spring/common/application/BotRegistrationFailurePolicy : java/lang/Enum {
+	public static final field ERROR Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public static final field ERROR_LOG Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public static final field IGNORE Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public static final field WARN Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public static fun values ()[Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+}
+
+public final class love/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy : java/lang/Enum {
+	public static final field ERROR Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public static final field ERROR_LOG Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public static final field IGNORE Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public static final field WARN Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public static fun values ()[Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringApplication : love/forte/simbot/application/Application {
+}
+
+public class love/forte/simbot/spring/common/application/SpringApplicationBuilder : love/forte/simbot/application/AbstractApplicationBuilder {
+	public fun <init> ()V
+	public fun getApplicationConfigurationProperties ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;
+	public fun setApplicationConfigurationProperties (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;)V
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationConfiguration : love/forte/simbot/application/ApplicationConfiguration {
+	public abstract fun getApplicationConfigurationProperties ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties {
+	public fun <init> ()V
+	public final fun getApplication ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ApplicationProperties;
+	public final fun getBots ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties;
+	public final fun getComponents ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ComponentProperties;
+	public final fun getPlugins ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$PluginProperties;
+	public final fun setApplication (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ApplicationProperties;)V
+	public final fun setBots (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties;)V
+	public final fun setComponents (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ComponentProperties;)V
+	public final fun setPlugins (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$PluginProperties;)V
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ApplicationProperties {
+	public fun <init> ()V
+	public final fun getApplicationLaunchMode ()Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;
+	public final fun setApplicationLaunchMode (Llove/forte/simbot/spring/common/application/ApplicationLaunchMode;)V
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties {
+	public static final field Companion Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties$Companion;
+	public fun <init> ()V
+	public final fun getAutoRegistrationFailurePolicy ()Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;
+	public final fun getAutoRegistrationMismatchConfigurableBotManagerPolicy ()Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;
+	public final fun getAutoRegistrationResourceLoadFailurePolicy ()Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;
+	public final fun getAutoStartBots ()Z
+	public final fun getAutoStartMode ()Llove/forte/simbot/spring/common/application/BotAutoStartMode;
+	public final fun getConfigurationJsonResources ()Ljava/util/Set;
+	public final fun setAutoRegistrationFailurePolicy (Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;)V
+	public final fun setAutoRegistrationMismatchConfigurableBotManagerPolicy (Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;)V
+	public final fun setAutoRegistrationResourceLoadFailurePolicy (Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;)V
+	public final fun setAutoStartBots (Z)V
+	public final fun setAutoStartMode (Llove/forte/simbot/spring/common/application/BotAutoStartMode;)V
+	public final fun setConfigurationJsonResources (Ljava/util/Set;)V
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties$Companion {
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$ComponentProperties {
+	public fun <init> ()V
+	public final fun getAutoInstallProviderConfigures ()Z
+	public final fun getAutoInstallProviders ()Z
+	public final fun setAutoInstallProviderConfigures (Z)V
+	public final fun setAutoInstallProviders (Z)V
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$PluginProperties {
+	public fun <init> ()V
+	public final fun getAutoInstallProviderConfigures ()Z
+	public final fun getAutoInstallProviders ()Z
+	public final fun setAutoInstallProviderConfigures (Z)V
+	public final fun setAutoInstallProviders (Z)V
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationEventRegistrar : love/forte/simbot/application/ApplicationEventRegistrar {
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationFactory : love/forte/simbot/application/ApplicationFactory {
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationLauncher : love/forte/simbot/application/ApplicationLauncher {
+}
+
+public abstract interface class love/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration : love/forte/simbot/core/event/SimpleEventDispatcherConfiguration {
+	public fun setExecutorDispatcher (Ljava/util/concurrent/Executor;)V
+}
+

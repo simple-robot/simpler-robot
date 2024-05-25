@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,13 @@ public interface SpringApplication : Application
  * Factory for [SpringApplication].
  */
 public interface SpringApplicationFactory :
-    ApplicationFactory<SpringApplication, SpringApplicationBuilder, SpringApplicationLauncher, SpringApplicationEventRegistrar, SpringEventDispatcherConfiguration>
+    ApplicationFactory<
+        SpringApplication,
+        SpringApplicationBuilder,
+        SpringApplicationLauncher,
+        SpringApplicationEventRegistrar,
+        SpringEventDispatcherConfiguration
+        >
 
 /**
  * Simbot Spring Boot Starter 中使用的 [ApplicationBuilder]

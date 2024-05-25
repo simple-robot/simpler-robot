@@ -174,7 +174,7 @@ public sealed interface Messages : Message, Iterable<Message.Element> {
         @JvmStatic
         @JvmOverloads
         public fun builder(container: MutableList<Message.Element> = mutableListOf()): MessagesBuilder =
-            MessagesBuilder.create(container)
+            create(container)
     }
 }
 
@@ -213,6 +213,8 @@ private object EmptyMessages : Messages {
     override fun equals(other: Any?): Boolean {
         return other === EmptyMessages
     }
+
+    override fun hashCode(): Int = 0
 }
 
 private class SingleElementMessages(val element: Message.Element) : Messages {
@@ -238,16 +240,20 @@ private class SingleElementMessages(val element: Message.Element) : Messages {
                 return this
             }
 
-            return ListMessages(buildList(messages.size + 1) {
-                add(this@SingleElementMessages.element)
-                addAll(messages)
-            })
+            return ListMessages(
+                buildList(messages.size + 1) {
+                    add(this@SingleElementMessages.element)
+                    addAll(messages)
+                }
+            )
         }
 
-        return ListMessages(buildList {
-            add(this@SingleElementMessages.element)
-            addAll(messages)
-        })
+        return ListMessages(
+            buildList {
+                add(this@SingleElementMessages.element)
+                addAll(messages)
+            }
+        )
     }
 
     override fun equals(other: Any?): Boolean {

@@ -67,4 +67,5 @@ internal actual fun <T : Any> loadProvidersInternal(type: KClass<T>): Sequence<(
 }
 
 @PublishedApi
+@Suppress("TopLevelPropertyNaming")
 internal actual const val isJvm: Boolean = false

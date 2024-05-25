@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -151,6 +151,7 @@ public expect fun <T> atomicRef(value: T): AtomicRef<T>
 public fun atomicUL(value: ULong): AtomicULong = atomic(value)
 
 //region update
+
 /**
  * Update value by [AtomicLong.compareAndSet] and then return the old value.
  *
@@ -292,6 +293,7 @@ public inline fun <T> AtomicRef<T>.update(block: (T) -> T): T {
 //endregion
 
 //region updateAndGet
+
 /**
  * Update value by [AtomicLong.compareAndSet] and then return the new value.
  *

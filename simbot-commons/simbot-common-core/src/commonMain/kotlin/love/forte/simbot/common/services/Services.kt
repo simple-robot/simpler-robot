@@ -82,7 +82,10 @@ public object Services {
 /**
  * 当满足条件 [condition] 时，添加 [providerCreator]。
  */
-public inline fun <T : Any> Services.addProvider(condition: Boolean, type: KClass<T>, crossinline providerCreator: () -> T) {
+public inline fun <T : Any> Services.addProvider(
+    condition: Boolean,
+    type: KClass<T>, crossinline providerCreator: () -> T
+) {
     if (condition) {
         addProvider(type) { providerCreator() }
     }

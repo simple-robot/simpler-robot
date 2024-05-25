@@ -1,0 +1,125 @@
+public final class love/forte/simbot/core/application/Simple : love/forte/simbot/application/ApplicationFactory {
+	public static final field INSTANCE Llove/forte/simbot/core/application/Simple;
+	public synthetic fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/ApplicationLauncher;
+	public fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/core/application/SimpleApplicationLauncher;
+}
+
+public abstract interface class love/forte/simbot/core/application/SimpleApplication : love/forte/simbot/application/Application {
+	public abstract fun getConfiguration ()Llove/forte/simbot/core/application/SimpleApplicationConfiguration;
+}
+
+public final class love/forte/simbot/core/application/SimpleApplicationBuilder : love/forte/simbot/application/AbstractApplicationBuilder {
+	public fun <init> ()V
+}
+
+public abstract interface class love/forte/simbot/core/application/SimpleApplicationConfiguration : love/forte/simbot/application/ApplicationConfiguration {
+}
+
+public final class love/forte/simbot/core/application/SimpleApplicationKt {
+	public static final fun launchSimpleApplication (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun launchSimpleApplication$default (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/core/application/SimpleApplicationLauncher : love/forte/simbot/application/ApplicationLauncher {
+}
+
+public abstract interface class love/forte/simbot/core/event/SimpleEventDispatchInterceptorRegistrationProperties : love/forte/simbot/event/EventDispatchInterceptorRegistrationProperties {
+}
+
+public abstract interface class love/forte/simbot/core/event/SimpleEventDispatcher : love/forte/simbot/event/EventDispatcher {
+}
+
+public abstract interface class love/forte/simbot/core/event/SimpleEventDispatcherConfiguration : love/forte/simbot/event/EventDispatcherConfiguration {
+}
+
+public abstract interface class love/forte/simbot/core/event/SimpleEventInterceptorRegistrationProperties : love/forte/simbot/event/EventInterceptorRegistrationProperties {
+}
+
+public abstract interface class love/forte/simbot/core/event/SimpleEventListenerRegistrationProperties : love/forte/simbot/event/EventListenerRegistrationProperties {
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventDispatchInterceptorInvoker : java/lang/Comparable, love/forte/simbot/event/EventDispatchInterceptor {
+	public fun <init> (Llove/forte/simbot/event/EventDispatchInterceptor;I)V
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo (Llove/forte/simbot/core/event/impl/SimpleEventDispatchInterceptorInvoker;)I
+	public fun intercept (Llove/forte/simbot/event/EventDispatchInterceptor$Context;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public class love/forte/simbot/core/event/impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl : love/forte/simbot/core/event/SimpleEventDispatchInterceptorRegistrationProperties {
+	public fun <init> ()V
+	public fun getPriority ()I
+	public fun setPriority (I)V
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventDispatchInterceptorsInvoker {
+	public fun <init> (Ljava/lang/Iterable;)V
+	public final fun invoke (Llove/forte/simbot/event/EventContext;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public class love/forte/simbot/core/event/impl/SimpleEventDispatcherConfigurationImpl : love/forte/simbot/event/AbstractEventDispatcherConfiguration, love/forte/simbot/core/event/SimpleEventDispatcherConfiguration {
+	public fun <init> ()V
+	public fun getDispatchInterceptors ()Ljava/util/List;
+	public fun getInterceptors ()Ljava/util/List;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventDispatcherImpl : love/forte/simbot/core/event/SimpleEventDispatcher {
+	public fun <init> (Llove/forte/simbot/core/event/SimpleEventDispatcherConfiguration;Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;)V
+	public fun <init> (Llove/forte/simbot/core/event/impl/SimpleEventDispatcherConfigurationImpl;)V
+	public fun dispose (Llove/forte/simbot/event/EventListener;)V
+	public fun getListeners ()Lkotlin/sequences/Sequence;
+	public fun push (Llove/forte/simbot/event/Event;)Lkotlinx/coroutines/flow/Flow;
+	public fun register (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventListener;)Llove/forte/simbot/event/EventListenerRegistrationHandle;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventDispatcherImpls {
+	public static final fun resolveInterceptors (Llove/forte/simbot/core/event/impl/SimpleEventDispatcherConfigurationImpl;)Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventInterceptorInvoker : java/lang/Comparable, love/forte/simbot/event/EventInterceptor {
+	public fun <init> (Llove/forte/simbot/event/EventInterceptor;I)V
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo (Llove/forte/simbot/core/event/impl/SimpleEventInterceptorInvoker;)I
+	public fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public class love/forte/simbot/core/event/impl/SimpleEventInterceptorRegistrationPropertiesImpl : love/forte/simbot/core/event/SimpleEventInterceptorRegistrationProperties {
+	public fun <init> ()V
+	public fun getPriority ()I
+	public fun setPriority (I)V
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventInterceptors {
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;
+	public static synthetic fun copy$default (Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDispatchInterceptors ()Ljava/util/List;
+	public final fun getInterceptors ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventInterceptorsBuilder {
+	public fun <init> ()V
+	public final fun addDispatchInterceptor (Llove/forte/simbot/event/EventDispatchInterceptor;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public static synthetic fun addDispatchInterceptor$default (Llove/forte/simbot/core/event/impl/SimpleEventInterceptorsBuilder;Llove/forte/simbot/event/EventDispatchInterceptor;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)V
+	public final fun addInterceptor (Llove/forte/simbot/event/EventInterceptor;Llove/forte/simbot/common/function/ConfigurerFunction;)V
+	public static synthetic fun addInterceptor$default (Llove/forte/simbot/core/event/impl/SimpleEventInterceptorsBuilder;Llove/forte/simbot/event/EventInterceptor;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)V
+	public final fun build ()Llove/forte/simbot/core/event/impl/SimpleEventInterceptors;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventInterceptorsInvoker {
+	public fun <init> (Ljava/lang/Iterable;)V
+	public final synthetic fun invoke (Llove/forte/simbot/event/EventListenerContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/core/event/impl/SimpleEventListenerRegistrationPropertiesImpl : love/forte/simbot/core/event/SimpleEventListenerRegistrationProperties {
+	public fun <init> (Llove/forte/simbot/core/event/impl/SimpleEventInterceptorsBuilder;)V
+	public fun addInterceptor (Llove/forte/simbot/common/function/ConfigurerFunction;Llove/forte/simbot/event/EventInterceptor;)V
+	public fun getPriority ()I
+	public fun setPriority (I)V
+}
+

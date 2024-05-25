@@ -10,6 +10,7 @@ dokka/**
 *.gpg
 
 .git
+.kotlin
 
 # Ignore Gradle GUI config
 gradle-app.setting

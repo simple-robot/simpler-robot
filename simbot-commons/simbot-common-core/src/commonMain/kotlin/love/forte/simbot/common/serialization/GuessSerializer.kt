@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -62,7 +62,7 @@ private fun Collection<*>.elementSerializer(module: SerializersModule): KSeriali
     if (serializers.size > 1) {
         error(
             "Serializing collections of different element types is not yet supported. " +
-                    "Selected serializers: ${serializers.map { it.descriptor.serialName }}",
+                "Selected serializers: ${serializers.map { it.descriptor.serialName }}",
         )
     }
 

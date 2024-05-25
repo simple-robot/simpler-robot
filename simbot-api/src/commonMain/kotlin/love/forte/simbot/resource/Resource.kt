@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -132,14 +132,25 @@ private data class ByteArrayResourceImpl(private val raw: ByteArray) : ByteArray
 }
 
 /**
- * 可以读取到 [String] 格式内容的 [Resource]。
+ * 一个可以读取到 [String] 内容物的拓展类型。
+ * 是其他 [Resource] 类型的附加能力，但不属于一个标准的 [Resource] 类型。
  */
-public interface StringResource : Resource {
+public interface StringReadableResource : Resource {
     /**
      * 读取此资源的 [String] 内容。
      */
     @Throws(Exception::class)
     public fun string(): String
+}
+
+/**
+ * 直接使用 [String] 作为内容的 [Resource]。
+ */
+public interface StringResource : StringReadableResource {
+    /**
+     * 读取此资源的 [String] 内容。
+     */
+    override fun string(): String
 }
 
 /**

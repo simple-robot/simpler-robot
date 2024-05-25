@@ -1,30 +1,34 @@
 [versions]
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 dokka = "1.9.20"
-kotlinx-coroutines = "1.8.0"
+kotlinx-coroutines = "1.8.1"
 kotlinx-serialization = "1.6.3"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.8"
 slf4j = "2.0.12"
-ksp = "1.9.23-1.0.19"
+# https://kotlinlang.org/docs/ksp-quickstart.html
+# https://github.com/google/ksp
+ksp = "2.0.0-1.0.21"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.16.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 kotlinxBenchmark = "0.4.10"
 reactor = "3.6.2"
 # simbots
-suspendTransform = "0.7.0-beta1"
+suspendTransform = "0.8.0-beta1"
 suspendReversal = "0.2.0"
-gradleCommon = "0.2.0"
+gradleCommon = "0.3.0"
 # tests
-mockk = "1.13.9"
-
+mockk = "1.13.10"
+# detekt
+# https://detekt.dev/docs/intro
+detekt = "1.23.3"
 
 [libraries]
 # jetbrains-annotation
-jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
+jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
 
 # dokka
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
@@ -52,7 +56,6 @@ kotlinx-serialization-hocon = { group = "org.jetbrains.kotlinx", name = "kotlinx
 kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-properties", version.ref = "kotlinx-serialization" }
-charleskorn-kaml = "com.charleskorn.kaml:kaml:0.54.0"
 
 
 # slf4j
@@ -64,6 +67,7 @@ javax-inject = "javax.inject:javax.inject:1"
 javax-annotation-api = "javax.annotation:javax.annotation-api:1.3.2"
 
 # spring-boot-v2
+spring-boot-v2-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "spring-boot-v2" }
 spring-boot-v2-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure", version.ref = "spring-boot-v2" }
 spring-boot-v2-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging", version.ref = "spring-boot-v2" }
 spring-boot-v2-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator", version.ref = "spring-boot-v2" }
@@ -106,7 +110,7 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref =
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.26"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.30"
 
 # https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
 suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
@@ -133,10 +137,19 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 # benchmark
 kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
 
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+# Kover
+# https://www.jetbrains.com/help/qodana/code-coverage.html
+# https://github.com/Kotlin/kotlinx-kover
+kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.0" }
+# binary-compatibility-validator
+# https://github.com/Kotlin/binary-compatibility-validator
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.15.0-Beta.2" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

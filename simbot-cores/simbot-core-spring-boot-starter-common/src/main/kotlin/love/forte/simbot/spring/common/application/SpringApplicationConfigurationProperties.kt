@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -203,7 +203,7 @@ public enum class BotRegistrationFailurePolicy {
     /**
      * 当bot注册或启动过程中出现异常或bot最终无法注册时仅会输出 `debug` 调试日志。
      */
-    IGNORE;
+    IGNORE
 }
 
 /**
@@ -230,7 +230,7 @@ public enum class BotConfigResourceLoadFailurePolicy {
     /**
      * 当出现无法解析的资源文件时仅会输出 `debug` 调试日志。
      */
-    IGNORE;
+    IGNORE
 }
 
 
@@ -257,6 +257,6 @@ public enum class MismatchConfigurableBotManagerPolicy {
     /**
      * 当无法找到任何可供注册的 [BotManager] 时输出 `debug` 级别的日志并尝试跳过。
      */
-    IGNORE;
+    IGNORE
 }
 

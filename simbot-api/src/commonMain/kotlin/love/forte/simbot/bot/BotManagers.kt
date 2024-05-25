@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -31,6 +31,7 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 //region BotManagers
+
 /**
  * 用于表示一组 [BotManager]。
  *
@@ -63,7 +64,8 @@ public fun Collection<BotManager>.toBotManagers(): BotManagers = CollectionBotMa
 /**
  * @see BotManagers
  */
-private class CollectionBotManagers(private val collections: Collection<BotManager>) : BotManagers,
+private class CollectionBotManagers(private val collections: Collection<BotManager>) :
+    BotManagers,
     Collection<BotManager> by collections {
     override fun toString(): String = "BotManagers(values=$collections)"
     override fun equals(other: Any?): Boolean {

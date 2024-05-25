@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -55,7 +55,7 @@ public interface GuildMemberChangeEvent : ChangeEvent, GuildMemberEvent {
      */
     override suspend fun source(): Guild
 
-        /**
+    /**
      * 发送了变化的 [Member]。
      *
      */
@@ -74,7 +74,7 @@ public interface GroupMemberChangeEvent : ChangeEvent, ChatGroupMemberEvent {
      */
     override suspend fun source(): ChatGroup
 
-        /**
+    /**
      * 发送了变化的 [Member]。
      *
      */

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -68,10 +68,12 @@ class UmlProcessor(private val environment: SymbolProcessorEnvironment) : Symbol
             outputPath.deleteExisting()
         }
 
-        outputPath.bufferedWriter(options = arrayOf(
-            StandardOpenOption.WRITE,
-            StandardOpenOption.CREATE,
-        )).use { writer ->
+        outputPath.bufferedWriter(
+            options = arrayOf(
+                StandardOpenOption.WRITE,
+                StandardOpenOption.CREATE,
+            )
+        ).use { writer ->
             writer.write(targetClass.asStarProjectedType(), subtypes)
         }
 
@@ -82,11 +84,13 @@ class UmlProcessor(private val environment: SymbolProcessorEnvironment) : Symbol
 private const val IMPL_TO = " -[#000082,plain]-^ "
 
 private fun Writer.write(targetType: KSType, types: List<KSClassDeclaration>) {
-    write("""
+    write(
+        """
         ```plantuml
         @startuml
         
-    """.trimIndent())
+        """.trimIndent()
+    )
 
     write("\n")
     write("\n")
@@ -111,10 +115,12 @@ private fun Writer.write(targetType: KSType, types: List<KSClassDeclaration>) {
 
     write("\n")
 
-    write("""
+    write(
+        """
         @enduml
         ```
-    """.trimIndent())
+        """.trimIndent()
+    )
 }
 
 /*
