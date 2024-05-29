@@ -95,7 +95,7 @@ public inline fun <T : Any> Services.addProvider(
  * 只有在 **非Jvm** 平台上添加 [providerCreator]。
  */
 public inline fun <T : Any> Services.addProviderExceptJvm(type: KClass<T>, crossinline providerCreator: () -> T) {
-    addProvider(isJvm, type, providerCreator)
+    addProvider(!isJvm, type, providerCreator)
 }
 
 @PublishedApi
