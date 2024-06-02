@@ -126,6 +126,5 @@ class IDTests {
             Json.decodeFromString(UUID.StructureSerializer, """{"leastSignificantBits":$lv}""")
         }
         assertIs<MissingFieldException>(err)
-        err.printStackTrace()
     }
 }
