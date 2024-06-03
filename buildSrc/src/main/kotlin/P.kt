@@ -48,7 +48,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     /*
     val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
             project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-            
+
      */
     companion object {
         const val GROUP = "love.forte.simbot"
@@ -85,7 +85,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     val versionWithoutSnapshot: Version
 
     init {
-        val mainVersion = version(4, 0, 0) - version("RC1")
+        val mainVersion = version(4, 0, 0) - version("RC2")
 
         fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
             mainVersion

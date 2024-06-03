@@ -1,3 +1,9 @@
+# v4.0.0-RC2
+
+> Release & Pull Notes: [v4.0.0-RC2](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC2) 
+
+- fix: Services.addProviderExceptJvm 的jvm判断条件与实际情况相反 ([`ba555b22`](https://github.com/simple-robot/simpler-robot/commit/ba555b22))
+
 # v4.0.0-RC1
 
 > Release & Pull Notes: [v4.0.0-RC1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC1) 
