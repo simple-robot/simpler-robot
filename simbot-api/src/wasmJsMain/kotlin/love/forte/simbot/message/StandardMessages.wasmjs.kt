@@ -21,8 +21,13 @@
  *
  */
 
-import love.forte.simbot.message.MessagesBuilder
+package love.forte.simbot.message
 
-internal actual fun MessagesBuilder.addIntoMessages() {
-    // nothing.
-}
+import love.forte.simbot.resource.Resource
+
+/**
+ * 将 [Resource] 转化为 [OfflineResourceImage]。
+ *
+ */
+public actual fun Resource.toOfflineResourceImage(): OfflineResourceImage =
+    SimpleOfflineResourceImage(this)
