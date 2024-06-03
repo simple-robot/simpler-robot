@@ -25,6 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -54,19 +55,16 @@ kotlin {
     applyTier2()
     applyTier3()
 
-    // wasm?
-//    @Suppress("OPT_IN_USAGE")
-//    wasmJs()
-//    @Suppress("OPT_IN_USAGE")
-//    wasmWasi()
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
+    }
 
     sourceSets {
         commonMain {
             dependencies {
                 // jvm compile only
-                // compileOnly(libs.jetbrains.annotations)
                 api(project(":simbot-api"))
-                // compileOnly(libs.kotlinx.serialization.json)
             }
         }
         commonTest {
@@ -79,10 +77,9 @@ kotlin {
             }
         }
 
-
-
         jvmMain {
             dependencies {
+                compileOnly(project(":simbot-api"))
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)
@@ -106,45 +103,9 @@ kotlin {
             }
         }
 
-        nativeMain.dependencies {
-            api(libs.kotlinx.serialization.json)
-            api(libs.jetbrains.annotations)
-            api(project(":simbot-commons:simbot-common-annotations"))
-
-        }
-
-        jsMain.dependencies {
-            api(libs.kotlinx.serialization.json)
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.jetbrains.annotations)
-
-        }
-
         jsTest.dependencies {
             implementation(libs.ktor.client.js)
             implementation(libs.ktor.client.core)
         }
-
-        nativeTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        linuxTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        appleTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        mingwTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.winhttp)
-        }
-
-
     }
 }

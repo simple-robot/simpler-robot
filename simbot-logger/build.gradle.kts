@@ -66,8 +66,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
-        binaries.library()
+        configWasmJs()
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

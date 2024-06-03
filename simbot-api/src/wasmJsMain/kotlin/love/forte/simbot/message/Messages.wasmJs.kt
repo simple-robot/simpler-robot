@@ -21,8 +21,13 @@
  *
  */
 
-import love.forte.simbot.message.MessagesBuilder
+package love.forte.simbot.message
 
-internal actual fun MessagesBuilder.addIntoMessages() {
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+
+/**
+ * 整合平台特别实现的序列化信息。
+ */
+internal actual fun PolymorphicModuleBuilder<Message.Element>.resolvePlatformStandardSerializers() {
     // nothing.
 }

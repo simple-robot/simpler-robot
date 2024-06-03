@@ -71,15 +71,17 @@ fun Project.configJsTestTasks() {
     }
 }
 
-@Suppress("UNUSED_PARAMETER")
 inline fun KotlinWasmJsTargetDsl.configWasmJs(
     nodeJs: Boolean = true,
     browser: Boolean = true,
     block: () -> Unit = {}
 ) {
+    if (nodeJs) {
+        nodejs()
+    }
     // if (nodeJs && isLinux) {
-        // win in candy node `21.0.0-v8-canary202309143a48826a08` is not supported
-        // nodejs()
+    // // win in candy node `21.0.0-v8-canary202309143a48826a08` is not supported
+    // nodejs()
     // }
 
     if (browser) {

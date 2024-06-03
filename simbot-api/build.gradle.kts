@@ -26,6 +26,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -58,9 +59,11 @@ kotlin {
     applyTier3()
 
     // wasm?
-//    @Suppress("OPT_IN_USAGE")
-//    wasmJs()
-//    @Suppress("OPT_IN_USAGE")
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
+    }
+
 //    wasmWasi()
 
     compilerOptions {
@@ -69,20 +72,13 @@ kotlin {
         )
     }
 
-    // withKotlinTargets { target ->
-    // targets.findByName(target.name)?.compilations?.all {
-    //     // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
-    //     kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-    // }
-    // }
-
     sourceSets {
         commonMain {
             dependencies {
                 // jvm compile only
-                compileOnly(libs.jetbrains.annotations)
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
-                compileOnly(libs.kotlinx.serialization.json)
+                api(libs.jetbrains.annotations)
+                api(project(":simbot-commons:simbot-common-annotations"))
+                api(libs.kotlinx.serialization.json)
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-core"))
                 api(project(":simbot-commons:simbot-common-collection"))
@@ -105,6 +101,10 @@ kotlin {
 
         jvmMain {
             dependencies {
+                compileOnly(libs.jetbrains.annotations)
+                compileOnly(libs.kotlinx.serialization.json)
+                compileOnly(project(":simbot-commons:simbot-common-annotations"))
+
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)
                 compileOnly(libs.kotlinx.coroutines.rx2)
@@ -124,20 +124,6 @@ kotlin {
                 implementation(kotlin("reflect"))
                 implementation(libs.ktor.client.cio)
             }
-        }
-
-        nativeMain.dependencies {
-            api(libs.kotlinx.serialization.json)
-            api(libs.jetbrains.annotations)
-            api(project(":simbot-commons:simbot-common-annotations"))
-
-        }
-
-        jsMain.dependencies {
-            api(libs.kotlinx.serialization.json)
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.jetbrains.annotations)
-
         }
 
         jsTest.dependencies {
@@ -164,7 +150,6 @@ kotlin {
             // implementation(libs.ktor.client.core)
             // implementation(libs.ktor.client.winhttp)
         }
-
 
     }
 }
