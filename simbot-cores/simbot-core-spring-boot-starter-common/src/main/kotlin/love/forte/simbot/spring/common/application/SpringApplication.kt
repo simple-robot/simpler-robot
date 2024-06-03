@@ -24,6 +24,8 @@
 package love.forte.simbot.spring.common.application
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.application.*
@@ -65,11 +67,16 @@ public open class SpringApplicationBuilder : AbstractApplicationBuilder() {
      * Build [SpringApplicationConfiguration]
      */
     @InternalSimbotAPI
-    public open fun build(): SpringApplicationConfiguration =
-        SpringApplicationConfigurationImpl(
-            coroutineContext,
+    public open fun build(): SpringApplicationConfiguration {
+        val context = coroutineContext
+        val job = SupervisorJob(context[Job])
+
+        return SpringApplicationConfigurationImpl(
+            context.minusKey(Job) + job,
             applicationConfigurationProperties
         )
+    }
+
 
 }
 

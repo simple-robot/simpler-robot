@@ -261,7 +261,13 @@ private class SimpleApplicationFactoryConfigurer(
  * 通过 [Simple] 构建 [SimpleApplication] 时使用的构建器。
  */
 public class SimpleApplicationBuilder : AbstractApplicationBuilder() {
-    internal fun build(): SimpleApplicationConfiguration = SimpleApplicationConfigurationImpl(coroutineContext)
+    internal fun build(): SimpleApplicationConfiguration {
+        val context = coroutineContext
+        val job = SupervisorJob(context[Job])
+
+        // 至少有个 Job
+        return SimpleApplicationConfigurationImpl(context.minusKey(Job) + job)
+    }
 }
 
 private class SimpleApplicationConfigurationImpl(override val coroutineContext: CoroutineContext) :
