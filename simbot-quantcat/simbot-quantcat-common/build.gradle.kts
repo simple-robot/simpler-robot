@@ -80,8 +80,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":simbot-api"))
-                api(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-api"))
+                implementation(project(":simbot-logger"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
 
             }
         }
@@ -94,7 +95,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            compileOnly(project(":simbot-api"))
             compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(kotlin("reflect"))
         }

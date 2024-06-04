@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -59,8 +59,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":simbot-logger"))
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-logger"))
+
                 api(libs.kotlinx.coroutines.core)
             }
         }
@@ -72,6 +73,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(libs.kotlinx.coroutines.reactor)
             compileOnly(libs.kotlinx.coroutines.rx2)
             compileOnly(libs.kotlinx.coroutines.rx3)
@@ -85,18 +87,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.rx3)
                 implementation("io.projectreactor:reactor-test:3.6.2")
             }
-        }
-
-        nativeMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-        }
-
-        jsMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-        }
-
-        getByName("wasmJsMain").dependencies {
-            implementation(project(":simbot-commons:simbot-common-annotations"))
         }
     }
 }

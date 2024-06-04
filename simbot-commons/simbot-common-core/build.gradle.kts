@@ -69,10 +69,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
+                implementation(libs.kotlinx.coroutines.core)
+
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-collection"))
-                compileOnly(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.serialization.core)
             }
         }
@@ -86,6 +87,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(libs.kotlinx.coroutines.reactor)
             compileOnly(libs.kotlinx.coroutines.reactive)
         }
@@ -96,21 +98,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.reactor)
                 implementation("io.projectreactor:reactor-test:3.6.2")
             }
-        }
-
-        nativeMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.kotlinx.coroutines.core)
-        }
-
-        jsMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.kotlinx.coroutines.core)
-        }
-
-        getByName("wasmJsMain").dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(libs.kotlinx.coroutines.core)
         }
     }
 }

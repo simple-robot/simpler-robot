@@ -63,6 +63,7 @@ kotlin {
 
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
+    implementation(project(":simbot-logger"))
     compileOnly(project(":simbot-commons:simbot-common-annotations"))
     api(project(":simbot-quantcat:simbot-quantcat-common"))
     api(project(":simbot-cores:simbot-core"))

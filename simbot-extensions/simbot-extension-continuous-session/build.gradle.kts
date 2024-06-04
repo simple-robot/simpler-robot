@@ -63,7 +63,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                // jvm compile only
                 api(project(":simbot-api"))
             }
         }
@@ -79,7 +78,7 @@ kotlin {
 
         jvmMain {
             dependencies {
-                compileOnly(project(":simbot-api"))
+
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)

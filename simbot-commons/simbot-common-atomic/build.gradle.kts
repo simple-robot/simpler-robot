@@ -67,11 +67,6 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                // compileOnly(project(":simbot-commons:simbot-common-annotations"))
-            }
-        }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
@@ -83,12 +78,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-junit5"))
                 implementation(libs.kotlinx.lincheck)
-            }
-        }
-
-        jsMain {
-            dependencies {
-                // implementation(project(":simbot-commons:simbot-common-annotations"))
             }
         }
     }
