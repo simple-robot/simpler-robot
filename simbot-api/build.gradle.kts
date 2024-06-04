@@ -75,15 +75,15 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                // jvm compile only
-                api(libs.jetbrains.annotations)
-                api(project(":simbot-commons:simbot-common-annotations"))
-                api(libs.kotlinx.serialization.json)
+                implementation(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-logger"))
+
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-core"))
                 api(project(":simbot-commons:simbot-common-collection"))
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.serialization.json)
                 // suspend reversal annotations
 
             }
@@ -102,7 +102,6 @@ kotlin {
         jvmMain {
             dependencies {
                 compileOnly(libs.jetbrains.annotations)
-                compileOnly(libs.kotlinx.serialization.json)
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
 
                 compileOnly(libs.kotlinx.coroutines.reactive)
@@ -130,27 +129,6 @@ kotlin {
             implementation(libs.ktor.client.js)
             implementation(libs.ktor.client.core)
         }
-
-        nativeTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        linuxTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        appleTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.cio)
-        }
-
-        mingwTest.dependencies {
-            // implementation(libs.ktor.client.core)
-            // implementation(libs.ktor.client.winhttp)
-        }
-
     }
 }
 

@@ -70,8 +70,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":simbot-commons:simbot-common-annotations"))
-                api(project(":simbot-commons:simbot-common-collection"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-commons:simbot-common-collection"))
 
                 api(project(":simbot-api"))
                 api(libs.kotlinx.coroutines.core)
@@ -88,7 +88,7 @@ kotlin {
 
         jvmMain.dependencies {
             compileOnly(project(":simbot-commons:simbot-common-annotations"))
-            compileOnly(project(":simbot-commons:simbot-common-collection"))
+            // compileOnly(project(":simbot-commons:simbot-common-collection"))
         }
 
         jvmTest {
