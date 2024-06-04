@@ -24,7 +24,7 @@ gradleCommon = "0.3.0"
 mockk = "1.13.10"
 # detekt
 # https://detekt.dev/docs/intro
-detekt = "1.23.3"
+detekt = "1.23.6"
 
 [libraries]
 # jetbrains-annotation
