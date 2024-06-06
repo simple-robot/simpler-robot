@@ -55,6 +55,7 @@ plugins {
 
 setup(P.Simbot)
 configJavaCompileWithModule("simbot.spring2boot.starter")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
