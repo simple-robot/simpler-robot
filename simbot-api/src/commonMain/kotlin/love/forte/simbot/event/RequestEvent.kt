@@ -23,6 +23,8 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.ability.AcceptSupport
+import love.forte.simbot.ability.RejectSupport
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.definition.ChatGroup
@@ -38,7 +40,7 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @author ForteScarlet
  */
-public interface RequestEvent : BotEvent {
+public interface RequestEvent : BotEvent, RejectSupport, AcceptSupport {
     /**
      * 伴随请求的附加消息。
      *
@@ -74,7 +76,7 @@ public interface RequestEvent : BotEvent {
      * @throws Exception 任何可能产生的错误。
      */
     @ST
-    public suspend fun reject()
+    override suspend fun reject()
 
     /**
      * 接受此请求。
@@ -82,7 +84,7 @@ public interface RequestEvent : BotEvent {
      * @throws Exception 任何可能产生的错误。
      */
     @ST
-    public suspend fun accept()
+    override suspend fun accept()
 }
 
 
