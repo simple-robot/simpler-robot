@@ -21,8 +21,13 @@
  *
  */
 
-import love.forte.simbot.message.MessagesBuilder
+package love.forte.simbot.plugin
 
-internal actual fun MessagesBuilder.addIntoMessages() {
-    // nothing.
-}
+import love.forte.simbot.common.services.Services
+import love.forte.simbot.component.addComponentFactoryProvider
+
+/**
+ * 加载所有通过 [addComponentFactoryProvider] 添加的函数构建出来的 [PluginFactoryProvider] 实例。
+ */
+public actual fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>> =
+    Services.loadProviders<PluginFactoryProvider<*>>().map { it() }

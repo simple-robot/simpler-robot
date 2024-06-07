@@ -1,3 +1,13 @@
+# v4.0.0-RC3
+
+> Release & Pull Notes: [v4.0.0-RC3](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC3) 
+
+- build(deps): bump kotlinxBenchmark from 0.4.10 to 0.4.11 ([`b7f4db13`](https://github.com/simple-robot/simpler-robot/commit/b7f4db13))
+- build(deps): bump com.squareup:kotlinpoet-ksp from 1.16.0 to 1.17.0 ([`239d5dcc`](https://github.com/simple-robot/simpler-robot/commit/239d5dcc))
+- build(deps): bump slf4j from 2.0.12 to 2.0.13 ([`cc77e33b`](https://github.com/simple-robot/simpler-robot/commit/cc77e33b))
+- build(deps): bump io.gitlab.arturbosch.detekt from 1.23.3 to 1.23.6 ([`48588934`](https://github.com/simple-robot/simpler-robot/commit/48588934))
+- fix: Application的coroutineContext应当始终有一个Job ([`539774e0`](https://github.com/simple-robot/simpler-robot/commit/539774e0))
+
 # v4.0.0-RC2
 
 > Release & Pull Notes: [v4.0.0-RC2](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC2) 

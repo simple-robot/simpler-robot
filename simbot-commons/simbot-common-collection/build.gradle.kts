@@ -44,12 +44,6 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    sourceSets.configureEach {
-        languageSettings {
-            // optIn("love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi")
-        }
-    }
-
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
@@ -76,8 +70,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                // compileOnly(project(":simbot-commons:simbot-common-annotations"))
-                compileOnly(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
         commonTest {
@@ -87,23 +80,15 @@ kotlin {
             }
         }
 
+        jvmMain.dependencies {
+            compileOnly(libs.kotlinx.coroutines.core)
+        }
+
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))
                 implementation(libs.kotlinx.lincheck)
             }
-        }
-
-        nativeMain.dependencies {
-            api(libs.kotlinx.coroutines.core)
-        }
-
-        jsMain.dependencies {
-            api(libs.kotlinx.coroutines.core)
-        }
-
-        getByName("wasmJsMain").dependencies {
-            api(libs.kotlinx.coroutines.core)
         }
     }
 }

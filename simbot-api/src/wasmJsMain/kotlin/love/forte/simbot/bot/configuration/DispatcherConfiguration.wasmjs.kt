@@ -21,8 +21,26 @@
  *
  */
 
-import love.forte.simbot.message.MessagesBuilder
+package love.forte.simbot.bot.configuration
 
-internal actual fun MessagesBuilder.addIntoMessages() {
-    // nothing.
-}
+import kotlinx.coroutines.CoroutineDispatcher
+
+/**
+ * 获取 `IO` 调度器，始终返回 `null`。
+ */
+internal actual fun ioDispatcher(): CoroutineDispatcher? = null
+
+/**
+ * 获取自定义调度器。不支持或无法构建时返回 `null`。
+ */
+internal actual fun customDispatcher(
+    coreThreads: Int?,
+    maxThreads: Int?,
+    keepAliveMillis: Long?,
+    name: String?
+): CoroutineDispatcher? = null
+
+/**
+ * 当平台为 Java21+ 的 JVM平台时得到虚拟线程调度器，否则得到 `null`。
+ */
+internal actual fun virtualDispatcher(): CoroutineDispatcher? = null

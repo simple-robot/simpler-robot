@@ -1,3 +1,18 @@
+public abstract interface class love/forte/simbot/ability/AcceptOption {
+}
+
+public abstract interface class love/forte/simbot/ability/AcceptSupport {
+	public abstract synthetic fun accept (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun accept ([Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun accept$suspendImpl (Llove/forte/simbot/ability/AcceptSupport;[Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun acceptAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun acceptAsync ([Llove/forte/simbot/ability/AcceptOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun acceptBlocking ()V
+	public fun acceptBlocking ([Llove/forte/simbot/ability/AcceptOption;)V
+	public fun acceptReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun acceptReserve ([Llove/forte/simbot/ability/AcceptOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
 public abstract interface class love/forte/simbot/ability/CompletionAware {
 	public abstract fun onCompletion (Llove/forte/simbot/ability/OnCompletion;)V
 }
@@ -45,6 +60,21 @@ public abstract interface class love/forte/simbot/ability/MentionedTargetAware {
 
 public abstract interface class love/forte/simbot/ability/OnCompletion {
 	public abstract fun invoke (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/ability/RejectOption {
+}
+
+public abstract interface class love/forte/simbot/ability/RejectSupport {
+	public abstract synthetic fun reject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun reject ([Llove/forte/simbot/ability/RejectOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun reject$suspendImpl (Llove/forte/simbot/ability/RejectSupport;[Llove/forte/simbot/ability/RejectOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rejectAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun rejectAsync ([Llove/forte/simbot/ability/RejectOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun rejectBlocking ()V
+	public fun rejectBlocking ([Llove/forte/simbot/ability/RejectOption;)V
+	public fun rejectReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun rejectReserve ([Llove/forte/simbot/ability/RejectOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
 public abstract interface class love/forte/simbot/ability/ReplySupport {
@@ -1572,7 +1602,7 @@ public abstract interface class love/forte/simbot/event/OrganizationSourceEvent 
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class love/forte/simbot/event/RequestEvent : love/forte/simbot/event/BotEvent {
+public abstract interface class love/forte/simbot/event/RequestEvent : love/forte/simbot/ability/AcceptSupport, love/forte/simbot/ability/RejectSupport, love/forte/simbot/event/BotEvent {
 	public abstract synthetic fun accept (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun acceptAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun acceptBlocking ()V

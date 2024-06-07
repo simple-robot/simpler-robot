@@ -53,7 +53,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            compileOnly(libs.ktor.client.core)
+            implementation(libs.ktor.client.core)
         }
         commonTest {
             dependencies {
@@ -67,14 +67,6 @@ kotlin {
                 implementation(libs.slf4j.api)
                 implementation(project(":simbot-logger-slf4j2-impl"))
             }
-        }
-
-        jsMain.dependencies {
-            implementation(libs.ktor.client.core)
-        }
-
-        nativeMain.dependencies {
-            implementation(libs.ktor.client.core)
         }
     }
 }

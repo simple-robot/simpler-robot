@@ -26,6 +26,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 /*
  * Copyright (c) 2023 ForteScarlet.
@@ -64,6 +65,11 @@ kotlin {
     applyTier2()
     applyTier3()
 
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
+    }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.addAll(
@@ -74,8 +80,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                compileOnly(project(":simbot-api"))
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-api"))
+                implementation(project(":simbot-logger"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
 
             }
         }
@@ -88,6 +95,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(kotlin("reflect"))
         }
 
@@ -95,18 +103,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-junit5"))
             }
-        }
-
-        jsMain.dependencies {
-            api(project(":simbot-api"))
-            api(project(":simbot-commons:simbot-common-annotations"))
-
-        }
-
-        nativeMain.dependencies {
-            api(project(":simbot-api"))
-            api(project(":simbot-commons:simbot-common-annotations"))
-
         }
     }
 

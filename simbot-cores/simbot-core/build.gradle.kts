@@ -22,7 +22,11 @@
  */
 
 import love.forte.gradle.common.core.project.setup
+import love.forte.gradle.common.kotlin.multiplatform.applyTier1
+import love.forte.gradle.common.kotlin.multiplatform.applyTier2
+import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -47,36 +51,14 @@ kotlin {
     }
 
     // tier1
-    linuxX64()
-    macosX64()
-    macosArm64()
-    iosSimulatorArm64()
-    iosX64()
+    applyTier1()
+    applyTier2()
+    applyTier3()
 
-    // tier2
-    linuxArm64()
-    watchosSimulatorArm64()
-    watchosX64()
-    watchosArm32()
-    watchosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    iosArm64()
-
-    // tier3
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX86()
-    androidNativeX64()
-    mingwX64()
-    watchosDeviceArm64()
-
-    // wasm?
-//    @Suppress("OPT_IN_USAGE")
-//    wasmJs()
-//    @Suppress("OPT_IN_USAGE")
-//    wasmWasi()
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
+    }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
@@ -88,12 +70,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
-                compileOnly(project(":simbot-commons:simbot-common-collection"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-commons:simbot-common-collection"))
 
                 api(project(":simbot-api"))
                 api(libs.kotlinx.coroutines.core)
-                // api(libs.kotlinx.serialization.core)
             }
         }
         commonTest {
@@ -105,6 +86,11 @@ kotlin {
             }
         }
 
+        jvmMain.dependencies {
+            compileOnly(project(":simbot-commons:simbot-common-annotations"))
+            // compileOnly(project(":simbot-commons:simbot-common-collection"))
+        }
+
         jvmTest {
             dependencies {
                 implementation(project(":simbot-api"))
@@ -112,17 +98,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.reactor)
                 implementation(libs.reactor.core)
             }
-        }
-
-        jsMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(project(":simbot-commons:simbot-common-collection"))
-        }
-
-        nativeMain.dependencies {
-            api(project(":simbot-commons:simbot-common-annotations"))
-            api(project(":simbot-commons:simbot-common-collection"))
-
         }
     }
 }
