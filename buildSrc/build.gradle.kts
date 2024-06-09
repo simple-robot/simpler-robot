@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.bundles.dokka)
 
     // see https://github.com/gradle-nexus/publish-plugin
-    implementation("io.github.gradle-nexus:publish-plugin:1.3.0")
+    implementation(libs.gradleNexusPublishPlugin)
 
     // suspend transform
     implementation(libs.suspend.transform.gradle)
@@ -55,14 +55,3 @@ idea {
     }
 }
 
-// tasks.withType(KotlinCompile::class.java).configureEach {
-//     kotlinOptions.languageVersion = "1.9"
-// }
-
-// val compileKotlin: KotlinCompile by tasks
-// compileKotlin.kotlinOptions.freeCompilerArgs += listOf(
-//     "-Xjvm-default=all",
-//     // "-opt-in=kotlin.RequiresOptIn",
-//     // see https://youtrack.jetbrains.com/issue/KTIJ-21563
-//     "-Xskip-prerelease-check",
-// )

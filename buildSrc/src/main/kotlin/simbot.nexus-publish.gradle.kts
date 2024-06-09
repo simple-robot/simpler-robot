@@ -57,7 +57,6 @@ logger.info("isReleaseOnly: {}", isReleaseOnly)
 logger.info("isPublishConfigurable: {}", isPublishConfigurable)
 
 
-//if (!isCi || isPublishConfigurable) {
 val userInfo = love.forte.gradle.common.publication.sonatypeUserInfoOrNull
 
 if (userInfo == null) {
@@ -81,7 +80,6 @@ nexusPublishConfig {
 
 
 logger.info("[nexus-publishing-configure] - [{}] configured.", name)
-//}
 
 
 

@@ -19,16 +19,21 @@ reactor = "3.6.2"
 # simbots
 suspendTransform = "0.8.0-beta1"
 suspendReversal = "0.2.0"
-gradleCommon = "0.3.0"
+gradleCommon = "0.4.0"
 # tests
 mockk = "1.13.10"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.6"
+# https://github.com/gradle-nexus/publish-plugin
+gradleNexusPublishPlugin = "2.0.0"
 
 [libraries]
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
+
+# gradle-nexus:publish-plugin
+gradleNexusPublishPlugin = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "gradleNexusPublishPlugin" }
 
 # dokka
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
