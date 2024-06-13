@@ -1731,8 +1731,11 @@ public final class love/forte/simbot/event/TypedJBlockEventListener$Companion {
 
 public abstract class love/forte/simbot/message/AggregatedMessageReceipt : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/StandardMessageReceipt {
 	public fun <init> ()V
-	public fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun deleteAll ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun deleteAll ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAllAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun deleteAllBlocking ([Llove/forte/simbot/ability/DeleteOption;)I
+	public fun deleteAllReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun get (I)Llove/forte/simbot/message/SingleMessageReceipt;
 	public abstract fun getSize ()I
 	public fun iterator ()Ljava/util/Iterator;
@@ -1897,7 +1900,7 @@ public abstract interface class love/forte/simbot/message/Message$Element : love
 }
 
 public abstract interface class love/forte/simbot/message/MessageContent : love/forte/simbot/ability/DeleteSupport {
-	public abstract fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getMessages ()Llove/forte/simbot/message/Messages;
 	public abstract fun getPlainText ()Ljava/lang/String;

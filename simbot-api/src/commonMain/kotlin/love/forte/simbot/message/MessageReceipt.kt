@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -28,6 +28,7 @@ import love.forte.simbot.ability.DeleteSupport
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 
 
@@ -114,6 +115,7 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterabl
      *
      * @see deleteAll
      */
+    @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption) {
         deleteAll(options = options)
     }
@@ -128,6 +130,7 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterabl
      *
      * @return 删除成功的数量
      */
+    @ST
     public open suspend fun deleteAll(vararg options: DeleteOption): Int {
         var count = 0
         for (receipt in this) {
