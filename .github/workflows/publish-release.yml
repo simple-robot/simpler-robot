@@ -46,7 +46,7 @@ jobs:
           gradle-version: 8.3
           arguments: | 
             publishToSonatype
-            closeAndReleaseStagingRepository
+            closeAndReleaseStagingRepositories
             --info 
             --warning-mode all
             -x test
@@ -84,7 +84,7 @@ jobs:
           gradle-version: 8.3
           arguments: |
             publishToSonatype
-            closeAndReleaseStagingRepository
+            closeAndReleaseStagingRepositories
             --info 
             --warning-mode all
             -x test

@@ -3,6 +3,14 @@
 > [!warning]
 > 尚在试验阶段，随时可能删除或被调整
 
+## 安装
+
+```kotlin
+implementation("love.forte.simbot.extension:simbot-extension-continuous-session:$VERSION")
+```
+
+## 探讨
+
 仍在考虑中。
 
 **持续会话需要解决什么？**

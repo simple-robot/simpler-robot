@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -27,6 +27,7 @@ import love.forte.simbot.ability.DeleteFailureException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.DeleteSupport
 import love.forte.simbot.common.id.ID
+import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -81,6 +82,7 @@ public interface MessageContent : DeleteSupport {
      * @throws DeleteFailureException 删除行为失败
      * @throws NoSuchElementException 没有可删除目标
      */
+    @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption)
 }
 

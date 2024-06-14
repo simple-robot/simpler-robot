@@ -1,3 +1,10 @@
+# v4.0.0
+
+> Release & Pull Notes: [v4.0.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0) 
+
+- fix: 修复部分面向Java未被正确隐藏/转化的挂起函数 ([`70e86fe0`](https://github.com/simple-robot/simpler-robot/commit/70e86fe0))
+- deps: 更新 suspend-transform 编译器插件版本并借此修复 #849 ([`2d5afd5d`](https://github.com/simple-robot/simpler-robot/commit/2d5afd5d))
+
 # v4.0.0-RC3
 
 > Release & Pull Notes: [v4.0.0-RC3](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-RC3) 
