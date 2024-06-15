@@ -58,10 +58,13 @@ import love.forte.plugin.suspendtrans.*
 public object SuspendTransforms {
     private val javaIncludeAnnotationApi4JClassInfo = ClassInfo("love.forte.simbot.annotations", "Api4J")
     private val javaIncludeAnnotationApi4J = IncludeAnnotation(javaIncludeAnnotationApi4JClassInfo)
+        .apply { includeProperty = true }
+
     private val javaIncludeAnnotations = listOf(javaIncludeAnnotationApi4J)
 
     private val jsIncludeAnnotationApi4JsClassInfo = ClassInfo("love.forte.simbot.annotations", "Api4Js")
     private val jsIncludeAnnotationApi4Js = IncludeAnnotation(jsIncludeAnnotationApi4JsClassInfo)
+        .apply { includeProperty = true }
 
     // TODO
     private val jsIncludeAnnotations = listOf(jsIncludeAnnotationApi4Js)
@@ -218,10 +221,36 @@ public object SuspendTransforms {
             jvmSuspendTransPropMarkAnnotationForReserve.classInfo
     )
     //endregion
-
-
 }
 
+/**
+ * 添加：
+ * - [SuspendTransforms.jvmBlockingTransformer]
+ * - [SuspendTransforms.jvmAsyncTransformer]
+ * - [SuspendTransforms.suspendTransTransformerForJvmBlocking]
+ * - [SuspendTransforms.suspendTransTransformerForJvmAsync]
+ * - [SuspendTransforms.suspendTransTransformerForJvmReserve]
+ * - [SuspendTransforms.jvmSuspendTransPropTransformerForBlocking]
+ * - [SuspendTransforms.jvmSuspendTransPropTransformerForAsync]
+ * - [SuspendTransforms.jvmSuspendTransPropTransformerForReserve]
+ */
+public fun SuspendTransformConfiguration.addSimbotJvmTransformers() {
+    addJvmTransformers(
+        // @JvmBlocking
+        SuspendTransforms.jvmBlockingTransformer,
+        // @JvmAsync
+        SuspendTransforms.jvmAsyncTransformer,
 
+        // @JvmSuspendTrans
+        SuspendTransforms.suspendTransTransformerForJvmBlocking,
+        SuspendTransforms.suspendTransTransformerForJvmAsync,
+        SuspendTransforms.suspendTransTransformerForJvmReserve,
+
+        // @JvmSuspendTransProperty
+        SuspendTransforms.jvmSuspendTransPropTransformerForBlocking,
+        SuspendTransforms.jvmSuspendTransPropTransformerForAsync,
+        SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
+    )
+}
 
 
