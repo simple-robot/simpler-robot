@@ -13,3 +13,7 @@ public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransforms 
 	public final fun getSuspendTransTransformerForJvmReserve ()Llove/forte/plugin/suspendtrans/Transformer;
 }
 
+public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransformsKt {
+	public static final fun addSimbotJvmTransformers (Llove/forte/plugin/suspendtrans/SuspendTransformConfiguration;)V
+}
+

@@ -109,12 +109,14 @@ public final class love/forte/simbot/spring/common/application/SpringApplication
 	public final fun getAutoStartBots ()Z
 	public final fun getAutoStartMode ()Llove/forte/simbot/spring/common/application/BotAutoStartMode;
 	public final fun getConfigurationJsonResources ()Ljava/util/Set;
+	public final fun getIgnoreIOExceptionForResourcesLoad ()Z
 	public final fun setAutoRegistrationFailurePolicy (Llove/forte/simbot/spring/common/application/BotRegistrationFailurePolicy;)V
 	public final fun setAutoRegistrationMismatchConfigurableBotManagerPolicy (Llove/forte/simbot/spring/common/application/MismatchConfigurableBotManagerPolicy;)V
 	public final fun setAutoRegistrationResourceLoadFailurePolicy (Llove/forte/simbot/spring/common/application/BotConfigResourceLoadFailurePolicy;)V
 	public final fun setAutoStartBots (Z)V
 	public final fun setAutoStartMode (Llove/forte/simbot/spring/common/application/BotAutoStartMode;)V
 	public final fun setConfigurationJsonResources (Ljava/util/Set;)V
+	public final fun setIgnoreIOExceptionForResourcesLoad (Z)V
 }
 
 public final class love/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties$BotProperties$Companion {
