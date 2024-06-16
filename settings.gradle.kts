@@ -67,6 +67,9 @@ include(":simbot-cores:simbot-core-spring-boot-starter-v2")
 // extensions
 include(":simbot-extensions:simbot-extension-continuous-session")
 
+// local tests
+include(":tests:spring-boot-starter-test")
+
 // local
 // if (!(System.getProperty("IS_CI") ?: System.getenv("IS_CI")).toBoolean()) {
 //     include(":tests:native-impl-test")

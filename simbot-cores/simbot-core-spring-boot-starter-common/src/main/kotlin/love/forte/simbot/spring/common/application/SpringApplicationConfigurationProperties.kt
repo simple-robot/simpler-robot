@@ -49,6 +49,13 @@ public class SpringApplicationConfigurationProperties {
         }
 
         /**
+         * 是否忽略读取 [configurationJsonResources] 过程中产生的 `IOException`。
+         *
+         * @since 4.0.1
+         */
+        public var ignoreIOExceptionForResourcesLoad: Boolean = true
+
+        /**
          * 需要加载的所有组件下它们对应的所有 JSON 格式 的 bot 配置文件。
          * 默认为 [`classpath:simbot-bots/\*.bot.json`][DEFAULT_JSON_RESOURCE_PATTERN]
          */
