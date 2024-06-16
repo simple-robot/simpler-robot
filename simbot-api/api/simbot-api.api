@@ -1238,6 +1238,8 @@ public final class love/forte/simbot/event/EventListeners {
 	public static synthetic fun block$default (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
 	public static synthetic fun block$default (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
 	public static final fun handleWith (Llove/forte/simbot/event/EventListener;Llove/forte/simbot/event/EventListenerContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun nonBlock (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+	public static final fun nonBlock (Llove/forte/simbot/event/JNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
 }
 
 public abstract interface class love/forte/simbot/event/EventProcessor {
@@ -1480,6 +1482,16 @@ public final class love/forte/simbot/event/JBlockEventListener$Companion {
 	public final fun toListener (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
 	public final fun toListener (Llove/forte/simbot/event/JBlockEventListener;)Llove/forte/simbot/event/EventListener;
 	public static synthetic fun toListener$default (Llove/forte/simbot/event/JBlockEventListener$Companion;Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/event/JBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/event/JNonBlockEventListener {
+	public static final field Companion Llove/forte/simbot/event/JNonBlockEventListener$Companion;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;)Llove/forte/simbot/event/EventResult;
+	public static fun toListener (Llove/forte/simbot/event/JNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/JNonBlockEventListener$Companion {
+	public final fun toListener (Llove/forte/simbot/event/JNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
 }
 
 public abstract interface class love/forte/simbot/event/MemberAuthorAwareMessageEvent : love/forte/simbot/event/ActorAuthorAwareMessageEvent {
@@ -1727,6 +1739,16 @@ public final class love/forte/simbot/event/TypedJBlockEventListener$Companion {
 	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
 	public final fun toListener (Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;)Llove/forte/simbot/event/EventListener;
 	public static synthetic fun toListener$default (Llove/forte/simbot/event/TypedJBlockEventListener$Companion;Lkotlin/coroutines/CoroutineContext;Ljava/lang/Class;Llove/forte/simbot/event/TypedJBlockEventListener;ILjava/lang/Object;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/event/TypedJNonBlockEventListener {
+	public static final field Companion Llove/forte/simbot/event/TypedJNonBlockEventListener$Companion;
+	public abstract fun handle (Llove/forte/simbot/event/EventListenerContext;Llove/forte/simbot/event/Event;)Llove/forte/simbot/event/EventResult;
+	public static fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/TypedJNonBlockEventListener$Companion {
+	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
 }
 
 public abstract class love/forte/simbot/message/AggregatedMessageReceipt : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/StandardMessageReceipt {
