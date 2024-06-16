@@ -47,6 +47,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import java.io.FileNotFoundException
+import java.io.IOException
 
 /**
  * [SimbotApplicationProcessor] 的默认实现
@@ -150,6 +151,7 @@ private class BotAutoLoader(
 
     fun load() {
         val resolver = PathMatchingResourcePatternResolver()
+        val ignoreIO = properties.ignoreIOExceptionForResourcesLoad
 
         val botList =
             properties.configurationJsonResources
@@ -160,16 +162,35 @@ private class BotAutoLoader(
                     } catch (fne: FileNotFoundException) {
                         logger.warn(
                             "Bot configuration resource path [{}] could not be resolved " +
-                                "because of FileNotFoundException(message={}), will be skip.",
+                                "because of FileNotFoundException(message={}), will be skipped.",
                             it,
                             fne.localizedMessage,
                         )
                         logger.debug(
                             "Bot configuration resource path [{}] could not be resolved " +
-                                "because of FileNotFoundException(message={}), will be skip.",
+                                "because of FileNotFoundException(message={}), will be skipped.",
                             it,
                             fne.localizedMessage,
                             fne
+                        )
+
+                        emptySequence()
+                    } catch (ie: IOException) {
+                        if (!ignoreIO) {
+                            throw ie
+                        }
+                        logger.warn(
+                            "Bot configuration resource path [{}] could not be resolved " +
+                                "because of IOException(message={}), will be skipped.",
+                            it,
+                            ie.localizedMessage,
+                        )
+                        logger.debug(
+                            "Bot configuration resource path [{}] could not be resolved " +
+                                "because of IOException(message={}), will be skipped.",
+                            it,
+                            ie.localizedMessage,
+                            ie
                         )
 
                         emptySequence()

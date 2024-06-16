@@ -102,6 +102,8 @@ detekt {
 tasks.withType<Detekt>().configureEach {
     // internal 处理器不管
     exclude("internal-processors/**")
+    // tests 不管
+    exclude("tests/**")
 
     include("**/src/*Main/kotlin/**/*.kt")
     include("**/src/*Main/kotlin/**/*.java")
@@ -142,6 +144,8 @@ apiValidation {
         listOf(
             "interface-uml-processor",
             "simbot-test",
+            "tests",
+            "spring-boot-starter-test",
         )
     )
 
