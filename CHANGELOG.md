@@ -1,3 +1,10 @@
+# v4.0.1
+
+> Release & Pull Notes: [v4.0.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.1) 
+
+- build(deps): bump ktor from 2.3.8 to 2.3.11 ([`7d1e505a`](https://github.com/simple-robot/simpler-robot/commit/7d1e505a))
+- pref(gradle): 优化Gradle的挂起函数辅助插件的配置内容 ([`461b95c1`](https://github.com/simple-robot/simpler-robot/commit/461b95c1))
+
 # v4.0.0
 
 > Release & Pull Notes: [v4.0.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0) 
