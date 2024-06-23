@@ -89,6 +89,7 @@ dependencies {
     testImplementation(libs.spring.boot.v2.configuration.processor)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.spring.boot.v2.logging)
+    testImplementation(libs.mockk)
 }
 
 tasks.test {
