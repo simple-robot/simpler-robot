@@ -61,6 +61,7 @@ dependencies {
 
     compileOnly(libs.javax.annotation.api)
 
+    testImplementation(kotlin("test"))
     testImplementation(project(":simbot-commons:simbot-common-annotations"))
     testImplementation(project(":simbot-test"))
     testImplementation(libs.spring.boot.v3.test)
@@ -68,6 +69,7 @@ dependencies {
     testImplementation(libs.spring.boot.v3.autoconfigure)
     testImplementation(libs.spring.boot.v3.configuration.processor)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
 }
 
 tasks.withType<Test> {
