@@ -1,3 +1,13 @@
+# v4.1.0
+
+> Release & Pull Notes: [v4.1.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.1.0) 
+
+- fix(spring): 修复使用多个Filter时会失效的问题 ([`668ef449`](https://github.com/simple-robot/simpler-robot/commit/668ef449))
+- build(deps): bump org.jetbrains.kotlinx.kover from 0.8.0 to 0.8.1 ([`a1c54b59`](https://github.com/simple-robot/simpler-robot/commit/a1c54b59))
+- feat(api): JVM中的EventListener兼容类型增加一个 nonBlock 类型用于简化响应式结果的使用 ([`19aa56bc`](https://github.com/simple-robot/simpler-robot/commit/19aa56bc))
+- build(deps): bump io.mockk:mockk from 1.13.10 to 1.13.11 ([`a7b5307e`](https://github.com/simple-robot/simpler-robot/commit/a7b5307e))
+- feat(api): JVM中的EventListener兼容类型增加一个 nonBlock 类型用于简化响应式结果的使用 ([`beb3c7b3`](https://github.com/simple-robot/simpler-robot/commit/beb3c7b3))
+
 # v4.0.1
 
 > Release & Pull Notes: [v4.0.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.1) 
