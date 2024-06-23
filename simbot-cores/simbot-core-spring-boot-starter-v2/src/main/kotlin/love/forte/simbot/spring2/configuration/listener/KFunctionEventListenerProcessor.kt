@@ -320,7 +320,7 @@ internal class KFunctionEventListenerProcessor {
         }?.also { filterMatchers ->
             when {
                 filterMatchers.size == 1 -> onFilter(filterMatchers.first())
-                filterMatchers.size > 1 -> merge(matchType, filterMatchers)
+                filterMatchers.size > 1 -> onFilter(merge(matchType, filterMatchers))
             }
         }
 

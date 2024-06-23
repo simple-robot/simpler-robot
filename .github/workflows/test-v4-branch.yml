@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - 'v4-dev'
+      - 'v4*-dev'
 
 env:
   IS_CI: true

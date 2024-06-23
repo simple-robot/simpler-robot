@@ -21,15 +21,28 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.test.runTest
+import love.forte.simbot.annotations.ExperimentalSimbotAPI
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.UUID
+import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.core.application.launchSimpleApplication
+import love.forte.simbot.event.Event
+import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.nonBlock
+import reactor.core.publisher.Mono
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 /*
- *     Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -46,52 +59,39 @@ import love.forte.gradle.common.core.project.setup
  *
  */
 
-plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    kotlin("kapt")
-    id("simbot.dokka-module-configuration")
-}
+/**
+ *
+ * @author ForteScarlet
+ */
+class ReactiveEventResultTests {
 
-setup(P.Simbot)
-configJavaCompileWithModule("simbot.spring2boot.starter")
-apply(plugin = "simbot-jvm-maven-publish")
+    @Test
+    @OptIn(ExperimentalSimbotAPI::class)
+    fun reactiveResultCollectTest() = runTest {
+        val app = launchSimpleApplication { }
+        val event = object : Event {
+            override val id: ID = UUID.random()
+            override val time: Timestamp = Timestamp.now()
+        }
 
-kotlin {
-    explicitApi()
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-}
+        val monoCollected = AtomicBoolean(false)
 
-@Suppress("VulnerableLibrariesLocal")
-dependencies {
-    implementation(project(":simbot-logger"))
-    compileOnly(project(":simbot-commons:simbot-common-annotations"))
-    api(project(":simbot-quantcat:simbot-quantcat-common"))
-    api(project(":simbot-cores:simbot-core"))
-    api(project(":simbot-cores:simbot-core-spring-boot-starter-common"))
-    api(kotlin("reflect"))
-    api(libs.kotlinx.serialization.json)
+        app.eventDispatcher.register(
+            nonBlock {
+                EventResult.of(
+                    Mono.just(1).then(
+                        Mono.fromSupplier {
+                            monoCollected.set(true)
+                            2
+                        }
+                    )
+                )
+            }
+        )
 
-    compileOnly(libs.spring.boot.v2.logging)
-    compileOnly(libs.spring.boot.v2.autoconfigure)
-    compileOnly(libs.spring.boot.v2.configuration.processor)
-    annotationProcessor(libs.spring.boot.v2.configuration.processor)
-    kapt(libs.spring.boot.v2.configuration.processor)
+        app.eventDispatcher.push(event).collect()
 
-    compileOnly(libs.javax.annotation.api)
+        assertTrue(monoCollected.get())
+    }
 
-    testImplementation(kotlin("test"))
-    testImplementation(project(":simbot-commons:simbot-common-annotations"))
-    testImplementation(project(":simbot-test"))
-    testImplementation(libs.spring.boot.v2.test)
-    testImplementation(libs.spring.boot.v2.aop)
-    testImplementation(libs.spring.boot.v2.autoconfigure)
-    testImplementation(libs.spring.boot.v2.configuration.processor)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.spring.boot.v2.logging)
-    testImplementation(libs.mockk)
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

@@ -29,11 +29,14 @@ package love.forte.simbot.event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runInterruptible
+import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.event.EventResult.Companion.invalid
 import love.forte.simbot.event.JAsyncEventListener.Companion.toListener
 import love.forte.simbot.event.JBlockEventListener.Companion.toListener
+import love.forte.simbot.event.JNonBlockEventListener.Companion.toListener
 import love.forte.simbot.event.TypedJAsyncEventListener.Companion.toListener
 import love.forte.simbot.event.TypedJBlockEventListener.Companion.toListener
+import love.forte.simbot.event.TypedJNonBlockEventListener.Companion.toListener
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
 import java.util.concurrent.CompletableFuture
@@ -387,6 +390,7 @@ private class TypedJBlockingEventListenerImpl<E : Event>(
 /**
  * 创建一个基于 [CompletionStage] 的异步事件处理器。
  */
+@Api4J
 public fun async(function: JAsyncEventListener): EventListener =
     toListener(function)
 
@@ -395,6 +399,7 @@ public fun async(function: JAsyncEventListener): EventListener =
  * 只处理 [type] 类型的事件。
  * 其他类型的事件会直接返回 [EventResult.invalid]。
  */
+@Api4J
 public fun <E : Event> async(type: Class<E>, function: TypedJAsyncEventListener<E>): EventListener =
     toListener(type, function)
 
@@ -404,6 +409,7 @@ public fun <E : Event> async(type: Class<E>, function: TypedJAsyncEventListener<
  * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
  * 会在 [runInterruptible] 中使用。
  */
+@Api4J
 @JvmOverloads
 public fun block(dispatcherContext: CoroutineContext = Dispatchers.IO, function: JBlockEventListener): EventListener =
     toListener(dispatcherContext, function)
@@ -416,6 +422,7 @@ public fun block(dispatcherContext: CoroutineContext = Dispatchers.IO, function:
  * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
  * 会在 [runInterruptible] 中使用。
  */
+@Api4J
 @JvmOverloads
 public fun <E : Event> block(
     dispatcherContext: CoroutineContext = Dispatchers.IO,
@@ -424,3 +431,223 @@ public fun <E : Event> block(
 ): EventListener =
     toListener(dispatcherContext, type, function)
 
+
+/**
+ * 一个事件 [Event] 的非阻塞监听器。也可以称之为事件处理器。
+ *
+ * 是针对JVM平台的兼容类型，可以通过 [toListener] 转化为 [EventListener] 类型。
+ *
+ * 如果希望针对某个具体的事件类型进行处理，可参考 [TypedJNonBlockEventListener]。
+ *
+ * 与 [JBlockEventListener] 不同，[JNonBlockEventListener]
+ * 不会在执行 [handle] 的时候进行额外的处理（例如使用 [runInterruptible]、[Dispatchers.IO] 等），
+ * 因此 [JNonBlockEventListener] 更适合用于返回那些**非阻塞**的结果。
+ *
+ * [handle] 默认被视为非阻塞的，并将响应式结果 (或其他可收集结果)
+ * 放在 [StandardEventResult.CollectableReactivelyResult]
+ * 类型的结果内。
+ *
+ * ```java
+ * EventListeners.nonBlock(
+ *     (context) -> {
+ *         return EventResult.of(
+ *             Mono.just("Hello.");
+ *         );
+ *     }
+ * );
+ * ```
+ *
+ * @see EventListener
+ * @see toListener
+ * @see TypedJNonBlockEventListener
+ *
+ * @since 4.1.0
+ *
+ * @author ForteScarlet
+ */
+public fun interface JNonBlockEventListener {
+    /**
+     * 通过 [context] 处理事件并得到响应结果。
+     *
+     * @throws Exception 任何可能抛出的异常
+     */
+    @Throws(Exception::class)
+    @NonBlocking
+    public fun handle(context: EventListenerContext): EventResult
+
+    public companion object {
+        /**
+         * Converts a [JNonBlockEventListener] to an EventListener.
+         *
+         * @param listener The [JNonBlockEventListener] to be converted.
+         * @return The converted [EventListener].
+         */
+        @JvmStatic
+        public fun toListener(listener: JNonBlockEventListener): EventListener =
+            listener.toEventListener()
+
+
+        /**
+         * 将 [JNonBlockEventListener] 转化为 [EventListener]。
+         */
+        private fun JNonBlockEventListener.toEventListener(): EventListener =
+            JNonBlockEventListenerImpl(this)
+    }
+}
+
+/**
+ * 一个事件 [Event] 的非阻塞监听器。也可以称之为事件处理器。
+ *
+ * 是针对JVM平台的兼容类型，可以通过 [toListener] 转化为 [EventListener] 类型。
+ *
+ * 会针对指定的类型进行事件处理。如果类型不匹配则会返回 [EventResult.invalid]。
+ *
+ * 与 [TypedJBlockEventListener] 不同，[TypedJNonBlockEventListener]
+ * 不会在执行 [handle] 的时候进行额外的处理（例如使用 [runInterruptible]、[Dispatchers.IO] 等），
+ * 因此 [TypedJNonBlockEventListener] 更适合用于返回那些**非阻塞**的结果。
+ *
+ * [handle] 默认被视为非阻塞的，并将响应式结果 (或其他可收集结果)
+ * 放在 [StandardEventResult.CollectableReactivelyResult]
+ * 类型的结果内。
+ *
+ * ```java
+ * EventListeners.nonBlock(
+ *     Event.class,
+ *     (context, event) -> {
+ *         return EventResult.of(
+ *             Mono.just("Hello.");
+ *         );
+ *     }
+ * );
+ * ```
+ *
+ * @see EventListener
+ * @see toListener
+ *
+ * @see StandardEventResult.CollectableReactivelyResult
+ * @see StandardEventResult.Simple
+ *
+ * @since 4.1.0
+ *
+ * @author ForteScarlet
+ */
+public fun interface TypedJNonBlockEventListener<E : Event> {
+    /**
+     * 通过 [context] 处理事件并得到响应结果。
+     *
+     * @throws Exception 任何可能抛出的异常
+     */
+    @Throws(Exception::class)
+    @NonBlocking
+    public fun handle(context: EventListenerContext, event: E): EventResult
+
+    public companion object {
+        /**
+         * Converts a [TypedJNonBlockEventListener] to an EventListener.
+         *
+         * @param listener The [TypedJNonBlockEventListener] to be converted.
+         * @return The converted [EventListener].
+         */
+        @JvmStatic
+        public fun <E : Event> toListener(
+            type: Class<E>,
+            listener: TypedJNonBlockEventListener<E>
+        ): EventListener = listener.toEventListener(type)
+
+
+        /**
+         * 将 [TypedJNonBlockEventListener] 转化为 [EventListener]。
+         */
+        private fun <E : Event> TypedJNonBlockEventListener<E>.toEventListener(
+            type: Class<E>,
+        ): EventListener =
+            TypedJNonBlockEventListenerImpl(type, this)
+    }
+}
+
+private class JNonBlockEventListenerImpl(
+    private val jnbListener: JNonBlockEventListener,
+) : EventListener {
+    override suspend fun EventListenerContext.handle(): EventResult {
+        return jnbListener.handle(this)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is JNonBlockEventListenerImpl) return false
+
+        if (jnbListener != other.jnbListener) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return jnbListener.hashCode()
+    }
+
+    override fun toString(): String {
+        return "JNonBlockEventListener(listener=$jnbListener)"
+    }
+}
+
+private class TypedJNonBlockEventListenerImpl<E : Event>(
+    private val type: Class<E>,
+    private val listener: TypedJNonBlockEventListener<E>,
+) : EventListener {
+    override suspend fun EventListenerContext.handle(): EventResult {
+        val event = context.event
+        if (type.isInstance(event)) {
+            return this@TypedJNonBlockEventListenerImpl.listener.handle(this, type.cast(event))
+        }
+
+        return invalid()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TypedJNonBlockEventListenerImpl<*>) return false
+
+        if (type != other.type) return false
+        if (listener != other.listener) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + listener.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "TypedJNonBlockEventListener(type=$type, listener=$listener)"
+    }
+}
+
+
+/**
+ * 创建一个非阻塞事件处理器。
+ *
+ * @since 4.1.0
+ *
+ * @see JNonBlockEventListener
+ */
+@Api4J
+public fun nonBlock(function: JNonBlockEventListener): EventListener =
+    toListener(function)
+
+/**
+ * 创建一个非阻塞事件处理器，
+ * 只处理 [type] 类型的事件。
+ * 其他类型的事件会直接返回 [EventResult.invalid]。
+ *
+ * @since 4.1.0
+ *
+ * @see TypedJNonBlockEventListener
+ */
+@Api4J
+public fun <E : Event> nonBlock(
+    type: Class<E>,
+    function: TypedJNonBlockEventListener<E>
+): EventListener =
+    toListener(type, function)
