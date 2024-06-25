@@ -28,6 +28,7 @@ import love.forte.gradle.common.core.project.Version
 import love.forte.gradle.common.core.project.minus
 import love.forte.gradle.common.core.project.version
 import love.forte.gradle.common.core.property.systemProp
+import org.gradle.api.Project
 
 inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
@@ -51,6 +52,9 @@ sealed class P(override val group: String) : ProjectDetail() {
 
      */
     companion object {
+        const val VERSION = "4.1.1"
+        const val NEXT_VERSION = "4.1.1"
+
         const val GROUP = "love.forte.simbot"
         const val GROUP_COMMON = "love.forte.simbot.common"
         const val GROUP_LOGGER = "love.forte.simbot.logger"
@@ -140,3 +144,7 @@ sealed class P(override val group: String) : ProjectDetail() {
 }
 
 fun isSimbotLocal(): Boolean = systemProp("SIMBOT_LOCAL").toBoolean()
+
+fun Project.setupGroup(pro: ProjectDetail) {
+    group = pro.group
+}

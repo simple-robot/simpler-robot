@@ -21,7 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -29,14 +28,9 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    // kotlin("plugin.serialization")
-//    id("io.gitlab.arturbosch.detekt")
     id("simbot.suspend-transform-configure")
-//     alias(libs.plugins.ksp)
     id("simbot.dokka-module-configuration")
 }
-
-setup(P.SimbotExtension)
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
 apply(plugin = "simbot-multiplatform-maven-publish")

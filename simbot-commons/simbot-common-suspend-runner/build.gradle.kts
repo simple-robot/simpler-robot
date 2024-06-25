@@ -21,7 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -31,8 +30,6 @@ plugins {
     kotlin("multiplatform")
     id("simbot.dokka-module-configuration")
 }
-
-setup(P.SimbotCommon)
 
 configJavaCompileWithModule("simbot.common.suspendrunner")
 apply(plugin = "simbot-multiplatform-maven-publish")

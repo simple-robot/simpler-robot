@@ -22,7 +22,6 @@
  */
 
 import io.gitlab.arturbosch.detekt.Detekt
-import love.forte.gradle.common.core.project.setup
 
 plugins {
     idea
@@ -39,7 +38,7 @@ plugins {
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
 }
 
-setup(P.Simbot)
+setupGroup(P.Simbot)
 
 // https://github.com/detekt/detekt/blob/main/build.gradle.kts
 
@@ -56,6 +55,12 @@ repositories {
 }
 
 val root = project
+
+allprojects {
+    group = P.GROUP
+    version = P.VERSION
+    description = P.DESCRIPTION
+}
 
 subprojects {
     repositories {

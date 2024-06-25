@@ -6,6 +6,9 @@ on:
       - 'v4*-dev'
 
 env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+  GRADLE_VERSION: 8.5
   IS_CI: true
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
@@ -24,24 +27,24 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 21
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
 
       - name: Run V4 All Tests
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: 8.5
+          gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
             assemble
             build
             allTests
-            --info 
+            -s
             --warning-mode all
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: always()
         with:
           name: test-reports-${{ matrix.os }}
           path: '**/build/reports/tests'
@@ -54,21 +57,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 21
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
       - name: Run Detekt
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: 8.5
+          gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
             detekt
-            --info 
+            -s
             --warning-mode all
 
       - name: Upload detekt reports
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: always()
         with:
           name: detekt-reports
           path: 'build/reports/detekt'
@@ -79,6 +82,6 @@ jobs:
       # because the previous step may fail if there are findings.
       - name: Upload SARIF to GitHub using the upload-sarif action
         uses: github/codeql-action/upload-sarif@v2
-        if: ${{ always() }}
+        if: always()
         with:
           sarif_file: 'build/reports/detekt/detekt.sarif'

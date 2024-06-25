@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -22,8 +22,9 @@
  */
 
 import love.forte.gradle.common.core.Gpg
-import love.forte.gradle.common.core.property.systemProp
-import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
+import love.forte.gradle.common.publication.configure.configPublishMaven
+import love.forte.gradle.common.publication.configure.publishingExtension
+import love.forte.gradle.common.publication.configure.setupPom
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -49,33 +50,82 @@ plugins {
 }
 
 val p = project
+val isSnapshot = isSnapshot()
 
-multiplatformConfigPublishing {
-    project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
-    isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-    releasesRepository = ReleaseRepository
-    snapshotRepository = SnapshotRepository
-    gpg = Gpg.ofSystemPropOrNull()
+val jarJavadoc by tasks.registering(Jar::class) {
+    group = "documentation"
+    archiveClassifier.set("javadoc")
+    if (!(isSnapshot || isSimbotLocal())) {
+        dependsOn(tasks.dokkaHtml)
+        from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    }
+}
 
-    val jarJavadoc by tasks.registering(Jar::class) {
-        group = "documentation"
-        archiveClassifier.set("javadoc")
-        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-            dependsOn(tasks.dokkaHtml)
-            from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+publishing {
+    repositories {
+        mavenLocal()
+        if (isSnapshot) {
+            configPublishMaven(SnapshotRepository)
+        } else {
+            configPublishMaven(ReleaseRepository)
         }
     }
 
-    artifact(jarJavadoc)
+    publications {
+        withType<MavenPublication> {
+            artifacts {
+                artifact(jarJavadoc)
+            }
 
-    if (isSimbotLocal()) {
-        logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
-        mainHost = null
+            if (isSnapshot) {
+                version = P.NEXT_VERSION + "-SNAPSHOT"
+            }
+
+            setupPom(project.name, P.Simbot)
+            pom {
+                issueManagement {
+                    system.set("GitHub Issues")
+                    url.set("https://github.com/simple-robot/simpler-robot/issues")
+                }
+            }
+            showMaven()
+        }
     }
-
-    publicationsFromMainHost += listOf("wasm", "wasm32", "wasm_js")
-    mainHostSupportedTargets += listOf("wasm", "wasm32", "wasm_js")
 }
+
+signing {
+    val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
+    val (keyId, secretKey, password) = gpg
+    useInMemoryPgpKeys(keyId, secretKey, password)
+    sign(publishingExtension.publications)
+}
+
+// multiplatformConfigPublishing {
+//     project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
+//     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+//     releasesRepository = ReleaseRepository
+//     snapshotRepository = SnapshotRepository
+//     gpg = Gpg.ofSystemPropOrNull()
+//
+//     val jarJavadoc by tasks.registering(Jar::class) {
+//         group = "documentation"
+//         archiveClassifier.set("javadoc")
+//         if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+//             dependsOn(tasks.dokkaHtml)
+//             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+//         }
+//     }
+//
+//     artifact(jarJavadoc)
+//
+//     if (isSimbotLocal()) {
+//         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
+//         mainHost = null
+//     }
+//
+//     publicationsFromMainHost += listOf("wasm", "wasm32", "wasm_js")
+//     mainHostSupportedTargets += listOf("wasm", "wasm32", "wasm_js")
+// }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
 val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
@@ -83,27 +133,28 @@ tasks.withType<PublishToMavenRepository>().configureEach {
     mustRunAfter(signingTasks)
 }
 
-show()
-
-fun show() {
-    //// show project info
-    logger.info(
+fun MavenPublication.showMaven() {
+    val pom = pom
+    // // show project info
+    logger.lifecycle(
         """
         |=======================================================
-        |= project.group:       {}
-        |= project.name:        {}
-        |= project.version:     {}
-        |= project.description: {}
-        |= os.name:             {}
+        |= multiplatform.maven.name:            {}
+        |= multiplatform.maven.groupId:         {}
+        |= multiplatform.maven.artifactId:      {}
+        |= multiplatform.maven.version:         {}
+        |= multiplatform.maven.pom.description: {}
+        |= multiplatform.maven.pom.name:        {}
         |=======================================================
-    """.trimIndent(),
-        group, name, version, description, systemProp("os.name")
+        """.trimIndent(),
+        name,
+        groupId,
+        artifactId,
+        version,
+        pom.description.get(),
+        pom.name.get(),
     )
 }
-
-
-inline val Project.sourceSets: SourceSetContainer
-    get() = extensions.getByName("sourceSets") as SourceSetContainer
 
 internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
     get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")

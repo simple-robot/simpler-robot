@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,9 @@
  */
 
 import love.forte.gradle.common.core.Gpg
-import love.forte.gradle.common.publication.configure.jvmConfigPublishing
+import love.forte.gradle.common.publication.configure.configPublishMaven
+import love.forte.gradle.common.publication.configure.publishingExtension
+import love.forte.gradle.common.publication.configure.setupPom
 import utils.checkPublishConfigurable
 
 /*
@@ -48,60 +50,115 @@ plugins {
     id("maven-publish")
 }
 
-if (!isCi || isLinux) {
-    checkPublishConfigurable {
-        val p = project
-        
-        jvmConfigPublishing {
-            project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
-            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+// if (!isCi || isLinux) {
+val p = project
 
-            publicationName = "simbotDist"
-            
-            val jarSources by tasks.registering(Jar::class) {
-                archiveClassifier.set("sources")
-                from(sourceSets["main"].allSource)
+checkPublishConfigurable {
+    val isSnapshot = isSnapshot()
+    val jarSources by tasks.registering(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
+
+    val jarJavadoc by tasks.registering(Jar::class) {
+        if (!(isSnapshot || isSimbotLocal())) {
+            dependsOn(tasks.dokkaHtml)
+            from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+        }
+        archiveClassifier.set("javadoc")
+    }
+
+    publishing {
+        repositories {
+            mavenLocal()
+            if (isSnapshot) {
+                configPublishMaven(SnapshotRepository)
+            } else {
+                configPublishMaven(ReleaseRepository)
             }
-            
-            val jarJavadoc by tasks.registering(Jar::class) {
-                if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-                    dependsOn(tasks.dokkaHtml)
-                    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+        }
+
+        publications {
+            create<MavenPublication>("simbotDist") {
+                from(components.getByName("java"))
+                artifacts {
+                    artifact(jarSources)
+                    artifact(jarJavadoc)
                 }
-                archiveClassifier.set("javadoc")
+
+                setupPom(project.name, P.Simbot)
+                pom {
+                    issueManagement {
+                        system.set("GitHub Issues")
+                        url.set("https://github.com/simple-robot/simpler-robot/issues")
+                    }
+                }
+                showMaven()
             }
-            
-            artifact(jarSources)
-            artifact(jarJavadoc)
-            
-            releasesRepository = ReleaseRepository
-            snapshotRepository = SnapshotRepository
-            gpg = Gpg.ofSystemPropOrNull()
-            
-            
         }
     }
-    show()
-}
 
-fun show() {
-    //// show project info
-    logger.info(
+    signing {
+        val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
+        val (keyId, secretKey, password) = gpg
+        useInMemoryPgpKeys(keyId, secretKey, password)
+        sign(publishingExtension.publications)
+    }
+
+    // jvmConfigPublishing {
+    //     project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
+    //     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+    //
+    //     publicationName = "simbotDist"
+    //
+    //     val jarSources by tasks.registering(Jar::class) {
+    //         archiveClassifier.set("sources")
+    //         from(sourceSets["main"].allSource)
+    //     }
+    //
+    //     val jarJavadoc by tasks.registering(Jar::class) {
+    //         if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+    //             dependsOn(tasks.dokkaHtml)
+    //             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    //         }
+    //         archiveClassifier.set("javadoc")
+    //     }
+    //
+    //     artifact(jarSources)
+    //     artifact(jarJavadoc)
+    //
+    //     releasesRepository = ReleaseRepository
+    //     snapshotRepository = SnapshotRepository
+    //     gpg = Gpg.ofSystemPropOrNull()
+    //
+    //
+    // }
+}
+// show()
+// }
+
+fun MavenPublication.showMaven() {
+    val pom = pom
+    // // show project info
+    logger.lifecycle(
         """
         |=======================================================
-        |= project.group:       {}
-        |= project.name:        {}
-        |= project.version:     {}
-        |= project.description: {}
+        |= jvm.maven.name:            {}
+        |= jvm.maven.groupId:         {}
+        |= jvm.maven.artifactId:      {}
+        |= jvm.maven.version:         {}
+        |= jvm.maven.pom.description: {}
+        |= jvm.maven.pom.name:        {}
         |=======================================================
-    """.trimIndent(),
-        group, name, version, description
+        """.trimIndent(),
+        name,
+        groupId,
+        artifactId,
+        version,
+        pom.description.get(),
+        pom.name.get(),
     )
 }
-
-
-inline val Project.sourceSets: SourceSetContainer
-    get() = extensions.getByName("sourceSets") as SourceSetContainer
 
 internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
     get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")
