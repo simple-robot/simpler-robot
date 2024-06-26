@@ -77,10 +77,6 @@ publishing {
                 artifact(jarJavadoc)
             }
 
-            if (isSnapshot) {
-                version = P.NEXT_VERSION + "-SNAPSHOT"
-            }
-
             setupPom(project.name, P.Simbot)
             pom {
                 issueManagement {

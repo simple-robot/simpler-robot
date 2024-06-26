@@ -58,7 +58,7 @@ val root = project
 
 allprojects {
     group = P.GROUP
-    version = P.VERSION
+    version = if (isSnapshot()) P.NEXT_SNAPSHOT_VERSION else P.VERSION
     description = P.DESCRIPTION
 }
 

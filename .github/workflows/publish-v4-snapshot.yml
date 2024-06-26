@@ -95,8 +95,10 @@ jobs:
             --warning-mode all
             -x test
             -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+        env:
+          SIMBOT_IS_SNAPSHOT: true
 
-# parallel=true 容易出现 Metaspace 的异常? 去了试试
+  # parallel=true 容易出现 Metaspace 的异常? 去了试试
 
   deploy-doc:
     name: Deploy snapshots API doc
@@ -120,7 +122,7 @@ jobs:
 
       # setup Gradle
       - name: Gradle generate documentation
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
