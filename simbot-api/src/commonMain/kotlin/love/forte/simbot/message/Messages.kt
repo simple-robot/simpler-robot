@@ -427,8 +427,9 @@ public fun StringFormat.encodeMessagesToString(messages: Messages): String =
 public fun StringFormat.decodeMessagesFromString(string: String): Messages =
     decodeFromString(Messages.serializer, string)
 
-
-// TODO delete on stable version
+/**
+ * @suppress 仅针对v4.0.0-dev16及以下的版本的JVM二进制兼容
+ */
 @Suppress("FunctionName")
 @Deprecated("仅供临时针对v4.0.0-dev16及以下的版本的JVM二进制兼容", level = DeprecationLevel.HIDDEN)
 public object MessagesKt {

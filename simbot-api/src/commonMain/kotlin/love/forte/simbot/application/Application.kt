@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -129,3 +129,18 @@ public inline fun Application.listeners(block: EventListenerRegistrar.() -> Unit
     eventDispatcher.block()
 }
 
+/**
+ * 执行完 [block] 后挂起当前 [Application]。
+ *
+ * ```kotlin
+ * app.joinWith { // this: Application
+ *   // ...
+ * }
+ * ```
+ *
+ * @see Application.join
+ */
+public suspend inline fun <T : Application> T.joinWith(block: T.() -> Unit) {
+    block()
+    join()
+}

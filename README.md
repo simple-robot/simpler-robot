@@ -67,23 +67,41 @@ simbot的**平台功能**由组件驱动，安装不同的组件库来获得不�
 
 ```Kotlin
 suspend fun main() {
-    val application = launchSimpleApplication {
-        // 安装KOOK和QQ频道组件库
-        useKook()
-        useQQGuild()
-    }
-    
-    application.kookBots {
-        // ... 注册kook bot，并在此之后可处理到kook的相关事件
+    launchSimpleApplication { config() }
+        .joinWith { module() }
+}
+
+fun ApplicationFactoryConfigurer<*, *, *>.config() {
+    // 安装KOOK和QQ频道组件库
+    useKook()
+    useQQGuild()
+}
+
+/**
+ * 对已经构建完成的 `Application` 进行配置于应用
+ */
+suspend fun Application.module() {
+    registerBots()
+    registerListeners()
+}
+
+/**
+ * 注册所需的bot
+ */
+suspend fun Application.registerBots() {
+    // ... 注册kook bot，并在此之后可处理到kook的相关事件
+    kookBots {
         register(...) { ... }.start()
     }
-    application.qqGuildBots {
-        // ... 注册QQ频道bot，并在此之后可处理到QQ频道的相关事件
+
+    // ... 注册QQ频道bot，并在此之后可处理到QQ频道的相关事件
+    qqGuildBots {
         register(...) { ... }.start()
     }
-    
-    // 注册各种事件处理器
-    application.listeners {
+}
+
+fun Application.registerListeners() {
+    listeners {
         // 注册一个事件处理器
         // ChatChannelMessageEvent 是由simbot API定义的泛用类型，代表所有子频道消息事件
         // 其中就包括QQ频道的公域消息事件, 或者KOOK的频道消息事件
@@ -120,9 +138,6 @@ suspend fun main() {
 - [社群](https://simbot.forte.love/communities.html) 文档中也有提供社群信息喔
 - [应用手册][doc-homepage]
 - [文档引导站&API文档](https://docs.simbot.forte.love)
-
-
-> 切换分支到 [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 可查看 simbot v3 的历史分支。
 
 ## 协助我们
 为我们点亮一个 **✨star🌟** 便是能够给予我们继续走下去的最大动力与支持！

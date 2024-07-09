@@ -267,6 +267,7 @@ public abstract interface class love/forte/simbot/application/ApplicationLaunche
 
 public final class love/forte/simbot/application/Applications {
 	public static final fun asCompletableFuture (Llove/forte/simbot/application/Application;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun joinWith (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final synthetic fun launchApplication (Llove/forte/simbot/application/ApplicationFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun launchApplication$default (Llove/forte/simbot/application/ApplicationFactory;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun launchApplicationAsync (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/application/ApplicationFactory;)Llove/forte/simbot/common/async/Async;
@@ -415,6 +416,11 @@ public abstract interface class love/forte/simbot/bot/BotRelations {
 	public abstract fun getContactRelation ()Llove/forte/simbot/bot/ContactRelation;
 	public abstract fun getGroupRelation ()Llove/forte/simbot/bot/GroupRelation;
 	public abstract fun getGuildRelation ()Llove/forte/simbot/bot/GuildRelation;
+}
+
+public final class love/forte/simbot/bot/Bots {
+	public static final fun startAndJoin (Llove/forte/simbot/bot/Bot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun startIn (Llove/forte/simbot/bot/Bot;Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/Job;
 }
 
 public class love/forte/simbot/bot/ConflictBotException : love/forte/simbot/bot/BotException {
