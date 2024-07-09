@@ -21,10 +21,14 @@
  *
  */
 
+@file:JvmName("Bots")
+
 package love.forte.simbot.bot
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.LifecycleAware
 import love.forte.simbot.common.collectable.Collectable
@@ -37,6 +41,7 @@ import love.forte.simbot.definition.Contact
 import love.forte.simbot.definition.Guild
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
+import kotlin.jvm.JvmName
 
 /**
  * 一个 `Bot`。
@@ -275,3 +280,22 @@ public interface ContactRelation {
     @STP
     public suspend fun contactCount(): Int
 }
+
+/**
+ * 启动当前 [Bot] 后挂起。
+ *
+ * @see Bot.start
+ * @see Bot.join
+ */
+public suspend fun Bot.startAndJoin() {
+    start()
+    join()
+}
+
+/**
+ * 通过 [scope] 在异步中启动 [Bot]。
+ *
+ * @see Bot.start
+ */
+public fun Bot.startIn(scope: CoroutineScope): Job =
+    scope.launch { start() }
