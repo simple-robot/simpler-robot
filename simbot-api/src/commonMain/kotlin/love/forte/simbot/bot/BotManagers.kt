@@ -27,10 +27,9 @@
 package love.forte.simbot.bot
 
 import love.forte.simbot.common.collection.toImmutable
+import love.forte.simbot.common.id.ID
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-
-//region BotManagers
 
 /**
  * 用于表示一组 [BotManager]。
@@ -41,6 +40,27 @@ public interface BotManagers : Collection<BotManager> {
      * 以序列的形式获取当前 [BotManager] 中所有的 [Bot]。
      */
     public fun allBots(): Sequence<Bot> = asSequence().flatMap { it.all() }
+
+    /**
+     * 尝试获取第一个 [BotManager] 中的第一个 [Bot]。
+     *
+     * @throws NoSuchElementException 如果无法获取
+     * @since 4.2.0
+     */
+    public fun firstBot(): Bot =
+        (firstOrNull() ?: throw NoSuchElementException("BotManagers is empty"))
+            .all().firstOrNull() ?: throw NoSuchElementException("Bot is empty")
+
+    /**
+     * 根据指定ID寻找第一个匹配的 [Bot]。
+     *
+     * @throws NoSuchElementException 找不到匹配的bot
+     * @throws ConflictBotException 从某个BotManager中获取时存在多个相同id的bot
+     * @since 4.2.0
+     */
+    public fun firstBot(id: ID): Bot =
+        asSequence().mapNotNull { it.find(id) }
+            .first()
 }
 
 /**
@@ -81,4 +101,3 @@ private class CollectionBotManagers(private val collections: Collection<BotManag
         return collections.hashCode()
     }
 }
-//endregion
