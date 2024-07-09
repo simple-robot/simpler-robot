@@ -368,6 +368,8 @@ public class love/forte/simbot/bot/BotException : java/lang/RuntimeException {
 public abstract interface class love/forte/simbot/bot/BotManager : love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware, love/forte/simbot/bot/AutoConfigurableBotPlugin {
 	public abstract fun all ()Lkotlin/sequences/Sequence;
 	public fun all (Llove/forte/simbot/common/id/ID;)Lkotlin/sequences/Sequence;
+	public fun allToList ()Ljava/util/List;
+	public fun allToList (Llove/forte/simbot/common/id/ID;)Ljava/util/List;
 	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun cancel (Ljava/lang/Throwable;)V
 	public static synthetic fun cancel$default (Llove/forte/simbot/bot/BotManager;Ljava/lang/Throwable;ILjava/lang/Object;)V
@@ -390,6 +392,8 @@ public final class love/forte/simbot/bot/BotManagerUtil {
 
 public abstract interface class love/forte/simbot/bot/BotManagers : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
 	public fun allBots ()Lkotlin/sequences/Sequence;
+	public fun firstBot ()Llove/forte/simbot/bot/Bot;
+	public fun firstBot (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/bot/Bot;
 }
 
 public abstract interface class love/forte/simbot/bot/BotPlugin : love/forte/simbot/plugin/Plugin {

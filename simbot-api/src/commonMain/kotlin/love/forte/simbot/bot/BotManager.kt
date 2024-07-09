@@ -58,6 +58,20 @@ public interface BotManager : AutoConfigurableBotPlugin, LifecycleAware, Complet
     public fun all(id: ID): Sequence<Bot> = all().filter { bot -> bot.id == id }
 
     /**
+     * 将 [all] 收集为 [List] 并返回。
+     *
+     * @since 4.2.0
+     */
+    public fun allToList(): List<Bot> = all().toList()
+
+    /**
+     * 将 [all] 收集为 [List] 并返回。
+     *
+     * @since 4.2.0
+     */
+    public fun allToList(id: ID): List<Bot> = all(id).toList()
+
+    /**
      * 根据一个指定的 [id] 获取匹配的bot。
      *
      * 如果当前管理的 [Bot] 中没有匹配的结果则会抛出 [NoSuchBotException]。

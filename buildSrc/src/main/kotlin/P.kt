@@ -24,22 +24,21 @@
 @file:Suppress("unused")
 
 import love.forte.gradle.common.core.project.ProjectDetail
-import love.forte.gradle.common.core.project.Version
-import love.forte.gradle.common.core.project.minus
-import love.forte.gradle.common.core.project.version
 import love.forte.gradle.common.core.property.systemProp
 import org.gradle.api.Project
 
-inline fun isSnapshot(b: () -> Unit = {}): Boolean {
-    b()
+@Suppress("ObjectPropertyName")
+private val _isSnapshot: Boolean by lazy {
     val snapProp = System.getProperty("isSnapshot")?.toBoolean() ?: false
     val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.toBoolean() ?: false
 
-    println("IsSnapshot from system.property: $snapProp")
-    println("IsSnapshot from system.env:      $snapEnv")
+    logger.info("IsSnapshot from system.property: {}", snapProp)
+    logger.info("IsSnapshot from system.env:      {}", snapEnv)
 
-    return snapProp || snapEnv
+    snapProp || snapEnv
 }
+
+fun isSnapshot(): Boolean = _isSnapshot
 
 
 /**
@@ -52,9 +51,9 @@ sealed class P(override val group: String) : ProjectDetail() {
 
      */
     companion object {
-        const val VERSION = "4.1.1"
+        const val VERSION = "4.2.0"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
-        const val NEXT_VERSION = "4.1.1"
+        const val NEXT_VERSION = "4.2.0"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 
         const val GROUP = "love.forte.simbot"
@@ -87,29 +86,11 @@ sealed class P(override val group: String) : ProjectDetail() {
     object SimbotExtension : P(GROUP_EXTENSION)
     object SimbotBenchmark : P(GROUP_BENCHMARK)
 
-    final override val version: Version
-    val versionWithoutSnapshot: Version
-
-    init {
-        val mainVersion = version(4, 1, 0)
-
-        fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
-            mainVersion
-        } else {
-            mainVersion - status.copy()
-        }
-
-        versionWithoutSnapshot = initVersionWithoutSnapshot(null)
-
-        version = if (isSnapshot()) {
-            versionWithoutSnapshot - Version.SNAPSHOT
-        } else {
-            versionWithoutSnapshot
-        }
-
-        println("version=$version, versionWithoutSnapshot=$versionWithoutSnapshot")
+    final override val version: String = if (isSnapshot()) {
+        NEXT_SNAPSHOT_VERSION
+    } else {
+        VERSION
     }
-
 
     override val description: String get() = DESCRIPTION
     override val developers: List<Developer> = developers {
