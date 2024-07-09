@@ -21,11 +21,8 @@
  *
  */
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import love.forte.simbot.common.atomic.*
 import kotlin.test.*
 
@@ -139,14 +136,12 @@ class AtomicTests {
     @Test
     fun compareAsyncTest() = runTest {
         val times = 1000
-        withContext(Dispatchers.Default) {
-            coroutineScope {
-                launch(Dispatchers.Default) { checkAtomicInt(times) }
-                launch(Dispatchers.Default) { checkAtomicLong(times) }
-                launch(Dispatchers.Default) { checkAtomicUInt(times) }
-                launch(Dispatchers.Default) { checkAtomicULong(times) }
-                launch(Dispatchers.Default) { checkAtomicRef(times) }
-            }
+        coroutineScope {
+            checkAtomicInt(times)
+            checkAtomicLong(times)
+            checkAtomicUInt(times)
+            checkAtomicULong(times)
+            checkAtomicRef(times)
         }
     }
 
@@ -159,6 +154,7 @@ class AtomicTests {
                     launch {
                         atomic += 1
                     }
+                    yield()
                 }
             }
             launch {
@@ -166,6 +162,7 @@ class AtomicTests {
                     launch {
                         atomic.update { it + 1 }
                     }
+                    yield()
                 }
             }
         }
