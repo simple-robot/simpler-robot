@@ -1830,7 +1830,7 @@ public final class love/forte/simbot/message/AtAll : love/forte/simbot/message/M
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/EmoticonMessage {
+public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/EmoticonMessage, love/forte/simbot/message/StandardMessage {
 	public static final field Companion Llove/forte/simbot/message/Emoji$Companion;
 	public fun <init> (Llove/forte/simbot/common/id/ID;)V
 	public final fun component1 ()Llove/forte/simbot/common/id/ID;
@@ -1860,7 +1860,7 @@ public final class love/forte/simbot/message/Emoji$Companion {
 public abstract interface class love/forte/simbot/message/EmoticonMessage : love/forte/simbot/message/StandardMessage {
 }
 
-public final class love/forte/simbot/message/Face : love/forte/simbot/message/EmoticonMessage {
+public final class love/forte/simbot/message/Face : love/forte/simbot/message/EmoticonMessage, love/forte/simbot/message/StandardMessage {
 	public static final field Companion Llove/forte/simbot/message/Face$Companion;
 	public fun <init> (Llove/forte/simbot/common/id/ID;)V
 	public final fun component1 ()Llove/forte/simbot/common/id/ID;
@@ -2319,7 +2319,11 @@ public final class love/forte/simbot/message/Text$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public abstract interface class love/forte/simbot/message/UrlAwareImage : love/forte/simbot/message/Image {
+public abstract interface class love/forte/simbot/message/UrlAwareImage : love/forte/simbot/message/Image, love/forte/simbot/message/UrlAwareMessage {
+	public abstract synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/message/UrlAwareMessage {
 	public fun getUrl ()Ljava/lang/String;
 	public fun getUrlAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun getUrlReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
