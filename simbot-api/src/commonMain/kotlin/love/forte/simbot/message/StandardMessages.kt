@@ -228,7 +228,13 @@ public data object AtAll : MentionMessage
 /**
  * 一个图片消息元素类型。
  *
- * 图片消息可能被分为 [离线图片][OfflineImage] 和 [远端图片][RemoteImage]。
+ * 图片消息可能被分为 [离线图片][OfflineImage]
+ * 和 [远端图片][RemoteImage]。
+ *
+ * 在不同的平台中，图片的表现方式或实现方式千变万化，
+ * 它们的类型很可能并非标准消息类型中提供的已知类型。
+ * 对于实现者，应当尽可能支持 [UrlAwareImage]
+ * 来表示一个能够得到 URL 信息的图片。
  *
  * @see OfflineImage
  * @see RemoteImage
@@ -250,12 +256,12 @@ public interface IDAwareImage : Image {
  * 一个可以感知或获取到 url 信息的 [Image]。
  *
  */
-@STP
-public interface UrlAwareImage : Image {
+public interface UrlAwareImage : Image, UrlAwareMessage {
     /**
-     * 获取到这个图片的链接字符串。
+     * 获取或查询此图片的链接。
      */
-    public suspend fun url(): String
+    @JvmSynthetic
+    override suspend fun url(): String
 }
 
 
@@ -437,13 +443,27 @@ public interface EmoticonMessage : StandardMessage
  */
 @Serializable
 @SerialName("m.std.emoji")
-public data class Emoji(public val id: ID) : EmoticonMessage
+public data class Emoji(public val id: ID) : StandardMessage, EmoticonMessage
 
 /**
  * 一个表情。一般代表平台提供的自带系统表情。
  */
 @Serializable
 @SerialName("m.std.face")
-public data class Face(public val id: ID) : EmoticonMessage
+public data class Face(public val id: ID) : StandardMessage, EmoticonMessage
 //endregion
 
+
+/**
+ * 表示为一个可以得知 URL 地址的消息元素，
+ * 例如 [UrlAwareImage]。
+ *
+ * @since 4.3.0
+ */
+@STP
+public interface UrlAwareMessage {
+    /**
+     * 获取到链接字符串。
+     */
+    public suspend fun url(): String
+}
