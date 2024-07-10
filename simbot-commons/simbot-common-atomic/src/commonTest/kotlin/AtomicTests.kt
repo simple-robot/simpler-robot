@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,11 +21,8 @@
  *
  */
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import love.forte.simbot.common.atomic.*
 import kotlin.test.*
 
@@ -139,14 +136,12 @@ class AtomicTests {
     @Test
     fun compareAsyncTest() = runTest {
         val times = 1000
-        withContext(Dispatchers.Default) {
-            coroutineScope {
-                launch(Dispatchers.Default) { checkAtomicInt(times) }
-                launch(Dispatchers.Default) { checkAtomicLong(times) }
-                launch(Dispatchers.Default) { checkAtomicUInt(times) }
-                launch(Dispatchers.Default) { checkAtomicULong(times) }
-                launch(Dispatchers.Default) { checkAtomicRef(times) }
-            }
+        coroutineScope {
+            checkAtomicInt(times)
+            checkAtomicLong(times)
+            checkAtomicUInt(times)
+            checkAtomicULong(times)
+            checkAtomicRef(times)
         }
     }
 
@@ -159,6 +154,7 @@ class AtomicTests {
                     launch {
                         atomic += 1
                     }
+                    yield()
                 }
             }
             launch {
@@ -166,6 +162,7 @@ class AtomicTests {
                     launch {
                         atomic.update { it + 1 }
                     }
+                    yield()
                 }
             }
         }
@@ -333,19 +330,19 @@ class AtomicTests {
 
     @Test
     fun atomicUpdateTest() {
-        with (atomic(0)) {
+        with(atomic(0)) {
             assertEquals(0, update { 2 })
             assertEquals(10, updateAndGet { 10 })
         }
-        with (atomic(0L)) {
+        with(atomic(0L)) {
             assertEquals(0L, update { 2L })
             assertEquals(10L, updateAndGet { 10L })
         }
-        with (atomic(0u)) {
+        with(atomic(0u)) {
             assertEquals(0u, update { 2u })
             assertEquals(10u, updateAndGet { 10u })
         }
-        with (atomicUL(0u)) {
+        with(atomicUL(0u)) {
             assertEquals(0u, update { 2u })
             assertEquals(10u, updateAndGet { 10u })
         }

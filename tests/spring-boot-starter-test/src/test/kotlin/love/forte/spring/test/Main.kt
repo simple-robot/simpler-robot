@@ -41,6 +41,7 @@ class Main
 
 fun main(args: Array<String>) {
     val context = runApplication<Main>(*args)
+
     val app = context.getBean<Application>()
     runBlocking { app.join() }
 }

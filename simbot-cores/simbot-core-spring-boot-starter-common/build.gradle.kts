@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,16 +21,12 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
-
 plugins {
     `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("simbot.dokka-module-configuration")
 }
-
-setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.spring.common")
 apply(plugin = "simbot-jvm-maven-publish")

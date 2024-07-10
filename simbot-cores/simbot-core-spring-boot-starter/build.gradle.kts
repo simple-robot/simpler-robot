@@ -21,8 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.core.project.setup
-
 
 plugins {
     kotlin("jvm")
@@ -30,8 +28,6 @@ plugins {
     kotlin("kapt")
     id("simbot.dokka-module-configuration")
 }
-
-setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
 apply(plugin = "simbot-jvm-maven-publish")

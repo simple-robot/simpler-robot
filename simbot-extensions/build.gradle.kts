@@ -21,20 +21,6 @@
  *
  */
 
-plugins {
-    `java-library`
-    kotlin("jvm")
-    id("simbot.dokka-module-configuration")
-}
-
-configJavaCompileWithModule("simbot.gradle.suspendtransforms")
-apply(plugin = "simbot-jvm-maven-publish")
-
-kotlin {
-    explicitApi()
-    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    api(libs.suspend.transform.gradle)
+subprojects {
+    group = P.GROUP_EXTENSION
 }

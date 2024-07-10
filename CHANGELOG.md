@@ -1,3 +1,13 @@
+# v4.2.0
+
+> Release & Pull Notes: [v4.2.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.2.0) 
+
+- test: try to fix test timeout ([`7e1cd274`](https://github.com/simple-robot/simpler-robot/commit/7e1cd274))
+- optimize(api): 提供更多Application和Bot的辅助扩展API ([`f5802fa9`](https://github.com/simple-robot/simpler-robot/commit/f5802fa9))
+- optimize(api): 为BotManager和BotManagers提供更多辅助的获取API ([`84bfef6f`](https://github.com/simple-robot/simpler-robot/commit/84bfef6f))
+- build(deps): bump org.jetbrains.kotlinx.binary-compatibility-validator ([`dad1db51`](https://github.com/simple-robot/simpler-robot/commit/dad1db51))
+- build(deps): bump org.springframework.boot from 3.3.0 to 3.3.1 ([`392d3be7`](https://github.com/simple-robot/simpler-robot/commit/392d3be7))
+
 # v4.1.0
 
 > Release & Pull Notes: [v4.1.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.1.0) 

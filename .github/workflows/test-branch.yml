@@ -26,7 +26,7 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: 8.5
+          gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
             assemble
             build
@@ -49,13 +49,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 21
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
       - name: Run Detekt
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: 8.5
+          gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
             assemble
             detekt
@@ -64,7 +64,7 @@ jobs:
 
       - name: Upload detekt reports
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: always()
         with:
           name: detekt-reports-${{ runner.os }}
           path: 'build/reports/detekt'
