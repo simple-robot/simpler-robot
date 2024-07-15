@@ -37,7 +37,6 @@ import love.forte.simbot.message.Text.Companion.of
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.ResourceBase64Serializer
-import love.forte.simbot.suspendrunner.STP
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
 import kotlin.jvm.*
@@ -56,6 +55,8 @@ import kotlin.jvm.*
  *
  */
 public sealed interface StandardMessage : Message.Element
+
+
 
 //region Text
 
@@ -229,7 +230,7 @@ public data object AtAll : MentionMessage
  * 一个图片消息元素类型。
  *
  * 图片消息可能被分为 [离线图片][OfflineImage]
- * 和 [远端图片][RemoteImage]。
+ * 和 [远端图片][RemoteImage]，也可能是由组件实现的独立特殊类型。
  *
  * 在不同的平台中，图片的表现方式或实现方式千变万化，
  * 它们的类型很可能并非标准消息类型中提供的已知类型。
@@ -453,17 +454,3 @@ public data class Emoji(public val id: ID) : StandardMessage, EmoticonMessage
 public data class Face(public val id: ID) : StandardMessage, EmoticonMessage
 //endregion
 
-
-/**
- * 表示为一个可以得知 URL 地址的消息元素，
- * 例如 [UrlAwareImage]。
- *
- * @since 4.3.0
- */
-@STP
-public interface UrlAwareMessage {
-    /**
-     * 获取到链接字符串。
-     */
-    public suspend fun url(): String
-}

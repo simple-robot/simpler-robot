@@ -91,6 +91,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.client.core)
             }
         }
 
