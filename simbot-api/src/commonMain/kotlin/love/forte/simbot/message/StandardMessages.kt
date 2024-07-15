@@ -57,7 +57,6 @@ import kotlin.jvm.*
 public sealed interface StandardMessage : Message.Element
 
 
-
 //region Text
 
 /**
@@ -224,23 +223,50 @@ public data object AtAll : MentionMessage
 
 //endregion
 
-//region Description
+//region RichMedia
 
 /**
- * 一个图片消息元素类型。
+ * 一个可以表示富媒体的消息元素类型，
+ * 即一个文字元素除外、且与二进制数据（例如文件、音频等）相关的消息元素。
+ *
+ * 可以是本地或远程的类型，例如常见的 [Image]。
+ *
+ * 在不同的平台中，富媒体的表现方式或实现方式千变万化，
+ * 它们的类型很可能并非标准消息类型中提供的已知类型。
+ * 对于实现者，在实现 [RichMediaMessage] 类型的基础上，
+ * 应当尽可能支持一些具有功能描述的标记性接口：
+ * - [UrlAwareMessage]
+ * - [BinaryDataAwareMessage]
+ * 或它们的衍生类型，来表示你的实现类型具有哪些功能。
+ *
+ * @since 4.3.0
+ */
+public interface RichMediaMessage : StandardMessage
+
+
+/**
+ * 一个图片消息元素类型，
+ * 最常见的 [RichMediaMessage] 类型之一。
  *
  * 图片消息可能被分为 [离线图片][OfflineImage]
  * 和 [远端图片][RemoteImage]，也可能是由组件实现的独立特殊类型。
  *
  * 在不同的平台中，图片的表现方式或实现方式千变万化，
  * 它们的类型很可能并非标准消息类型中提供的已知类型。
- * 对于实现者，应当尽可能支持 [UrlAwareImage]
- * 来表示一个能够得到 URL 信息的图片。
+ * 对于实现者，在实现 [Image] 类型的基础上，
+ * 应当尽可能支持一些具有功能描述的标记性接口：
+ * - [UrlAwareMessage]
+ * - [BinaryDataAwareMessage]
+ * 或它们的衍生类型：
+ * - [UrlAwareImage]
+ * 等等，来表示你的实现类型具有哪些功能。
  *
+ *
+ * @see RichMediaMessage
  * @see OfflineImage
  * @see RemoteImage
  */
-public interface Image : StandardMessage
+public interface Image : StandardMessage, RichMediaMessage
 
 /**
  * 一个可以感知到 [ID] 信息的 [Image]。
