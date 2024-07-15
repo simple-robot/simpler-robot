@@ -1830,6 +1830,13 @@ public final class love/forte/simbot/message/AtAll : love/forte/simbot/message/M
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface class love/forte/simbot/message/BinaryDataAwareMessage {
+	public abstract synthetic fun binaryData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getBinaryData ()[B
+	public fun getBinaryDataAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBinaryDataReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
 public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/EmoticonMessage, love/forte/simbot/message/StandardMessage {
 	public static final field Companion Llove/forte/simbot/message/Emoji$Companion;
 	public fun <init> (Llove/forte/simbot/common/id/ID;)V
