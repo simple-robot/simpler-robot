@@ -151,7 +151,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # Kover
 # https://www.jetbrains.com/help/qodana/code-coverage.html
 # https://github.com/Kotlin/kotlinx-kover
-kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.1" }
+kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.2" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
 kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.15.1" }
