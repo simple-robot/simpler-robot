@@ -1830,6 +1830,13 @@ public final class love/forte/simbot/message/AtAll : love/forte/simbot/message/M
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface class love/forte/simbot/message/BinaryDataAwareMessage {
+	public abstract synthetic fun binaryData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getBinaryData ()[B
+	public fun getBinaryDataAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBinaryDataReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
 public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/EmoticonMessage, love/forte/simbot/message/StandardMessage {
 	public static final field Companion Llove/forte/simbot/message/Emoji$Companion;
 	public fun <init> (Llove/forte/simbot/common/id/ID;)V
@@ -1891,7 +1898,7 @@ public abstract interface class love/forte/simbot/message/IDAwareImage : love/fo
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 }
 
-public abstract interface class love/forte/simbot/message/Image : love/forte/simbot/message/StandardMessage {
+public abstract interface class love/forte/simbot/message/Image : love/forte/simbot/message/RichMediaMessage, love/forte/simbot/message/StandardMessage {
 }
 
 public abstract interface class love/forte/simbot/message/JvmOfflineImageResolver : love/forte/simbot/message/OfflineImageResolver {
@@ -2246,6 +2253,9 @@ public abstract interface class love/forte/simbot/message/RemoteImage : love/for
 
 public abstract interface class love/forte/simbot/message/RemoteUrlAwareImage : love/forte/simbot/message/RemoteImage, love/forte/simbot/message/UrlAwareImage {
 	public abstract synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/message/RichMediaMessage : love/forte/simbot/message/StandardMessage {
 }
 
 public final class love/forte/simbot/message/SimpleOfflineResourceImage : love/forte/simbot/message/OfflineResourceImage {
