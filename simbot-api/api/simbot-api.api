@@ -1898,7 +1898,7 @@ public abstract interface class love/forte/simbot/message/IDAwareImage : love/fo
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 }
 
-public abstract interface class love/forte/simbot/message/Image : love/forte/simbot/message/StandardMessage {
+public abstract interface class love/forte/simbot/message/Image : love/forte/simbot/message/RichMediaMessage, love/forte/simbot/message/StandardMessage {
 }
 
 public abstract interface class love/forte/simbot/message/JvmOfflineImageResolver : love/forte/simbot/message/OfflineImageResolver {
@@ -2253,6 +2253,9 @@ public abstract interface class love/forte/simbot/message/RemoteImage : love/for
 
 public abstract interface class love/forte/simbot/message/RemoteUrlAwareImage : love/forte/simbot/message/RemoteImage, love/forte/simbot/message/UrlAwareImage {
 	public abstract synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/message/RichMediaMessage : love/forte/simbot/message/StandardMessage {
 }
 
 public final class love/forte/simbot/message/SimpleOfflineResourceImage : love/forte/simbot/message/OfflineResourceImage {
