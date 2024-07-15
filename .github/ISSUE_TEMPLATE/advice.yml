@@ -1,5 +1,5 @@
-name: "💡意见建议"
-description: "提出你的好想法"
+name: "💡意见、建议或协助"
+description: "提出你的好想法，或者你打算做的事"
 labels: [ "建议" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
@@ -18,10 +18,21 @@ body:
          请知悉以下内容：
          1. 当意见建议未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为「无效」并做关闭处理。
          2. 仅接受针对于框架本身的合理建议。被团队认定为不合理的建议将会被拒绝。
-         3. 如果有能力，可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls) 向我们提供代码协助，非常感谢。
  
          <hr />
-         
+  - type: dropdown
+    id: will-contribute
+    attributes:
+      label: 是否会提供贡献？
+      description: 如果此条议题是你打算提供代码贡献作为前提，那么标记它，来告诉我们与其他开发者，避免产生重复劳动~
+      options:
+        - 不确定
+        - 是
+        - 否
+      default: 0
+    validations:
+      required: true
+
   - type: textarea
     id: advice
     attributes:

@@ -1,3 +1,21 @@
+# v4.3.0
+
+> Release & Pull Notes: [v4.3.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.3.0) 
+
+- feat(api): 增加接口 RichMediaMessage 用以描述一个富媒体消息元素 ([`eceb41528..6ec2a1a53`](https://github.com/simple-robot/simpler-robot/compare/eceb41528..7e52e17bc))
+
+    <details><summary><code>eceb41528..6ec2a1a53</code></summary>
+
+    - [`eceb41528`](https://github.com/simple-robot/simpler-robot/commit/eceb41528)
+    - [`fcd2fd670`](https://github.com/simple-robot/simpler-robot/commit/fcd2fd670)
+    - [`c38c80270`](https://github.com/simple-robot/simpler-robot/commit/c38c80270)
+    - [`6ec2a1a53`](https://github.com/simple-robot/simpler-robot/commit/6ec2a1a53)
+
+    </details>
+
+- feat(api): 增加接口 BinaryDataAwareMessage 用以描述能够获取到二进制数据的消息元素 ([`7e52e17bc`](https://github.com/simple-robot/simpler-robot/commit/7e52e17bc))
+- optimize(api): 增加接口 UrlAwareMessage 用以描述能够获取到 URL 信息的消息元素 ([`933095e9d`](https://github.com/simple-robot/simpler-robot/commit/933095e9d))
+
 # v4.2.0
 
 > Release & Pull Notes: [v4.2.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.2.0) 
