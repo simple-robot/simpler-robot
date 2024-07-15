@@ -33,7 +33,7 @@ body:
     attributes:
       label: 版本号
       description: 疑问所涉及的版本
-      placeholder: "例如: v3.0.0"
+      placeholder: "例如: v4.0.0"
     validations:
       required: true
 
@@ -56,12 +56,12 @@ body:
       description: 如果没有或无对应选项则在后续描述中补充说明
       multiple: true
       options:
-        - KOOK
-        - QQ频道
-        - Kritor
+        - QQ机器人
         - OneBot
-        - Discord
+        - KOOK
         - Telegram
+        - Discord
+        - Kritor
         - 其他
 
   - type: textarea

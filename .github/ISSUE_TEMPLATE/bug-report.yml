@@ -21,14 +21,26 @@ body:
          3. 当问题反馈未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为「无效」并做关闭处理。
          
          <hr />
-         
-  
+
+  - type: dropdown
+    id: will-contribute
+    attributes:
+      label: 是否会提供贡献？
+      description: 如果此条议题是你打算提供代码贡献作为前提，那么标记它，来告诉我们与其他开发者，以避免产生可能的重复劳动
+      options:
+        - 否
+        - 是
+        - 不确定
+      default: 0
+    validations:
+      required: true
+
   - type: input
     id: version
     attributes:
       label: 版本号
       description: 涉及的具体版本
-      placeholder: "例如: v3.0.0-xx 或 v6.6.6 等"
+      placeholder: "例如: v4.x.x 或 v6.6.6 等"
     validations:
       required: true       
          
@@ -37,7 +49,7 @@ body:
     attributes:
       label: 附加版本
       description: 如果有需要补充的其他版本信息，可以在此补充
-      placeholder: "例如: simbot-component-kook: v3.0.0.0-xx"
+      placeholder: "例如: simbot-component-kook: va.b.c"
 
   - type: dropdown
     id: language
@@ -70,13 +82,12 @@ body:
       description: 请尽可能准确的选择使用的组件
       multiple: true
       options:
-        - KOOK
-        - QQ频道
-        - Kritor
+        - QQ机器人
         - OneBot
-        - Discord
+        - KOOK
         - Telegram
-        - mirai
+        - Discord
+        - Kritor
         - 其他
          
   - type: textarea
