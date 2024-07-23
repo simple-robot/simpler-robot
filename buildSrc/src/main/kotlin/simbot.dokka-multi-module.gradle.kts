@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.core.property.systemProp
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import java.time.Year
@@ -39,15 +38,22 @@ tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModu
     moduleName.set("Simple Robot")
     outputDirectory.set(rootProject.file("build/dokka/html"))
 
-    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+    if (isSimbotLocal()) {
         logger.info("Is 'SIMBOT_LOCAL', offline")
         offlineMode.set(true)
     }
 
+    @Suppress("MaxLineLength")
     pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        customAssets = listOf(rootProject.file(".simbot/dokka-assets/logo-icon.svg"))
+        customAssets = listOf(
+            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+        )
         customStyleSheets = listOf(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
-        footerMessage = "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>, <a href='https://github.com/ForteScarlet'>ForteScarlet</a>. All rights reserved."
+        if (!isSimbotLocal()) {
+            templatesDir = rootProject.file(".simbot/dokka-templates")
+        }
+        footerMessage = "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
         separateInheritedMembers = true
         mergeImplicitExpectActualDeclarations = true
     }
