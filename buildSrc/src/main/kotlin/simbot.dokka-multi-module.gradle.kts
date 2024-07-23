@@ -56,7 +56,7 @@ tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModu
         footerMessage = "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
         separateInheritedMembers = true
         mergeImplicitExpectActualDeclarations = true
-        homepageLink = "https://github.com/simple-robot/simpler-robot"
+        homepageLink = P.HOMEPAGE
     }
 }
 
