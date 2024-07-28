@@ -23,6 +23,7 @@
 
 package love.forte.simbot.quantcat.common.binder.impl
 
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.attribute.AttributeMapContainer
 import love.forte.simbot.event.EventListenerContext
 import love.forte.simbot.quantcat.common.binder.BindException
@@ -46,7 +47,7 @@ public class KeywordBinderFactory(
 ) : ParameterBinderFactory {
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val value = filterValueReader(context) ?: return ParameterBinderResult.empty()
-        val paramType = context.parameter.type as? KClass<*>
+        val paramType = context.parameter.type.classifier as? KClass<*>
         return ParameterBinderResult.normal(
             if (value.required) {
                 KeywordBinder.Required(value.value, paramType)
@@ -60,6 +61,7 @@ public class KeywordBinderFactory(
 
 private sealed class KeywordBinder(val name: String, val paramType: KClass<*>?) : ParameterBinder {
 
+    @OptIn(InternalSimbotAPI::class)
     private val converter: (Any) -> Any = if (paramType != null && paramType != String::class) {
         {
             NonConverters.convert(instance = it, to = paramType)
