@@ -50,7 +50,7 @@ nexusPublishConfig {
     transitionCheckMaxRetries = 5000
     transitionCheckDelayBetween = Duration.ofSeconds(15)
 
-    projectDetail = P.Simbot
+    setWithProjectDetail(P.Simbot)
     useStaging = project.provider { !project.version.toString().contains("SNAPSHOT", ignoreCase = true) }
     repositoriesConfig = {
         sonatype {

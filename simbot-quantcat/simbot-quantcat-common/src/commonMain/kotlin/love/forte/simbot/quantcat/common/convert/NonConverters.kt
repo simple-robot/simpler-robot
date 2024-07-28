@@ -23,6 +23,7 @@
 
 package love.forte.simbot.quantcat.common.convert
 
+import love.forte.simbot.annotations.InternalSimbotAPI
 import kotlin.reflect.KClass
 import kotlin.reflect.cast
 import kotlin.reflect.safeCast
@@ -32,7 +33,8 @@ import kotlin.reflect.safeCast
  *
  * @author ForteScarlet
  */
-internal object NonConverters {
+@InternalSimbotAPI
+public object NonConverters {
     private val primitives: Set<KClass<*>> = setOf(
         Byte::class, Short::class, Int::class, Long::class,
         UInt::class, ULong::class,
@@ -45,7 +47,7 @@ internal object NonConverters {
      *
      * @throws ConvertException if [type &#39;to&#39;][TO] is not assignable from [type &#39;from&#39;][FROM]
      */
-    fun <FROM : Any, TO : Any> convert(instance: FROM, to: KClass<TO>): TO {
+    public fun <FROM : Any, TO : Any> convert(instance: FROM, to: KClass<TO>): TO {
         val fromType: KClass<out FROM> = instance::class
 
         val safeCast: TO? = to.safeCast(instance)

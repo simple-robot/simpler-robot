@@ -1999,18 +1999,26 @@ public final class love/forte/simbot/message/Messages$Companion {
 	public final fun standardSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
-public final class love/forte/simbot/message/MessagesBuilder {
+public abstract interface class love/forte/simbot/message/MessagesAddable {
+	public fun add (Ljava/lang/String;)Llove/forte/simbot/message/MessagesAddable;
+	public abstract fun add (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesAddable;
+	public abstract fun addAll (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesAddable;
+	public abstract fun build ()Llove/forte/simbot/message/Messages;
+	public fun unaryPlus (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesAddable;
+	public fun unaryPlus (Ljava/lang/String;)Llove/forte/simbot/message/MessagesAddable;
+	public fun unaryPlus (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesAddable;
+}
+
+public final class love/forte/simbot/message/MessagesBuilder : love/forte/simbot/message/MessagesAddable {
 	public static final field Companion Llove/forte/simbot/message/MessagesBuilder$Companion;
 	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun add (Ljava/lang/String;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun add (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun addAll (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun build ()Llove/forte/simbot/message/Messages;
+	public synthetic fun add (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesAddable;
+	public fun add (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesBuilder;
+	public synthetic fun addAll (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesAddable;
+	public fun addAll (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesBuilder;
+	public fun build ()Llove/forte/simbot/message/Messages;
 	public static final fun create ()Llove/forte/simbot/message/MessagesBuilder;
 	public static final fun create (Ljava/util/List;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun unaryPlus (Ljava/lang/Iterable;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun unaryPlus (Ljava/lang/String;)Llove/forte/simbot/message/MessagesBuilder;
-	public final fun unaryPlus (Llove/forte/simbot/message/Message$Element;)Llove/forte/simbot/message/MessagesBuilder;
 }
 
 public final class love/forte/simbot/message/MessagesBuilder$Companion {
@@ -2025,6 +2033,9 @@ public abstract interface annotation class love/forte/simbot/message/MessagesBui
 public final class love/forte/simbot/message/MessagesBuilders {
 	public static final fun buildMessages (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/message/Messages;
 	public static synthetic fun buildMessages$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/message/Messages;
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Ljava/lang/Iterable;)V
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Ljava/lang/String;)V
+	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Llove/forte/simbot/message/Message$Element;)V
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/Iterable;)V
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/String;)V
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Llove/forte/simbot/message/Message$Element;)V

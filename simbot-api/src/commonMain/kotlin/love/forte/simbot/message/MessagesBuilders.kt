@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,6 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 
-
 /**
  * Builds a list of Messages using the provided container and block.
  *
@@ -48,29 +47,81 @@ public inline fun buildMessages(
 /**
  * 使用 `+=` operator 添加 [element]。
  *
- * @see MessagesBuilder.add
+ * @since 4.4.0
+ * @see MessagesAddable.add
  */
 @MessagesBuilderDsl
-public operator fun MessagesBuilder.plusAssign(element: Message.Element) {
+public operator fun MessagesAddable<*>.plusAssign(element: Message.Element) {
     add(element)
 }
 
 /**
  * 使用 `+=` operator 添加 [text]。
  *
- * @see MessagesBuilder.add
+ * @since 4.4.0
+ *
+ * @see MessagesAddable.add
  */
 @MessagesBuilderDsl
-public operator fun MessagesBuilder.plusAssign(text: String) {
+public operator fun MessagesAddable<*>.plusAssign(text: String) {
     add(text)
 }
 
 /**
  * 使用 `+=` operator 添加 [messages]。
  *
- * @see MessagesBuilder.addAll
+ * @since 4.4.0
+ * @see MessagesAddable.addAll
  */
 @MessagesBuilderDsl
-public operator fun MessagesBuilder.plusAssign(messages: Iterable<Message.Element>) {
+public operator fun MessagesAddable<*>.plusAssign(messages: Iterable<Message.Element>) {
     addAll(messages)
+}
+
+/**
+ * 使用 `+=` operator 添加 [element]。
+ *
+ * @suppress deprecated
+ * @see MessagesBuilder.add
+ */
+@Deprecated(
+    "使用receiver类型为MessagesAddable的重载",
+    ReplaceWith("plusAssign(messages)")
+)
+@MessagesBuilderDsl
+@JvmName("plusAssign") // binary compatible
+public fun MessagesBuilder.plusAssign0(element: Message.Element) {
+    plusAssign(element)
+}
+
+/**
+ * 使用 `+=` operator 添加 [text]。
+ *
+ * @suppress deprecated
+ * @see MessagesBuilder.add
+ */
+@Deprecated(
+    "使用receiver类型为MessagesAddable的重载",
+    ReplaceWith("plusAssign(messages)")
+)
+@MessagesBuilderDsl
+@JvmName("plusAssign") // binary compatible
+public fun MessagesBuilder.plusAssign0(text: String) {
+    plusAssign(text)
+}
+
+/**
+ * 使用 `+=` operator 添加 [messages]。
+ *
+ * @suppress deprecated
+ * @see MessagesBuilder.addAll
+ */
+@Deprecated(
+    "使用receiver类型为MessagesAddable的重载",
+    ReplaceWith("plusAssign(messages)")
+)
+@MessagesBuilderDsl
+@JvmName("plusAssign") // binary compatible
+public fun MessagesBuilder.plusAssign0(messages: Iterable<Message.Element>) {
+    plusAssign(messages)
 }

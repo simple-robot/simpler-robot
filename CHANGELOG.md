@@ -1,3 +1,21 @@
+# v4.3.1
+
+> Release & Pull Notes: [v4.3.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.3.1) 
+
+- fix(quantcat): 修复使用KeywordBinder时无法正确处理参数类型的问题 ([`ef31604c7`](https://github.com/simple-robot/simpler-robot/commit/ef31604c7))
+- optimize(api): 优化、调整MessagesBuilder实现结构 ([`628c1fe0c`](https://github.com/simple-robot/simpler-robot/commit/628c1fe0c))
+- build(deps): bump ktor from 2.3.11 to 2.3.12 ([`28ed531e1`](https://github.com/simple-robot/simpler-robot/commit/28ed531e1))
+- build(deps): bump kotlinx-serialization from 1.6.3 to 1.7.1 ([`be15aaef5`](https://github.com/simple-robot/simpler-robot/commit/be15aaef5))
+- Kdoc: homepage ([`21bd244df..ad2f21260`](https://github.com/simple-robot/simpler-robot/compare/21bd244df..v4.3.0))
+
+    <details><summary><code>21bd244df..ad2f21260</code></summary>
+
+    - [`21bd244df`](https://github.com/simple-robot/simpler-robot/commit/21bd244df)
+    - [`ad2f21260`](https://github.com/simple-robot/simpler-robot/commit/ad2f21260)
+
+    </details>
+
+
 # v4.3.0
 
 > Release & Pull Notes: [v4.3.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.3.0) 

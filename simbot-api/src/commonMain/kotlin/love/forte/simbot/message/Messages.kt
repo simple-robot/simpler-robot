@@ -474,10 +474,84 @@ public object MessagesKt {
 public annotation class MessagesBuilderDsl
 
 /**
+ * 一个可以追加 [Message.Element] 的类型接口。
+ *
+ * @since 4.4.0
+ *
+ * @see MessagesBuilder
+ */
+public interface MessagesAddable<T : MessagesAddable<T>> {
+    /**
+     * Add an element to the [MessagesBuilder] container.
+     *
+     * @param element the element to be added
+     * @return the updated [MessagesAddable][T] instance
+     */
+    public fun add(element: Message.Element): T
+
+    /**
+     * Adds the given text as [Text]
+     * to the [MessagesBuilder] container.
+     *
+     * @param text the text to add to the container
+     * @return the updated [MessagesAddable][T] instance
+     */
+    public fun add(text: String): T = add(text.toText())
+
+    /**
+     * Add the given messages to this [MessagesAddable].
+     *
+     * @param messages 要添加的消息元素集
+     * @return the updated [MessagesAddable][T] object
+     */
+    public fun addAll(messages: Iterable<Message.Element>): T
+
+    /**
+     * Add an element to this [MessagesAddable].
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun Message.Element.unaryPlus(): T = add(this)
+
+    /**
+     * Add a text as [Text] to this [MessagesAddable].
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun String.unaryPlus(): T = add(this)
+
+    /**
+     * Add messages to this [MessagesAddable].
+     *
+     * @see add
+     */
+    @MessagesBuilderDsl
+    public operator fun Iterable<Message.Element>.unaryPlus(): T = addAll(this)
+
+    /**
+     * Build [Messages].
+     *
+     * This method constructs and returns a [Messages] object using the container.
+     *
+     * @return The constructed [Messages] object.
+     */
+    public fun build(): Messages
+}
+
+
+/**
  * 一个用于动态构建 [Messages] 的构建器。
  * 使用 [create] 构建。
+ *
+ * Kotlin 中也可以使用 [buildMessages] 以 DSL 的方式构建 [Messages]。
+ *
+ * @see buildMessages
  */
-public class MessagesBuilder private constructor(private val container: MutableList<Message.Element>) {
+public class MessagesBuilder
+private constructor(private val container: MutableList<Message.Element>) :
+    MessagesAddable<MessagesBuilder> {
     public companion object {
         /**
          * Creates a new instance of MessagesBuilder.
@@ -497,15 +571,7 @@ public class MessagesBuilder private constructor(private val container: MutableL
      * @param element the element to be added
      * @return the updated MessagesBuilder instance
      */
-    public fun add(element: Message.Element): MessagesBuilder = apply { container.add(element) }
-
-    /**
-     * Adds the given text to the [MessagesBuilder] container.
-     *
-     * @param text the text to add to the container
-     * @return the updated MessagesBuilder object
-     */
-    public fun add(text: String): MessagesBuilder = apply { container.add(text.toText()) }
+    override fun add(element: Message.Element): MessagesBuilder = apply { container.add(element) }
 
     /**
      * Add the given messages to the [MessagesBuilder] container.
@@ -513,7 +579,7 @@ public class MessagesBuilder private constructor(private val container: MutableL
      * @param messages 要添加的消息元素集
      * @return the updated MessagesBuilder object
      */
-    public fun addAll(messages: Iterable<Message.Element>): MessagesBuilder = apply {
+    override fun addAll(messages: Iterable<Message.Element>): MessagesBuilder = apply {
         if (messages is Messages) {
             when (messages) {
                 EmptyMessages -> {
@@ -534,35 +600,11 @@ public class MessagesBuilder private constructor(private val container: MutableL
     }
 
     /**
-     * Add an element to the [MessagesBuilder] container.
+     * Build [Messages].
      *
-     * @see add
+     * This method constructs and returns a [Messages] object using the container.
+     *
+     * @return The constructed [Messages] object.
      */
-    @MessagesBuilderDsl
-    public operator fun Message.Element.unaryPlus(): MessagesBuilder = add(this)
-
-    /**
-     * Add a text to the [MessagesBuilder] container.
-     *
-     * @see add
-     */
-    @MessagesBuilderDsl
-    public operator fun String.unaryPlus(): MessagesBuilder = add(this)
-
-    /**
-     * Add messages to the [MessagesBuilder] container.
-     *
-     * @see add
-     */
-    @MessagesBuilderDsl
-    public operator fun Iterable<Message.Element>.unaryPlus(): MessagesBuilder = addAll(this)
-
-    /**
-     * Build method.
-     *
-     * This method constructs and returns a Messages object using the container.
-     *
-     * @return The constructed Messages object.
-     */
-    public fun build(): Messages = container.toMessages()
+    override fun build(): Messages = container.toMessages()
 }
