@@ -75,6 +75,7 @@ kotlin {
                 implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
+                api(project(":simbot-commons:simbot-common-streamable"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-core"))
                 api(project(":simbot-commons:simbot-common-collection"))

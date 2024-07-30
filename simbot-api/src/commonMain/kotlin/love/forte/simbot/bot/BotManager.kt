@@ -27,6 +27,8 @@ import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.LifecycleAware
 import love.forte.simbot.common.function.MergeableFactory
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.streamable.Streamable
+import love.forte.simbot.common.streamable.Streamable.Companion.asStreamable
 import love.forte.simbot.plugin.PluginFactory
 import love.forte.simbot.suspendrunner.ST
 
@@ -56,6 +58,24 @@ public interface BotManager : AutoConfigurableBotPlugin, LifecycleAware, Complet
      * 得到所有 `id` 符合条件的 [Bot]，以序列的形式。
      */
     public fun all(id: ID): Sequence<Bot> = all().filter { bot -> bot.id == id }
+
+    /**
+     * 得到所有的 [Bot] 并转化为 [Streamable]。
+     *
+     * @since 4.4.0
+     * @see all
+     */
+    public fun allToStreamable(): Streamable<Bot> =
+        all().asStreamable()
+
+    /**
+     * 得到所有 `id` 符合条件的 [Bot] 并转化为 [Streamable]。
+     *
+     * @since 4.4.0
+     * @see all
+     */
+    public fun allToStreamable(id: ID): Streamable<Bot> =
+        all(id).asStreamable()
 
     /**
      * 将 [all] 收集为 [List] 并返回。
