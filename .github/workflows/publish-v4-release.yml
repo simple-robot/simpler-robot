@@ -8,6 +8,7 @@ env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
   GRADLE_VERSION: 8.5
+  NODE_VERSION: 22
   IS_CI: true
   GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
   GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
@@ -30,6 +31,10 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Run All Tests pre release
         uses: gradle/actions/setup-gradle@v3
         with:
@@ -56,7 +61,9 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       # setup Gradle
       - name: Gradle Publish Release
         uses: gradle/actions/setup-gradle@v3
