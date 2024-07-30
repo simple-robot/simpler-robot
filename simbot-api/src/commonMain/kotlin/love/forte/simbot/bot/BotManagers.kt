@@ -28,6 +28,8 @@ package love.forte.simbot.bot
 
 import love.forte.simbot.common.collection.toImmutable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.streamable.Streamable
+import love.forte.simbot.common.streamable.Streamable.Companion.asStreamable
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -40,6 +42,13 @@ public interface BotManagers : Collection<BotManager> {
      * 以序列的形式获取当前 [BotManager] 中所有的 [Bot]。
      */
     public fun allBots(): Sequence<Bot> = asSequence().flatMap { it.all() }
+
+    /**
+     * 获取 [allBots] 的流转化器。
+     *
+     * @since 4.4.0
+     */
+    public fun allBotsToStreamable(): Streamable<Bot> = allBots().asStreamable()
 
     /**
      * 尝试获取第一个 [BotManager] 中的第一个 [Bot]。

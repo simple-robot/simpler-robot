@@ -44,6 +44,7 @@ include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
 include(":simbot-commons:simbot-common-annotations")
 include(":simbot-commons:simbot-common-collection")
+include(":simbot-commons:simbot-common-streamable")
 include(":simbot-commons:simbot-common-atomic")
 include(":simbot-commons:simbot-common-apidefinition")
 include(":simbot-commons:simbot-common-core")

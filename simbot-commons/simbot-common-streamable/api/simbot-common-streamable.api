@@ -1,0 +1,15 @@
+public final class love/forte/simbot/common/streamable/Streamable : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public static final field Companion Llove/forte/simbot/common/streamable/Streamable$Companion;
+	public synthetic fun <init> (Lkotlin/sequences/Sequence;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun asSequence ()Lkotlin/sequences/Sequence;
+	public final fun asStream ()Ljava/util/stream/Stream;
+	public final fun collectTo (Ljava/util/Collection;)Ljava/util/Collection;
+	public final fun collectToList ()Ljava/util/List;
+	public fun iterator ()Ljava/util/Iterator;
+	public static final fun of (Lkotlin/sequences/Sequence;)Llove/forte/simbot/common/streamable/Streamable;
+}
+
+public final class love/forte/simbot/common/streamable/Streamable$Companion {
+	public final fun of (Lkotlin/sequences/Sequence;)Llove/forte/simbot/common/streamable/Streamable;
+}
+
