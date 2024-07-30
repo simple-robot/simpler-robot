@@ -22,11 +22,8 @@
  */
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.the
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinWasmJsTargetDsl
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 
 inline fun KotlinJsTargetDsl.configJs(
@@ -77,7 +74,8 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
     block: () -> Unit = {}
 ) {
     if (nodeJs) {
-        nodejs()
+        nodejs {
+        }
     }
     // if (nodeJs && isLinux) {
     // // win in candy node `21.0.0-v8-canary202309143a48826a08` is not supported
@@ -100,18 +98,18 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
 }
 
 inline fun Project.configWasmJsTest(block: () -> Unit = {}) {
-    if (false) {
-        // see https://youtrack.jetbrains.com/issue/KT-63014/Running-tests-with-wasmJs-in-1.9.20-requires-Chrome-Canary#focus=Comments-27-8321383.0-0
-        rootProject.the<NodeJsRootExtension>().apply {
-            // nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-            version = "21.0.0-v8-canary202309143a48826a08"
-            downloadBaseUrl = "https://nodejs.org/download/v8-canary"
-        }
-
-        tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-            args.add("--ignore-engines")
-        }
-    }
+    // if (false) {
+    //     // see https://youtrack.jetbrains.com/issue/KT-63014/Running-tests-with-wasmJs-in-1.9.20-requires-Chrome-Canary#focus=Comments-27-8321383.0-0
+    //     rootProject.the<NodeJsRootExtension>().apply {
+    //         // nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+    //         version = "21.0.0-v8-canary202309143a48826a08"
+    //         downloadBaseUrl = "https://nodejs.org/download/v8-canary"
+    //     }
+    //
+    //     tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
+    //         args.add("--ignore-engines")
+    //     }
+    // }
 
     block()
 }
