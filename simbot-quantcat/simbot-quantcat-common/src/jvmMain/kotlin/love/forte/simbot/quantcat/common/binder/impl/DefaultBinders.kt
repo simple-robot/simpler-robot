@@ -32,7 +32,11 @@ import kotlin.reflect.KParameter
 
 
 /**
- * 将会直接抛出错误的binder。
+ * 默认的空内容绑定器。
+ *
+ * - 当参数可选时，使用 [ParameterBinder.Ignore] 标记其直接使用默认值。
+ * - 当参数标记为 nullable 时，直接提供 `null`。
+ * - 否则，[arg] 将会返回一个 [BindException] 的 [Result.failure] 表示失败。
  */
 public class EmptyBinder(
     private val parameter: KParameter,
@@ -63,6 +67,11 @@ public class EmptyBinder(
 
 /**
  * 组合多个binder的 [ParameterBinder].
+ *
+ * 在聚合绑定器中，会依次对所有的 [binders] 和 [spare] 使用 [ParameterBinder.arg] 来评估本次应绑定的参数，
+ * 知道遇到第一个返回为 [Result.isSuccess] 的结果后终止评估并使用此结果。
+ *
+ * 评估过程的详细描述参考 [arg] 文档说明。
  */
 public class MergedBinder(
     private val binders: List<ParameterBinder>, // not be empty
@@ -81,7 +90,24 @@ public class MergedBinder(
         require(binders.isNotEmpty()) { "'binders' must not be empty" }
     }
 
-
+    /**
+     *
+     * 使用内部所有的聚合 binder 对 [context] 进行评估并选出一个最先出现的可用值。
+     *
+     * 评估过程中：
+     *
+     * - 如果参数不可为 `null`、评估结果为成功但是内容为 `null`、同时参数是可选的，
+     * 则会忽略此结果，视为无结果。
+     * - 如果评估结果为失败，则暂记此异常，并视为无结果。
+     *
+     * 期间，遇到任何成功的、不符合上述会造成“无结果”条件的，
+     * 直接返回此评估结果，不再继续评估。
+     *
+     * 当所有binder评估完成，但没有遇到任何结果：
+     *
+     * - 如果参数为可选，输出debug日志并使用 [ParameterBinder.Ignore] 标记直接使用默认值。
+     * - 否则，返回 [Result.failure] 错误结果，并追加之前暂记的所有异常堆栈。
+     */
     @Suppress("ReturnCount")
     override fun arg(context: EventListenerContext): Result<Any?> {
         var err: Throwable? = null
@@ -91,7 +117,17 @@ public class MergedBinder(
             val result = arg(context)
             if (result.isSuccess) {
                 // if success, return.
-                return result
+                // 如果参数不可为 null、结果成功但是为 null、同时参数是可选的，
+                // 则返回 `null` 以忽略此参数。
+                return if (
+                    result.getOrNull() == null &&
+                    !parameter.type.isMarkedNullable &&
+                    parameter.isOptional
+                ) {
+                    null
+                } else {
+                    result
+                }
             }
             // failure
             val resultErr = result.exceptionOrNull()!!
