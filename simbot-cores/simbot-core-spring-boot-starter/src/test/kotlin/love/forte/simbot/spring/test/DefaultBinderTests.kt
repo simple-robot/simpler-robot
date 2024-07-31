@@ -167,7 +167,7 @@ class TestListenerContainer {
     @Listener
     @Filter("^test_5(\\s+(?<page>\\d+))?")
     fun MessageEvent.handle5(
-        @FilterValue("page", false) page: Int = 1
+        @FilterValue("page") page: Int = 1
     ): Int = page
 
     @Listener
