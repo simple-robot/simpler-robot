@@ -171,4 +171,13 @@ idea {
     }
 }
 
-
+// https://kotlinlang.org/docs/js-project-setup.html#node-js
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
+    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().apply {
+        // CI 中配置环境，不再单独下载
+        if (isCi) {
+            download = false
+        }
+    }
+    // "true" for default behavior
+}

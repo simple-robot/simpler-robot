@@ -371,6 +371,8 @@ public abstract interface class love/forte/simbot/bot/BotManager : love/forte/si
 	public fun all (Llove/forte/simbot/common/id/ID;)Lkotlin/sequences/Sequence;
 	public fun allToList ()Ljava/util/List;
 	public fun allToList (Llove/forte/simbot/common/id/ID;)Ljava/util/List;
+	public fun allToStreamable ()Llove/forte/simbot/common/streamable/Streamable;
+	public fun allToStreamable (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/common/streamable/Streamable;
 	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun cancel (Ljava/lang/Throwable;)V
 	public static synthetic fun cancel$default (Llove/forte/simbot/bot/BotManager;Ljava/lang/Throwable;ILjava/lang/Object;)V
@@ -393,6 +395,7 @@ public final class love/forte/simbot/bot/BotManagerUtil {
 
 public abstract interface class love/forte/simbot/bot/BotManagers : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
 	public fun allBots ()Lkotlin/sequences/Sequence;
+	public fun allBotsToStreamable ()Llove/forte/simbot/common/streamable/Streamable;
 	public fun firstBot ()Llove/forte/simbot/bot/Bot;
 	public fun firstBot (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/bot/Bot;
 }
@@ -1206,6 +1209,7 @@ public abstract interface class love/forte/simbot/event/EventListener {
 
 public abstract interface class love/forte/simbot/event/EventListenerContainer {
 	public abstract fun getListeners ()Lkotlin/sequences/Sequence;
+	public fun listenersToStreamable ()Llove/forte/simbot/common/streamable/Streamable;
 }
 
 public abstract interface class love/forte/simbot/event/EventListenerContext {
