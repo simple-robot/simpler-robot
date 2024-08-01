@@ -31,6 +31,7 @@ module simbot.api {
     requires simbot.logger;
     requires static org.jetbrains.annotations;
     requires static simbot.common.annotations;
+    requires simbot.common.streamable;
     requires simbot.common.suspendrunner;
     requires simbot.common.core;
     requires simbot.common.collection;

@@ -1,3 +1,12 @@
+# v4.4.0
+
+> Release & Pull Notes: [v4.4.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.4.0) 
+
+- fix(quantcat): 优化统一MergedBinder对null结果、失败结果的处理 ([`d741b8617`](https://github.com/simple-robot/simpler-robot/commit/d741b8617))
+- feat(common-streamable): 增加模块与新的公共类型 Streamable, 用来简化部分针对 Sequence 类型的转化操作，例如在JVM中转为 Stream 和在 JS 中转为数组。 ([`1ba898c57`](https://github.com/simple-robot/simpler-robot/commit/1ba898c57))
+- fix(quantcat): 优化统一MergedBinder对null结果、失败结果的处理 ([`9c5777847`](https://github.com/simple-robot/simpler-robot/commit/9c5777847))
+- feat(common-streamable): 增加模块与新的公共类型 Streamable, 用来简化部分针对 Sequence 类型的转化操作，例如在JVM中转为 Stream 和在 JS 中转为数组。 ([`ca3eaa02b`](https://github.com/simple-robot/simpler-robot/commit/ca3eaa02b))
+
 # v4.3.1
 
 > Release & Pull Notes: [v4.3.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.3.1) 

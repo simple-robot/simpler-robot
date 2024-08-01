@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,9 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.common.streamable.Streamable
+import love.forte.simbot.common.streamable.Streamable.Companion.asStreamable
+
 
 /**
  * 事件监听器的“容器”接口，提供用于获取其中的所有 [EventListener] 的API。
@@ -37,5 +40,11 @@ public interface EventListenerContainer {
      */
     public val listeners: Sequence<EventListener>
 
-
+    /**
+     * 获取到 [listeners] 并转化为 [Streamable]
+     *
+     * @see listeners
+     */
+    public fun listenersToStreamable(): Streamable<EventListener> =
+        listeners.asStreamable()
 }

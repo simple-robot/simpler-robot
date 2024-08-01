@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -29,6 +29,10 @@ import love.forte.simbot.event.EventListenerContext
  * 监听函数动态参数的绑定器。通过所需的执行参数而得到的参数绑定器。
  *
  * 对于一个可执行函数的参数 `KParameter` 所需的结果获取器。
+ *
+ * 没有任何绑定器时，
+ * 通常会使用 [EmptyBinder][love.forte.simbot.quantcat.common.binder.impl.EmptyBinder]，
+ * 当存在多个绑定器时，通常会使用 [MergedBinder][love.forte.simbot.quantcat.common.binder.impl.MergedBinder]。
  *
  */
 public interface ParameterBinder {
