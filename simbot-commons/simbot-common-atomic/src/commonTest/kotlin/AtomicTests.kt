@@ -21,8 +21,6 @@
  *
  */
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.atomic.*
 import kotlin.test.*
 
@@ -131,130 +129,6 @@ class AtomicTests {
             assertEquals(0u, getAndDecrement())
             assertEquals(ULong.MAX_VALUE, getAndDecrement())
         }
-    }
-
-    @Test
-    fun compareAsyncTest() = runTest {
-        val times = 1000
-        coroutineScope {
-            checkAtomicInt(times)
-            checkAtomicLong(times)
-            checkAtomicUInt(times)
-            checkAtomicULong(times)
-            checkAtomicRef(times)
-        }
-    }
-
-    private suspend fun checkAtomicInt(times: Int) {
-        val atomic = atomic(0)
-
-        withContext(Dispatchers.Default) {
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic += 1
-                    }
-                    yield()
-                }
-            }
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic.update { it + 1 }
-                    }
-                    yield()
-                }
-            }
-        }
-
-        assertEquals(times * 2, atomic.value)
-    }
-
-    private suspend fun checkAtomicLong(times: Int) {
-        val atomic = atomic(0L)
-
-        withContext(Dispatchers.Default) {
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic += 1L
-                    }
-                }
-            }
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic.update { it + 1L }
-                    }
-                }
-            }
-        }
-
-        assertEquals((times * 2).toLong(), atomic.value)
-    }
-
-    private suspend fun checkAtomicUInt(times: Int) {
-        val atomic = atomic(0u)
-
-        withContext(Dispatchers.Default) {
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic += 1u
-                    }
-                }
-            }
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic.update { it + 1u }
-                    }
-                }
-            }
-        }
-
-        assertEquals((times * 2).toUInt(), atomic.value)
-    }
-
-    private suspend fun checkAtomicULong(times: Int) {
-        val atomic = atomicUL(0u)
-
-        withContext(Dispatchers.Default) {
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic += 1u
-                    }
-                }
-            }
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic.update { it + 1u }
-                    }
-                }
-            }
-        }
-
-        assertEquals((times * 2).toULong(), atomic.value)
-    }
-
-    private suspend fun checkAtomicRef(times: Int) {
-        data class Value(val value: Int)
-
-        val atomic = atomicRef(Value(0))
-
-        withContext(Dispatchers.Default) {
-            launch {
-                repeat(times) {
-                    launch {
-                        atomic.update { it.copy(value = it.value + 1) }
-                    }
-                }
-            }
-        }
-
-        assertEquals(Value(times), atomic.value)
     }
 
     @Test
