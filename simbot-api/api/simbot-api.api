@@ -1947,10 +1947,42 @@ public abstract interface class love/forte/simbot/message/MessageContent : love/
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getMessages ()Llove/forte/simbot/message/Messages;
 	public abstract fun getPlainText ()Ljava/lang/String;
+	public fun getReference ()Llove/forte/simbot/message/MessageReference;
+	public fun getReferenceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun reference$suspendImpl (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/message/MessageContentKt {
 	public static final fun getSafePlainText (Llove/forte/simbot/message/MessageContent;)Ljava/lang/String;
+}
+
+public final class love/forte/simbot/message/MessageIdReference : love/forte/simbot/message/MessageReference {
+	public static final field Companion Llove/forte/simbot/message/MessageIdReference$Companion;
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun copy (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageIdReference;
+	public static synthetic fun copy$default (Llove/forte/simbot/message/MessageIdReference;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/message/MessageIdReference;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/message/MessageIdReference$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/message/MessageIdReference$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/message/MessageIdReference;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/message/MessageIdReference;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/message/MessageIdReference$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/message/MessageKt {
@@ -1970,6 +2002,10 @@ public final class love/forte/simbot/message/MessageReceipts {
 	public static final fun aggregation (Ljava/lang/Iterable;)Llove/forte/simbot/message/AggregatedMessageReceipt;
 	public static final fun aggregation (Ljava/util/Collection;)Llove/forte/simbot/message/AggregatedMessageReceipt;
 	public static final fun aggregation (Ljava/util/List;)Llove/forte/simbot/message/AggregatedMessageReceipt;
+}
+
+public abstract interface class love/forte/simbot/message/MessageReference : love/forte/simbot/message/StandardMessage {
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 }
 
 public abstract interface class love/forte/simbot/message/Messages : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/Message {
