@@ -111,6 +111,8 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation(libs.mockk)
+                implementation(project(":simbot-logger-slf4j2-impl"))
                 implementation(libs.kotlinx.coroutines.reactive)
                 implementation(libs.kotlinx.coroutines.reactor)
                 implementation(libs.kotlinx.coroutines.rx2)
