@@ -1,4 +1,13 @@
-# v4.4.0
+# v4.5.0
+
+> Release & Pull Notes: [v4.5.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.5.0) 
+
+- feat(api): ApplicationBuilder.serializersModule 作为后备而不是基底 ([`23050cd1d`](https://github.com/simple-robot/simpler-robot/commit/23050cd1d))
+- feat(api): ApplicationBuilder中新增可配置项 `serializersModule` 以允许配置一个自定义的序列化模块'基底' ([`34cfe9e16`](https://github.com/simple-robot/simpler-robot/commit/34cfe9e16))
+- feat(api): 增加一个标准消息元素类型 MessageReference; 增加一个API MessageContent.reference() ([`f40018faa`](https://github.com/simple-robot/simpler-robot/commit/f40018faa))
+- build(deps): bump org.jetbrains.kotlinx.kover from 0.8.2 to 0.8.3 ([`b05bcb75b`](https://github.com/simple-robot/simpler-robot/commit/b05bcb75b))
+- build(deps): bump io.mockk:mockk from 1.13.11 to 1.13.12 ([`737d87505`](https://github.com/simple-robot/simpler-robot/commit/737d87505))
+
 
 > Release & Pull Notes: [v4.4.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.4.0) 
 

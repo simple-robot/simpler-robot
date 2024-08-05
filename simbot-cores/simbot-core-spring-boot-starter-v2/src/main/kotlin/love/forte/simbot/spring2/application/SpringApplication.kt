@@ -101,7 +101,9 @@ public object Spring : SpringApplicationFactory {
 
             override val applicationEventRegistrar: ApplicationEventRegistrar
                 get() = registrar
-        }).toComponents()
+        }).toComponents(
+            parentSerializersModule = configuration.serializersModule
+        )
 
         // plugins
         val pluginCollections = springConfigurer.pluginFactoriesConfigurator.createAll(object : PluginConfigureContext {

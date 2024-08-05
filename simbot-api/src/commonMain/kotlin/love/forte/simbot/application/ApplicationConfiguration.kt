@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,11 @@
 package love.forte.simbot.application
 
 import kotlinx.coroutines.Job
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.common.coroutines.linkTo
+import love.forte.simbot.component.Components
+import love.forte.simbot.plugin.Plugins
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -51,6 +55,13 @@ public interface ApplicationConfiguration {
      */
     public val coroutineContext: CoroutineContext
 
+    /**
+     * [ApplicationBuilder.serializersModule] 所配置的**后置**兜底的序列化模块信息。
+     * 不是包含 [Components.serializersModule] 的聚合结果。
+     *
+     * @since 4.5.0
+     */
+    public val serializersModule: SerializersModule
 }
 
 /**
@@ -67,6 +78,18 @@ public interface ApplicationBuilder {
      * @see ApplicationConfiguration.coroutineContext
      */
     public var coroutineContext: CoroutineContext
+
+    /**
+     * 一个用于 [Components.serializersModule] 的基础序列化模块，
+     * [Components] 中所有组件的 [SerializersModule] 聚合完成后，
+     * 会再与此 [serializersModule] 进行合并。
+     *
+     * 可以将此 [serializersModule] 视为一个“兜底”的最终序列化模块，
+     * 例如可以用它来覆盖部分默认序列化器的行为。
+     *
+     * @since 4.5.0
+     */
+    public var serializersModule: SerializersModule
 }
 
 /**
@@ -75,4 +98,5 @@ public interface ApplicationBuilder {
  */
 public abstract class AbstractApplicationBuilder : ApplicationBuilder {
     override var coroutineContext: CoroutineContext = EmptyCoroutineContext
+    override var serializersModule: SerializersModule = EmptySerializersModule()
 }

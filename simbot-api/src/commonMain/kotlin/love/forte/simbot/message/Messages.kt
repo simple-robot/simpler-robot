@@ -105,6 +105,8 @@ public sealed interface Messages : Message, Iterable<Message.Element> {
 
                 subclass(Emoji.serializer())
                 subclass(Face.serializer())
+                subclass(MessageIdReference.serializer())
+
 
                 resolvePlatformStandardSerializers()
             }

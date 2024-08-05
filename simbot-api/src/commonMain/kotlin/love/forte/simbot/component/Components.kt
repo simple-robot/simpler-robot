@@ -26,10 +26,15 @@
 
 package love.forte.simbot.component
 
+import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.overwriteWith
+import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.common.collection.toImmutable
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 
 /**
  * 用于表示一组 [Component] 。
@@ -42,6 +47,13 @@ public interface Components : Collection<Component> {
 
     /**
      * 当前所有的组件内 [Component.serializersModule] 的聚合产物。
+     *
+     * [serializersModule] 的内容来自所有组件的
+     * [Component.serializersModule] 的聚合 (使用 [include][SerializersModuleBuilder.include]),
+     * 以及最终与 [ApplicationConfiguration.serializersModule] 的合并
+     * (使用 [overwriteWith][SerializersModule.overwriteWith],
+     * 后者可能会覆盖来自 [Component.serializersModule] 的配置)。
+     *
      */
     public val serializersModule: SerializersModule
 }
@@ -63,17 +75,24 @@ public inline fun <reified C : Component> Components.get(): C =
 /**
  * 将一个 [Component] 的集合转化为 [Components]。
  */
-public fun Collection<Component>.toComponents(): Components = CollectionComponents(toImmutable())
+@JvmOverloads
+public fun Collection<Component>.toComponents(
+    parentSerializersModule: SerializersModule = EmptySerializersModule()
+): Components =
+    CollectionComponents(toImmutable(), parentSerializersModule)
 
 /**
  * @see Components
  */
-private class CollectionComponents(private val collections: Collection<Component>) :
-    Components,
+private class CollectionComponents(
+    private val collections: Collection<Component>,
+    parentSerializersModule: SerializersModule
+) : Components,
     Collection<Component> by collections {
-    override val serializersModule: SerializersModule = SerializersModule {
-        collections.forEach { include(it.serializersModule) }
-    }
+    override val serializersModule: SerializersModule =
+        SerializersModule {
+            collections.forEach { include(it.serializersModule) }
+        } overwriteWith parentSerializersModule
 
     override fun toString(): String = "Components(values=$collections)"
     override fun equals(other: Any?): Boolean {

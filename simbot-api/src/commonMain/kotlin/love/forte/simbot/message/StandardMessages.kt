@@ -50,6 +50,7 @@ import kotlin.jvm.*
  * - [RemoteImage]
  * - [表情消息][Face]
  * - [emoji][Emoji]
+ * - [消息引用][MessageReference]
  *
  * JVM平台中部分扩展、辅助API通过静态类 `StandardMessages` 提供。
  *
@@ -382,8 +383,7 @@ public data class SimpleOfflineResourceImage(
     @Serializable(
         ResourceBase64Serializer::class
     ) override val resource: Resource
-) :
-    OfflineResourceImage
+) : OfflineResourceImage
 
 
 /**
@@ -480,3 +480,33 @@ public data class Emoji(public val id: ID) : StandardMessage, EmoticonMessage
 public data class Face(public val id: ID) : StandardMessage, EmoticonMessage
 //endregion
 
+//region MessageReference
+
+/**
+ * 一个消息引用元素，用来表示对另一个消息元素的引用。
+ * 可用于发送或接收，是否能应用取决于具体地实现。
+ *
+ * 当某个平台存在 _消息引用_ 的概念，但是无法使用 [MessageReference] 进行描述（例如它通过多重ID确定唯一身份，而不是唯一ID），
+ * 则需要由平台实现者自行实现，无法使用 [MessageReference]，也无法使用 [MessageContent.reference]。
+ *
+ * @since 4.5.0
+ *
+ * @see MessageContent.reference
+ * @see MessageIdReference
+ */
+public interface MessageReference : StandardMessage {
+    /**
+     * 被引用的目标消息ID。
+     */
+    public val id: ID
+
+}
+
+/**
+ * 一个仅实现 [id] 的 [MessageReference] 简单实现。
+ */
+@Serializable
+@SerialName("m.std.messageReference.id")
+public data class MessageIdReference(override val id: ID) : MessageReference
+
+//endregion
