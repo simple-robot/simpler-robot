@@ -1,16 +1,14 @@
 name: Qodana
 on:
   workflow_dispatch:
-  pull_request_target:
-    branches-ignore:
-      - 'dependabot/**'
+  pull_request:
   push:
     branches:
       - v4-dev
-      - '!dependabot/**'
 
 jobs:
   qodana:
+    if: ${{ !startsWith(github.head_ref, 'dependabot/') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
