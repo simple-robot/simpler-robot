@@ -28,7 +28,9 @@ package love.forte.simbot.component
 
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.overwriteWith
+import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.common.collection.toImmutable
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -45,6 +47,13 @@ public interface Components : Collection<Component> {
 
     /**
      * 当前所有的组件内 [Component.serializersModule] 的聚合产物。
+     *
+     * [serializersModule] 的内容来自所有组件的
+     * [Component.serializersModule] 的聚合 (使用 [include][SerializersModuleBuilder.include]),
+     * 以及最终与 [ApplicationConfiguration.serializersModule] 的合并
+     * (使用 [overwriteWith][SerializersModule.overwriteWith],
+     * 后者可能会覆盖来自 [Component.serializersModule] 的配置)。
+     *
      */
     public val serializersModule: SerializersModule
 }
@@ -81,9 +90,9 @@ private class CollectionComponents(
 ) : Components,
     Collection<Component> by collections {
     override val serializersModule: SerializersModule =
-        parentSerializersModule overwriteWith SerializersModule {
+        SerializersModule {
             collections.forEach { include(it.serializersModule) }
-        }
+        } overwriteWith parentSerializersModule
 
     override fun toString(): String = "Components(values=$collections)"
     override fun equals(other: Any?): Boolean {

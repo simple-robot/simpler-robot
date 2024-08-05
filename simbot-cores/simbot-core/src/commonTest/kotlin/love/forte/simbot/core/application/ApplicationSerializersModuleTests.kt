@@ -151,7 +151,7 @@ class ApplicationSerializersModuleTests {
 
         assertEquals(Kitty, json.decodeFromString(PolymorphicSerializer(Father::class), """{"type":"kitty"}"""))
         assertEquals(Child, json.decodeFromString(PolymorphicSerializer(Father::class), """{"type":"child"}"""))
-        assertEquals(Child, json.decodeFromString(PolymorphicSerializer(Father::class), """{}"""))
+        assertEquals(Kitty, json.decodeFromString(PolymorphicSerializer(Father::class), """{}"""))
     }
 
 }

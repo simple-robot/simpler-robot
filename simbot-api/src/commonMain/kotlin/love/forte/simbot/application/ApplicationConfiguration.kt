@@ -56,8 +56,8 @@ public interface ApplicationConfiguration {
     public val coroutineContext: CoroutineContext
 
     /**
-     * [ApplicationBuilder.serializersModule] 所配置的**基础**序列化模块信息。
-     * 不包含 [Components] 中的所有其他组件合并后的结果。
+     * [ApplicationBuilder.serializersModule] 所配置的**后置**兜底的序列化模块信息。
+     * 不是包含 [Components.serializersModule] 的聚合结果。
      *
      * @since 4.5.0
      */
@@ -82,12 +82,10 @@ public interface ApplicationBuilder {
     /**
      * 一个用于 [Components.serializersModule] 的基础序列化模块，
      * [Components] 中所有组件的 [SerializersModule] 聚合完成后，
-     * 会以此 [serializersModule] 为基准构建 [Components.serializersModule]。
+     * 会再与此 [serializersModule] 进行合并。
      *
-     * ```kotlin
-     * val finalModule =
-     *   parentSerializersModule overwriteWith allComponentsSerializersModule
-     * ```
+     * 可以将此 [serializersModule] 视为一个“兜底”的最终序列化模块，
+     * 例如可以用它来覆盖部分默认序列化器的行为。
      *
      * @since 4.5.0
      */
