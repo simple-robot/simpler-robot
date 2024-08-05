@@ -154,7 +154,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
-kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.15.1" }
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
