@@ -2,9 +2,12 @@ name: Qodana
 on:
   workflow_dispatch:
   pull_request:
+    branches-ignore:
+      - 'dependabot/**'
   push:
     branches:
       - v4-dev
+      - '!dependabot/**'
 
 jobs:
   qodana:
