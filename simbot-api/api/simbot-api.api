@@ -144,7 +144,9 @@ public final class love/forte/simbot/ability/StandardDeleteOption$StandardAnalys
 public abstract class love/forte/simbot/application/AbstractApplicationBuilder : love/forte/simbot/application/ApplicationBuilder {
 	public fun <init> ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
 }
 
 public abstract class love/forte/simbot/application/AbstractApplicationEventRegistrar : love/forte/simbot/application/ApplicationEventRegistrar {
@@ -189,11 +191,14 @@ public abstract interface class love/forte/simbot/application/Application : kotl
 
 public abstract interface class love/forte/simbot/application/ApplicationBuilder {
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public abstract fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public abstract fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
 }
 
 public abstract interface class love/forte/simbot/application/ApplicationConfiguration {
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
 public abstract interface class love/forte/simbot/application/ApplicationEventHandler {
@@ -847,6 +852,8 @@ public abstract interface class love/forte/simbot/component/ComponentInstaller {
 
 public final class love/forte/simbot/component/ComponentUtil {
 	public static final fun toComponents (Ljava/util/Collection;)Llove/forte/simbot/component/Components;
+	public static final fun toComponents (Ljava/util/Collection;Lkotlinx/serialization/modules/SerializersModule;)Llove/forte/simbot/component/Components;
+	public static synthetic fun toComponents$default (Ljava/util/Collection;Lkotlinx/serialization/modules/SerializersModule;ILjava/lang/Object;)Llove/forte/simbot/component/Components;
 }
 
 public abstract interface class love/forte/simbot/component/Components : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {

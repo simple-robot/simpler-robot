@@ -26,10 +26,13 @@
 
 package love.forte.simbot.component
 
+import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.common.collection.toImmutable
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 
 /**
  * 用于表示一组 [Component] 。
@@ -63,17 +66,24 @@ public inline fun <reified C : Component> Components.get(): C =
 /**
  * 将一个 [Component] 的集合转化为 [Components]。
  */
-public fun Collection<Component>.toComponents(): Components = CollectionComponents(toImmutable())
+@JvmOverloads
+public fun Collection<Component>.toComponents(
+    parentSerializersModule: SerializersModule = EmptySerializersModule()
+): Components =
+    CollectionComponents(toImmutable(), parentSerializersModule)
 
 /**
  * @see Components
  */
-private class CollectionComponents(private val collections: Collection<Component>) :
-    Components,
+private class CollectionComponents(
+    private val collections: Collection<Component>,
+    parentSerializersModule: SerializersModule
+) : Components,
     Collection<Component> by collections {
-    override val serializersModule: SerializersModule = SerializersModule {
-        collections.forEach { include(it.serializersModule) }
-    }
+    override val serializersModule: SerializersModule =
+        parentSerializersModule overwriteWith SerializersModule {
+            collections.forEach { include(it.serializersModule) }
+        }
 
     override fun toString(): String = "Components(values=$collections)"
     override fun equals(other: Any?): Boolean {

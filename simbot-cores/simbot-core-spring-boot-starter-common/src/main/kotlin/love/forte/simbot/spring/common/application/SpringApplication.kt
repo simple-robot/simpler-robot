@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
@@ -73,7 +74,8 @@ public open class SpringApplicationBuilder : AbstractApplicationBuilder() {
 
         return SpringApplicationConfigurationImpl(
             context.minusKey(Job) + job,
-            applicationConfigurationProperties
+            serializersModule,
+            applicationConfigurationProperties,
         )
     }
 
@@ -119,5 +121,6 @@ public interface SpringEventDispatcherConfiguration : SimpleEventDispatcherConfi
 @InternalSimbotAPI
 public open class SpringApplicationConfigurationImpl(
     override val coroutineContext: CoroutineContext,
+    override val serializersModule: SerializersModule,
     override val applicationConfigurationProperties: SpringApplicationConfigurationProperties,
 ) : SpringApplicationConfiguration

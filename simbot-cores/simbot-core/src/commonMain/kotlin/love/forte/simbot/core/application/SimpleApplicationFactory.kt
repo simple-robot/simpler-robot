@@ -26,6 +26,7 @@ package love.forte.simbot.core.application
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.ability.OnCompletion
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.application.*
@@ -183,7 +184,9 @@ public object Simple :
 
             override val applicationEventRegistrar: ApplicationEventRegistrar
                 get() = registrar
-        }).toComponents()
+        }).toComponents(
+            parentSerializersModule = configuration.serializersModule
+        )
 
         // plugins
         val pluginCollections = simpleConfigurer.pluginFactoriesConfigurator.createAll(object : PluginConfigureContext {
@@ -266,12 +269,17 @@ public class SimpleApplicationBuilder : AbstractApplicationBuilder() {
         val job = SupervisorJob(context[Job])
 
         // 至少有个 Job
-        return SimpleApplicationConfigurationImpl(context.minusKey(Job) + job)
+        return SimpleApplicationConfigurationImpl(
+            coroutineContext = context.minusKey(Job) + job,
+            serializersModule = serializersModule
+        )
     }
 }
 
-private class SimpleApplicationConfigurationImpl(override val coroutineContext: CoroutineContext) :
-    SimpleApplicationConfiguration
+private class SimpleApplicationConfigurationImpl(
+    override val coroutineContext: CoroutineContext,
+    override val serializersModule: SerializersModule
+) : SimpleApplicationConfiguration
 
 private class SimpleApplicationLauncherImpl(
     private val applicationCreator: () -> SimpleApplicationImpl
