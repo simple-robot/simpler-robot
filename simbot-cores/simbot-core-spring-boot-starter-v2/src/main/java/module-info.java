@@ -3,6 +3,7 @@ module simbot.spring2boot.starter {
     requires kotlin.stdlib;
     requires kotlin.reflect;
     requires kotlinx.coroutines.core;
+    requires kotlinx.serialization.core;
     requires kotlinx.serialization.json;
     // spring
     requires spring.core;
