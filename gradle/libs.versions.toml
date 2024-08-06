@@ -10,7 +10,7 @@ ktor = "2.3.12"
 slf4j = "2.0.13"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "2.0.0-1.0.24"
+ksp = "2.0.10-1.0.24"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.18.1"
 # https://github.com/Kotlin/kotlinx-benchmark
