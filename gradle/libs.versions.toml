@@ -7,7 +7,7 @@ spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
 ktor = "2.3.12"
-slf4j = "2.0.13"
+slf4j = "2.0.14"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
 ksp = "2.0.0-1.0.24"
