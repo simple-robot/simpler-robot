@@ -23,9 +23,9 @@
 
 plugins {
     kotlin("jvm")
-    id("org.springframework.boot") version "3.3.1"
-    id("io.spring.dependency-management") version "1.1.5"
-    kotlin("plugin.spring") version "2.0.10"
+    alias(libs.plugins.spring)
+    alias(libs.plugins.spring.dependencyManagement)
+    alias(libs.plugins.kotlin.plugin.spring)
 }
 
 java {
