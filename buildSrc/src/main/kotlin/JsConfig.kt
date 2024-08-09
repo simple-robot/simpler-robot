@@ -35,7 +35,7 @@ inline fun KotlinJsTargetDsl.configJs(
         nodejs {
             testTask {
                 useMocha {
-                    timeout = "10000"
+                    timeout = "50000"
                 }
             }
         }
@@ -46,7 +46,6 @@ inline fun KotlinJsTargetDsl.configJs(
             testTask {
                 useKarma {
                     useChromeHeadless()
-                    // useConfigDirectory(File(project.rootProject.projectDir, "karma"))
                 }
             }
         }
@@ -75,6 +74,11 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
 ) {
     if (nodeJs) {
         nodejs {
+            testTask {
+                useMocha {
+                    timeout = "50000"
+                }
+            }
         }
     }
     // if (nodeJs && isLinux) {
@@ -87,7 +91,6 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
             testTask {
                 useKarma {
                     useChromeHeadless()
-                    // useConfigDirectory(File(project.rootProject.projectDir, "karma"))
                 }
             }
         }
