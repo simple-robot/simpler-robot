@@ -26,6 +26,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import java.time.Instant
 
 plugins {
     kotlin("multiplatform")
@@ -34,8 +35,8 @@ plugins {
     id("simbot.suspend-transform-configure")
     alias(libs.plugins.ksp)
     id("simbot.dokka-module-configuration")
+    id("com.github.gmazzo.buildconfig")
 }
-// apply(plugin = "simbot.dokka-module-configuration")
 
 configJavaCompileWithModule("simbot.api")
 apply(plugin = "simbot-multiplatform-maven-publish")
@@ -144,4 +145,21 @@ ksp {
     // arg("simbot.internal.processor.uml.target", "love.forte.simbot.definition.Actor")
     arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/event-uml.md").absolutePath)
     // arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/actor-uml.md").absolutePath)
+}
+
+// BuildConfig for the current version
+// love.forte.simbot.annotations.InternalSimbotAPI
+buildConfig {
+    useKotlinOutput {
+        topLevelConstants = false
+        internalVisibility = false
+    }
+
+    className.set("SimbotBuiltin")
+    packageName.set("love.forte.simbot")
+    buildConfigField<String>("VERSION", P.Simbot.version)
+    buildConfigField<String>("BUILD_KOTLIN_VERSION", libs.versions.kotlin)
+    buildConfigField<Boolean>("IS_SNAPSHOT", isSnapshot())
+    buildConfigField<String>("BUILD_AT", Instant.now().toString())
+    documentation.set("Auto-generated simbot built-in constants.")
 }

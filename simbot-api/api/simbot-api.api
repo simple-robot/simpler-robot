@@ -1,3 +1,11 @@
+public final class love/forte/simbot/SimbotBuiltin {
+	public static final field BUILD_AT Ljava/lang/String;
+	public static final field BUILD_KOTLIN_VERSION Ljava/lang/String;
+	public static final field INSTANCE Llove/forte/simbot/SimbotBuiltin;
+	public static final field IS_SNAPSHOT Z
+	public static final field VERSION Ljava/lang/String;
+}
+
 public abstract interface class love/forte/simbot/ability/AcceptOption {
 }
 
