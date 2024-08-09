@@ -14,7 +14,7 @@ ksp = "2.0.10-1.0.24"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.18.1"
 # https://github.com/Kotlin/kotlinx-benchmark
-kotlinxBenchmark = "0.4.11"
+#kotlinxBenchmark = "0.4.11"
 reactor = "3.6.2"
 # simbots
 suspendTransform = "0.9.0"
@@ -42,15 +42,12 @@ dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref =
 
 # kotlinx-coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-jdk8 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-reactive = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactive", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-jdk9 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk9", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-slf4j = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-debug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
@@ -86,7 +83,7 @@ spring-boot-v3-dependencies = { group = "org.springframework.boot", name = "spri
 spring-boot-v3-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" } # , version.ref = "spring-boot-v3"
-spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v3" } # , version.ref = "spring-boot-v3"
+spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v3" }
 spring-boot-v3-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" } # , version.ref = "spring-boot-v3"
@@ -140,12 +137,12 @@ gradle-common-publication = { group = "love.forte.gradle.common", name = "gradle
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 # benchmark
-kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
+#kotlinx-benchmark-runtime = { group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
 
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
+#kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # Kover
@@ -155,6 +152,10 @@ kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
 kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
+
+spring = { id = "org.springframework.boot", version.ref = "spring-boot-v3" }
+spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.5" }
+kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
