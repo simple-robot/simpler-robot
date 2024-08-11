@@ -39,6 +39,8 @@ import love.forte.simbot.definition.Channel
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Contact
 import love.forte.simbot.definition.Guild
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmName
@@ -111,6 +113,32 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * [isStarted] 与当前 [Bot] 是否被关闭无关，也不会被其影响。
      */
     public val isStarted: Boolean
+
+    // abilities
+
+    /**
+     * 根据一个 [消息引用][reference] 查询或获取它对应地源消息。
+     *
+     * - 如果实现者尚未实现此功能则会抛出 [UnsupportedOperationException]。
+     * - 如果实现的对应平台明确存在**引用**的概念、但由于各种原因无法查询引用源消息时，
+     * 将会抛出 [UnsupportedOperationException]。
+     * - 如果实现的对应平台明确存在**引用**的概念、但消息引用无法使用 [MessageReference] 进行表达时，
+     * 将会抛出 [UnsupportedOperationException]。
+     * (如果是此原因，则实现者应当提供另外可供使用的专属API。)
+     * - 否则，将根据具体地引用信息查询并得到其对应地 [MessageContent]。
+     *
+     * @throws UnsupportedOperationException 可能因为:
+     * - 实现者尚未实现此API
+     * - 如果存在引用的概念、但对应平台明确由于各种原因无法查询引用源消息时
+     * - 或者如果存在引用的概念、但消息引用无法使用 [MessageReference] 进行表达时
+     * 如果是后者，则实现者应当提供另外可供使用的专属API。
+     * @throws RuntimeException 可能在获取引用的过程中产生的异常 (比如API请求失败，或查不到对应结果)。
+     * 这通常来自进行挂起查询的过程(如果有的话)。
+     * @since 4.6.0
+     */
+    @ST
+    public suspend fun messageFromReference(reference: MessageReference): MessageContent =
+        throw UnsupportedOperationException()
 
     // join & cancel
 

@@ -26,6 +26,7 @@ package love.forte.simbot.message
 import love.forte.simbot.ability.DeleteFailureException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.DeleteSupport
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmSynthetic
@@ -107,14 +108,37 @@ public interface MessageContent : DeleteSupport {
      * 则使用 [reference] 时应当抛出信息明确的 [UnsupportedOperationException] 异常。
      *
      * @throws UnsupportedOperationException 如果实现者的所属平台有明确的 _消息引用_ 概念，
-     * 但是无法通过 [MessageReference] 这个类型进行表述
-     *
+     * 但是无法通过 [MessageReference] 这个类型进行表述。
+     * @throws RuntimeException 可能在获取引用的过程中产生的异常。这通常来自进行挂起查询的过程(如果有的话)。
      * @since 4.5.0
      */
     @STP
     public suspend fun reference(): MessageReference? =
         messages.firstOrNull { it is MessageReference } as? MessageReference?
 
+    /**
+     * 根据 [消息引用][reference] (或具体实现内部的某种真实引用)，
+     * 查询此引用的源消息。
+     *
+     * - 如果实现者尚未实现此功能，或 [reference] 返回 `null`,
+     * 则 [referenceMessage] 的结果为 `null`。
+     * - 如果实现的对应平台明确存在**引用**的概念、但由于各种原因无法查询引用源消息时，
+     * [referenceMessage] 将会抛出 [UnsupportedOperationException]。
+     * - 否则，将根据具体地引用信息查询并得到其对应地 [MessageContent]。
+     * 与 [reference] 不同，[referenceMessage] 大概率会产生网络请求和挂起行为，
+     * 但具体行为还是以具体实现为准。
+     *
+     *
+     * @throws UnsupportedOperationException 如果存在引用的概念、
+     * 但对应平台明确由于各种原因无法查询引用源消息时。
+     * @throws RuntimeException 可能在获取引用的过程中产生的异常。这通常来自进行挂起查询的过程(如果有的话)。
+     *
+     * @since 4.6.0
+     *
+     * @see Bot.messageFromReference
+     */
+    @STP
+    public suspend fun referenceMessage(): MessageContent? = null
 }
 
 /**
