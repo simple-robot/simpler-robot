@@ -366,6 +366,11 @@ public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/C
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun messageFromId$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromIdReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun messageFromReference (Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun messageFromReference$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromReferenceAsync (Llove/forte/simbot/message/MessageReference;)Ljava/util/concurrent/CompletableFuture;
