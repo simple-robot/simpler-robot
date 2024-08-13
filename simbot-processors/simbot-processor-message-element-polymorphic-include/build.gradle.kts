@@ -22,37 +22,26 @@
  */
 
 plugins {
-    `kotlin-dsl`
-    idea
+    kotlin("jvm")
+    id("simbot.dokka-module-configuration")
+    kotlin("plugin.serialization")
 }
 
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-    mavenLocal()
-}
+configJavaCompileWithModule()
+apply(plugin = "simbot-jvm-maven-publish")
 
-val kotlinVersion: String = libs.versions.kotlin.get()
+kotlin {
+    explicitApi()
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+}
 
 dependencies {
-    implementation(kotlin("gradle-plugin", kotlinVersion))
-    implementation(kotlin("serialization", kotlinVersion))
-    implementation(kotlin("power-assert", kotlinVersion))
-    implementation(libs.bundles.dokka)
-
-    // see https://github.com/gradle-nexus/publish-plugin
-    implementation(libs.gradleNexusPublishPlugin)
-
-    // suspend transform
-    implementation(libs.suspend.transform.gradle)
-
-    // gradle common
-    implementation(libs.bundles.gradle.common)
+    implementation(libs.ksp)
+    implementation(libs.kotlinPoet.ksp)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.properties)
 }
 
-idea {
-    module {
-        isDownloadSources = true
-    }
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
 }
-

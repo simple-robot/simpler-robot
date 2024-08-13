@@ -42,6 +42,9 @@ include(":internal-processors:interface-uml-processor")
 // gradle
 include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
+// processors
+include("simbot-processors:simbot-processor-message-element-polymorphic-include")
+
 include(":simbot-commons:simbot-common-annotations")
 include(":simbot-commons:simbot-common-collection")
 include(":simbot-commons:simbot-common-streamable")
