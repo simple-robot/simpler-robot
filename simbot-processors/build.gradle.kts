@@ -21,38 +21,6 @@
  *
  */
 
-plugins {
-    `kotlin-dsl`
-    idea
+subprojects {
+    group = P.GROUP_PROCESSOR
 }
-
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-    mavenLocal()
-}
-
-val kotlinVersion: String = libs.versions.kotlin.get()
-
-dependencies {
-    implementation(kotlin("gradle-plugin", kotlinVersion))
-    implementation(kotlin("serialization", kotlinVersion))
-    implementation(kotlin("power-assert", kotlinVersion))
-    implementation(libs.bundles.dokka)
-
-    // see https://github.com/gradle-nexus/publish-plugin
-    implementation(libs.gradleNexusPublishPlugin)
-
-    // suspend transform
-    implementation(libs.suspend.transform.gradle)
-
-    // gradle common
-    implementation(libs.bundles.gradle.common)
-}
-
-idea {
-    module {
-        isDownloadSources = true
-    }
-}
-

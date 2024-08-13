@@ -21,6 +21,7 @@
  *
  */
 
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -136,6 +137,7 @@ kotlin {
 dependencies {
     // add("kspJvm", libs.suspend.reversal.processor)
     add("kspJvm", project(":internal-processors:interface-uml-processor"))
+    add("kspCommonMainMetadata", project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
 }
 
 ksp {
@@ -145,6 +147,19 @@ ksp {
     // arg("simbot.internal.processor.uml.target", "love.forte.simbot.definition.Actor")
     arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/event-uml.md").absolutePath)
     // arg("simbot.internal.processor.uml.output", rootDir.resolve("generated-docs/actor-uml.md").absolutePath)
+
+    // simbot-processor-message-element-polymorphic-include
+    arg("simbot.processor.message-element-polymorphic-include.localOnly", "true")
+    arg("simbot.processor.message-element-polymorphic-include.outputPackage", "love.forte.simbot.message")
+    arg("simbot.processor.message-element-polymorphic-include.visibility", "internal")
+}
+
+kotlin.sourceSets.commonMain {
+    // solves all implicit dependency trouble and IDEs source code detection
+    // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
+    tasks.withType<KspTaskMetadata> {
+        kotlin.srcDir(destinationDirectory.file("kotlin"))
+    }
 }
 
 // BuildConfig for the current version

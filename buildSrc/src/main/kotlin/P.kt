@@ -64,6 +64,7 @@ sealed class P(override val group: String) : ProjectDetail() {
         const val GROUP_QUANTCAT = "love.forte.simbot.quantcat"
         const val GROUP_EXTENSION = "love.forte.simbot.extension"
         const val GROUP_BENCHMARK = "love.forte.simbot.benchmark"
+        const val GROUP_PROCESSOR = "love.forte.simbot.processor"
 
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"

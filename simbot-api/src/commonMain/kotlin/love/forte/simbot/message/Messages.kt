@@ -37,7 +37,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import love.forte.simbot.message.MessagesBuilder.Companion.create
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -95,19 +94,7 @@ public sealed interface Messages : Message, Iterable<Message.Element> {
         @get:JvmName("standardSerializersModule")
         public val standardSerializersModule: SerializersModule = SerializersModule {
             polymorphic(Message.Element::class) {
-                subclass(Text.serializer())
-                subclass(At.serializer())
-                subclass(AtAll.serializer())
-                // images
-                subclass(OfflineByteArrayImage.serializer())
-                subclass(SimpleOfflineResourceImage.serializer())
-                subclass(RemoteIDImage.serializer())
-
-                subclass(Emoji.serializer())
-                subclass(Face.serializer())
-                subclass(MessageIdReference.serializer())
-
-
+                includeMessageElementPolymorphic()
                 resolvePlatformStandardSerializers()
             }
         }
