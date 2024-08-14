@@ -8,6 +8,7 @@ on:
 
 jobs:
   qodana:
+    if: ${{ !startsWith(github.head_ref, 'dependabot/') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

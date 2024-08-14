@@ -23,36 +23,25 @@
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.spring)
-    alias(libs.plugins.spring.dependencyManagement)
-    alias(libs.plugins.kotlin.plugin.spring)
+    id("simbot.dokka-module-configuration")
+    kotlin("plugin.serialization")
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+configJavaCompileWithModule()
+apply(plugin = "simbot-jvm-maven-publish")
 
-repositories {
-    mavenCentral()
+kotlin {
+    explicitApi()
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 }
 
 dependencies {
-    implementation(project(":simbot-cores:simbot-core-spring-boot-starter"))
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(libs.ksp)
+    implementation(libs.kotlinPoet.ksp)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.properties)
 }
 
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
-    }
-}
-
-tasks.withType<Test> {
+tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }

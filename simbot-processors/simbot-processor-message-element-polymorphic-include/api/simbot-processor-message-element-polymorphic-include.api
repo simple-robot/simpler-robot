@@ -1,0 +1,81 @@
+public class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration {
+	public static final field CONFIG_PREFIX Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (ILjava/lang/String;ZZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun getBaseClass ()Ljava/lang/String;
+	public fun getEnable ()Z
+	public fun getGenerateFunName ()Ljava/lang/String;
+	public fun getLocalOnly ()Z
+	public fun getOutputFileJvmMultifile ()Z
+	public fun getOutputFileJvmName ()Ljava/lang/String;
+	public fun getOutputFileName ()Ljava/lang/String;
+	public fun getOutputPackage ()Ljava/lang/String;
+	public fun getVisibility ()Ljava/lang/String;
+	public fun setBaseClass (Ljava/lang/String;)V
+	public fun setEnable (Z)V
+	public fun setGenerateFunName (Ljava/lang/String;)V
+	public fun setLocalOnly (Z)V
+	public fun setOutputFileJvmMultifile (Z)V
+	public fun setOutputFileJvmName (Ljava/lang/String;)V
+	public fun setOutputFileName (Ljava/lang/String;)V
+	public fun setOutputPackage (Ljava/lang/String;)V
+	public fun setVisibility (Ljava/lang/String;)V
+	public fun visibilityValue ()Lcom/squareup/kotlinpoet/KModifier;
+	public static final synthetic fun write$Self (Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public synthetic class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
+	protected field baseKSClassDeclaration Lcom/google/devtools/ksp/symbol/KSClassDeclaration;
+	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;)V
+	protected fun createFile ()Lcom/squareup/kotlinpoet/FileSpec;
+	protected fun createFileBuilder ()Lcom/squareup/kotlinpoet/FileSpec$Builder;
+	public fun finish ()V
+	protected fun getBaseKSClassDeclaration ()Lcom/google/devtools/ksp/symbol/KSClassDeclaration;
+	protected fun getGenerateFunName ()Ljava/lang/String;
+	protected fun getOutputFileJvmMultifile ()Z
+	protected fun getOutputFileJvmName ()Ljava/lang/String;
+	protected fun getOutputFileName ()Ljava/lang/String;
+	protected fun getOutputPackage ()Ljava/lang/String;
+	protected fun getTargetClasses ()Ljava/util/List;
+	protected fun getVisibility ()Lcom/squareup/kotlinpoet/KModifier;
+	protected fun getVisitor ()Lcom/google/devtools/ksp/symbol/KSVisitor;
+	protected fun isLocalOnly ()Z
+	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
+	protected fun setBaseKSClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;)V
+	protected fun useInFile (Lcom/squareup/kotlinpoet/FileSpec$Builder;)V
+	protected fun write (Lcom/squareup/kotlinpoet/FileSpec;)V
+}
+
+protected class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessor$Visitor : com/google/devtools/ksp/symbol/KSVisitorVoid {
+	public fun <init> (Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessor;)V
+	public synthetic fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Lkotlin/Unit;)V
+}
+
+public class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessorProvider : com/google/devtools/ksp/processing/SymbolProcessorProvider {
+	public fun <init> ()V
+	public fun create (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)Lcom/google/devtools/ksp/processing/SymbolProcessor;
+	protected fun readConfiguration (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;
+}
+
+public final class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessorProvider$EmptySymbolProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
+	public static final field INSTANCE Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessorProvider$EmptySymbolProcessor;
+	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
+}
+

@@ -1,3 +1,25 @@
+# v4.6.0
+
+> Release & Pull Notes: [v4.6.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.6.0) 
+
+- build(deps): bump io.projectreactor:reactor-core from 3.6.2 to 3.6.9 ([`99fd7c6f2`](https://github.com/simple-robot/simpler-robot/commit/99fd7c6f2))
+- build(deps): bump io.projectreactor:reactor-test from 3.6.2 to 3.6.9 ([`615689775`](https://github.com/simple-robot/simpler-robot/commit/615689775))
+- feat: 新增一个新的组 love.forte.simbot.processor, 以及其中一个新的用于组件开发的ksp处理器 simbot-processor-message-element-polymorphic-include ([`4adc9412a`](https://github.com/simple-robot/simpler-robot/commit/4adc9412a))
+- build(deps): bump slf4j from 2.0.15 to 2.0.16 ([`1d478c4eb`](https://github.com/simple-robot/simpler-robot/commit/1d478c4eb))
+- feat(api): 为 `Bot` 增加用于根据ID获取源消息的API ([`25ba84656`](https://github.com/simple-robot/simpler-robot/commit/25ba84656))
+- feat(api): 为 `MessageContent` 和 `Bot` 增加用于根据引用 `MessageReference` 获取源消息的API ([`9ff7e9473`](https://github.com/simple-robot/simpler-robot/commit/9ff7e9473))
+- build(api): 在 simbot-api 中生成携带部分常量信息的 builtin ([`f58c080b2`](https://github.com/simple-robot/simpler-robot/commit/f58c080b2))
+- build(deps): bump slf4j from 2.0.13 to 2.0.15 ([`40dcf0ecf`](https://github.com/simple-robot/simpler-robot/commit/40dcf0ecf))
+- build(deps): bump plugin.spring from 2.0.0 to 2.0.10 ([`385be898f`](https://github.com/simple-robot/simpler-robot/commit/385be898f))
+- build(deps): bump ksp from 2.0.0-1.0.24 to 2.0.10-1.0.24 ([`e9c81da85`](https://github.com/simple-robot/simpler-robot/commit/e9c81da85))
+- build(deps): bump org.jetbrains.kotlin.plugin.allopen ([`d3708123b`](https://github.com/simple-robot/simpler-robot/commit/d3708123b))
+- build(deps): bump com.squareup:kotlinpoet-ksp from 1.17.0 to 1.18.1 ([`25c7b4923`](https://github.com/simple-robot/simpler-robot/commit/25c7b4923))
+- build(deps): bump org.jetbrains.kotlinx:lincheck from 2.32 to 2.33 ([`f218cd18c`](https://github.com/simple-robot/simpler-robot/commit/f218cd18c))
+- build(deps): bump org.jetbrains.kotlinx.binary-compatibility-validator ([`dc8672440`](https://github.com/simple-robot/simpler-robot/commit/dc8672440))
+- build(deps): bump ksp from 2.0.0-1.0.23 to 2.0.0-1.0.24 ([`d7482901a`](https://github.com/simple-robot/simpler-robot/commit/d7482901a))
+- build(deps): bump com.github.gmazzo.buildconfig from 5.3.5 to 5.4.0 ([`32ec83010`](https://github.com/simple-robot/simpler-robot/commit/32ec83010))
+- build(deps): bump ksp from 2.0.0-1.0.22 to 2.0.0-1.0.23 ([`bce28e3fd`](https://github.com/simple-robot/simpler-robot/commit/bce28e3fd))
+
 # v4.5.0
 
 > Release & Pull Notes: [v4.5.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.5.0) 
@@ -8,15 +30,6 @@
 - build(deps): bump org.jetbrains.kotlinx.kover from 0.8.2 to 0.8.3 ([`b05bcb75b`](https://github.com/simple-robot/simpler-robot/commit/b05bcb75b))
 - build(deps): bump io.mockk:mockk from 1.13.11 to 1.13.12 ([`737d87505`](https://github.com/simple-robot/simpler-robot/commit/737d87505))
 
-
-> Release & Pull Notes: [v4.4.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.4.0) 
-
-- fix(quantcat): 优化统一MergedBinder对null结果、失败结果的处理 ([`d741b8617`](https://github.com/simple-robot/simpler-robot/commit/d741b8617))
-- feat(common-streamable): 增加模块与新的公共类型 Streamable, 用来简化部分针对 Sequence 类型的转化操作，例如在JVM中转为 Stream 和在 JS 中转为数组。 ([`1ba898c57`](https://github.com/simple-robot/simpler-robot/commit/1ba898c57))
-- fix(quantcat): 优化统一MergedBinder对null结果、失败结果的处理 ([`9c5777847`](https://github.com/simple-robot/simpler-robot/commit/9c5777847))
-- feat(common-streamable): 增加模块与新的公共类型 Streamable, 用来简化部分针对 Sequence 类型的转化操作，例如在JVM中转为 Stream 和在 JS 中转为数组。 ([`ca3eaa02b`](https://github.com/simple-robot/simpler-robot/commit/ca3eaa02b))
-
-# v4.3.1
 
 > Release & Pull Notes: [v4.3.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.3.1) 
 

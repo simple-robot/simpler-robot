@@ -1,3 +1,11 @@
+public final class love/forte/simbot/SimbotBuiltin {
+	public static final field BUILD_AT Ljava/lang/String;
+	public static final field BUILD_KOTLIN_VERSION Ljava/lang/String;
+	public static final field INSTANCE Llove/forte/simbot/SimbotBuiltin;
+	public static final field IS_SNAPSHOT Z
+	public static final field VERSION Ljava/lang/String;
+}
+
 public abstract interface class love/forte/simbot/ability/AcceptOption {
 }
 
@@ -358,6 +366,16 @@ public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/C
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun messageFromId$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromIdReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun messageFromReference (Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun messageFromReference$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun messageFromReferenceAsync (Llove/forte/simbot/message/MessageReference;)Ljava/util/concurrent/CompletableFuture;
+	public fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromReferenceReserve (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun startBlocking ()V
@@ -1956,9 +1974,14 @@ public abstract interface class love/forte/simbot/message/MessageContent : love/
 	public abstract fun getPlainText ()Ljava/lang/String;
 	public fun getReference ()Llove/forte/simbot/message/MessageReference;
 	public fun getReferenceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessage ()Llove/forte/simbot/message/MessageContent;
+	public fun getReferenceMessageAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun reference$suspendImpl (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun referenceMessage$suspendImpl (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/message/MessageContentKt {

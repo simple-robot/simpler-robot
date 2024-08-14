@@ -27,6 +27,7 @@ package love.forte.simbot.bot
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable.join
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import love.forte.simbot.ability.CompletionAware
@@ -39,6 +40,8 @@ import love.forte.simbot.definition.Channel
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Contact
 import love.forte.simbot.definition.Guild
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmName
@@ -63,6 +66,9 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * （比如向平台申请并下发的某种 `bot_id` 或者 `token` ）。
      *
      * 通常情况下，它会是注册bot时候使用的某种唯一标识。
+     * 它只能作为 simbot application 中的唯一表示，
+     * 无法确保其代表某种 _用户ID_ 。
+     * 对于不同的平台可能会视情况提供额外的属性来获取其用户ID。
      *
      */
     public override val id: ID
@@ -111,6 +117,60 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * [isStarted] 与当前 [Bot] 是否被关闭无关，也不会被其影响。
      */
     public val isStarted: Boolean
+
+    // abilities
+
+    /**
+     * 根据一个 [消息引用][reference] 查询或获取它对应地源消息。
+     *
+     * - 如果实现者尚未实现此功能则会抛出 [UnsupportedOperationException]。
+     * - 如果实现的对应平台明确存在**引用**的概念、但由于各种原因无法查询引用源消息时，
+     * 将会抛出 [UnsupportedOperationException]。
+     * - 如果实现的对应平台明确存在**引用**的概念、但消息引用无法使用 [MessageReference] 进行表达时，
+     * 将会抛出 [UnsupportedOperationException]。
+     * (如果是此原因，则实现者应当提供另外可供使用的专属API。)
+     * - 否则，将根据具体地引用信息查询并得到其对应地 [MessageContent]。
+     *
+     * 如果一个消息引用等同于一个消息的ID，那么 [messageFromReference] 的效果等同于 [messageFromId]。
+     *
+     * @throws UnsupportedOperationException 可能因为:
+     * - 实现者尚未实现此API。
+     * - 如果存在引用的概念、但对应平台明确由于各种原因无法查询引用源消息时
+     * - 或者如果存在引用的概念、但消息引用无法使用 [MessageReference] 进。行表达时。
+     * 此时则实现者应当提供另外可供使用的专属API。
+     * @throws RuntimeException 可能在获取引用的过程中产生的异常 (比如API请求失败，或查不到对应结果)。
+     * 这通常来自进行挂起查询的过程(如果有的话)。
+     * @since 4.6.0
+     *
+     * @see messageFromId
+     */
+    @ST
+    public suspend fun messageFromReference(reference: MessageReference): MessageContent =
+        throw UnsupportedOperationException()
+
+    /**
+     * 根据一个 [消息ID][ID] 获取它对应地源消息。
+     *
+     * - 如果实现者尚未实现此功能则会抛出 [UnsupportedOperationException]。
+     * - 如果存在消息ID、但对应平台明确由于各种原因无法根据ID查询源消息时会抛出 [UnsupportedOperationException]。
+     * - 如果存在消息ID、但无法仅通过一个 [ID] 来进行查询时 (例如需要其他附加的复合信息查询)
+     * 会抛出 [UnsupportedOperationException]。此时实现者应当提供另外可供使用的专属API。
+     * - 否则，将根据 [ID] 查询并得到其对应地 [MessageContent]。
+     *
+     * @throws UnsupportedOperationException 可能因为:
+     * - 实现者尚未实现此API。
+     * - 如果存在消息ID、但对应平台明确由于各种原因无法根据ID查询源消息时。
+     * - 或者如果存在消息ID、但无法仅通过一个 [ID] 来进行查询时 (例如需要其他附加的复合信息查询)。
+     * 此时实现者应当提供另外可供使用的专属API。
+     * @throws RuntimeException 可能在获取引用的过程中产生的异常 (比如API请求失败，或查不到对应结果)。
+     * 这通常来自进行挂起查询的过程(如果有的话)。
+     * @since 4.6.0
+     *
+     * @see messageFromReference
+     */
+    @ST
+    public suspend fun messageFromId(id: ID): MessageContent =
+        throw UnsupportedOperationException()
 
     // join & cancel
 
