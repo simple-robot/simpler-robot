@@ -77,7 +77,7 @@ kotlin {
     }
 }
 
-configWasmJsTest()
+
 
 // https://book.kotlincn.net/text/testing-strategies.html
 tasks.withType<Test> {

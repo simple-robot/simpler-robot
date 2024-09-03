@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -24,34 +24,6 @@
 package love.forte.simbot.common.time
 
 
-/**
- * 得到一个记录了当前 epoch 时间的 Timestamp 实例。
- */
-internal actual fun nowInternal(): Timestamp = DateTimestamp(Date())
-
-
-/**
- * 基于 `Date` 的 [Timestamp] 实现。
- *
- * @author ForteScarlet
- */
-@Suppress("MemberVisibilityCanBePrivate")
-public class DateTimestamp(public val date: JsAny) : Timestamp {
-    private val _date: Date = date.unsafeCast()
-
-    override val milliseconds: Long
-        get() = _date.getTime().toLong()
-
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other !is Timestamp) return false
-        if (other is DateTimestamp) return date == other.date
-
-        return milliseconds == other.milliseconds
-    }
-
-    override fun hashCode(): Int = date.hashCode()
-    override fun toString(): String = "DateTimestamp(milliseconds=$milliseconds, date=$date)"
+internal external class Date : JsAny {
+    fun getTime(): Double
 }
-
-

@@ -35,8 +35,6 @@ plugins {
 configJavaCompileWithModule("simbot.common.atomic")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
-configJsTestTasks()
-
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
@@ -80,7 +78,7 @@ kotlin {
     }
 }
 
-configWasmJsTest()
+
 
 // https://book.kotlincn.net/text/testing-strategies.html
 tasks.withType<Test> {

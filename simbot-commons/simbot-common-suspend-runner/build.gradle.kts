@@ -88,4 +88,4 @@ kotlin {
     }
 }
 
-configWasmJsTest()
+

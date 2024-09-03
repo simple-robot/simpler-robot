@@ -70,4 +70,4 @@ kotlin {
 
 }
 
-configWasmJsTest()
+
