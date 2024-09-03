@@ -23,7 +23,15 @@
 
 package love.forte.simbot.common.time
 
-
+/**
+ * Represents a date object capable of providing the current epoch time in milliseconds.
+ * This class is designed to work with JavaScript environments and provides a bridge
+ * to access the `getTime` method which retrieves the number of milliseconds since
+ * January 1, 1970, 00:00:00 UTC.
+ *
+ * Due to its external nature, instances of this class should be obtained through
+ * platform-specific methods rather than instantiated directly.
+ */
 internal external class Date : JsAny {
     fun getTime(): Double
 }
