@@ -94,8 +94,6 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.serialization.hocon)
-                implementation(libs.kotlinx.serialization.cbor)
                 implementation(libs.kotlinx.serialization.properties)
             }
         }
