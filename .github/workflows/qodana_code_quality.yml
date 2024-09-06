@@ -1,7 +1,7 @@
 name: Qodana
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
   push:
     branches:
       - v4-dev
@@ -19,27 +19,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
           fetch-depth: 0  # a full history is required for pull request analysis
-#      - uses: actions/setup-java@v4
-#        with:
-#          distribution: 'zulu'
-#          java-version: 21
-#          cache: 'gradle'
-#
-#      - name: Run Kover for report
-#        uses: gradle/gradle-build-action@v3
-#        with:
-#          gradle-version: 8.5
-#          arguments: |
-#            koverHtmlReport
-#            --info
-#            --warning-mode all
-#
-#      - name: Archive coverage data # Archive data for using by Qodana
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: coverage-reports
-#          path: 'build/reports/kover/**'
-
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@main
         with:
