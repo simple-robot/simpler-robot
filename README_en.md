@@ -119,7 +119,7 @@ Lighting up a **✨star🌟** for us is the greatest motivation and support we c
 ## Special thanks
 
 <a href="https://www.jetbrains.com/?from=simpler-robot">
-<img src=".simbot/jetbrains.svg" width="200" alt="jetbrains" />
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" width="200" alt="jetbrains" />
 </a>
 
 [jetbrains]: https://www.jetbrains.com/?from=simpler-robot
