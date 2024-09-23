@@ -15,7 +15,7 @@ ksp = "2.0.10-1.0.24"
 kotlinPoet = "1.18.1"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
-reactor = "3.6.9"
+reactor = "3.6.10"
 # simbots
 suspendTransform = "0.9.0"
 suspendReversal = "0.2.0"
@@ -24,7 +24,7 @@ gradleCommon = "0.6.0"
 mockk = "1.13.12"
 # detekt
 # https://detekt.dev/docs/intro
-detekt = "1.23.6"
+detekt = "1.23.7"
 # https://github.com/gradle-nexus/publish-plugin
 gradleNexusPublishPlugin = "2.0.0"
 
@@ -112,7 +112,7 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref =
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.33"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.34"
 
 # https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
 suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
