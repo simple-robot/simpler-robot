@@ -96,8 +96,7 @@ kotlin {
         commonMain {
             dependencies {
                 compileOnly(project(":simbot-api"))
-                // compileOnly(libs.suspend.reversal.annotations)
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                implementation(project(":simbot-commons:simbot-common-annotations"))
                 compileOnly(project(":simbot-quantcat:simbot-quantcat-common"))
             }
         }

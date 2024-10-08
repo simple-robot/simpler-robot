@@ -73,6 +73,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.jetbrains.annotations)
                 implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
@@ -101,9 +102,6 @@ kotlin {
 
         jvmMain {
             dependencies {
-                compileOnly(libs.jetbrains.annotations)
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
-
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)
                 compileOnly(libs.kotlinx.coroutines.rx2)
