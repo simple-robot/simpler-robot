@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.10"
+kotlin = "2.0.20"
 dokka = "1.9.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.1"
@@ -10,15 +10,14 @@ ktor = "2.3.12"
 slf4j = "2.0.16"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "2.0.10-1.0.24"
+ksp = "2.0.20-1.0.25"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.18.1"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.6.10"
 # simbots
-suspendTransform = "0.9.0"
-suspendReversal = "0.2.0"
+suspendTransform = "2.0.20-0.9.3"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.13.12"
@@ -113,10 +112,6 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref =
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
 kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.34"
-
-# https://github.com/ForteScarlet/kotlin-suspend-interface-reversal
-suspend-reversal-annotations = { module = "love.forte.suspend-interface-reversal:annotations", version.ref = "suspendReversal" }
-suspend-reversal-processor = { module = "love.forte.suspend-interface-reversal:processor", version.ref = "suspendReversal" }
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 # https://square.github.io/kotlinpoet/interop-ksp/
