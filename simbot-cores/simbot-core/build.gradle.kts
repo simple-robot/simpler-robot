@@ -82,11 +82,6 @@ kotlin {
             }
         }
 
-        jvmMain.dependencies {
-            compileOnly(project(":simbot-commons:simbot-common-annotations"))
-            // compileOnly(project(":simbot-commons:simbot-common-collection"))
-        }
-
         jvmTest {
             dependencies {
                 implementation(project(":simbot-api"))

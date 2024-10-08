@@ -94,7 +94,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(kotlin("reflect"))
         }
 

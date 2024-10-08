@@ -69,7 +69,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(libs.kotlinx.coroutines.reactor)
             compileOnly(libs.kotlinx.coroutines.rx2)
             compileOnly(libs.kotlinx.coroutines.rx3)
