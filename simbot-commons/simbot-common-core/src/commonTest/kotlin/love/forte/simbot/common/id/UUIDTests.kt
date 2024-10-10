@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,28 +23,40 @@
 
 package love.forte.simbot.common.id
 
-import java.util.UUID as JavaUUID
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
 
 /**
- * 将 [UUID] 转化为 [Java UUID][JavaUUID]。
  *
+ * @author ForteScarlet
  */
-public inline val UUID.javaUUID: JavaUUID
-    get() = JavaUUID(mostSignificantBits, leastSignificantBits)
+class UUIDTests {
+
+    @Test
+    fun uuidParseTest() {
+        val uid = UUID.from(444821983651646037L, -5295967363889204301L)
+        assertEquals("062c533c-c3d7-4a55-b680-f1bde55273b3", uid.literal)
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun ktUuidToUUIDTest() {
+        val ktUuid = Uuid.random()
+        val uuid = ktUuid.ID
+
+        ktUuid.toLongs { mostSignificantBits, leastSignificantBits ->
+            assertEquals(mostSignificantBits, uuid.mostSignificantBits)
+            assertEquals(leastSignificantBits, uuid.leastSignificantBits)
+        }
+
+        assertEquals(ktUuid.toString(), uuid.literal)
+
+        val ktUuid2 = uuid.toKotlin()
+        assertEquals(ktUuid, ktUuid2)
+    }
 
 
-/**
- * 将 [Java UUID][JavaUUID] 转化为 [UUID]。
- */
-public inline val JavaUUID.simbotUUID: UUID
-    get() = UUID.from(mostSignificantBits, leastSignificantBits)
-
-
-/**
- * 通过 [java.util.Random] 构建随机的 [UUID]。
- *
- */
-@OptIn(ID4J::class)
-@Deprecated("Use 'uuidOf(random)' instead", ReplaceWith("uuidOf(random)"))
-public fun randomUUID(random: java.util.Random): UUID =
-    uuidOf(random)
+}

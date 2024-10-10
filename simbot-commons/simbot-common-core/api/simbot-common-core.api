@@ -334,6 +334,8 @@ public final class love/forte/simbot/common/id/Identifies {
 	public static final fun toIntOrNull (Llove/forte/simbot/common/id/ID;)Ljava/lang/Integer;
 	public static final fun toIntOrNull (Llove/forte/simbot/common/id/ID;Lkotlin/jvm/functions/Function1;)Ljava/lang/Integer;
 	public static synthetic fun toIntOrNull$default (Llove/forte/simbot/common/id/ID;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Integer;
+	public static final fun toJava (Llove/forte/simbot/common/id/UUID;)Ljava/util/UUID;
+	public static final fun toKotlin (Llove/forte/simbot/common/id/UUID;)Lkotlin/uuid/Uuid;
 	public static final fun toLong (Llove/forte/simbot/common/id/ID;)J
 	public static final fun toLong (Llove/forte/simbot/common/id/ID;Lkotlin/jvm/functions/Function1;)J
 	public static synthetic fun toLong$default (Llove/forte/simbot/common/id/ID;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)J
@@ -365,6 +367,7 @@ public final class love/forte/simbot/common/id/Identifies {
 	public static final fun uuid (Ljava/util/Random;)Llove/forte/simbot/common/id/UUID;
 	public static final fun uuid (Ljava/util/UUID;)Llove/forte/simbot/common/id/UUID;
 	public static final fun uuid (Lkotlin/random/Random;)Llove/forte/simbot/common/id/UUID;
+	public static final fun uuid (Lkotlin/uuid/Uuid;)Llove/forte/simbot/common/id/UUID;
 	public static synthetic fun uuid$default (Lkotlin/random/Random;ILjava/lang/Object;)Llove/forte/simbot/common/id/UUID;
 }
 
