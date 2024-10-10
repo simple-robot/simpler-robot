@@ -103,6 +103,8 @@ public fun stringIDOf(value: String): StringID = value.ID
 @ID4J
 public fun stringIDOf(value: CharSequence): StringID = value.ID
 
+// UUIDs
+
 /**
  *
  * @see UUID.random
@@ -114,6 +116,8 @@ public fun uuidOf(random: Random? = null): UUID =
     if (random == null) UUID.random() else UUID.random(random)
 
 /**
+ * 将 [java.util.UUID] 转化为 [UUID]。
+ *
  * @see java.util.UUID.simbotUUID
  */
 @JvmName("uuid")
@@ -121,6 +125,7 @@ public fun uuidOf(random: Random? = null): UUID =
 public fun uuidOf(javaUuid: java.util.UUID): UUID = javaUuid.simbotUUID
 
 /**
+ * 使用 [java.util.Random] 得到一个随机的 [UUID]。
  * @see java.util.UUID.simbotUUID
  */
 @JvmName("uuid")
@@ -128,3 +133,11 @@ public fun uuidOf(javaUuid: java.util.UUID): UUID = javaUuid.simbotUUID
 public fun uuidOf(javaRandom: java.util.Random?): UUID =
     uuidOf(javaRandom?.asKotlinRandom())
 
+/**
+ * 将 [UUID] 转化为 [java.util.UUID]。
+ *
+ * @since 4.6.1
+ */
+@ID4J
+public fun UUID.toJava(): java.util.UUID =
+    java.util.UUID(mostSignificantBits, leastSignificantBits)
