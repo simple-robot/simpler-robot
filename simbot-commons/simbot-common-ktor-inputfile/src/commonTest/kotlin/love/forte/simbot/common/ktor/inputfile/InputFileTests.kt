@@ -47,28 +47,34 @@ class InputFileTests {
             length: Int, assertText: String,
             inputFile: InputFile,
         ) {
-            HttpClient(MockEngine { req ->
-                val body = req.body
-                assertIs<MultiPartFormDataContent>(body)
-                val boundary = body.boundary
-                val bodyText = body.toByteArray().decodeToString()
+            HttpClient(
+                MockEngine { req ->
+                    val body = req.body
+                    assertIs<MultiPartFormDataContent>(body)
+                    val boundary = body.boundary
+                    val bodyText = body.toByteArray().decodeToString()
 
-                assertEquals(
-                    "--$boundary$CLRF" +
+                    assertEquals(
+                        "--$boundary$CLRF" +
                             "Content-Disposition: form-data; name=file$CLRF" +
                             "Content-Length: $length$CLRF" +
                             CLRF +
                             "$assertText$CLRF" +
                             "--$boundary--$CLRF",
-                    bodyText
-                )
+                        bodyText
+                    )
 
-                respondOk()
-            }).use {
+                    respondOk()
+                }
+            ).use {
                 it.post("") {
-                    setBody(MultiPartFormDataContent(formData {
-                        inputFile.includeTo("file", formBuilder = this)
-                    }))
+                    setBody(
+                        MultiPartFormDataContent(
+                            formData {
+                                inputFile.includeTo("file", formBuilder = this)
+                            }
+                        )
+                    )
                 }
             }
         }
@@ -87,7 +93,11 @@ class InputFileTests {
         val realText = "Hello, World"
         val bytes = realText.toByteArray()
 
-        assertInputFileByMockClient(bytes.size, realText, InputFile(InputProvider(bytes.size.toLong()) { ByteReadPacket(bytes) }))
+        assertInputFileByMockClient(
+            bytes.size,
+            realText,
+            InputFile(InputProvider(bytes.size.toLong()) { ByteReadPacket(bytes) })
+        )
     }
 
     @Test
@@ -95,7 +105,11 @@ class InputFileTests {
         val realText = "Hello, World"
         val bytes = realText.toByteArray()
 
-        assertInputFileByMockClient(bytes.size, realText, InputFile(ChannelProvider(bytes.size.toLong()) { ByteReadChannel(realText) }))
+        assertInputFileByMockClient(
+            bytes.size,
+            realText,
+            InputFile(ChannelProvider(bytes.size.toLong()) { ByteReadChannel(realText) })
+        )
     }
 
     @Test
