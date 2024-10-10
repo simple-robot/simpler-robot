@@ -20,7 +20,7 @@ reactor = "3.6.10"
 suspendTransform = "2.0.20-0.9.3"
 gradleCommon = "0.6.0"
 # tests
-mockk = "1.13.12"
+mockk = "1.13.13"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.7"
