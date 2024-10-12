@@ -26,7 +26,6 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import java.time.Instant
 
 plugins {
@@ -58,7 +57,7 @@ kotlin {
     applyTier3()
 
     // wasm?
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         configWasmJs()
     }
@@ -74,6 +73,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.jetbrains.annotations)
                 implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
@@ -94,6 +94,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.serialization.properties)
             }
         }
 
@@ -101,9 +102,6 @@ kotlin {
 
         jvmMain {
             dependencies {
-                compileOnly(libs.jetbrains.annotations)
-                compileOnly(project(":simbot-commons:simbot-common-annotations"))
-
                 compileOnly(libs.kotlinx.coroutines.reactive)
                 compileOnly(libs.kotlinx.coroutines.reactor)
                 compileOnly(libs.kotlinx.coroutines.rx2)

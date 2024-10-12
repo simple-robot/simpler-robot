@@ -25,7 +25,6 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -51,7 +50,7 @@ kotlin {
     applyTier2()
     applyTier3()
 
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         configWasmJs()
     }
@@ -84,7 +83,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            compileOnly(project(":simbot-commons:simbot-common-annotations"))
             compileOnly(libs.kotlinx.coroutines.reactor)
             compileOnly(libs.kotlinx.coroutines.reactive)
         }
@@ -93,10 +91,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-junit5"))
                 implementation(libs.kotlinx.coroutines.reactor)
-                implementation("io.projectreactor:reactor-test:3.6.9")
+                implementation("io.projectreactor:reactor-test:3.6.10")
             }
         }
     }
 }
 
-configWasmJsTest()
+

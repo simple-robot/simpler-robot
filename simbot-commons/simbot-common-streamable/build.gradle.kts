@@ -25,7 +25,6 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -50,7 +49,7 @@ kotlin {
     applyTier2()
     applyTier3()
 
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         configWasmJs()
     }
@@ -77,7 +76,7 @@ kotlin {
     }
 }
 
-configWasmJsTest()
+
 
 // https://book.kotlincn.net/text/testing-strategies.html
 tasks.withType<Test> {

@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -44,8 +44,7 @@ public inline val JavaUUID.simbotUUID: UUID
  * 通过 [java.util.Random] 构建随机的 [UUID]。
  *
  */
-public fun randomUUID(random: java.util.Random): UUID {
-    val data = ByteArray(16)
-    random.nextBytes(data)
-    return UUID.fromData(data)
-}
+@OptIn(ID4J::class)
+@Deprecated("Use 'uuidOf(random)' instead", ReplaceWith("uuidOf(random)"))
+public fun randomUUID(random: java.util.Random): UUID =
+    uuidOf(random)

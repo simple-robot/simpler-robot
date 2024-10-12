@@ -4,7 +4,7 @@
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -36,8 +36,13 @@ internal actual fun ioDispatcher(): CoroutineDispatcher? = Dispatchers.IO
 /**
  * 获取自定义调度器。
  *
- * native 平台下 [maxThreads] 和 [keepAliveMillis] 无效
+ * 基于 [Dispatchers.IO]，
+ * 使用 [CoroutineDispatcher.limitedParallelism]。
  *
+ * native 平台下 [maxThreads] 和 [keepAliveMillis] 无效。
+ *
+ * @see CoroutineDispatcher.limitedParallelism
+ * @see newFixedThreadPoolContext
  */
 internal actual fun customDispatcher(
     coreThreads: Int?,
@@ -48,7 +53,8 @@ internal actual fun customDispatcher(
     val core = coreThreads ?: return null
     require(core <= 1) { "'coreThreads' must >= 1, but $core" }
 
-    return newFixedThreadPoolContext(core, name ?: "Custom-DP.FT.$core")
+    return Dispatchers.IO.limitedParallelism(core, name ?: "Custom-DP.FT.$core")
+    // return newFixedThreadPoolContext(core, name ?: "Custom-DP.FT.$core")
 }
 
 /**

@@ -161,7 +161,7 @@ fun Application.registerListeners() {
 ## 特别鸣谢
 
 <a href="https://www.jetbrains.com/?from=simpler-robot">
-<img src=".simbot/jetbrains.svg" width="200" alt="jetbrains" />
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" width="200" alt="jetbrains" />
 </a>
 
 感谢 [Jetbrains][jetbrains] 为团队提供的免费授权，也希望大家能够支持 [Jetbrains][jetbrains] 及其产品，支持正版。

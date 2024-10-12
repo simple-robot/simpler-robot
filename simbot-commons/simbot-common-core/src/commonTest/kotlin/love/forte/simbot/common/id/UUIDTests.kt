@@ -21,52 +21,42 @@
  *
  */
 
-import love.forte.gradle.common.kotlin.multiplatform.applyTier1
-import love.forte.gradle.common.kotlin.multiplatform.applyTier2
-import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+package love.forte.simbot.common.id
 
-plugins {
-    kotlin("multiplatform")
-    id("simbot.dokka-module-configuration")
-}
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-configJavaCompileWithModule("simbot.common.annotations")
-apply(plugin = "simbot-multiplatform-maven-publish")
 
-kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
+/**
+ *
+ * @author ForteScarlet
+ */
+class UUIDTests {
 
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-
-    js(IR) {
-        configJs()
+    @Test
+    fun uuidParseTest() {
+        val uid = UUID.from(444821983651646037L, -5295967363889204301L)
+        assertEquals("062c533c-c3d7-4a55-b680-f1bde55273b3", uid.literal)
     }
 
-    applyTier1()
-    applyTier2()
-    applyTier3()
+    @OptIn(ExperimentalUuidApi::class)
+    @Test
+    fun ktUuidToUUIDTest() {
+        val ktUuid = Uuid.random()
+        val uuid = ktUuid.ID
 
-    // wasm
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-        configWasmJs()
-    }
-
-    sourceSets {
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        ktUuid.toLongs { mostSignificantBits, leastSignificantBits ->
+            assertEquals(mostSignificantBits, uuid.mostSignificantBits)
+            assertEquals(leastSignificantBits, uuid.leastSignificantBits)
         }
 
-        jvmTest {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-            }
-        }
+        assertEquals(ktUuid.toString(), uuid.literal)
+
+        val ktUuid2 = uuid.toKotlin()
+        assertEquals(ktUuid, ktUuid2)
     }
 
+
 }
-
-

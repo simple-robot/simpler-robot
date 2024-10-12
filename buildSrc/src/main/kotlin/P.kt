@@ -46,14 +46,9 @@ fun isSnapshot(): Boolean = _isSnapshot
  */
 @Suppress("MemberVisibilityCanBePrivate")
 sealed class P(override val group: String) : ProjectDetail() {
-    /*
-    val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-
-     */
     companion object {
-        const val VERSION = "4.6.0"
-        const val NEXT_VERSION = "4.6.1"
+        const val VERSION = "4.6.1"
+        const val NEXT_VERSION = "4.6.2"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 

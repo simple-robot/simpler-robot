@@ -45,6 +45,8 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.random.Random
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 /**
@@ -1140,3 +1142,27 @@ public inline fun ID.toLongID(notNumerical: ID.() -> LongID = { literal.toLong()
 @JvmName("toULongID")
 public inline fun ID.toULongID(notNumerical: ID.() -> ULongID = { literal.toULong().ID }): ULongID =
     this as? ULongID ?: (this as? NumericalID)?.toULong()?.ID ?: notNumerical()
+
+
+// UUIDs
+
+/**
+ * 通过一个 [kotlin.uuid.Uuid] 构建 [UUID].
+ *
+ * @since 4.6.1
+ */
+@ExperimentalUuidApi
+@get:JvmName("uuid")
+public val Uuid.ID: UUID
+    get() = toLongs { mostSignificantBits, leastSignificantBits ->
+        UUID.from(mostSignificantBits, leastSignificantBits)
+    }
+
+/**
+ * 将一个 [UUID] 转化为 [kotlin.uuid.Uuid] .
+ *
+ * @since 4.6.1
+ */
+@ExperimentalUuidApi
+public fun UUID.toKotlin(): Uuid =
+    Uuid.fromLongs(mostSignificantBits, leastSignificantBits)
