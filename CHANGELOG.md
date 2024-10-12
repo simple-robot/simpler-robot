@@ -1,3 +1,28 @@
+# v4.6.1
+
+> Release & Pull Notes: [v4.6.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.6.1) 
+
+- feat(common-core): 增加 UUID 对 `kotlin.uuid.Uuid` 的兼容API ([`7f859de66`](https://github.com/simple-robot/simpler-robot/commit/7f859de66))
+- build(deps): bump kotlinx-serialization from 1.7.1 to 1.7.3 ([`a4b9f6a2a`](https://github.com/simple-robot/simpler-robot/commit/a4b9f6a2a))
+- build(deps): bump io.mockk:mockk from 1.13.12 to 1.13.13 ([`6f1fb1b1a`](https://github.com/simple-robot/simpler-robot/commit/6f1fb1b1a))
+- build(deps): bump org.jetbrains:annotations from 25.0.0 to 26.0.0 ([`389ed9fc2`](https://github.com/simple-robot/simpler-robot/commit/389ed9fc2))
+- bump(deps): Jetbrains annotation from 24.1.0 to 25.0.0 ([`50b57d674`](https://github.com/simple-robot/simpler-robot/commit/50b57d674))
+- bump(deps): Kotlin from 2.0.10 to 2.0.20 ([`3d0773e94..af72957f0`](https://github.com/simple-robot/simpler-robot/compare/3d0773e94..c40efb8e0))
+
+    <details><summary><code>3d0773e94..af72957f0</code></summary>
+
+    - [`3d0773e94`](https://github.com/simple-robot/simpler-robot/commit/3d0773e94)
+    - [`af72957f0`](https://github.com/simple-robot/simpler-robot/commit/af72957f0)
+
+    </details>
+
+- build(deps): bump com.github.gmazzo.buildconfig from 5.4.0 to 5.5.0 ([`c40efb8e0`](https://github.com/simple-robot/simpler-robot/commit/c40efb8e0))
+- build(deps): bump kotlinx-coroutines from 1.8.1 to 1.9.0 ([`55e62299d`](https://github.com/simple-robot/simpler-robot/commit/55e62299d))
+- build(deps): bump io.projectreactor:reactor-core from 3.6.9 to 3.6.10 ([`0835dafe7`](https://github.com/simple-robot/simpler-robot/commit/0835dafe7))
+- build(deps): bump io.projectreactor:reactor-test from 3.6.9 to 3.6.10 ([`130f3cefc`](https://github.com/simple-robot/simpler-robot/commit/130f3cefc))
+- build(deps): bump io.gitlab.arturbosch.detekt from 1.23.6 to 1.23.7 ([`d0a714465`](https://github.com/simple-robot/simpler-robot/commit/d0a714465))
+- build(deps): bump org.jetbrains.kotlinx:lincheck from 2.33 to 2.34 ([`97bfb334a`](https://github.com/simple-robot/simpler-robot/commit/97bfb334a))
+
 # v4.6.0
 
 > Release & Pull Notes: [v4.6.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.6.0) 
