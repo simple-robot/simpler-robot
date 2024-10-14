@@ -30,7 +30,7 @@ gradleNexusPublishPlugin = "2.0.0"
 
 [libraries]
 # jetbrains-annotation
-jetbrains-annotations = "org.jetbrains:annotations:26.0.0"
+jetbrains-annotations = "org.jetbrains:annotations:26.0.1"
 
 # gradle-nexus:publish-plugin
 gradleNexusPublishPlugin = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "gradleNexusPublishPlugin" }
