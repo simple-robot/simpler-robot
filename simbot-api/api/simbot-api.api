@@ -2532,6 +2532,9 @@ public abstract interface class love/forte/simbot/resource/ByteArrayResource : l
 	public abstract fun data ()[B
 }
 
+public abstract interface annotation class love/forte/simbot/resource/ExperimentalIOResourceAPI : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/resource/FileResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/ReaderResource {
 	public fun data ()[B
 	public abstract fun getFile ()Ljava/io/File;
