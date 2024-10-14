@@ -83,6 +83,7 @@ kotlin {
                 api(project(":simbot-commons:simbot-common-collection"))
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.serialization.core)
+                api(libs.kotlinx.io.core)
                 implementation(libs.kotlinx.serialization.json)
                 // suspend reversal annotations
 

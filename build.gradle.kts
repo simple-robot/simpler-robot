@@ -159,6 +159,7 @@ apiValidation {
         listOf(
             "love.forte.simbot.annotations.ExperimentalSimbotAPI",
             "love.forte.simbot.annotations.InternalSimbotAPI",
+            "love.forte.simbot.resource.ExperimentalIOResourceAPI",
         ),
     )
 

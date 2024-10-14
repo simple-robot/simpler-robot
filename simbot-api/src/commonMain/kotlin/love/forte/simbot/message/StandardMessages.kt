@@ -34,9 +34,7 @@ import love.forte.simbot.message.At.Companion.equals
 import love.forte.simbot.message.At.Companion.hashCode
 import love.forte.simbot.message.OfflineImage.Companion.toOfflineImage
 import love.forte.simbot.message.Text.Companion.of
-import love.forte.simbot.resource.ByteArrayResource
-import love.forte.simbot.resource.Resource
-import love.forte.simbot.resource.ResourceBase64Serializer
+import love.forte.simbot.resource.*
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
 import kotlin.jvm.*
@@ -340,6 +338,37 @@ public interface OfflineImage : Image {
             else -> toOfflineResourceImage()
         }
 
+        /**
+         * 使用文件路径读取文件 `Path` 作为 [OfflineImage]。
+         * 相当于通过 [fileResource] 产物使用 [toOfflineImage]。
+         *
+         * 更多说明和注意事项参考 [fileResource]。
+         *
+         * @see fileResource
+         *
+         * @since 4.7.0
+         */
+        @JvmStatic
+        @JvmName("ofFilePath")
+        @ExperimentalIOResourceAPI
+        public fun fileOfflineImage(filePath: String): OfflineImage =
+            fileResource(filePath).toOfflineResourceImage()
+
+        /**
+         * 使用文件路径读取文件 `Path` 作为 [OfflineImage]。
+         * 相当于通过 [fileResource] 产物使用 [toOfflineImage]。
+         *
+         * 更多说明和注意事项参考 [fileResource]。
+         *
+         * @see fileResource
+         *
+         * @since 4.7.0
+         */
+        @JvmStatic
+        @ExperimentalIOResourceAPI
+        @JvmName("ofFilePath")
+        public fun fileOfflineImage(base: String, vararg parts: String): OfflineImage =
+            fileResource(base, *parts).toOfflineResourceImage()
     }
 }
 
