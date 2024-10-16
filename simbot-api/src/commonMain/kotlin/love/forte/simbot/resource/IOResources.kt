@@ -25,10 +25,12 @@
 
 package love.forte.simbot.resource
 
-import kotlinx.io.*
-import kotlinx.io.files.FileNotFoundException
+import kotlinx.io.RawSource
+import kotlinx.io.Source
+import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readByteArray
 import kotlin.annotation.AnnotationTarget.*
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -61,9 +63,6 @@ public annotation class ExperimentalIOResourceAPI
 /**
  * 根据完整的文件路径 [filePath] 得到一个基于对应文件的 [Resource]。
  *
- * 文件会在通过 [Resource.data] 读取数据时才会校验存在性。届时如果文件不存在，
- * 则会得到 [IllegalStateException] 异常。
- *
  * 如果不确定文件系统使用的路径分隔符，或可能在多个使用不同路径分隔符的系统上使用，
  * 则考虑使用 [fileResource(base, ...parts)][fileResource]。
  *
@@ -71,10 +70,14 @@ public annotation class ExperimentalIOResourceAPI
  * 其中， _路径分隔符_ 在不同的文件系统中可能是不同的，例如在 Unit 中的 `/`
  * 和在 Windows 的 `\`。
  *
+ * @throws kotlinx.io.files.FileNotFoundException see [kotlinx.io.files.FileSystem.source].
+ * @throws kotlinx.io.IOException see [kotlinx.io.files.FileSystem.source].
+ *
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
 @ExperimentalIOResourceAPI
+@Throws(Exception::class)
 public fun fileResource(filePath: String): Resource {
     val path = Path(filePath)
     return FilePathResource(path)
@@ -83,6 +86,10 @@ public fun fileResource(filePath: String): Resource {
 /**
  * 根据文件路径片段集得到一个基于对应文件的 [Resource]。
  *
+ * 文件会先在初始化时构造 [RawSource], 而后在读取 [Resource.data]
+ * 时使用 [Source]. 因此对文件存在性的校验和错误报告可能不会立即报告，
+ * 而是被推迟到真正读取数据时。
+ *
  * 文件会在通过 [Resource.data] 读取数据时才会校验存在性。届时如果文件不存在，
  * 则会得到 [IllegalStateException] 异常。
  * 此异常的 [IllegalStateException.cause] 可能是：
@@ -90,27 +97,17 @@ public fun fileResource(filePath: String): Resource {
  * - [kotlinx.io.IOException]
  * 如果是这两个类型，则成因参考 [kotlinx.io.files.FileSystem.source]。
  *
+ * @throws kotlinx.io.files.FileNotFoundException see [kotlinx.io.files.FileSystem.source].
+ * @throws kotlinx.io.IOException see [kotlinx.io.files.FileSystem.source].
+ *
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
 @ExperimentalIOResourceAPI
+@Throws(Exception::class)
 public fun fileResource(base: String, vararg parts: String): Resource {
     val path = Path(base, *parts)
     return FilePathResource(path)
-}
-
-/**
- * 一个可以得到 [kotlinx.io.RawSource] 的 [Resource]。
- *
- * @since 4.7.0
- */
-@ExperimentalIOResourceAPI
-public interface RawSourceResource : Resource {
-    public fun source(): RawSource
-
-    override fun data(): ByteArray {
-        return source().buffered().use { it.readByteArray() }
-    }
 }
 
 /**
@@ -119,18 +116,39 @@ public interface RawSourceResource : Resource {
  * @since 4.7.0
  */
 @ExperimentalIOResourceAPI
-public interface SourceResource : RawSourceResource {
-    override fun source(): Source
+public interface SourceResource : Resource {
+    /**
+     * 得到一个用于本次数据读取的 [Source].
+     * @throws kotlinx.io.files.FileNotFoundException
+     * see [kotlinx.io.files.FileSystem.source], [RawSource.buffered]
+     * @throws kotlinx.io.IOException
+     * see [kotlinx.io.files.FileSystem.source], [RawSource.buffered]
+     *
+     * @see kotlinx.io.files.FileSystem.source
+     * @see RawSource.buffered
+     */
+    @Throws(Exception::class)
+    public fun source(): Source
+
+    /**
+     * 使用 [source] 并读取其中全部的字节数据。
+     *
+     * @throws IllegalStateException
+     * see [Source.readByteArray]
+     * @throws kotlinx.io.IOException
+     * see [Source.readByteArray]
+     *
+     * @see source
+     */
+    @Throws(Exception::class)
+    override fun data(): ByteArray = source().use { it.readByteArray() }
 }
 
 @ExperimentalIOResourceAPI
-private data class FilePathResource(val path: Path) : RawSourceResource {
-    override fun source(): RawSource = try {
-        SystemFileSystem.source(path)
-    } catch (fnf: FileNotFoundException) {
-        throw IllegalStateException(fnf.message, fnf)
-    } catch (io: IOException) {
-        throw IllegalStateException(io.message, io)
-    }
+private data class FilePathResource(val path: Path) : SourceResource {
+    private val source = SystemFileSystem.source(path)
+
+    @Throws(Exception::class)
+    override fun source(): Source = source.buffered()
 }
 
