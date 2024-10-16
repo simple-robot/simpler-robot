@@ -48,6 +48,18 @@ public annotation class ExperimentalSimbotAPI
 public annotation class InternalSimbotAPI
 
 /**
+ * 实现了一个应当仅供内部实现的API。虽然超类对外可能稳定，但是不保证第三方实现稳定。
+ * 通常被使用在 [SubclassOptInRequired] 中。
+ * @since 4.7.0
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "实现了一个应当仅供内部实现的API。虽然超类对外可能稳定，但是不保证第三方实现稳定"
+)
+@MustBeDocumented
+public annotation class InternalInheritanceAPI
+
+/**
  * 一个脆弱的、或者具有复杂的须知、备注、条件的API。
  * 这类API通常有很多前提条件以及注意事项，需要谨慎使用。
  */

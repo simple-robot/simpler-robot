@@ -87,6 +87,13 @@ public interface ByteArrayResource : Resource {
 
 /**
  * 基于 [Base64] 的 [Resource] 序列化器。
+ *
+ * 它会将任何 [Resource] 都根据 [Resource.data] 序列化为 Base64 数据，
+ * 并将任意序列化后的数据反序列化为 [ByteArrayResource]。
+ *
+ * 也因此，这会导致：
+ * - 序列化时会读取数据、产生读取开销。
+ * - 反序列化后的类型可能与原本的类型不一致。
  */
 @ExperimentalEncodingApi
 public object ResourceBase64Serializer : KSerializer<Resource> {
