@@ -113,6 +113,8 @@ public fun fileResource(base: String, vararg parts: String): Resource {
 /**
  * 一个可以得到 [kotlinx.io.Source] 的 [Resource]。
  *
+ * @see fileResource
+ *
  * @since 4.7.0
  */
 @ExperimentalIOResourceAPI
@@ -146,7 +148,8 @@ public interface SourceResource : Resource {
 
 @ExperimentalIOResourceAPI
 private data class FilePathResource(val path: Path) : SourceResource {
-    private val source = SystemFileSystem.source(path)
+    private val source
+        get() = SystemFileSystem.source(path)
 
     @Throws(Exception::class)
     override fun source(): Source = source.buffered()
