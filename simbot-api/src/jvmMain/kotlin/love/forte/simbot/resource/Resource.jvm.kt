@@ -26,6 +26,10 @@
 
 package love.forte.simbot.resource
 
+import kotlinx.io.Source
+import kotlinx.io.asSource
+import kotlinx.io.buffered
+import love.forte.simbot.resource.JvmStringReadableResource.Companion.DEFAULT_CHARSET
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URI
@@ -34,6 +38,7 @@ import java.net.URL
 import java.nio.charset.Charset
 import java.nio.file.OpenOption
 import java.nio.file.Path
+import kotlin.Throws
 import kotlin.io.path.inputStream
 import kotlin.io.path.readBytes
 import kotlin.io.path.reader
@@ -43,8 +48,8 @@ import kotlin.io.path.reader
  *
  * @author forte
  */
+@OptIn(ExperimentalIOResourceAPI::class)
 public interface InputStreamResource : Resource {
-
     /**
      * 读取当前资源的所有字节数据。
      * 默认通过 [inputStream] 读取。
@@ -106,7 +111,7 @@ public interface ReaderResource : JvmStringReadableResource {
      * 默认使用 [JvmStringReadableResource.DEFAULT_CHARSET] 编码。
      */
     @Throws(IOException::class)
-    public fun reader(): Reader = reader(JvmStringReadableResource.DEFAULT_CHARSET)
+    public fun reader(): Reader = reader(DEFAULT_CHARSET)
 
     /**
      * 获取可用于读取当前资源数据的读取流。
@@ -140,7 +145,7 @@ public interface FileResource : InputStreamResource, ReaderResource {
      * @throws FileNotFoundException 如果文件不存在
      */
     @Throws(FileNotFoundException::class)
-    override fun reader(): Reader = reader(JvmStringReadableResource.DEFAULT_CHARSET)
+    override fun reader(): Reader = reader(DEFAULT_CHARSET)
 
     /**
      * 从与此资源关联的 [File] 创建新的 [Reader]
@@ -162,7 +167,7 @@ public interface FileResource : InputStreamResource, ReaderResource {
      * @throws IOException 如果文件无法读取
      */
     @Throws(IOException::class)
-    override fun string(): String = string(JvmStringReadableResource.DEFAULT_CHARSET)
+    override fun string(): String = string(DEFAULT_CHARSET)
 
     /**
      * 将与此资源关联的 [File] 读取为字符串
@@ -181,15 +186,22 @@ public interface FileResource : InputStreamResource, ReaderResource {
  */
 @JvmName("valueOf")
 @JvmOverloads
-public fun File.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): FileResource =
+public fun File.toResource(charset: Charset = DEFAULT_CHARSET): FileResource =
     FileResourceImpl(this, charset)
 
-private data class FileResourceImpl(override val file: File, private val charset: Charset) : FileResource {
+@OptIn(ExperimentalIOResourceAPI::class)
+private data class FileResourceImpl(override val file: File, private val charset: Charset) :
+    FileResource, SourceResource {
     override fun string(): String = string(charset)
     override fun reader(): Reader = reader(charset)
 
     override fun string(charset: Charset): String = file.readText(charset)
     override fun reader(charset: Charset): Reader = file.reader(charset)
+
+    override fun data(): ByteArray = file.readBytes()
+
+    override fun source(): Source = inputStream().asSource().buffered()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is FileResourceImpl) return false
@@ -261,16 +273,17 @@ public interface PathResource : InputStreamResource, ReaderResource {
 @JvmName("valueOf")
 @JvmOverloads
 public fun Path.toResource(
-    charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET,
+    charset: Charset = DEFAULT_CHARSET,
     vararg options: OpenOption
 ): PathResource =
     PathResourceImpl(this, charset, options)
 
+@OptIn(ExperimentalIOResourceAPI::class)
 private data class PathResourceImpl(
     override val path: Path,
     private val charset: Charset,
     private val openOptions: Array<out OpenOption>
-) : PathResource {
+) : PathResource, SourceResource {
     override fun inputStream(): InputStream = path.inputStream(options = openOptions)
 
     override fun reader(): Reader = reader(charset)
@@ -278,6 +291,10 @@ private data class PathResourceImpl(
 
     override fun reader(charset: Charset): Reader = path.reader(charset, options = openOptions)
     override fun string(charset: Charset): String = reader(charset).use(Reader::readText)
+
+    override fun data(): ByteArray = path.readBytes()
+
+    override fun source(): Source = inputStream().asSource().buffered()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -369,7 +386,7 @@ public interface URIResource : InputStreamResource, JvmStringReadableResource {
 @kotlin.jvm.Throws(URISyntaxException::class)
 @JvmName("valueOf")
 @JvmOverloads
-public fun URL.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): URIResource =
+public fun URL.toResource(charset: Charset = DEFAULT_CHARSET): URIResource =
     URIResourceImpl(toURI(), charset, this)
 
 /**
@@ -380,10 +397,13 @@ public fun URL.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_C
  */
 @JvmName("valueOf")
 @JvmOverloads
-public fun URI.toResource(charset: Charset = JvmStringReadableResource.DEFAULT_CHARSET): URIResource =
+public fun URI.toResource(charset: Charset = DEFAULT_CHARSET): URIResource =
     URIResourceImpl(this, charset, null)
 
-private class URIResourceImpl(override val uri: URI, val charset: Charset, private var url: URL? = null) : URIResource {
+@OptIn(ExperimentalIOResourceAPI::class)
+private class URIResourceImpl(override val uri: URI, val charset: Charset, private var url: URL? = null) :
+    URIResource,
+    SourceResource {
     private val urlValue: URL
         get() = url ?: run {
             uri.toURL().also { url = it }
@@ -392,6 +412,10 @@ private class URIResourceImpl(override val uri: URI, val charset: Charset, priva
     override fun inputStream(): InputStream = urlValue.openStream()
     override fun string(): String = string(charset)
     override fun string(charset: Charset): String = urlValue.readText(charset)
+
+    override fun data(): ByteArray = inputStream().use { stream -> stream.readAllBytes() }
+
+    override fun source(): Source = inputStream().asSource().buffered()
 
     override fun toString(): String = "URIResource(uri=$uri, charset=$charset)"
 }

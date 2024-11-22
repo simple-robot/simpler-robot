@@ -26,7 +26,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 plugins {
     idea
     id("simbot.dokka-multi-module")
-    id("com.github.gmazzo.buildconfig") version "5.5.0" apply false
+    id("com.github.gmazzo.buildconfig") version "5.5.1" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
     id("simbot.changelog-generator")

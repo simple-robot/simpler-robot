@@ -30,8 +30,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IDContainer
-import love.forte.simbot.message.At.Companion.equals
-import love.forte.simbot.message.At.Companion.hashCode
 import love.forte.simbot.message.OfflineImage.Companion.toOfflineImage
 import love.forte.simbot.message.Text.Companion.of
 import love.forte.simbot.resource.*
@@ -442,6 +440,12 @@ public data class OfflineByteArrayImage(private val data: ByteArray) : OfflineIm
  *
  * 远程图片通常是通过事件推送、主动上传等手段得到的、有与某个远程服务器互相对应的唯一标识的图片。
  * 这个标识可能是一个ID，或一个访问链接。
+ *
+ * 对于一个远程图片的数据获取方式（比如它的二进制数据流），
+ * 通常取决于其对应的来源(比如bot或事件)而不是 [RemoteImage] 类型自身。
+ *
+ * 例如一个仅包含ID的远程图片，需要拥有对应bot的认证信息才可以获取连接，
+ * 那么就无法仅通过此图片对象本身来获取下载连接。
  *
  * @see RemoteIDImage
  */

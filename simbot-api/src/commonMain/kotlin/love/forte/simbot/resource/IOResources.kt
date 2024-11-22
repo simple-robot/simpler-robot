@@ -66,48 +66,53 @@ public annotation class ExperimentalIOResourceAPI
  * 如果不确定文件系统使用的路径分隔符，或可能在多个使用不同路径分隔符的系统上使用，
  * 则考虑使用 [fileResource(base, ...parts)][fileResource]。
  *
+ * 对文件存在性的校验和错误报告可能不会立即报告，而是被推迟到真正读取数据时，
+ * 参考 [SourceResource.source] 的可能异常。
+ *
  * @param filePath 文件路径，是使用 _路径分隔符_ 的多个片段。
  * 其中， _路径分隔符_ 在不同的文件系统中可能是不同的，例如在 Unit 中的 `/`
  * 和在 Windows 的 `\`。
  *
- * @throws kotlinx.io.files.FileNotFoundException see [kotlinx.io.files.FileSystem.source].
- * @throws kotlinx.io.IOException see [kotlinx.io.files.FileSystem.source].
+ * @see SourceResource
  *
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
 @ExperimentalIOResourceAPI
-@Throws(Exception::class)
-public fun fileResource(filePath: String): Resource {
-    val path = Path(filePath)
-    return FilePathResource(path)
+public fun fileResource(filePath: String): SourceResource {
+    return Path(filePath).toResource()
 }
 
 /**
  * 根据文件路径片段集得到一个基于对应文件的 [Resource]。
  *
- * 文件会先在初始化时构造 [RawSource], 而后在读取 [Resource.data]
- * 时使用 [Source]. 因此对文件存在性的校验和错误报告可能不会立即报告，
- * 而是被推迟到真正读取数据时。
+ * 对文件存在性的校验和错误报告可能不会立即报告，而是被推迟到真正读取数据时，
+ * 参考 [SourceResource.source] 的可能异常。
  *
- * 文件会在通过 [Resource.data] 读取数据时才会校验存在性。届时如果文件不存在，
- * 则会得到 [IllegalStateException] 异常。
- * 此异常的 [IllegalStateException.cause] 可能是：
- * - [kotlinx.io.files.FileNotFoundException]
- * - [kotlinx.io.IOException]
- * 如果是这两个类型，则成因参考 [kotlinx.io.files.FileSystem.source]。
- *
- * @throws kotlinx.io.files.FileNotFoundException see [kotlinx.io.files.FileSystem.source].
- * @throws kotlinx.io.IOException see [kotlinx.io.files.FileSystem.source].
+ * @see SourceResource
  *
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
 @ExperimentalIOResourceAPI
-@Throws(Exception::class)
-public fun fileResource(base: String, vararg parts: String): Resource {
-    val path = Path(base, *parts)
-    return FilePathResource(path)
+public fun fileResource(base: String, vararg parts: String): SourceResource {
+    return Path(base, *parts).toResource()
+}
+
+/**
+ * 使用 [Path] 直接构建一个 [FilePathResource]
+ *
+ * 对文件存在性的校验和错误报告可能不会立即报告，而是被推迟到真正读取数据时，
+ * 参考 [SourceResource.source] 的可能异常。
+ *
+ * @see SourceResource
+ *
+ * @since 4.8.0
+ */
+@JvmName("valueOf")
+@ExperimentalIOResourceAPI
+public fun Path.toResource(): SourceResource {
+    return FilePathResource(this)
 }
 
 /**
@@ -121,6 +126,9 @@ public fun fileResource(base: String, vararg parts: String): Resource {
 public interface SourceResource : Resource {
     /**
      * 得到一个用于本次数据读取的 [Source].
+     *
+     * 每次都将构建一个新的 [Source], 你需要自行按需[关闭][Source.close]它们。
+     *
      * @throws kotlinx.io.files.FileNotFoundException
      * see [kotlinx.io.files.FileSystem.source], [RawSource.buffered]
      * @throws kotlinx.io.IOException

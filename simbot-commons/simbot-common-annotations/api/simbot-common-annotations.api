@@ -10,6 +10,9 @@ public abstract interface annotation class love/forte/simbot/annotations/Experim
 public abstract interface annotation class love/forte/simbot/annotations/FragileSimbotAPI : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class love/forte/simbot/annotations/InternalInheritanceAPI : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class love/forte/simbot/annotations/InternalSimbotAPI : java/lang/annotation/Annotation {
 }
 

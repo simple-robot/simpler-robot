@@ -21,11 +21,6 @@
  *
  */
 
-import love.forte.simbot.component.ComponentFactoryConfigurerProvider;
-import love.forte.simbot.component.ComponentFactoryProvider;
-import love.forte.simbot.plugin.PluginFactoryConfigurerProvider;
-import love.forte.simbot.plugin.PluginFactoryProvider;
-
 module simbot.api {
     requires kotlin.stdlib;
     requires simbot.logger;
@@ -38,6 +33,7 @@ module simbot.api {
     requires kotlinx.coroutines.core;
     requires kotlinx.serialization.core;
     requires kotlinx.serialization.json;
+    requires kotlinx.io.core;
     requires static kotlinx.coroutines.reactive;
     requires static kotlinx.coroutines.reactor;
     requires static kotlinx.coroutines.rx2;
@@ -60,9 +56,9 @@ module simbot.api {
     exports love.forte.simbot.plugin;
     exports love.forte.simbot.resource;
 
-    uses ComponentFactoryProvider;
-    uses ComponentFactoryConfigurerProvider;
-    uses PluginFactoryProvider;
-    uses PluginFactoryConfigurerProvider;
+    uses love.forte.simbot.component.ComponentFactoryProvider;
+    uses love.forte.simbot.component.ComponentFactoryConfigurerProvider;
+    uses love.forte.simbot.plugin.PluginFactoryProvider;
+    uses love.forte.simbot.plugin.PluginFactoryConfigurerProvider;
 
 }

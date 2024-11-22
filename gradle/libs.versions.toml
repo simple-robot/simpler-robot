@@ -3,7 +3,7 @@ kotlin = "2.0.20"
 dokka = "1.9.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
-kotlinx-io = "0.5.4"
+kotlinx-io = "0.6.0"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"
@@ -13,12 +13,12 @@ slf4j = "2.0.16"
 # https://github.com/google/ksp
 ksp = "2.0.20-1.0.25"
 # https://square.github.io/kotlinpoet/
-kotlinPoet = "1.18.1"
+kotlinPoet = "2.0.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
-reactor = "3.6.11"
+reactor = "3.7.0"
 # simbots
-suspendTransform = "2.0.20-0.9.3"
+suspendTransform = "2.0.20-0.9.4"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.13.13"

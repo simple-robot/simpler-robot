@@ -54,9 +54,14 @@ import kotlin.jvm.JvmName
  *
  * [Resource] 主要由内部实现，不保证对第三方实现的稳定与兼容
  *
+ * @see ByteArrayResource
+ * @see SourceResource
+ *
  * @author ForteScarlet
  */
 public interface Resource {
+    // TODO become `sealed` for ByteArrayResource and SourceResource.
+
     /**
      * 读取此资源的字节数据。
      *
