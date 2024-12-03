@@ -29,8 +29,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    id("io.gitlab.arturbosch.detekt")
-    id("simbot.suspend-transform-configure")
+    alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
     id("simbot.dokka-module-configuration")
 }

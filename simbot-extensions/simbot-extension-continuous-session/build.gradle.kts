@@ -27,7 +27,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
-    id("simbot.suspend-transform-configure")
+    alias(libs.plugins.suspendTransform)
     id("simbot.dokka-module-configuration")
 }
 

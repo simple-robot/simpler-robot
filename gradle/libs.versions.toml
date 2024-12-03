@@ -1,24 +1,23 @@
 [versions]
-kotlin = "2.0.20"
+kotlin = "2.1.0"
 dokka = "1.9.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
 kotlinx-io = "0.6.0"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
-openjdk-jmh = "1.36"
 ktor = "2.3.12"
 slf4j = "2.0.16"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "2.0.20-1.0.25"
+ksp = "2.1.0-1.0.29"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "2.0.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.7.0"
 # simbots
-suspendTransform = "2.0.20-0.9.4"
+suspendTransform = "2.1.0-0.9.4"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.13.13"
@@ -46,50 +45,36 @@ kotlinx-coroutines-reactive = { group = "org.jetbrains.kotlinx", name = "kotlinx
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-slf4j = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-debug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 # kotlinx-serialization
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-hocon = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-hocon", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-properties", version.ref = "kotlinx-serialization" }
 
 # kotlinx-io
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
-kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinx-io" }
 
 # slf4j
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
-slf4j-nop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j" }
 
 # javax
-javax-inject = "javax.inject:javax.inject:1"
 javax-annotation-api = "javax.annotation:javax.annotation-api:1.3.2"
 
 # spring-boot-v2
-spring-boot-v2-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "spring-boot-v2" }
 spring-boot-v2-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure", version.ref = "spring-boot-v2" }
 spring-boot-v2-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging", version.ref = "spring-boot-v2" }
-spring-boot-v2-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator", version.ref = "spring-boot-v2" }
 spring-boot-v2-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v2" }
 spring-boot-v2-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop", version.ref = "spring-boot-v2" }
 spring-boot-v2-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot-v2" }
-spring-boot-v2-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux", version.ref = "spring-boot-v2" }
 
 # spring-boot-v3
 spring-boot-v3-dependencies = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "spring-boot-v3" }
 spring-boot-v3-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging" } # , version.ref = "spring-boot-v3"
-spring-boot-v3-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v3" }
 spring-boot-v3-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" } # , version.ref = "spring-boot-v3"
-spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" } # , version.ref = "spring-boot-v3"
 
 # spring-boot-data
 #spring-boot-data-redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive", version.ref = "spring-boot" }
@@ -97,16 +82,8 @@ spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-bo
 # lmax-disruptor
 lmax-disruptor = "com.lmax:disruptor:3.4.4"
 
-# jmh
-openjdk-jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref = "openjdk-jmh" }
-openjdk-jmh-generator-annprocess = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", version.ref = "openjdk-jmh" }
-
 # ktor
-ktor-io = { group = "io.ktor", name = "ktor-io", version.ref = "ktor" }
 ktor-http = { group = "io.ktor", name = "ktor-http", version.ref = "ktor" }
-
-ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
-ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
@@ -142,7 +119,6 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 #kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
-kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # Kover
 # https://www.jetbrains.com/help/qodana/code-coverage.html
@@ -155,6 +131,8 @@ kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compa
 spring = { id = "org.springframework.boot", version.ref = "spring-boot-v3" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.5" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+
+suspendTransform = { id = "love.forte.plugin.suspend-transform", version.ref = "suspendTransform" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

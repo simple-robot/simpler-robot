@@ -29,7 +29,7 @@ plugins {
 repositories {
     mavenCentral()
     gradlePluginPortal()
-    mavenLocal()
+    // mavenLocal()
 }
 
 val kotlinVersion: String = libs.versions.kotlin.get()
@@ -38,13 +38,15 @@ dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
     implementation(kotlin("serialization", kotlinVersion))
     implementation(kotlin("power-assert", kotlinVersion))
+    // compileOnly(kotlin("compiler", kotlinVersion))
+    // compileOnly(kotlin("compiler-embeddable", kotlinVersion))
     implementation(libs.bundles.dokka)
 
     // see https://github.com/gradle-nexus/publish-plugin
     implementation(libs.gradleNexusPublishPlugin)
 
     // suspend transform
-    implementation(libs.suspend.transform.gradle)
+    // implementation(libs.suspend.transform.gradle)
 
     // gradle common
     implementation(libs.bundles.gradle.common)
