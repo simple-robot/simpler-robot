@@ -23,8 +23,23 @@
 
 package love.forte.simbot.resource
 
+import kotlin.annotation.AnnotationRetention.BINARY
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.FUNCTION
 import kotlin.jvm.JvmStatic
 
+/**
+ * 计划被废弃的与 [Resource] 相关的API
+ */
+@RequiresOptIn(
+    message = "计划被废弃的与 `Resource` 相关的API. 详见 " +
+        "`love.forte.simbot.resource.ResourceResolver` 和 " +
+        "`love.forte.simbot.resource.Resource` 中的有关说明。"
+)
+@Retention(BINARY)
+@Target(CLASS, FUNCTION)
+@MustBeDocumented
+public annotation class ScheduledDeprecatedResourceApi
 
 /**
  * 使用 [ResourceResolver] 分析处理一个 [Resource].
@@ -33,8 +48,14 @@ import kotlin.jvm.JvmStatic
  *
  * 在 JVM 平台会提供一个具有更多能力的类型。
  *
+ * Note: 由于[Resource]现在已经通过 `sealed` 限制了子类型范围,
+ * 因此可以直接使用 [ByteArrayResource] 或 [SourceResource]。
+ * 得益于 `kotlinx-io`，明确 resolve 多平台（尤其是JVM平台）下的独特类型的情况已经不多了。
+ * [ResourceResolver] 可能会在未来废弃, 且现在开始不再建议使用。
+ *
  * @author ForteScarlet
  */
+@ScheduledDeprecatedResourceApi
 public interface ResourceResolver<C> {
     /**
      * 处理一个未知的 [Resource] 类型的 resource.

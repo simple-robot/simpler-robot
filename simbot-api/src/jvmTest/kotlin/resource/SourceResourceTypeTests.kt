@@ -23,7 +23,6 @@
 
 package resource
 
-import love.forte.simbot.resource.ExperimentalIOResourceAPI
 import love.forte.simbot.resource.SourceResource
 import love.forte.simbot.resource.toResource
 import java.io.File
@@ -37,7 +36,6 @@ import kotlin.test.assertIs
  *
  * @author ForteScarlet
  */
-@OptIn(ExperimentalIOResourceAPI::class)
 class SourceResourceTypeTests {
 
     @Test

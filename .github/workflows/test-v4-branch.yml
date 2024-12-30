@@ -8,7 +8,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.5
+  GRADLE_VERSION: 8.6
   NODE_VERSION: 22
   IS_CI: true
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"

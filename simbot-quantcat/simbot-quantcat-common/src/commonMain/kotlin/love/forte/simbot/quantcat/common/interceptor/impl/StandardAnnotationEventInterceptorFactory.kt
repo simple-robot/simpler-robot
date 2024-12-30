@@ -23,9 +23,7 @@
 
 package love.forte.simbot.quantcat.common.interceptor.impl
 
-import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.event.EventInterceptor
-import love.forte.simbot.event.EventInterceptorRegistrationProperties
 import love.forte.simbot.event.EventListenerContext
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.quantcat.common.interceptor.AnnotationEventInterceptorFactory
@@ -43,13 +41,9 @@ public sealed class StandardAnnotationEventInterceptorFactory : AnnotationEventI
  */
 public data object ContentTrimEventInterceptorFactory : StandardAnnotationEventInterceptorFactory() {
     override fun create(context: AnnotationEventInterceptorFactory.Context): AnnotationEventInterceptorFactory.Result {
-        return ResultImpl(context.priority)
-    }
-
-    private data class ResultImpl(private val priority: Int) : AnnotationEventInterceptorFactory.Result() {
-        override val interceptor: EventInterceptor = InterceptorImpl
-        override val configuration: ConfigurerFunction<EventInterceptorRegistrationProperties> = ConfigurerFunction {
-            priority = this@ResultImpl.priority
+        return AnnotationEventInterceptorFactory.Result.build {
+            interceptor(InterceptorImpl)
+            configuration { priority = context.priority }
         }
     }
 

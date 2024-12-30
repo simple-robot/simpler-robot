@@ -26,6 +26,8 @@
 
 package love.forte.simbot.resource
 
+import kotlinx.io.Buffer
+import kotlinx.io.Source
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -46,6 +48,17 @@ import kotlin.jvm.JvmName
  * JVM 中的部分扩展、辅助API通过静态类 `Resources` 提供，
  * 例如 `Resources.valueOf(...)`。
  *
+ * ## 有限范围
+ *
+ * 从 `v4.10.0` 开始，[Resource] 接口转为 `sealed` 并有两个明确的子类型分支：
+ * - [ByteArrayResource]
+ * - [SourceResource]
+ *
+ * [ByteArrayResource] 代表一个可以**直接**使用 [ByteArray] 进行表示的资源，它也同样可以表示为 [SourceResource]。
+ *
+ * 其中，[SourceResource] 借助 `kotlinx-io` 库所提供的能力统一多平台的IO相关API（例如文件系统相关）。
+ * 如果你想要基于文件系统或其他与IO相关的内容构建一个 [Resource]，则参考 [SourceResource]。
+ *
  * ## 序列化
  *
  * [Resource] 提供了一个基于 [Base64] 进行序列化操作的 [ResourceBase64Serializer]。
@@ -59,9 +72,7 @@ import kotlin.jvm.JvmName
  *
  * @author ForteScarlet
  */
-public interface Resource {
-    // TODO become `sealed` for ByteArrayResource and SourceResource.
-
+public sealed interface Resource {
     /**
      * 读取此资源的字节数据。
      *
@@ -83,11 +94,15 @@ public fun ByteArray.toResource(): ByteArrayResource = ByteArrayResourceImpl(thi
  *
  * @author forte
  */
-public interface ByteArrayResource : Resource {
+public interface ByteArrayResource : Resource, SourceResource {
     /**
      * 获取到字节数组结果。
      */
     override fun data(): ByteArray
+
+    override fun source(): Source {
+        return Buffer().apply { write(data()) }
+    }
 }
 
 /**
@@ -147,12 +162,18 @@ private data class ByteArrayResourceImpl(private val raw: ByteArray) : ByteArray
  * 一个可以读取到 [String] 内容物的拓展类型。
  * 是其他 [Resource] 类型的附加能力，但不属于一个标准的 [Resource] 类型。
  */
-public interface StringReadableResource : Resource {
+public interface StringReadableResource : SourceResource {
     /**
      * 读取此资源的 [String] 内容。
      */
     @Throws(Exception::class)
     public fun string(): String
+
+    override fun data(): ByteArray = string().encodeToByteArray()
+
+    override fun source(): Source {
+        return Buffer().apply { write(data()) }
+    }
 }
 
 /**

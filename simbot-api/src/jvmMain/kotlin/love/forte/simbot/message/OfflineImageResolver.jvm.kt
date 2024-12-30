@@ -71,6 +71,7 @@ public interface JvmOfflineImageResolver<C> : OfflineImageResolver<C> {
  * 实现 [JvmOfflineImageResolver] 和 [JvmResourceResolver]，
  * 对其中可能出现的实际内容物（例如 [File] 或 [Path]）进行处理。
  */
+@ScheduledDeprecatedResourceApi
 public abstract class JvmOfflineImageValueResolver<C> :
     OfflineImageValueResolver<C>,
     JvmOfflineImageResolver<C>,

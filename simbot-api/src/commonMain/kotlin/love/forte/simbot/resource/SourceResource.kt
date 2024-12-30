@@ -78,7 +78,6 @@ public annotation class ExperimentalIOResourceAPI
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
-@ExperimentalIOResourceAPI
 public fun fileResource(filePath: String): SourceResource {
     return Path(filePath).toResource()
 }
@@ -94,7 +93,6 @@ public fun fileResource(filePath: String): SourceResource {
  * @since 4.7.0
  */
 @JvmName("valueOfPath")
-@ExperimentalIOResourceAPI
 public fun fileResource(base: String, vararg parts: String): SourceResource {
     return Path(base, *parts).toResource()
 }
@@ -110,19 +108,36 @@ public fun fileResource(base: String, vararg parts: String): SourceResource {
  * @since 4.8.0
  */
 @JvmName("valueOf")
-@ExperimentalIOResourceAPI
 public fun Path.toResource(): SourceResource {
     return FilePathResource(this)
 }
 
 /**
+ * 提供一个用于产生 [Source] 的供应函数 [provider]，
+ * 并得到一个 [SourceResource]。
+ *
+ * 得到的结果每次使用 [SourceResource.source] 都会通过 [provider]
+ * 获取一个 [Source]。[Source] 应当由使用者决定关闭时机，而不是在 [provider] 中。
+ *
+ * @since 4.10.0
+ */
+@JvmName("valueOfSourceProvider")
+public fun sourceResource(provider: () -> Source): SourceResource {
+    return SourceResourceImpl(provider)
+}
+
+
+/**
  * 一个可以得到 [kotlinx.io.Source] 的 [Resource]。
  *
+ * 在 JVM 平台中 `Resources` 中会提供更多基于JVM文件系统构建 [SourceResource] 的 API。
+ *
  * @see fileResource
+ * @see sourceResource
+ * @see Path.toResource
  *
  * @since 4.7.0
  */
-@ExperimentalIOResourceAPI
 public interface SourceResource : Resource {
     /**
      * 得到一个用于本次数据读取的 [Source].
@@ -154,7 +169,6 @@ public interface SourceResource : Resource {
     override fun data(): ByteArray = source().use { it.readByteArray() }
 }
 
-@ExperimentalIOResourceAPI
 private data class FilePathResource(val path: Path) : SourceResource {
     private val source
         get() = SystemFileSystem.source(path)
@@ -163,3 +177,9 @@ private data class FilePathResource(val path: Path) : SourceResource {
     override fun source(): Source = source.buffered()
 }
 
+/**
+ * @since 4.10.0
+ */
+private data class SourceResourceImpl(val provider: () -> Source) : SourceResource {
+    override fun source(): Source = provider()
+}

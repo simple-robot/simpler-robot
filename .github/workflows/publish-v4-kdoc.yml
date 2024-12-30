@@ -6,7 +6,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.5
+  GRADLE_VERSION: 8.6
   IS_CI: true
   GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
   GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}

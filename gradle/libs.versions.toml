@@ -15,12 +15,12 @@ ksp = "2.1.0-1.0.29"
 kotlinPoet = "2.0.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
-reactor = "3.7.0"
+reactor = "3.7.1"
 # simbots
 suspendTransform = "2.1.0-0.9.4"
 gradleCommon = "0.6.0"
 # tests
-mockk = "1.13.13"
+mockk = "1.13.14"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.7"
@@ -123,13 +123,13 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # Kover
 # https://www.jetbrains.com/help/qodana/code-coverage.html
 # https://github.com/Kotlin/kotlinx-kover
-kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }
+kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.0" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
 kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
 
 spring = { id = "org.springframework.boot", version.ref = "spring-boot-v3" }
-spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.5" }
+spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.7" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
 suspendTransform = { id = "love.forte.plugin.suspend-transform", version.ref = "suspendTransform" }

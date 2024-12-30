@@ -23,11 +23,8 @@
 
 package love.forte.simbot.message
 
-import love.forte.simbot.resource.ByteArrayResource
-import love.forte.simbot.resource.Resource
-import love.forte.simbot.resource.ResourceResolver
+import love.forte.simbot.resource.*
 import love.forte.simbot.resource.ResourceResolver.Companion.resolve
-import love.forte.simbot.resource.StringResource
 import kotlin.jvm.JvmStatic
 
 
@@ -76,6 +73,7 @@ public interface OfflineImageResolver<C> {
  * 继承 [OfflineImageResolver] 和 [ResourceResolver]，
  * 对其中可能出现的实际内容物（例如 [ByteArray] 或 [String]）进行处理。
  */
+@ScheduledDeprecatedResourceApi
 public interface OfflineImageValueResolver<C> :
     OfflineImageResolver<C>,
     ResourceResolver<C> {

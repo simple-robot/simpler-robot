@@ -32,6 +32,7 @@ import kotlin.io.path.toPath
  * JVM 平台下 [ResourceResolver] 的进一步扩展类型。
  *
  */
+@ScheduledDeprecatedResourceApi
 public interface JvmResourceResolver<C> : ResourceResolver<C> {
     /**
      * 处理类型为 [FileResource] 的 resource.
@@ -71,6 +72,7 @@ public interface JvmResourceResolver<C> : ResourceResolver<C> {
 /**
  * [JvmResourceResolver] 的更安全的抽象类型，将 [resolveUnknown] 固定为 `final`。
  */
+@ScheduledDeprecatedResourceApi
 public abstract class AbstractJvmResourceResolver<C> : JvmResourceResolver<C> {
     final override fun resolveUnknown(resource: Resource, context: C) {
         super.resolveUnknown(resource, context)
@@ -81,6 +83,7 @@ public abstract class AbstractJvmResourceResolver<C> : JvmResourceResolver<C> {
  * 基于 Resource 中的值进行处理。
  * 其中，如果 [URI.scheme] == `"file"` 则会被处理为 [Path].
  */
+@ScheduledDeprecatedResourceApi
 public interface JvmResourceValueResolver<C> : JvmResourceResolver<C> {
     /**
      * 解析 [FileResource] 类型的 resource，
@@ -172,6 +175,7 @@ public interface JvmResourceValueResolver<C> : JvmResourceResolver<C> {
  * [JvmResourceValueResolver] 的更安全的抽象类型，
  * 会将部分直接解析 [Resource] 的函数固定为 `final`。
  */
+@ScheduledDeprecatedResourceApi
 public abstract class AbstractJvmResourceValueResolver<C> : JvmResourceValueResolver<C> {
     final override fun resolveFile(resource: FileResource, context: C) {
         super.resolveFile(resource, context)

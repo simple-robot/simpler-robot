@@ -30,9 +30,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IDContainer
+import love.forte.simbot.message.At.Companion.equals
+import love.forte.simbot.message.At.Companion.hashCode
 import love.forte.simbot.message.OfflineImage.Companion.toOfflineImage
 import love.forte.simbot.message.Text.Companion.of
-import love.forte.simbot.resource.*
+import love.forte.simbot.resource.ByteArrayResource
+import love.forte.simbot.resource.Resource
+import love.forte.simbot.resource.ResourceBase64Serializer
+import love.forte.simbot.resource.fileResource
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
 import kotlin.jvm.*
@@ -297,12 +302,16 @@ public interface UrlAwareImage : Image, UrlAwareMessage {
  *
  * “离线”主要表示此图片并未上传到某个目标平台中，也没有与某个远程服务器互相对应的唯一标识。
  *
- * @see OfflineImage.toOfflineImage
+ * 离线图片消息由本地构建，不会来自远端服务器或事件内。
+ * 离线图片消息无法保证可序列化性，尽可能避免对其进行序列化（包括作为 [Messages] 的元素时）。
+ *
+ * @see ByteArray.toOfflineImage
+ * @see Resource.toOfflineImage
  *
  * @see OfflineByteArrayImage
- * @see SimpleOfflineResourceImage
+ * @see OfflineResourceImage
  */
-public interface OfflineImage : Image {
+public sealed interface OfflineImage : Image {
     /**
      * 得到图片的二进制数据
      */
@@ -348,7 +357,6 @@ public interface OfflineImage : Image {
          */
         @JvmStatic
         @JvmName("ofFilePath")
-        @ExperimentalIOResourceAPI
         public fun fileOfflineImage(filePath: String): OfflineImage =
             fileResource(filePath).toOfflineResourceImage()
 
@@ -363,7 +371,6 @@ public interface OfflineImage : Image {
          * @since 4.7.0
          */
         @JvmStatic
-        @ExperimentalIOResourceAPI
         @JvmName("ofFilePath")
         public fun fileOfflineImage(base: String, vararg parts: String): OfflineImage =
             fileResource(base, *parts).toOfflineResourceImage()

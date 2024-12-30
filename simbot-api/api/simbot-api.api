@@ -2195,11 +2195,15 @@ public abstract interface class love/forte/simbot/message/OfflineImage : love/fo
 	public static final field Companion Llove/forte/simbot/message/OfflineImage$Companion;
 	public abstract fun data ()[B
 	public static fun ofBytes ([B)Llove/forte/simbot/message/OfflineImage;
+	public static fun ofFilePath (Ljava/lang/String;)Llove/forte/simbot/message/OfflineImage;
+	public static fun ofFilePath (Ljava/lang/String;[Ljava/lang/String;)Llove/forte/simbot/message/OfflineImage;
 	public static fun ofResource (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineImage;
 }
 
 public final class love/forte/simbot/message/OfflineImage$Companion {
 	public final fun ofBytes ([B)Llove/forte/simbot/message/OfflineImage;
+	public final fun ofFilePath (Ljava/lang/String;)Llove/forte/simbot/message/OfflineImage;
+	public final fun ofFilePath (Ljava/lang/String;[Ljava/lang/String;)Llove/forte/simbot/message/OfflineImage;
 	public final fun ofResource (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineImage;
 }
 
@@ -2528,14 +2532,15 @@ public abstract class love/forte/simbot/resource/AbstractJvmResourceValueResolve
 	public final fun resolveURI (Llove/forte/simbot/resource/URIResource;Ljava/lang/Object;)V
 }
 
-public abstract interface class love/forte/simbot/resource/ByteArrayResource : love/forte/simbot/resource/Resource {
+public abstract interface class love/forte/simbot/resource/ByteArrayResource : love/forte/simbot/resource/Resource, love/forte/simbot/resource/SourceResource {
 	public abstract fun data ()[B
+	public fun source ()Lkotlinx/io/Source;
 }
 
 public abstract interface annotation class love/forte/simbot/resource/ExperimentalIOResourceAPI : java/lang/annotation/Annotation {
 }
 
-public abstract interface class love/forte/simbot/resource/FileResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/ReaderResource {
+public abstract interface class love/forte/simbot/resource/FileResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/JvmSourceResource, love/forte/simbot/resource/ReaderResource {
 	public fun data ()[B
 	public abstract fun getFile ()Ljava/io/File;
 	public fun inputStream ()Ljava/io/InputStream;
@@ -2545,9 +2550,8 @@ public abstract interface class love/forte/simbot/resource/FileResource : love/f
 	public abstract fun string (Ljava/nio/charset/Charset;)Ljava/lang/String;
 }
 
-public abstract interface class love/forte/simbot/resource/InputStreamResource : love/forte/simbot/resource/Resource {
-	public fun data ()[B
-	public abstract fun inputStream ()Ljava/io/InputStream;
+public abstract interface class love/forte/simbot/resource/InputStreamResource : love/forte/simbot/resource/SourceResource {
+	public fun inputStream ()Ljava/io/InputStream;
 }
 
 public abstract interface class love/forte/simbot/resource/JvmResourceResolver : love/forte/simbot/resource/ResourceResolver {
@@ -2572,6 +2576,9 @@ public abstract interface class love/forte/simbot/resource/JvmResourceValueResol
 	public abstract fun resolveURINotFileScheme (Ljava/net/URI;Ljava/lang/Object;)V
 }
 
+public abstract interface class love/forte/simbot/resource/JvmSourceResource : love/forte/simbot/resource/SourceResource {
+}
+
 public abstract interface class love/forte/simbot/resource/JvmStringReadableResource : love/forte/simbot/resource/StringReadableResource {
 	public static final field Companion Llove/forte/simbot/resource/JvmStringReadableResource$Companion;
 	public static final field DEFAULT_CHARSET Ljava/nio/charset/Charset;
@@ -2582,7 +2589,7 @@ public abstract interface class love/forte/simbot/resource/JvmStringReadableReso
 public final class love/forte/simbot/resource/JvmStringReadableResource$Companion {
 }
 
-public abstract interface class love/forte/simbot/resource/PathResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/ReaderResource {
+public abstract interface class love/forte/simbot/resource/PathResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/JvmSourceResource, love/forte/simbot/resource/ReaderResource {
 	public fun data ()[B
 	public abstract fun getPath ()Ljava/nio/file/Path;
 	public abstract fun inputStream ()Ljava/io/InputStream;
@@ -2622,6 +2629,7 @@ public final class love/forte/simbot/resource/ResourceResolver$Companion {
 }
 
 public final class love/forte/simbot/resource/Resources {
+	public static final fun inputStream (Llove/forte/simbot/resource/SourceResource;)Ljava/io/InputStream;
 	public static final fun valueOf (Ljava/io/File;)Llove/forte/simbot/resource/FileResource;
 	public static final fun valueOf (Ljava/io/File;Ljava/nio/charset/Charset;)Llove/forte/simbot/resource/FileResource;
 	public static final fun valueOf (Ljava/lang/String;)Llove/forte/simbot/resource/StringResource;
@@ -2631,14 +2639,29 @@ public final class love/forte/simbot/resource/Resources {
 	public static final fun valueOf (Ljava/net/URL;Ljava/nio/charset/Charset;)Llove/forte/simbot/resource/URIResource;
 	public static final fun valueOf (Ljava/nio/file/Path;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;)Llove/forte/simbot/resource/PathResource;
 	public static final fun valueOf (Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Llove/forte/simbot/resource/PathResource;
+	public static final fun valueOf (Lkotlinx/io/files/Path;)Llove/forte/simbot/resource/SourceResource;
 	public static final fun valueOf ([B)Llove/forte/simbot/resource/ByteArrayResource;
 	public static synthetic fun valueOf$default (Ljava/io/File;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/FileResource;
 	public static synthetic fun valueOf$default (Ljava/net/URI;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/URIResource;
 	public static synthetic fun valueOf$default (Ljava/net/URL;Ljava/nio/charset/Charset;ILjava/lang/Object;)Llove/forte/simbot/resource/URIResource;
 	public static synthetic fun valueOf$default (Ljava/nio/file/Path;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;ILjava/lang/Object;)Llove/forte/simbot/resource/PathResource;
+	public static final fun valueOfInputStreamProvider (Lkotlin/jvm/functions/Function0;)Llove/forte/simbot/resource/SourceResource;
+	public static final fun valueOfPath (Ljava/lang/String;)Llove/forte/simbot/resource/SourceResource;
+	public static final fun valueOfPath (Ljava/lang/String;[Ljava/lang/String;)Llove/forte/simbot/resource/SourceResource;
+	public static final fun valueOfSourceProvider (Lkotlin/jvm/functions/Function0;)Llove/forte/simbot/resource/SourceResource;
 }
 
-public abstract interface class love/forte/simbot/resource/StringReadableResource : love/forte/simbot/resource/Resource {
+public abstract interface annotation class love/forte/simbot/resource/ScheduledDeprecatedResourceApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class love/forte/simbot/resource/SourceResource : love/forte/simbot/resource/Resource {
+	public fun data ()[B
+	public abstract fun source ()Lkotlinx/io/Source;
+}
+
+public abstract interface class love/forte/simbot/resource/StringReadableResource : love/forte/simbot/resource/SourceResource {
+	public fun data ()[B
+	public fun source ()Lkotlinx/io/Source;
 	public abstract fun string ()Ljava/lang/String;
 }
 
@@ -2646,7 +2669,7 @@ public abstract interface class love/forte/simbot/resource/StringResource : love
 	public abstract fun string ()Ljava/lang/String;
 }
 
-public abstract interface class love/forte/simbot/resource/URIResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/JvmStringReadableResource {
+public abstract interface class love/forte/simbot/resource/URIResource : love/forte/simbot/resource/InputStreamResource, love/forte/simbot/resource/JvmSourceResource, love/forte/simbot/resource/JvmStringReadableResource {
 	public abstract fun getUri ()Ljava/net/URI;
 	public abstract fun inputStream ()Ljava/io/InputStream;
 	public fun string ()Ljava/lang/String;

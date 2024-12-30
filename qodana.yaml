@@ -27,5 +27,6 @@ projectJDK: azul-21 #(Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
 
-#Specify Qodana linter for analysis (Applied in CI/CD pipeline)
-linter: jetbrains/qodana-jvm-community:latest
+# Specify Qodana linter for analysis (Applied in CI/CD pipeline)
+# https://www.jetbrains.com/help/qodana/linters.html
+linter: jetbrains/qodana-jvm-community:2024.2

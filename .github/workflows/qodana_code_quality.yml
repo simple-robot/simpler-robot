@@ -6,6 +6,11 @@ on:
     branches:
       - v4-dev
 
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+  GRADLE_VERSION: 8.6
+
 jobs:
   qodana:
     if: ${{ !startsWith(github.head_ref, 'dependabot/') }}
@@ -19,6 +24,20 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
           fetch-depth: 0  # a full history is required for pull request analysis
+
+#      - uses: actions/setup-java@v4
+#        with:
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#          java-version: ${{ env.JAVA_VERSION }}
+#          cache: 'gradle'
+#
+#      - name: 'Setup Gradle'
+#        uses: gradle/actions/setup-gradle@v3
+#        with:
+#          gradle-version: ${{ env.GRADLE_VERSION }}
+#
+#      - run: gradle assemble -i -s -x test --warning-mode all --build-cache
+
       - name: 'Qodana Scan'
         # https://www.jetbrains.com/help/qodana/github.html#Usage
         uses: JetBrains/qodana-action@v2024.2
@@ -26,8 +45,7 @@ jobs:
           upload-result: true
           github-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }} # read the steps about it below
-          GITHUB_TOKEN: ${{ secrets.FORLIY_ACCESS_TOKEN }}
-
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.FORLIY_ACCESS_TOKEN }}
 
 
