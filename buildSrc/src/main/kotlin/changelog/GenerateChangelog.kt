@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,9 +33,7 @@ import java.util.*
 
 data class CommitLog(val message: String, val hash: MutableList<String>, val pre: String?)
 
-fun Project.generateChangelog(tag: String) {
-    println("Generate change log for $tag ...")
-    // configurations.runtimeClasspath
+fun Project.createSubChangelogFile(tag: String, versions: Map<String, String>) {
     val changelogDir = rootProject.file(".changelog").also {
         it.mkdirs()
     }
@@ -44,12 +42,33 @@ fun Project.generateChangelog(tag: String) {
         if (!it.exists()) {
             it.createNewFile()
         }
+
+        if (versions.isNotEmpty()) {
+            it.printWriter(Charsets.UTF_8).use { writer ->
+                writer.println("**版本信息**")
+                writer.println("")
+                writer.println("> 部分相关的构建版本信息")
+                writer.println("")
+                writer.println("| 依赖 | 版本 |")
+                writer.println("| ---- | ---- |")
+                versions.forEach { (k, v) ->
+                    writer.println("| $k | `v$v` |")
+                }
+                writer.println("")
+            }
+        }
     }
+}
+
+fun Project.generateChangelog(tag: String) {
+    println("Generate change log for $tag ...")
+    // configurations.runtimeClasspath
 
     val rootChangelogFile = rootProject.file("CHANGELOG.md").also {
         if (!it.exists()) {
             it.createNewFile()
         }
+
     }
 
     // 获取上一个tag

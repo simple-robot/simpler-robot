@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -69,6 +69,11 @@ public object SuspendTransforms {
     // TODO
     private val jsIncludeAnnotations = listOf(jsIncludeAnnotationApi4Js)
 
+    /**
+     * see `love.forte.simbot.suspendrunner.SuspendMarker`
+     * @since 4.11.0
+     */
+    public val targetMarker: ClassInfo = ClassInfo("love.forte.simbot.suspendrunner", "SuspendMarker")
 
     private val SuspendReserveClassInfo = ClassInfo(
         packageName = "love.forte.simbot.suspendrunner.reserve",
@@ -233,8 +238,22 @@ public object SuspendTransforms {
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForBlocking]
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForAsync]
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForReserve]
+ *
+ * @param useTargetMarker
+ * 如果为 `true`, 则会将 [SuspendTransformConfiguration.targetMarker] 设置为
+ * [SuspendTransforms.targetMarker], 否则设置为 `null`。
+ * 为了兼容性并确保行为一致，默认为 `false`。
  */
-public fun SuspendTransformConfiguration.addSimbotJvmTransformers() {
+@JvmOverloads
+public fun SuspendTransformConfiguration.addSimbotJvmTransformers(
+    useTargetMarker: Boolean = false,
+) {
+    targetMarker = if (useTargetMarker) {
+        SuspendTransforms.targetMarker
+    } else {
+        null
+    }
+
     addJvmTransformers(
         // @JvmBlocking
         SuspendTransforms.jvmBlockingTransformer,
@@ -252,5 +271,6 @@ public fun SuspendTransformConfiguration.addSimbotJvmTransformers() {
         SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
     )
 }
+
 
 

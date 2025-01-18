@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -132,6 +132,7 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterabl
      */
     @ST
     public open suspend fun deleteAll(vararg options: DeleteOption): Int {
+        // TODO 为什么就只有你？你特别在哪里？
         var count = 0
         for (receipt in this) {
             receipt.delete(options = options)
