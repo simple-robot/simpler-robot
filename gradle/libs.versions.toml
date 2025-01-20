@@ -17,7 +17,7 @@ kotlinPoet = "2.0.0"
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.7.1"
 # simbots
-suspendTransform = "2.1.0-0.9.4"
+suspendTransform = "2.1.0-0.10.1"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.13.16"
