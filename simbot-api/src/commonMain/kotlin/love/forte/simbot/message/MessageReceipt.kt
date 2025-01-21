@@ -132,7 +132,6 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterabl
      */
     @ST
     public open suspend fun deleteAll(vararg options: DeleteOption): Int {
-        // TODO 为什么就只有你？你特别在哪里？
         var count = 0
         for (receipt in this) {
             receipt.delete(options = options)
