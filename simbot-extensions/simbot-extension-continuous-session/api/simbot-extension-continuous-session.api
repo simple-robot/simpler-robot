@@ -23,13 +23,11 @@ public final class love/forte/simbot/extension/continuous/session/AbstractContin
 public abstract interface class love/forte/simbot/extension/continuous/session/AsyncInSession : love/forte/simbot/extension/continuous/session/InSession {
 	public abstract fun async (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)Ljava/util/concurrent/CompletionStage;
 	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/AsyncInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/extension/continuous/session/BlockInSession : love/forte/simbot/extension/continuous/session/InSession {
 	public abstract fun block (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)V
 	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/BlockInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/extension/continuous/session/ConflictSessionKeyException : java/lang/IllegalArgumentException {
@@ -132,7 +130,6 @@ public final class love/forte/simbot/extension/continuous/session/InSessions {
 
 public abstract interface class love/forte/simbot/extension/continuous/session/MonoInSession : love/forte/simbot/extension/continuous/session/InSession {
 	public fun invoke (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun invoke$suspendImpl (Llove/forte/simbot/extension/continuous/session/MonoInSession;Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun mono (Llove/forte/simbot/extension/continuous/session/ContinuousSessionReceiver;)Lreactor/core/publisher/Mono;
 }
 

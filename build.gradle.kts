@@ -172,6 +172,10 @@ apiValidation {
         ),
     )
 
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker.Container")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker\$Container")
+
     apiDumpDirectory = "api"
 }
 
