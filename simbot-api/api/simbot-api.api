@@ -12,7 +12,6 @@ public abstract interface class love/forte/simbot/ability/AcceptOption {
 public abstract interface class love/forte/simbot/ability/AcceptSupport {
 	public abstract synthetic fun accept (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun accept ([Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun accept$suspendImpl (Llove/forte/simbot/ability/AcceptSupport;[Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun acceptAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun acceptAsync ([Llove/forte/simbot/ability/AcceptOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun acceptBlocking ()V
@@ -76,7 +75,6 @@ public abstract interface class love/forte/simbot/ability/RejectOption {
 public abstract interface class love/forte/simbot/ability/RejectSupport {
 	public abstract synthetic fun reject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun reject ([Llove/forte/simbot/ability/RejectOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun reject$suspendImpl (Llove/forte/simbot/ability/RejectSupport;[Llove/forte/simbot/ability/RejectOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun rejectAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun rejectAsync ([Llove/forte/simbot/ability/RejectOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun rejectBlocking ()V
@@ -367,12 +365,10 @@ public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/C
 	public fun joinBlocking ()V
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun messageFromId$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
 	public fun messageFromIdReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun messageFromReference (Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun messageFromReference$suspendImpl (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromReferenceAsync (Llove/forte/simbot/message/MessageReference;)Ljava/util/concurrent/CompletableFuture;
 	public fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
 	public fun messageFromReferenceReserve (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -1460,7 +1456,6 @@ public abstract interface class love/forte/simbot/event/JAsyncEventInterceptor :
 	public fun createContext (Llove/forte/simbot/event/EventInterceptor$Context;)Llove/forte/simbot/event/JAsyncEventInterceptor$Context;
 	public synthetic fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun intercept (Llove/forte/simbot/event/JAsyncEventInterceptor$Context;)Ljava/util/concurrent/CompletableFuture;
-	public static synthetic fun intercept$suspendImpl (Llove/forte/simbot/event/JAsyncEventInterceptor;Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/event/JAsyncEventInterceptor$Context {
@@ -1494,7 +1489,6 @@ public final class love/forte/simbot/event/JAsyncEventListener$Companion {
 public abstract interface class love/forte/simbot/event/JBlockEventInterceptor : love/forte/simbot/event/EventInterceptor {
 	public synthetic fun intercept (Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun intercept (Llove/forte/simbot/event/JBlockEventInterceptor$Context;)Llove/forte/simbot/event/EventResult;
-	public static synthetic fun intercept$suspendImpl (Llove/forte/simbot/event/JBlockEventInterceptor;Llove/forte/simbot/event/EventInterceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/event/JBlockEventInterceptor$Context {
@@ -1979,9 +1973,7 @@ public abstract interface class love/forte/simbot/message/MessageContent : love/
 	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun reference$suspendImpl (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun referenceMessage$suspendImpl (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/message/MessageContentKt {

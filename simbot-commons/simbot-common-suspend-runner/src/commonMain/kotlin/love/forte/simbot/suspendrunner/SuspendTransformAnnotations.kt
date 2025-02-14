@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -90,3 +90,7 @@ public annotation class SuspendTransProperty(
 @Suppress("SpellCheckingInspection")
 public typealias STP = SuspendTransProperty
 
+@Retention(AnnotationRetention.SOURCE)
+@Deprecated("Only used by auto-generate", level = DeprecationLevel.HIDDEN)
+@Repeatable
+public annotation class SuspendMarker(val value: String)

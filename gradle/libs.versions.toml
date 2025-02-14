@@ -17,7 +17,8 @@ kotlinPoet = "2.0.0"
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.7.1"
 # simbots
-suspendTransform = "2.1.0-0.9.4"
+#suspendTransform = "2.1.0-0.10.1"
+suspendTransform = "2.1.0-0.11.0"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.13.16"
@@ -126,7 +127,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
 # binary-compatibility-validator
 # https://github.com/Kotlin/binary-compatibility-validator
-kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
+kotlinxBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.17.0" }
 
 spring = { id = "org.springframework.boot", version.ref = "spring-boot-v3" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.7" }

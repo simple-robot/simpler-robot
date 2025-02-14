@@ -212,7 +212,6 @@ public abstract interface class love/forte/simbot/common/collectable/SequenceCol
 
 public abstract interface class love/forte/simbot/common/collectable/SynchronouslyIterateCollectable : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/common/collectable/Collectable {
 	public synthetic fun collect (Llove/forte/simbot/common/function/Action;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun collect$suspendImpl (Llove/forte/simbot/common/collectable/SynchronouslyIterateCollectable;Llove/forte/simbot/common/function/Action;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun collectAsync (Lkotlinx/coroutines/CoroutineScope;Llove/forte/simbot/common/function/Action;)Llove/forte/simbot/common/async/Async;
 	public abstract fun forEach (Llove/forte/simbot/common/function/Action;)V
 	public abstract fun toList ()Ljava/util/List;

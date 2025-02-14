@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,6 +21,8 @@
  *
  */
 
+import changelog.createSubChangelogFile
+import changelog.generateChangelog
 import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
@@ -31,7 +33,6 @@ plugins {
     id("com.github.gmazzo.buildconfig") version "5.5.1" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
-    id("simbot.changelog-generator")
     alias(libs.plugins.suspendTransform) apply false
     // id("love.forte.plugin.suspend-transform") version "2.1.0-0.9.4" apply false
 
@@ -171,6 +172,10 @@ apiValidation {
         ),
     )
 
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker.Container")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker\$Container")
+
     apiDumpDirectory = "api"
 }
 
@@ -190,6 +195,25 @@ idea {
 //     }
 //     // "true" for default behavior
 // }
+
+// Changelog
+
+tasks.create("createChangelog") {
+    group = "documentation"
+    doFirst {
+        createSubChangelogFile(
+            "v${P.VERSION}",
+            mapOf("Kotlin" to libs.versions.kotlin.get())
+        )
+    }
+}
+
+tasks.create("updateChangelog") {
+    group = "documentation"
+    doFirst {
+        generateChangelog("v${P.VERSION}")
+    }
+}
 
 // region Suspend Transform configs
 @Suppress("MaxLineLength")
@@ -353,6 +377,9 @@ fun Project.configureSuspendTransform() {
     extensions.configure<SuspendTransformGradleExtension>("suspendTransform") {
         includeRuntime = false
         includeAnnotation = false
+
+        // love.forte.simbot.suspendrunner.SuspendMarker
+        // targetMarker = ClassInfo("love.forte.simbot.suspendrunner", "SuspendMarker")
 
         addJvmTransformers(
             // @JvmBlocking
