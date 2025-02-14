@@ -379,7 +379,7 @@ fun Project.configureSuspendTransform() {
         includeAnnotation = false
 
         // love.forte.simbot.suspendrunner.SuspendMarker
-        targetMarker = ClassInfo("love.forte.simbot.suspendrunner", "SuspendMarker")
+        // targetMarker = ClassInfo("love.forte.simbot.suspendrunner", "SuspendMarker")
 
         addJvmTransformers(
             // @JvmBlocking

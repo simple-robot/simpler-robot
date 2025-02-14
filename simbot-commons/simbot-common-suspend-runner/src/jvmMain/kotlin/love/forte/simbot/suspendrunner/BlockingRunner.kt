@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -42,7 +42,10 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
-import kotlin.coroutines.*
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -121,7 +124,7 @@ private fun createDefaultDispatcher(
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public class DefaultBlockingDispatcherTaskRejectedExecutionException(
-    public val runnable: java.lang.Runnable, public val executor: Executor,
+    public val runnable: Runnable, public val executor: Executor,
 ) : RejectedExecutionException("The task $runnable is rejected by default blocking task executor $executor")
 
 private const val BLOCKING_DISPATCHER_BASE_PROPERTY = "simbot.runInBlocking.dispatcher"
@@ -441,7 +444,6 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
         val dispatcher = if (useDefault) {
             // default.
             if (hasCause) {
-                cause as Throwable
                 logger.debug(
                     "Default async dispatcher will use the default blocking dispatcher " +
                         "because an exception thrown duration initialization: {}",
@@ -738,7 +740,7 @@ public fun <T> asReserve(
  */
 @InternalSimbotAPI
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$asReserve`(scope: CoroutineScope? = null, block: suspend () -> T): SuspendReserve<T> =
+public fun <T> `$$asReserve`(block: suspend () -> T, scope: CoroutineScope? = null): SuspendReserve<T> =
     asReserve(scope = scope, context = EmptyCoroutineContext, block = block)
 
 
@@ -933,7 +935,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
 
             try {
                 return future.get(waitTimeout, TimeUnit.MILLISECONDS)
-            } catch (ignore: TimeoutException) {
+            } catch (_: TimeoutException) {
                 times += 1
             } catch (cancellation: CancellationException) {
                 throwRunInBlockingException(cancellation)
@@ -987,7 +989,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         private const val DEFAULT_WAIT_TIME = 60_000L // 60s
         private val waitTimeout =
             systemLong(BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME)?.takeIf { it > 0 } ?: DEFAULT_WAIT_TIME
-        internal val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
+        val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
 
         private val logIfVirtual = systemBool(BLOCKING_RUNNER_WAIT_TIME_LOG_IF_VIRTUAL_PROPERTY_NAME)
 

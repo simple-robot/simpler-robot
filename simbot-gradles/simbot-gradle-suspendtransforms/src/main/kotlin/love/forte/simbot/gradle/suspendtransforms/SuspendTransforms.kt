@@ -248,6 +248,7 @@ public object SuspendTransforms {
 public fun SuspendTransformConfiguration.addSimbotJvmTransformers(
     useTargetMarker: Boolean = false,
 ) {
+    @Suppress("DEPRECATION")
     targetMarker = if (useTargetMarker) {
         SuspendTransforms.targetMarker
     } else {
