@@ -1,6 +1,7 @@
 [versions]
 kotlin = "2.1.0"
-dokka = "1.9.20"
+#dokka = "1.9.20"
+dokka = "2.0.0"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
 kotlinx-io = "0.6.0"
@@ -134,6 +135,8 @@ spring-dependencyManagement = { id = "io.spring.dependency-management", version 
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
 suspendTransform = { id = "love.forte.plugin.suspend-transform", version.ref = "suspendTransform" }
+
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

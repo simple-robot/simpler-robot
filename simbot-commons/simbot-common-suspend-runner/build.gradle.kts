@@ -27,7 +27,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
-    id("simbot.dokka-module-configuration")
+    id("org.jetbrains.dokka")
 }
 
 configJavaCompileWithModule("simbot.common.suspendrunner")

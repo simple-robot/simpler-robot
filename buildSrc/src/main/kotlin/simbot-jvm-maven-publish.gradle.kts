@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -104,38 +104,7 @@ checkPublishConfigurable {
         useInMemoryPgpKeys(keyId, secretKey, password)
         sign(publishingExtension.publications)
     }
-
-    // jvmConfigPublishing {
-    //     project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
-    //     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-    //
-    //     publicationName = "simbotDist"
-    //
-    //     val jarSources by tasks.registering(Jar::class) {
-    //         archiveClassifier.set("sources")
-    //         from(sourceSets["main"].allSource)
-    //     }
-    //
-    //     val jarJavadoc by tasks.registering(Jar::class) {
-    //         if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-    //             dependsOn(tasks.dokkaHtml)
-    //             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-    //         }
-    //         archiveClassifier.set("javadoc")
-    //     }
-    //
-    //     artifact(jarSources)
-    //     artifact(jarJavadoc)
-    //
-    //     releasesRepository = ReleaseRepository
-    //     snapshotRepository = SnapshotRepository
-    //     gpg = Gpg.ofSystemPropOrNull()
-    //
-    //
-    // }
 }
-// show()
-// }
 
 fun MavenPublication.showMaven() {
     val pom = pom

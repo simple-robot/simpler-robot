@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,6 +21,7 @@
  *
  */
 
+import jdk.tools.jlink.resources.plugins
 import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
@@ -39,7 +40,7 @@ import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("simbot.dokka-module-configuration")
+    id("org.jetbrains.dokka")
 }
 
 setup(P.SimbotQuantcat)
