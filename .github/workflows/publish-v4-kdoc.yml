@@ -39,8 +39,8 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
-            dokkaHtmlMultiModule
-            --info 
+            dokkaGenerate
+            -s
             --warning-mode all
             -x test
             --build-cache

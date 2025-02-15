@@ -91,8 +91,8 @@ jobs:
         with:
           gradle-version: 8.3
           arguments: |
-            dokkaHtmlMultiModule
-            --info 
+            dokkaGenerate
+            -s
             --warning-mode all
             -x test
             --build-cache

@@ -126,7 +126,7 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
-            dokkaHtmlMultiModule
+            dokkaGenerate
             -s
             --warning-mode all
             -x test
