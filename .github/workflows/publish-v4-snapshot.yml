@@ -103,7 +103,7 @@ jobs:
   deploy-doc:
     name: Deploy snapshots API doc
     needs: publish-v4-snapshot
-    runs-on: macos-latest # ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
       - name: Check out repo
@@ -126,7 +126,7 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
-            dokkaHtmlMultiModule
+            dokkaGenerate
             -s
             --warning-mode all
             -x test

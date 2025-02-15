@@ -18,7 +18,7 @@ env:
 jobs:
   deploy-doc:
     name: Deploy V4 API Doc
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
       - uses: actions/checkout@v4
@@ -39,8 +39,8 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           arguments: |
-            dokkaHtmlMultiModule
-            --info 
+            dokkaGenerate
+            -s
             --warning-mode all
             -x test
             --build-cache
