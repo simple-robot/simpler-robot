@@ -476,6 +476,7 @@ fun DokkaSourceSetSpec.configExternalDocumentations() {
     )
 
     // Spring Framework
+    // TODO 准确的版本号?
     externalDocumentation(
         "spring-framework",
         URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api/"),
@@ -485,7 +486,7 @@ fun DokkaSourceSetSpec.configExternalDocumentations() {
     // Spring Boot
     externalDocumentation(
         "spring-boot",
-        URI.create("https://docs.spring.io/spring-boot/docs/current/api/"),
+        URI.create("https://docs.spring.io/spring-boot/docs/${libs.versions.spring.boot.v3.get()}/api/"),
         "element-list"
     )
 }
@@ -540,14 +541,11 @@ dokka {
 
         footerMessage =
             "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. " +
-                "All rights reserved."
+            "All rights reserved."
 
         separateInheritedMembers = true
         mergeImplicitExpectActualDeclarations = true
         homepageLink = P.HOMEPAGE
     }
-
 }
-
-
 // endregion

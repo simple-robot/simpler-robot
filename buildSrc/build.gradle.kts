@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -40,7 +40,7 @@ dependencies {
     implementation(kotlin("power-assert", kotlinVersion))
     // compileOnly(kotlin("compiler", kotlinVersion))
     // compileOnly(kotlin("compiler-embeddable", kotlinVersion))
-    implementation(libs.bundles.dokka)
+    implementation(libs.dokka.plugin)
 
     // see https://github.com/gradle-nexus/publish-plugin
     implementation(libs.gradleNexusPublishPlugin)

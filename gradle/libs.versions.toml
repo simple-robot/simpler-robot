@@ -38,8 +38,6 @@ gradleNexusPublishPlugin = { module = "io.github.gradle-nexus:publish-plugin", v
 
 # dokka
 dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
-dokka-core = { group = "org.jetbrains.dokka", name = "dokka-core", version.ref = "dokka" }
-dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref = "dokka" }
 
 # kotlinx-coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -140,4 +138,3 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]
-dokka = ["dokka-plugin", "dokka-core", "dokka-base"]
