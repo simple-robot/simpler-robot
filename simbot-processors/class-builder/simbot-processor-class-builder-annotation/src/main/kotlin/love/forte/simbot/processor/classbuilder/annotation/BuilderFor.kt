@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,10 +21,10 @@
  *
  */
 
-object JVMConstants {
-    const val KT_JVM_TARGET_VALUE = 11
-    const val KT_JVM_TARGET = "11"
+package love.forte.simbot.processor.classbuilder.annotation
 
-    const val TARGET_1_8_VALUE = 8
-    const val TARGET_1_8 = "1.8"
-}
+import kotlin.reflect.KClass
+
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+public annotation class BuilderFor(val value: KClass<*>)

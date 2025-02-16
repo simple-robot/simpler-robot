@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,10 +21,28 @@
  *
  */
 
-object JVMConstants {
-    const val KT_JVM_TARGET_VALUE = 11
-    const val KT_JVM_TARGET = "11"
+package love.forte.simbot.processor.classbuilder.test
 
-    const val TARGET_1_8_VALUE = 8
-    const val TARGET_1_8 = "1.8"
+import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
+import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
+
+@DslMarker
+annotation class TestDslMark
+
+@ClassBuilder(marks = [TestDslMark::class])
+class MyTestClass(
+    val name: String,
+    val size: Int
+) {
+    var length: Int? = null
+    lateinit var testClass2: TestClass2
 }
+
+@ClassBuilder(marks = [TestDslMark::class])
+class TestClass2 {
+    var name: String? = null
+    var times: Int = 1
+}
+
+@BuilderFor(TestClass2::class)
+class TestClass2Builder1

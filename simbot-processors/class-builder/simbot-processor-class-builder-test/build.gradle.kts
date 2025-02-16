@@ -21,10 +21,23 @@
  *
  */
 
-object JVMConstants {
-    const val KT_JVM_TARGET_VALUE = 11
-    const val KT_JVM_TARGET = "11"
+plugins {
+    kotlin("jvm")
+    alias(libs.plugins.ksp)
+}
 
-    const val TARGET_1_8_VALUE = 8
-    const val TARGET_1_8 = "1.8"
+configJavaCompileWithModule(jvmVersion = JVMConstants.KT_JVM_TARGET)
+
+kotlin {
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+}
+
+dependencies {
+    implementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-annotation"))
+    ksp(project(":simbot-processors:class-builder:simbot-processor-class-builder"))
+    ksp(project(":simbot-processors:class-builder:simbot-processor-class-builder-test-lib"))
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
 }

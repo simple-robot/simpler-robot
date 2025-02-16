@@ -27,12 +27,12 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-configJavaCompileWithModule()
+configJavaCompileWithModule(jvmVersion = "1.8")
 apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+    configKotlinJvm(8)
 }
 
 dependencies {

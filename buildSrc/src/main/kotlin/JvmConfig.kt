@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -75,7 +75,12 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
     configJavaToolchain(jdkVersion)
     compilerOptions {
         javaParameters.set(true)
-        jvmTarget.set(JvmTarget.fromTarget(jdkVersion.toString()))
+        jvmTarget.set(
+            when (jdkVersion) {
+                8 -> JvmTarget.JVM_1_8
+                else -> JvmTarget.fromTarget(jdkVersion.toString())
+            }
+        )
         // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
         freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
     }

@@ -21,10 +21,19 @@
  *
  */
 
-object JVMConstants {
-    const val KT_JVM_TARGET_VALUE = 11
-    const val KT_JVM_TARGET = "11"
+plugins {
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
+}
 
-    const val TARGET_1_8_VALUE = 8
-    const val TARGET_1_8 = "1.8"
+configJavaCompileWithModule(jvmVersion = JVMConstants.KT_JVM_TARGET)
+apply(plugin = "simbot-jvm-maven-publish")
+
+kotlin {
+    explicitApi()
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
 }
