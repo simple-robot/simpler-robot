@@ -23,10 +23,45 @@
 
 package love.forte.simbot.processor.classbuilder
 
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.KSBuiltIns
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
-import com.google.devtools.ksp.symbol.KSDeclaration
-import com.google.devtools.ksp.symbol.KSNode
+import com.google.devtools.ksp.symbol.*
+import com.squareup.kotlinpoet.CodeBlock
+import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
+import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
+
+internal val BuilderForAnnotationName: String = BuilderFor::class.qualifiedName!!
+internal val ClassBuilderAnnotationName: String = ClassBuilder::class.qualifiedName!!
+
+internal fun KSAnnotation.isClassBuilder(): Boolean {
+    return (annotationType.resolve().declaration as? KSClassDeclaration)
+        ?.qualifiedName?.asString() == ClassBuilderAnnotationName
+}
+
+internal fun KSAnnotation.isBuilderFor(): Boolean {
+    return (annotationType.resolve().declaration as? KSClassDeclaration)
+        ?.qualifiedName?.asString() == BuilderForAnnotationName
+}
+
+internal data class ClassBuilderAnnotationInfo(
+    val source: KSAnnotation,
+    val name: String,
+    val marks: List<KSType>
+)
+
+internal fun KSAnnotation.toClassBuilderAnnotationInfo(): ClassBuilderAnnotationInfo? {
+    val name = arguments.find { it.name?.asString() == "name" }?.value as? String
+
+    @Suppress("UNCHECKED_CAST")
+    val marks =
+        // KClass<out Annotation>
+        arguments.find { it.name?.asString() == "marks" }?.value as? List<KSType>
+
+    return ClassBuilderAnnotationInfo(this, name ?: "", marks ?: emptyList())
+}
+
 
 internal inline fun SymbolProcessorEnvironment.reportError(
     msg: String,
@@ -46,4 +81,85 @@ internal fun KSDeclaration.isPrimitive(builtIns: KSBuiltIns): Boolean {
         this == builtIns.floatType.declaration ||
         this == builtIns.doubleType.declaration ||
         this == builtIns.booleanType.declaration
+}
+
+internal fun KSType.isIterable(resolver: Resolver): Boolean {
+    return resolver.builtIns.iterableType.isAssignableFrom(this.makeNotNullable())
+}
+
+internal fun KSType.isList(resolver: Resolver, mutable: Boolean = false): Boolean {
+    val notNullThis = makeNotNullable()
+
+    val listType = if (mutable) {
+        resolver.getClassDeclarationByName<MutableList<*>>()
+    } else {
+        resolver.getClassDeclarationByName<List<*>>()
+    }?.asStarProjectedType() ?: return false
+
+    return listType.isAssignableFrom(notNullThis)
+}
+
+internal fun KSType.isSet(resolver: Resolver, mutable: Boolean = false): Boolean {
+    val notNullThis = makeNotNullable()
+
+    val setType = if (mutable) {
+        resolver.getClassDeclarationByName<MutableSet<*>>()
+    } else {
+        resolver.getClassDeclarationByName<Set<*>>()
+    }?.asStarProjectedType() ?: return false
+
+    return setType.isAssignableFrom(notNullThis)
+}
+
+internal fun KSType.isCollection(resolver: Resolver, mutable: Boolean = false): Boolean {
+    val notNullThis = makeNotNullable()
+
+    val collectionType = if (mutable) {
+        resolver.getClassDeclarationByName<MutableCollection<*>>()
+    } else {
+        resolver.getClassDeclarationByName<Collection<*>>()
+    }?.asStarProjectedType() ?: return false
+
+    return collectionType.isAssignableFrom(notNullThis)
+}
+
+internal fun KSType.isMap(resolver: Resolver, mutable: Boolean = false): Boolean {
+    val notNullThis = makeNotNullable()
+
+    val collectionType = if (mutable) {
+        resolver.getClassDeclarationByName<MutableMap<*, *>>()
+    } else {
+        resolver.getClassDeclarationByName<Map<*, *>>()
+    }?.asStarProjectedType() ?: return false
+
+    return collectionType.isAssignableFrom(notNullThis)
+}
+
+internal fun KSType.isArray(resolver: Resolver): Boolean {
+    val notNullThis = makeNotNullable()
+    return resolver.builtIns.arrayType.isAssignableFrom(notNullThis)
+}
+
+internal inline fun CodeBlock.Builder.inReturnApplyBlock(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
+    beginControlFlow("return apply")
+    block()
+    endControlFlow()
+    return this
+}
+
+internal inline fun CodeBlock.Builder.inStatement(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
+    add("«")
+    block()
+    add("\n»")
+    return this
+}
+
+internal inline fun CodeBlock.Builder.inReturnApplyStatement(
+    block: CodeBlock.Builder.() -> Unit = {}
+): CodeBlock.Builder {
+    return inReturnApplyBlock {
+        inStatement {
+            block()
+        }
+    }
 }

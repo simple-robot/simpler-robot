@@ -23,16 +23,51 @@
 
 package love.forte.simbot.processor.classbuilder.test
 
-import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
+import love.forte.simbot.processor.classbuilder.testlib.MyTestLibClass
 
 @DslMarker
 annotation class TestDslMark
 
 @ClassBuilder(marks = [TestDslMark::class])
-class MyTestClass(
+class MyTestClass<T>(
     val name: String,
-    val size: Int
+    val size: Int,
+    val sizeList: List<Int>,
+    val nameSet: Set<String?>,
+    val sizeListNullable: List<Int>?,
+    val nameSetNullable: Set<String?>?,
+    val sizeCollection: Collection<Int>,
+    val nameCollection: Collection<String?>,
+    val sizeCollectionNullable: Collection<Int>?,
+    val nameCollectionNullable: Collection<String?>?,
+    val sizeArray: Array<Int>,
+    val nameArray: Array<String?>,
+    val sizeArrayNullable: Array<Int>?,
+    val nameArrayNullable: Array<String?>?,
+
+    val typedList: List<T>,
+    val typedListNullable: List<T>?,
+
+    val typedSet: Set<T>,
+    val typedSetNullable: Set<T>?,
+
+    val typedCol: Collection<T>,
+    val typedColNullable: Collection<T>?,
+
+    val typedArray: Array<T>,
+    val typedArrayNullable: Array<T>?,
+
+    val sizeMap: Map<Int, Long>,
+    val nameMap: Map<String?, Long>,
+    val sizeMapNullable: Map<Int, Long>?,
+    val nameMapNullable: Map<String?, Long>?,
+
+    val otherBuilderList: List<TestClass2>,
+
+    val typeLibList: List<MyTestLibClass>,
+
+    vararg val nameVararg: String,
 ) {
     var length: Int? = null
     lateinit var testClass2: TestClass2
@@ -44,5 +79,3 @@ class TestClass2 {
     var times: Int = 1
 }
 
-@BuilderFor(TestClass2::class)
-class TestClass2Builder1

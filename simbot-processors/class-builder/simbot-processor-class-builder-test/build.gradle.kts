@@ -34,8 +34,8 @@ kotlin {
 
 dependencies {
     implementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-annotation"))
+    implementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-test-lib"))
     ksp(project(":simbot-processors:class-builder:simbot-processor-class-builder"))
-    ksp(project(":simbot-processors:class-builder:simbot-processor-class-builder-test-lib"))
 }
 
 tasks.getByName<Test>("test") {

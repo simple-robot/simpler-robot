@@ -28,31 +28,26 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
 import kotlin.reflect.KClass
 
 
-public data class ExistBuilder(
+internal data class ExistBuilder(
     val annotation: KSAnnotation,
     val target: KClass<*>,
     val declaration: KSClassDeclaration
 )
 
-public data class ExpectBuilderDeclaration(
-    val annotationData: AnnotationData,
+internal data class ExpectBuilderDeclaration(
+    val annotationData: ClassBuilderAnnotationInfo,
     val type: KSClassDeclaration
 ) {
     val builderName: String
         get() = annotationData.name.ifBlank { type.simpleName.asString() + "Builder" }
-
-    public data class AnnotationData(
-        val source: KSAnnotation,
-        val name: String,
-        val marks: List<KSType>
-    )
 }
 
 /**
@@ -62,11 +57,6 @@ public data class ExpectBuilderDeclaration(
 public class ClassBuilderProcessor(
     private val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor {
-    public companion object {
-        public val BuilderForAnnotationName: String = BuilderFor::class.qualifiedName!!
-        public val ClassBuilderAnnotationName: String = ClassBuilder::class.qualifiedName!!
-    }
-
     // 没法直接扫描 libs 中的类，只有当遇到类型的时候检测一下注解，然后再猜测一下名称。
     // private val existClassBuilders = mutableMapOf<KClass<*>, ExistBuilder>()
     private val classBuilders = mutableMapOf<KSClassDeclaration, BuilderGenerator>()
@@ -82,6 +72,8 @@ public class ClassBuilderProcessor(
      * 扫描找到所有的 [ClassBuilder] 注解的类。
      */
     private fun resolveAllExpectClassBuilders(resolver: Resolver) {
+        val buildersMap = mutableMapOf<ClassName, TypeName>()
+
         resolver.getSymbolsWithAnnotation(ClassBuilderAnnotationName)
             .filterIsInstance<KSClassDeclaration>()
             .onEach {
@@ -93,20 +85,11 @@ public class ClassBuilderProcessor(
                 }
             }
             .mapNotNull {
-                val annotation = it.annotations.find {
-                    (it.annotationType.resolve().declaration as? KSClassDeclaration)
-                        ?.qualifiedName?.asString() == ClassBuilderAnnotationName
-                } ?: return@mapNotNull null
-
-                val name = annotation.arguments.find { it.name?.asString() == "name" }?.value as? String
-
-                @Suppress("UNCHECKED_CAST")
-                val marks =
-                    // KClass<out Annotation>
-                    annotation.arguments.find { it.name?.asString() == "marks" }?.value as? List<KSType>
+                val annotation = it.annotations.find { it.isClassBuilder() }
+                    ?: return@mapNotNull null
 
                 ExpectBuilderDeclaration(
-                    ExpectBuilderDeclaration.AnnotationData(annotation, name ?: "", marks ?: emptyList()),
+                    annotation.toClassBuilderAnnotationInfo() ?: return@mapNotNull null,
                     it
                 )
             }
@@ -114,7 +97,8 @@ public class ClassBuilderProcessor(
                 classBuilders[expect.type] = BuilderGenerator(
                     resolver,
                     environment,
-                    expect
+                    expect,
+                    buildersMap
                 )
             }
     }
@@ -123,6 +107,10 @@ public class ClassBuilderProcessor(
         // 生成 Builders
         data class FileWithSource(val file: FileSpec, val sources: List<KSFile>)
 
+        // prepare all first
+        classBuilders.values.forEach { it.prepare() }
+
+        // generate all to KSFile
         classBuilders.map { (_, generator) ->
             environment.logger.info("Expect builder: ${generator.declaration.type}")
 
@@ -130,7 +118,6 @@ public class ClassBuilderProcessor(
 
             FileWithSource(file, generator.sources.toList())
         }.forEach { (file, sources) ->
-
             file.writeTo(
                 environment.codeGenerator,
                 true,
