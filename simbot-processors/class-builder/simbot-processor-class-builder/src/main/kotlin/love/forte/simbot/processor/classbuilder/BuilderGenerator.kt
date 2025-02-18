@@ -391,13 +391,36 @@ internal class BuilderProperty(
         } while (queue.isNotEmpty())
     }
 
-    private abstract class Emitter {
+    private abstract inner class Emitter {
         abstract fun emit(queue: ArrayDeque<Emitter>)
+
+        fun addProperty(property: PropertySpec.Builder) {
+            if (isRequired) {
+                property.addKdoc("Required property for [%T.$name]\n", declaration.type.toClassName())
+            } else if (isNullable) {
+                property.addKdoc("Nullable property for [%T.$name]\n", declaration.type.toClassName())
+            } else {
+                property.addKdoc("Optional property for [%T.$name]\n", declaration.type.toClassName())
+            }
+            property.addKdoc("@see %T.$name\n", declaration.type.toClassName())
+
+            typeBuilder.addProperty(property.build())
+        }
+
+        fun addFunction(function: FunSpec.Builder) {
+            function.addKdoc("@see ${declaration.builderName}.$name\n")
+            function.addKdoc("@see %T.$name\n", declaration.type.toClassName())
+            typeBuilder.addFunction(function.build())
+        }
+
+        fun addExtension(function: FunSpec.Builder) {
+            fileBuilder.addFunction(function.build())
+        }
     }
 
-    private abstract class PropertyEmitter : Emitter()
-    private abstract class FunctionEmitter : Emitter()
-    private abstract class ExtensionEmitter : Emitter()
+    private abstract inner class PropertyEmitter : Emitter()
+    private abstract inner class FunctionEmitter : Emitter()
+    private abstract inner class ExtensionEmitter : Emitter()
 
     private inner class BuildPropertyEmitter : Emitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
@@ -417,7 +440,6 @@ internal class BuilderProperty(
 
                 // 普通类型
                 else -> queue.add(SimplePropertyEmitter())
-
             }
         }
     }
@@ -431,7 +453,6 @@ internal class BuilderProperty(
                 name,
                 typeOrNullable.toTypeName(typeParameterResolver)
             ).apply {
-                addKdoc("@see %T.$name", declaration.type.toClassName())
                 if (declaration.annotationData.open) {
                     addModifiers(PROTECTED, OPEN)
                 } else {
@@ -444,10 +465,9 @@ internal class BuilderProperty(
                     // by kotlin.properties.Delegates.notNull()
                     delegate("%T.notNull()", DelegatesClassName)
                 }
+            }
 
-            }.build()
-
-            typeBuilder.addProperty(propertySpec)
+            addProperty(propertySpec)
 
             queue.add(SelfFunctionEmitter(type))
 
@@ -466,7 +486,6 @@ internal class BuilderProperty(
                 name,
                 typeOrNullable.toTypeName(typeParameterResolver)
             ).apply {
-                addKdoc("@see %T.$name", declaration.type.toClassName())
                 if (declaration.annotationData.open) {
                     addModifiers(PROTECTED, OPEN)
                 } else {
@@ -478,9 +497,9 @@ internal class BuilderProperty(
                 } else {
                     addModifiers(LATEINIT)
                 }
-            }.build()
+            }
 
-            typeBuilder.addProperty(propertySpec)
+            addProperty(propertySpec)
 
             queue.add(SelfFunctionEmitter(type))
 
@@ -545,7 +564,6 @@ internal class BuilderProperty(
                 name,
                 propertyType.toTypeName(typeParameterResolver)
             ).apply {
-                addKdoc("@see %T.$name", declaration.type.toClassName())
                 if (declaration.annotationData.open) {
                     addModifiers(PROTECTED, OPEN)
                 } else {
@@ -553,9 +571,9 @@ internal class BuilderProperty(
                 }
                 mutable(true)
                 initializer(if (isNullableOrIsOptional) CodeBlock.of("null") else initializer)
-            }.build()
+            }
 
-            typeBuilder.addProperty(propertySpec)
+            addProperty(propertySpec)
 
             val isMutable = type.isCollection(resolver, mutable = true)
 
@@ -639,7 +657,6 @@ internal class BuilderProperty(
                 name,
                 propertyType.toTypeName(typeParameterResolver)
             ).apply {
-                addKdoc("@see %T.$name", declaration.type.toClassName())
                 if (declaration.annotationData.open) {
                     addModifiers(PROTECTED, OPEN)
                 } else {
@@ -647,9 +664,9 @@ internal class BuilderProperty(
                 }
                 mutable(true)
                 initializer(if (isNullableOrIsOptional) CodeBlock.of("null") else initializer)
-            }.build()
+            }
 
-            typeBuilder.addProperty(propertySpec)
+            addProperty(propertySpec)
 
             val isMutable = type.isMap(resolver, mutable = true)
 
@@ -683,9 +700,8 @@ internal class BuilderProperty(
      */
     private inner class SelfFunctionEmitter(val propertyType: KSType) : FunctionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
-            typeBuilder.addFunction(
+            addFunction(
                 FunSpec.builder(name).apply {
-                    addKdoc("@see %T.$name", declaration.type.toClassName())
                     addModifiers(PUBLIC)
                     if (declaration.annotationData.open) {
                         addModifiers(OPEN)
@@ -699,7 +715,7 @@ internal class BuilderProperty(
                             }
                         }
                     )
-                }.build()
+                }
             )
         }
     }
@@ -747,15 +763,16 @@ internal class BuilderProperty(
          * 函数已经包含 name，returns
          */
         inline fun addAddFunction(block: FunSpec.Builder.() -> Unit) {
-            typeBuilder.addFunction(
+            addFunction(
                 FunSpec.builder("add$firstUpperName").apply {
+                    addKdoc("Add an element to [$name]\n")
                     addModifiers(PUBLIC)
                     if (declaration.annotationData.open) {
                         addModifiers(OPEN)
                     }
                     returns(builderTypeName)
                     block()
-                }.build()
+                }
             )
         }
 
@@ -763,15 +780,16 @@ internal class BuilderProperty(
          * 函数已经包含 name，returns
          */
         inline fun addAddAllFunction(block: FunSpec.Builder.() -> Unit) {
-            typeBuilder.addFunction(
+            addFunction(
                 FunSpec.builder("addAll$firstUpperName").apply {
+                    addKdoc("Add all elements to [$name].\n")
                     addModifiers(PUBLIC)
                     if (declaration.annotationData.open) {
                         addModifiers(OPEN)
                     }
                     returns(builderTypeName)
                     block()
-                }.build()
+                }
             )
         }
 
@@ -779,15 +797,19 @@ internal class BuilderProperty(
          * 函数已经包含 name，returns
          */
         inline fun addClearFunction(block: FunSpec.Builder.() -> Unit) {
-            typeBuilder.addFunction(
+            addFunction(
                 FunSpec.builder("clear$firstUpperName").apply {
+                    addKdoc("Clear elements of [$name].\n")
+                    if (isNullableOrIsOptional) {
+                        addKdoc("_[$name] Will be set to null internally._\n")
+                    }
                     addModifiers(PUBLIC)
                     if (declaration.annotationData.open) {
                         addModifiers(OPEN)
                     }
                     returns(builderTypeName)
                     block()
-                }.build()
+                }
             )
         }
     }
@@ -850,7 +872,7 @@ internal class BuilderProperty(
             }
 
             addAddAllFunction {
-                addParameter("elements", elementTypeName, KModifier.VARARG)
+                addParameter("elements", elementTypeName, VARARG)
                 addCode(
                     buildCodeBlock {
                         inReturnApplyStatement {
@@ -962,9 +984,8 @@ internal class BuilderProperty(
     ) : ExtensionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = "add$firstUpperName"
-            fileBuilder.addFunction(
+            addExtension(
                 FunSpec.builder(fn).apply {
-                    addKdoc("@see %T.$name\n", declaration.type.toClassName())
                     addKdoc("@see %T", otherBuilderName)
                     addModifiers(INLINE)
                     if (declaration.annotationData.internal) {
@@ -983,7 +1004,7 @@ internal class BuilderProperty(
                         )
                     )
                     addCode("return $fn(%T().also(block).build())", otherBuilderName)
-                }.build()
+                }
             )
         }
     }
@@ -1005,9 +1026,8 @@ internal class BuilderProperty(
     ) : ExtensionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = "add$firstUpperName"
-            fileBuilder.addFunction(
+            addExtension(
                 FunSpec.builder(fn).apply {
-                    addKdoc("@see %T.$name\n", declaration.type.toClassName())
                     addKdoc("@see %T", otherBuilderName)
                     addModifiers(INLINE)
                     if (declaration.annotationData.internal) {
@@ -1027,7 +1047,7 @@ internal class BuilderProperty(
                         )
                     )
                     addCode("return $fn(key, %T().also(block).build())", otherBuilderName)
-                }.build()
+                }
             )
         }
     }
@@ -1037,9 +1057,9 @@ internal class BuilderProperty(
     ) : ExtensionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = name
-            fileBuilder.addFunction(
+            addExtension(
                 FunSpec.builder(fn).apply {
-                    addKdoc("@see %T.$fn\n", builderTypeName)
+                    addKdoc("@see ${declaration.builderName}.$fn\n")
                     addKdoc("@see %T.$name\n", declaration.type.toClassName())
                     addKdoc("@see %T", otherBuilderName)
                     addModifiers(INLINE)
@@ -1059,7 +1079,7 @@ internal class BuilderProperty(
                         )
                     )
                     addCode("return $fn(%T().also(block).build())", otherBuilderName)
-                }.build()
+                }
             )
         }
     }

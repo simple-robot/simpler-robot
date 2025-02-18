@@ -24,7 +24,6 @@
 package love.forte.simbot.processor.classbuilder.test
 
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
-import love.forte.simbot.processor.classbuilder.testlib.MyTestLibClass
 import kotlin.properties.Delegates
 
 @DslMarker
@@ -35,10 +34,8 @@ class MyTestClass<T>(
     val name: String,
     val size: Int,
     val other: TestClass2,
-    val typeLib: MyTestLibClass,
 
     val otherNullable: TestClass2?,
-    val typeLibNullable: MyTestLibClass?,
 
     val sizeList: List<Int>,
     val nameSet: Set<String?>,
@@ -72,8 +69,6 @@ class MyTestClass<T>(
 
     val otherBuilderList: List<TestClass2>,
 
-    val typeLibList: List<MyTestLibClass>,
-
     vararg val nameVararg: String,
 ) {
     val valNotBuildable: String = "valNotBuildable"
@@ -81,10 +76,8 @@ class MyTestClass<T>(
     lateinit var propName: String
     var propSize by Delegates.notNull<Int>()
     lateinit var propOther: TestClass2
-    lateinit var propTypeLib: MyTestLibClass
 
     var propOtherNullable: TestClass2? = null
-    var propTypeLibNullable: MyTestLibClass? = null
 
     lateinit var propSizeList: List<Int>
     lateinit var propNameSet: Set<String?>
@@ -117,8 +110,6 @@ class MyTestClass<T>(
     var propNameMapNullable: Map<String?, Long>? = null
 
     lateinit var propOtherBuilderList: List<TestClass2>
-
-    lateinit var propTypeLibList: List<MyTestLibClass>
 }
 
 @ClassBuilder(marks = [TestDslMark::class])
@@ -131,5 +122,10 @@ internal inline fun <T> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): My
     return MyTestClassBuilder<T>().apply(block).build()
 }
 
-class User<T>(val values: List<T>)
+private data class User(val name: String, val age: Int)
 
+private fun a() {
+    MyTestClass<User> {
+        other { }
+    }
+}

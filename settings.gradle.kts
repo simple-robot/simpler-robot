@@ -48,7 +48,6 @@ include("simbot-processors:simbot-processor-message-element-polymorphic-include"
 include("simbot-processors:class-builder:simbot-processor-class-builder")
 include("simbot-processors:class-builder:simbot-processor-class-builder-annotation")
 include("simbot-processors:class-builder:simbot-processor-class-builder-test")
-include("simbot-processors:class-builder:simbot-processor-class-builder-test-lib")
 
 include(":simbot-commons:simbot-common-annotations")
 include(":simbot-commons:simbot-common-collection")

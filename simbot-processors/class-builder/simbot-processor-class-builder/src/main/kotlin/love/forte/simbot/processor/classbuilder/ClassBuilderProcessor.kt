@@ -27,20 +27,16 @@ import com.google.devtools.ksp.isAbstract
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.writeTo
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
-import kotlin.reflect.KClass
 
-
-internal data class ExistBuilder(
-    val annotation: KSAnnotation,
-    val target: KClass<*>,
-    val declaration: KSClassDeclaration
-)
 
 internal data class ExpectBuilderDeclaration(
     val annotationData: ClassBuilderAnnotationInfo,
@@ -54,7 +50,7 @@ internal data class ExpectBuilderDeclaration(
  *
  * @author ForteScarlet
  */
-public class ClassBuilderProcessor(
+internal class ClassBuilderProcessor(
     private val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor {
     // 没法直接扫描 libs 中的类，只有当遇到类型的时候检测一下注解，然后再猜测一下名称。
@@ -112,8 +108,6 @@ public class ClassBuilderProcessor(
 
         // generate all to KSFile
         classBuilders.map { (_, generator) ->
-            environment.logger.info("Expect builder: ${generator.declaration.type}")
-
             val file = generator.generate()
 
             FileWithSource(file, generator.sources.toList())

@@ -1,0 +1,11 @@
+public abstract interface annotation class love/forte/simbot/processor/classbuilder/annotation/BuilderFor : java/lang/annotation/Annotation {
+	public abstract fun value ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class love/forte/simbot/processor/classbuilder/annotation/ClassBuilder : java/lang/annotation/Annotation {
+	public abstract fun internal ()Z
+	public abstract fun marks ()[Ljava/lang/Class;
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun open ()Z
+}
+

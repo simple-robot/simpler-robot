@@ -154,12 +154,13 @@ fun Project.applyKover(rp: Project) {
 apiValidation {
     ignoredPackages.add("*.internal.*")
 
-    this.ignoredProjects.addAll(
+    ignoredProjects.addAll(
         listOf(
             "interface-uml-processor",
             "simbot-test",
             "tests",
             "spring-boot-starter-test",
+            "simbot-processor-class-builder-test"
         )
     )
 
