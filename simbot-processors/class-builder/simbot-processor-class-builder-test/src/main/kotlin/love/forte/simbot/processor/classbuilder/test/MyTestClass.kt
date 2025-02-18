@@ -25,11 +25,12 @@ package love.forte.simbot.processor.classbuilder.test
 
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
 import love.forte.simbot.processor.classbuilder.testlib.MyTestLibClass
+import kotlin.properties.Delegates
 
 @DslMarker
 annotation class TestDslMark
 
-@ClassBuilder(marks = [TestDslMark::class])
+@ClassBuilder(marks = [TestDslMark::class], open = true, internal = true)
 class MyTestClass<T>(
     val name: String,
     val size: Int,
@@ -75,8 +76,49 @@ class MyTestClass<T>(
 
     vararg val nameVararg: String,
 ) {
-    var length: Int? = null
-    lateinit var testClass2: TestClass2
+    val valNotBuildable: String = "valNotBuildable"
+
+    lateinit var propName: String
+    var propSize by Delegates.notNull<Int>()
+    lateinit var propOther: TestClass2
+    lateinit var propTypeLib: MyTestLibClass
+
+    var propOtherNullable: TestClass2? = null
+    var propTypeLibNullable: MyTestLibClass? = null
+
+    lateinit var propSizeList: List<Int>
+    lateinit var propNameSet: Set<String?>
+    var propSizeListNullable: List<Int>? = null
+    var propNameSetNullable: Set<String?>? = null
+    lateinit var propSizeCollection: Collection<Int>
+    lateinit var propNameCollection: Collection<String?>
+    var propSizeCollectionNullable: Collection<Int>? = null
+    var propNameCollectionNullable: Collection<String?>? = null
+    lateinit var propSizeArray: Array<Int>
+    lateinit var propNameArray: Array<String?>
+    var propSizeArrayNullable: Array<Int>? = null
+    var propNameArrayNullable: Array<String?>? = null
+
+    lateinit var propTypedList: List<T>
+    var propTypedListNullable: List<T>? = null
+
+    lateinit var propTypedSet: Set<T>
+    var propTypedSetNullable: Set<T>? = null
+
+    lateinit var propTypedCol: Collection<T>
+    var propTypedColNullable: Collection<T>? = null
+
+    lateinit var propTypedArray: Array<T>
+    var propTypedArrayNullable: Array<T>? = null
+
+    lateinit var propSizeMap: Map<Int, Long>
+    lateinit var propNameMap: Map<String?, Long>
+    var propSizeMapNullable: Map<Int, Long>? = null
+    var propNameMapNullable: Map<String?, Long>? = null
+
+    lateinit var propOtherBuilderList: List<TestClass2>
+
+    lateinit var propTypeLibList: List<MyTestLibClass>
 }
 
 @ClassBuilder(marks = [TestDslMark::class])
@@ -85,17 +127,9 @@ class TestClass2 {
     var times: Int = 1
 }
 
-inline fun <T> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): MyTestClass<T> {
+internal inline fun <T> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): MyTestClass<T> {
     return MyTestClassBuilder<T>().apply(block).build()
 }
 
-fun a() {
-    MyTestClass<Byte> {
-        size = 5
-        addAllNameSet("a", "b", "c")
+class User<T>(val values: List<T>)
 
-        typeLib {
-            size(2)
-        }
-    }
-}

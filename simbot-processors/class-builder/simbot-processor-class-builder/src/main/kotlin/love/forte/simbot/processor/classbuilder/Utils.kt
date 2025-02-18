@@ -48,7 +48,9 @@ internal fun KSAnnotation.isBuilderFor(): Boolean {
 internal data class ClassBuilderAnnotationInfo(
     val source: KSAnnotation,
     val name: String,
-    val marks: List<KSType>
+    val marks: List<KSType>,
+    val open: Boolean,
+    val internal: Boolean,
 )
 
 internal fun KSAnnotation.toClassBuilderAnnotationInfo(): ClassBuilderAnnotationInfo? {
@@ -59,7 +61,19 @@ internal fun KSAnnotation.toClassBuilderAnnotationInfo(): ClassBuilderAnnotation
         // KClass<out Annotation>
         arguments.find { it.name?.asString() == "marks" }?.value as? List<KSType>
 
-    return ClassBuilderAnnotationInfo(this, name ?: "", marks ?: emptyList())
+    @Suppress("NullableBooleanElvis")
+    val open = arguments.find { it.name?.asString() == "open" }?.value as? Boolean ?: false
+
+    @Suppress("NullableBooleanElvis")
+    val internal = arguments.find { it.name?.asString() == "internal" }?.value as? Boolean ?: false
+
+    return ClassBuilderAnnotationInfo(
+        source = this,
+        name = name ?: "",
+        marks = marks ?: emptyList(),
+        open = open,
+        internal = internal
+    )
 }
 
 

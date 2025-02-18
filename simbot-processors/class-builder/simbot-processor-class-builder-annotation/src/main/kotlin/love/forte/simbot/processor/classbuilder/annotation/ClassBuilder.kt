@@ -37,5 +37,16 @@ public annotation class ClassBuilder(
      * 需要添加的额外标记注解。
      */
     val marks: Array<KClass<out Annotation>> = [],
+    /**
+     * Open Builder and all functions.
+     * Default is `false`.
+     */
+    val open: Boolean = false,
+
+    /**
+     * The builder is `internal`.
+     * If `false`, the builder is `public`.
+     */
+    val internal: Boolean = false,
 )
 
