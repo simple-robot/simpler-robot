@@ -163,3 +163,14 @@ internal inline fun CodeBlock.Builder.inReturnApplyStatement(
         }
     }
 }
+
+internal inline fun CodeBlock.Builder.inControlFlow(
+    controlFlow: String,
+    vararg args: kotlin.Any?,
+    block: CodeBlock.Builder.() -> Unit = {}
+): CodeBlock.Builder {
+    beginControlFlow(controlFlow, *args)
+    block()
+    endControlFlow()
+    return this
+}

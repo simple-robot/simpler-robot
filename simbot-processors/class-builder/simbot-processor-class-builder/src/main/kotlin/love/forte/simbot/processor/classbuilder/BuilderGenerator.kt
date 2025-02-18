@@ -185,7 +185,37 @@ internal class BuilderGenerator(
                 }
                 addCode(
                     buildCodeBlock {
+                        // return T(a = a, b = b, ...).also { it.c = c; it.d = d; }
+
                         addStatement("return TODO()")
+
+                        // TODO
+                        buildCodeBlock {
+                            inStatement {
+                                add("return %T(", declaration.type.toClassName())
+                                for ((index, parameter) in this@BuilderGenerator.parameters.withIndex()) {
+                                    val passing = parameter.passing ?: CodeBlock.of(parameter.name)
+                                    if (index == 0) {
+                                        add("${parameter.name} = ")
+                                        add(passing)
+                                    } else {
+                                        add(", ${parameter.name} = ")
+                                        add(passing)
+                                    }
+                                }
+                                add(")")
+                            }
+                            inControlFlow(".apply") {
+                                addStatement("TODO()")
+                            }
+                        }.toString().lines().forEach { line ->
+                            addComment(
+                                "%L",
+                                line
+                            )
+                        }
+
+
                     }
                 )
             }.build()
@@ -262,6 +292,8 @@ internal class BuilderValueParameterProperty(
     val firstUpperName: String = name.replaceFirstChar { it.uppercase(Locale.US) }
 
     override val type: KSType = parameter.type.resolve()
+
+    var passing: CodeBlock? = null
 
     @Suppress("ReturnCount")
     fun findBuilder(type: KSType): TypeName? {
@@ -357,14 +389,12 @@ internal class BuilderValueParameterProperty(
                 type.isCollection(resolver) ||
                     type.isArray(resolver) ||
                     parameter.isVararg -> queue.add(CollectionPropertyEmitter())
-                // TODO 需要检测是否也是有 Builder 的
 
-                // TODO Map
+                // Map
                 type.isMap(resolver) -> queue.add(MapPropertyEmitter())
-                // TODO 需要检测是否也是有 Builder 的
 
-                // TODO 普通类型
-                //  需要检测是否也是有 Builder 的
+                // 普通类型
+                else -> queue.add(SimplePropertyEmitter())
 
                 // TODO 枚举要不要也处理一下？
             }
@@ -396,7 +426,38 @@ internal class BuilderValueParameterProperty(
 
             queue.add(SelfFunctionEmitter(type))
 
-            // TODO add Function emit to queue
+            findBuilder(type)?.also {
+                queue.add(CollectionBuilderExtensionEmitter(it))
+            }
+        }
+    }
+
+    /**
+     * 一个普通的但是不是privitive类型的 emitter，比如String
+     */
+    private inner class SimplePropertyEmitter : PropertyEmitter() {
+        override fun emit(queue: ArrayDeque<Emitter>) {
+            val propertySpec = PropertySpec.builder(
+                name,
+                type.toTypeName(typeParameterResolver)
+            ).apply {
+                addKdoc("@see %T.$name", declaration.type.toClassName())
+                addModifiers(PUBLIC)
+                mutable(true)
+                if (type.isMarkedNullable) {
+                    initializer("null")
+                } else {
+                    addModifiers(LATEINIT)
+                }
+            }.build()
+
+            typeBuilder.addProperty(propertySpec)
+
+            queue.add(SelfFunctionEmitter(type))
+
+            findBuilder(type)?.also {
+                queue.add(SimpleBuilderExtensionEmitter(it))
+            }
         }
     }
 
@@ -404,6 +465,7 @@ internal class BuilderValueParameterProperty(
         override fun emit(queue: ArrayDeque<Emitter>) {
             val isNullable = type.isMarkedNullable
             val isVararg = parameter.isVararg
+
 
             // list or set or array or vararg
             val typeParameter: KSTypeArgument? = if (isVararg) {
@@ -418,8 +480,12 @@ internal class BuilderValueParameterProperty(
             var propertyType: KSType
             var initializer: CodeBlock
 
+            val isMutable = type.isCollection(resolver, mutable = true)
+            var isSet = false
+
             when {
                 type.isSet(resolver) -> {
+                    isSet = true
                     // Create MutableSet<T>
                     propertyType = resolver.getClassDeclarationByName("kotlin.collections.MutableSet")
                         ?.asType(typeParameter?.let(::listOf) ?: emptyList())
@@ -462,6 +528,22 @@ internal class BuilderValueParameterProperty(
             }.build()
 
             typeBuilder.addProperty(propertySpec)
+
+            if (isMutable) {
+                // toMutableSet/List
+                passing = if (isSet) {
+                    CodeBlock.of("$name.%M()", MemberName("kotlin.collections", "toMutableSet", true))
+                } else {
+                    CodeBlock.of("$name.%M()", MemberName("kotlin.collections", "toMutableList", true))
+                }
+            } else {
+                // toList/Set
+                passing = if (isSet) {
+                    CodeBlock.of("$name.%M()", MemberName("kotlin.collections", "toSet", true))
+                } else {
+                    CodeBlock.of("$name.%M()", MemberName("kotlin.collections", "toList", true))
+                }
+            }
 
             queue.add(SelfFunctionEmitter(propertyType))
             queue.add(
@@ -533,8 +615,6 @@ internal class BuilderValueParameterProperty(
                     isNullable
                 )
             )
-
-            // extension function if necessary
         }
     }
 
@@ -643,7 +723,6 @@ internal class BuilderValueParameterProperty(
         }
     }
 
-
     /**
      * 生成 `add`, `addAll`, `clear`,
      * 如果 `T` 也拥有 Builder，则再添加 extension function
@@ -709,7 +788,7 @@ internal class BuilderValueParameterProperty(
                     buildCodeBlock {
                         inReturnApplyStatement {
                             add(accessor)
-                            add(".addAll(elements.%M())", MemberName("kotlin.collections", "asList"))
+                            add(".addAll(elements.%M())", MemberName("kotlin.collections", "asList", true))
                         }
                     }
                 )
@@ -796,7 +875,9 @@ internal class BuilderValueParameterProperty(
                 )
             }
 
-            // TODO("Not yet implemented")
+            findBuilder(keyType)?.also { keyBuilder ->
+                queue.add(MapBuilderExtensionEmitter(keyTypeName, keyBuilder))
+            }
         }
     }
 
@@ -818,14 +899,17 @@ internal class BuilderValueParameterProperty(
             val fn = "add$firstUpperName"
             fileBuilder.addFunction(
                 FunSpec.builder(fn).apply {
+                    addKdoc("@see %T.$fn\n", declaration.type.toClassName())
+                    addKdoc("@see %T", otherBuilderName)
                     addModifiers(PUBLIC, INLINE)
                     returns(builderTypeName)
                     receiver(builderTypeName)
                     addTypeVariables(typeParameters)
                     addParameter(
-                        "block", LambdaTypeName.get(
+                        "block",
+                        LambdaTypeName.get(
                             receiver = otherBuilderName,
-                            returnType = Unit::class.asTypeName()
+                            returnType = UNIT
                         )
                     )
                     addCode("return $fn(%T().also(block).build())", otherBuilderName)
@@ -835,30 +919,70 @@ internal class BuilderValueParameterProperty(
     }
 
     /**
-     * 属性类型是普通的obj类型
-     */
-    private fun emitSimpleTypeProperty(fileBuilder: FileSpec.Builder) {
-        TODO()
-    }
-
-    /**
-     * 属性类型是集合类型，可以是List，Set，Collection或对应的可变类型。
-     * 原类型也可以是 Array 或 vararg 类型。
+     * 为 element 类型也存在 Builder 的属性添加扩展函数。
      *
-     * 如果原类型不为 null，初始化不可为 null 的对应可变类型，vararg 也是不可null
-     * 如果原类型为 null，初始化为 null，但是 add method 里增加初始化函数。
+     * ```kotlin
+     *
+     * inline fun Builder.addXxx(K, block: ThatBuilder.() -> Unit): Builder {
+     *     return addXxx(key, ThatBuilder().also(block).build())
+     * }
+     *
+     * ```
      */
-    private fun emitCollectionProperty(fileBuilder: FileSpec.Builder) {
-        TODO()
+    private inner class MapBuilderExtensionEmitter(
+        val keyType: TypeName,
+        val otherBuilderName: TypeName,
+    ) : ExtensionEmitter() {
+        override fun emit(queue: ArrayDeque<Emitter>) {
+            val fn = "add$firstUpperName"
+            fileBuilder.addFunction(
+                FunSpec.builder(fn).apply {
+                    addKdoc("@see %T.$fn\n", declaration.type.toClassName())
+                    addKdoc("@see %T", otherBuilderName)
+                    addModifiers(PUBLIC, INLINE)
+                    returns(builderTypeName)
+                    receiver(builderTypeName)
+                    addTypeVariables(typeParameters)
+                    addParameter("key", keyType)
+                    addParameter(
+                        "block",
+                        LambdaTypeName.get(
+                            receiver = otherBuilderName,
+                            returnType = UNIT
+                        )
+                    )
+                    addCode("return $fn(key, %T().also(block).build())", otherBuilderName)
+                }.build()
+            )
+        }
     }
 
-    /**
-     * 属性类型是Map类型
-     */
-    private fun emitMapProperty(fileBuilder: FileSpec.Builder) {
-        TODO()
-    }
+    private inner class SimpleBuilderExtensionEmitter(
+        val otherBuilderName: TypeName
+    ) : ExtensionEmitter() {
+        override fun emit(queue: ArrayDeque<Emitter>) {
+            val fn = name
+            fileBuilder.addFunction(
+                FunSpec.builder(fn).apply {
+                    addKdoc("@see %T.$fn\n", declaration.type.toClassName())
+                    addKdoc("@see %T", otherBuilderName)
 
+                    addModifiers(PUBLIC, INLINE)
+                    returns(builderTypeName)
+                    receiver(builderTypeName)
+                    addTypeVariables(typeParameters)
+                    addParameter(
+                        "block",
+                        LambdaTypeName.get(
+                            receiver = otherBuilderName,
+                            returnType = UNIT
+                        )
+                    )
+                    addCode("return $fn(%T().also(block).build())", otherBuilderName)
+                }.build()
+            )
+        }
+    }
 }
 
 internal class BuilderMemberProperty(

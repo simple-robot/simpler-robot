@@ -33,6 +33,12 @@ annotation class TestDslMark
 class MyTestClass<T>(
     val name: String,
     val size: Int,
+    val other: TestClass2,
+    val typeLib: MyTestLibClass,
+
+    val otherNullable: TestClass2?,
+    val typeLibNullable: MyTestLibClass?,
+
     val sizeList: List<Int>,
     val nameSet: Set<String?>,
     val sizeListNullable: List<Int>?,
@@ -79,3 +85,17 @@ class TestClass2 {
     var times: Int = 1
 }
 
+inline fun <T> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): MyTestClass<T> {
+    return MyTestClassBuilder<T>().apply(block).build()
+}
+
+fun a() {
+    MyTestClass<Byte> {
+        size = 5
+        addAllNameSet("a", "b", "c")
+
+        typeLib {
+            size(2)
+        }
+    }
+}

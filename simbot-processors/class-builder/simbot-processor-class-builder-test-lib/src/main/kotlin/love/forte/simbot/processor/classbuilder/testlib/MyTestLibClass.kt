@@ -25,7 +25,10 @@ package love.forte.simbot.processor.classbuilder.testlib
 
 import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
 
-@ClassBuilder
+@DslMarker
+annotation class LibMarker
+
+@ClassBuilder(marks = [LibMarker::class])
 data class MyTestLibClass(
     val name: String,
     val size: Int
