@@ -21,26 +21,22 @@
  *
  */
 
-import love.forte.simbot.resource.Resources;
-import love.forte.simbot.resource.SourceResource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+plugins {
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
+}
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+configJavaCompileWithModule(
+    moduleName = "simbot.processor.classbuilder.annotation",
+    jvmVersion = JVMConstants.KT_JVM_TARGET
+)
+apply(plugin = "simbot-jvm-maven-publish")
 
-/**
- * @author ForteScarlet
- */
-public class ResourceTests {
+kotlin {
+    explicitApi()
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+}
 
-    @Test
-    public void testResourceCreation() throws IOException {
-        var fr = Resources.valueOf(new File("test"));
-        var pr = Resources.valueOf(Paths.get("test.txt"));
-
-        Assertions.assertInstanceOf(SourceResource.class, fr);
-        Assertions.assertInstanceOf(SourceResource.class, pr);
-    }
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
 }

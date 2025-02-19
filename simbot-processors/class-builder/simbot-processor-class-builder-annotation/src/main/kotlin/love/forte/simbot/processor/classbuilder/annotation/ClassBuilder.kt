@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,26 +21,32 @@
  *
  */
 
-import love.forte.simbot.resource.Resources;
-import love.forte.simbot.resource.SourceResource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package love.forte.simbot.processor.classbuilder.annotation
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+import kotlin.reflect.KClass
 
-/**
- * @author ForteScarlet
- */
-public class ResourceTests {
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS)
+public annotation class ClassBuilder(
+    /**
+     * 生成的 builder 的类名。
+     * 默认为 `原类名 + "Builder"`
+     */
+    val name: String = "",
+    /**
+     * 需要添加的额外标记注解。
+     */
+    val marks: Array<KClass<out Annotation>> = [],
+    /**
+     * Open Builder and all functions.
+     * Default is `false`.
+     */
+    val open: Boolean = false,
 
-    @Test
-    public void testResourceCreation() throws IOException {
-        var fr = Resources.valueOf(new File("test"));
-        var pr = Resources.valueOf(Paths.get("test.txt"));
+    /**
+     * The builder is `internal`.
+     * If `false`, the builder is `public`.
+     */
+    val internal: Boolean = false,
+)
 
-        Assertions.assertInstanceOf(SourceResource.class, fr);
-        Assertions.assertInstanceOf(SourceResource.class, pr);
-    }
-}

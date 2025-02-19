@@ -23,7 +23,6 @@
 
 import changelog.createSubChangelogFile
 import changelog.generateChangelog
-import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
@@ -87,10 +86,6 @@ subprojects {
     }
 
     afterEvaluate {
-        if (plugins.hasPlugin("io.gitlab.arturbosch.detekt")) {
-            return@afterEvaluate
-        }
-
         applyKover(root)
 
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
@@ -118,7 +113,7 @@ detekt {
 }
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
-tasks.withType<Detekt>().configureEach {
+tasks.detekt {
     // internal 处理器不管
     exclude("internal-processors/**")
     // tests 不管
@@ -159,12 +154,13 @@ fun Project.applyKover(rp: Project) {
 apiValidation {
     ignoredPackages.add("*.internal.*")
 
-    this.ignoredProjects.addAll(
+    ignoredProjects.addAll(
         listOf(
             "interface-uml-processor",
             "simbot-test",
             "tests",
             "spring-boot-starter-test",
+            "simbot-processor-class-builder-test"
         )
     )
 

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,26 +21,9 @@
  *
  */
 
-import love.forte.simbot.resource.Resources;
-import love.forte.simbot.resource.SourceResource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package love.forte.simbot.processor.classbuilder
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+import com.squareup.kotlinpoet.ClassName
 
-/**
- * @author ForteScarlet
- */
-public class ResourceTests {
-
-    @Test
-    public void testResourceCreation() throws IOException {
-        var fr = Resources.valueOf(new File("test"));
-        var pr = Resources.valueOf(Paths.get("test.txt"));
-
-        Assertions.assertInstanceOf(SourceResource.class, fr);
-        Assertions.assertInstanceOf(SourceResource.class, pr);
-    }
-}
+internal val BuilderForClassName = ClassName("love.forte.simbot.processor.classbuilder.annotation", "BuilderFor")
+internal val ClassBuilderClassName = ClassName("love.forte.simbot.processor.classbuilder.annotation", "ClassBuilder")

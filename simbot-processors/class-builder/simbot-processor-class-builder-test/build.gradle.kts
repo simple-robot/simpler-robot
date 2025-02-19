@@ -21,26 +21,23 @@
  *
  */
 
-import love.forte.simbot.resource.Resources;
-import love.forte.simbot.resource.SourceResource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+plugins {
+    kotlin("jvm")
+    alias(libs.plugins.ksp)
+}
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+configJavaCompileWithModule(jvmVersion = JVMConstants.KT_JVM_TARGET)
 
-/**
- * @author ForteScarlet
- */
-public class ResourceTests {
+kotlin {
+    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+}
 
-    @Test
-    public void testResourceCreation() throws IOException {
-        var fr = Resources.valueOf(new File("test"));
-        var pr = Resources.valueOf(Paths.get("test.txt"));
+dependencies {
+    testImplementation(kotlin("test-junit5"))
+    testImplementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-annotation"))
+    kspTest(project(":simbot-processors:class-builder:simbot-processor-class-builder"))
+}
 
-        Assertions.assertInstanceOf(SourceResource.class, fr);
-        Assertions.assertInstanceOf(SourceResource.class, pr);
-    }
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
 }
