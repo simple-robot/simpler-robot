@@ -35,7 +35,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
 
 
 internal data class ExpectBuilderDeclaration(
@@ -65,7 +64,7 @@ internal class ClassBuilderProcessor(
     }
 
     /**
-     * 扫描找到所有的 [ClassBuilder] 注解的类。
+     * 扫描找到所有的 `love.forte.simbot.processor.classbuilder.annotation.ClassBuilder` 注解的类。
      */
     private fun resolveAllExpectClassBuilders(resolver: Resolver) {
         val buildersMap = mutableMapOf<ClassName, TypeName>()

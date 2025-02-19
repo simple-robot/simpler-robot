@@ -33,7 +33,6 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.KModifier.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.*
-import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
 import java.util.Locale
 import kotlin.collections.ArrayDeque
 import kotlin.properties.Delegates
@@ -89,7 +88,7 @@ internal class BuilderGenerator(
 
         // 添加注解
         typeSpecBuilder.addAnnotation(
-            AnnotationSpec.builder(BuilderFor::class)
+            AnnotationSpec.builder(BuilderForClassName)
                 .addMember("%T::class", type.toClassName())
                 .build()
         )

@@ -29,11 +29,8 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
 import com.squareup.kotlinpoet.CodeBlock
-import love.forte.simbot.processor.classbuilder.annotation.BuilderFor
-import love.forte.simbot.processor.classbuilder.annotation.ClassBuilder
 
-internal val BuilderForAnnotationName: String = BuilderFor::class.qualifiedName!!
-internal val ClassBuilderAnnotationName: String = ClassBuilder::class.qualifiedName!!
+internal val ClassBuilderAnnotationName: String = ClassBuilderClassName.canonicalName
 
 internal fun KSAnnotation.isClassBuilder(): Boolean {
     return (annotationType.resolve().declaration as? KSClassDeclaration)
@@ -42,7 +39,7 @@ internal fun KSAnnotation.isClassBuilder(): Boolean {
 
 internal fun KSAnnotation.isBuilderFor(): Boolean {
     return (annotationType.resolve().declaration as? KSClassDeclaration)
-        ?.qualifiedName?.asString() == BuilderForAnnotationName
+        ?.qualifiedName?.asString() == BuilderForClassName.canonicalName
 }
 
 internal data class ClassBuilderAnnotationInfo(
@@ -180,7 +177,7 @@ internal inline fun CodeBlock.Builder.inReturnApplyStatement(
 
 internal inline fun CodeBlock.Builder.inControlFlow(
     controlFlow: String,
-    vararg args: kotlin.Any?,
+    vararg args: Any?,
     block: CodeBlock.Builder.() -> Unit = {}
 ): CodeBlock.Builder {
     beginControlFlow(controlFlow, *args)

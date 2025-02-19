@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,24 +21,9 @@
  *
  */
 
-plugins {
-    kotlin("jvm")
-    id("org.jetbrains.dokka")
-}
+package love.forte.simbot.processor.classbuilder
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
-apply(plugin = "simbot-jvm-maven-publish")
+import com.squareup.kotlinpoet.ClassName
 
-kotlin {
-    explicitApi()
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
-}
-
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
+internal val BuilderForClassName = ClassName("love.forte.simbot.processor.classbuilder.annotation", "BuilderFor")
+internal val ClassBuilderClassName = ClassName("love.forte.simbot.processor.classbuilder.annotation", "ClassBuilder")

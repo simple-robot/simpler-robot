@@ -19,18 +19,22 @@ class Person(
 @BuilderFor(Person::class)
 class PersonBuilder {
 
-    public lateinit var name: String
-    public var age: Int by kotlin.properties.Delegates.notNull()
-    public var size: Int? = null
+    private lateinit var name: String
+    private var age: Int by kotlin.properties.Delegates.notNull()
+    private var size: Int? = null
 
-    // functions...
+    public fun name(name: String): PersonBuilder = apply {
+        this.name = name
+    }
+    
+    // other functions...
 
     public fun build(): Person {
         return Person(
             name = name,
             age = age,
         ).also {
-            it.size = size
+            size?.also { p0 -> it.size = p0 }
         }
     }
 }
