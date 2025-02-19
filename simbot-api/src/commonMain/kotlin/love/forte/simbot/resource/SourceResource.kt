@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -98,7 +98,7 @@ public fun fileResource(base: String, vararg parts: String): SourceResource {
 }
 
 /**
- * 使用 [Path] 直接构建一个 [FilePathResource]
+ * 使用 [Path] 直接构建一个 [KotlinIOPathResource]
  *
  * 对文件存在性的校验和错误报告可能不会立即报告，而是被推迟到真正读取数据时，
  * 参考 [SourceResource.source] 的可能异常。
@@ -109,7 +109,7 @@ public fun fileResource(base: String, vararg parts: String): SourceResource {
  */
 @JvmName("valueOf")
 public fun Path.toResource(): SourceResource {
-    return FilePathResource(this)
+    return KotlinIOPathResource(this)
 }
 
 /**
@@ -123,7 +123,7 @@ public fun Path.toResource(): SourceResource {
  */
 @JvmName("valueOfSourceProvider")
 public fun sourceResource(provider: () -> Source): SourceResource {
-    return SourceResourceImpl(provider)
+    return SourceProviderResource(provider)
 }
 
 
@@ -138,6 +138,7 @@ public fun sourceResource(provider: () -> Source): SourceResource {
  *
  * @since 4.7.0
  */
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface SourceResource : Resource {
     /**
      * 得到一个用于本次数据读取的 [Source].
@@ -169,7 +170,7 @@ public interface SourceResource : Resource {
     override fun data(): ByteArray = source().use { it.readByteArray() }
 }
 
-private data class FilePathResource(val path: Path) : SourceResource {
+private data class KotlinIOPathResource(val path: Path) : SourceResource {
     private val source
         get() = SystemFileSystem.source(path)
 
@@ -180,6 +181,6 @@ private data class FilePathResource(val path: Path) : SourceResource {
 /**
  * @since 4.10.0
  */
-private data class SourceResourceImpl(val provider: () -> Source) : SourceResource {
+private data class SourceProviderResource(val provider: () -> Source) : SourceResource {
     override fun source(): Source = provider()
 }

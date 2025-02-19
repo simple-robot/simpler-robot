@@ -67,6 +67,9 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xexpect-actual-classes"
         )
+        optIn.add(
+            "love.forte.simbot.resource.ResourceImplementation"
+        )
     }
 
     sourceSets {
