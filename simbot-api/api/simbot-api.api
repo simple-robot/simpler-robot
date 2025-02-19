@@ -2608,6 +2608,9 @@ public final class love/forte/simbot/resource/ResourceBase64Serializer : kotlinx
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/resource/Resource;)V
 }
 
+public abstract interface annotation class love/forte/simbot/resource/ResourceImplementation : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/resource/ResourceResolver {
 	public static final field Companion Llove/forte/simbot/resource/ResourceResolver$Companion;
 	public static fun resolve (Llove/forte/simbot/resource/ResourceResolver;Llove/forte/simbot/resource/Resource;Ljava/lang/Object;)V

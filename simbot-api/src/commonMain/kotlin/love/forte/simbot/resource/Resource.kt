@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -65,7 +65,8 @@ import kotlin.jvm.JvmName
  *
  * ## 第三方实现不稳定
  *
- * [Resource] 主要由内部实现，不保证对第三方实现的稳定与兼容
+ * [Resource] 主要由内部实现，不保证对第三方实现的稳定与兼容。
+ * 参考 [ResourceImplementation]。
  *
  * @see ByteArrayResource
  * @see SourceResource
@@ -94,6 +95,7 @@ public fun ByteArray.toResource(): ByteArrayResource = ByteArrayResourceImpl(thi
  *
  * @author forte
  */
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface ByteArrayResource : Resource, SourceResource {
     /**
      * 获取到字节数组结果。
@@ -162,6 +164,7 @@ private data class ByteArrayResourceImpl(private val raw: ByteArray) : ByteArray
  * 一个可以读取到 [String] 内容物的拓展类型。
  * 是其他 [Resource] 类型的附加能力，但不属于一个标准的 [Resource] 类型。
  */
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface StringReadableResource : SourceResource {
     /**
      * 读取此资源的 [String] 内容。
@@ -179,6 +182,7 @@ public interface StringReadableResource : SourceResource {
 /**
  * 直接使用 [String] 作为内容的 [Resource]。
  */
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface StringResource : StringReadableResource {
     /**
      * 读取此资源的 [String] 内容。

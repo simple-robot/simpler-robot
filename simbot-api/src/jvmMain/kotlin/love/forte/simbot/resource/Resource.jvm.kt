@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -83,9 +83,7 @@ public sealed interface JvmSourceResource : SourceResource
  *
  * @author forte
  */
-@Deprecated(
-    "Just use `SourceResource.inputStream()` to get InputStream from Source"
-)
+@Deprecated("Just use `SourceResource.inputStream()` to get InputStream from Source")
 public interface InputStreamResource : SourceResource {
     /**
      * 获取可用于读取当前资源数据的输入流。
@@ -99,6 +97,7 @@ public interface InputStreamResource : SourceResource {
  * 与 [StringReadableResource] 相比，对相关方法增加了 [Charset] 参数。
  * 默认情况下使用 [Charsets.UTF_8] 格式编码。
  */
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface JvmStringReadableResource : StringReadableResource {
     /**
      * 读取此资源的 [String] 内容。
@@ -130,9 +129,7 @@ public interface JvmStringReadableResource : StringReadableResource {
  *
  * @author forte
  */
-@Deprecated(
-    "Just use `SourceResource.inputStream()` to get InputStream from Source"
-)
+@Deprecated("Just use `SourceResource.inputStream()` to get InputStream from Source")
 public interface ReaderResource : JvmStringReadableResource {
     /**
      * 读取当前资源的字符串数据。
@@ -161,6 +158,7 @@ public interface ReaderResource : JvmStringReadableResource {
  * @author forte
  */
 @Suppress("DEPRECATION")
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface FileResource :
     JvmSourceResource,
     InputStreamResource,
@@ -228,7 +226,7 @@ public fun File.toResource(charset: Charset = DEFAULT_CHARSET): FileResource =
     FileResourceImpl(this, charset)
 
 private data class FileResourceImpl(override val file: File, private val charset: Charset) :
-    FileResource, SourceResource {
+    FileResource {
     override fun string(): String = string(charset)
     override fun reader(): Reader = reader(charset)
 
@@ -265,6 +263,7 @@ private data class FileResourceImpl(override val file: File, private val charset
  * @author forte
  */
 @Suppress("DEPRECATION")
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface PathResource :
     JvmSourceResource,
     InputStreamResource,
@@ -323,7 +322,7 @@ private data class PathResourceImpl(
     override val path: Path,
     private val charset: Charset,
     private val openOptions: Array<out OpenOption>
-) : PathResource, SourceResource {
+) : PathResource {
     override fun inputStream(): InputStream = path.inputStream(options = openOptions)
 
     override fun reader(): Reader = reader(charset)
@@ -371,6 +370,7 @@ private data class PathResourceImpl(
  * @author forte
  */
 @Suppress("DEPRECATION")
+@SubclassOptInRequired(ResourceImplementation::class)
 public interface URIResource :
     JvmSourceResource,
     InputStreamResource,
@@ -445,8 +445,7 @@ public fun URI.toResource(charset: Charset = DEFAULT_CHARSET): URIResource =
     URIResourceImpl(this, charset, null)
 
 private class URIResourceImpl(override val uri: URI, val charset: Charset, private var url: URL? = null) :
-    URIResource,
-    SourceResource {
+    URIResource {
     private val urlValue: URL
         get() = url ?: run {
             uri.toURL().also { url = it }
