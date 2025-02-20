@@ -55,9 +55,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
+                api(project(":simbot-commons:simbot-common-annotations"))
                 api(libs.kotlinx.coroutines.core)
             }
         }

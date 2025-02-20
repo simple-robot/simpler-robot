@@ -65,9 +65,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.kotlinx.coroutines.core)
 
+                api(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-collection"))
                 api(libs.kotlinx.serialization.core)
