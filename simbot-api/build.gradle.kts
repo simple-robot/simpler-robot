@@ -67,8 +67,9 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xexpect-actual-classes"
         )
-        optIn.add(
-            "love.forte.simbot.resource.ResourceImplementation"
+        optIn.addAll(
+            "love.forte.simbot.resource.ResourceImplementation",
+            "love.forte.simbot.message.OfflineImageImplementation",
         )
     }
 
