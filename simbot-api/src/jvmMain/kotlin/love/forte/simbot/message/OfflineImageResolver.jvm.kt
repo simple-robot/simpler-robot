@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -32,6 +32,7 @@ import kotlin.io.path.toPath
 /**
  * JVM 平台下的 [OfflineImageResolver] 扩展类型。
  */
+@ScheduledDeprecatedOfflineImageResolverApi
 public interface JvmOfflineImageResolver<C> : OfflineImageResolver<C> {
     /**
      * 处理类型为 [OfflineFileImage] 的 resource.
@@ -72,6 +73,7 @@ public interface JvmOfflineImageResolver<C> : OfflineImageResolver<C> {
  * 对其中可能出现的实际内容物（例如 [File] 或 [Path]）进行处理。
  */
 @ScheduledDeprecatedResourceApi
+@ScheduledDeprecatedOfflineImageResolverApi
 public abstract class JvmOfflineImageValueResolver<C> :
     OfflineImageValueResolver<C>,
     JvmOfflineImageResolver<C>,

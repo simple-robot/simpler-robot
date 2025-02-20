@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -25,8 +25,25 @@ package love.forte.simbot.message
 
 import love.forte.simbot.resource.*
 import love.forte.simbot.resource.ResourceResolver.Companion.resolve
+import kotlin.annotation.AnnotationRetention.BINARY
+import kotlin.annotation.AnnotationTarget.CLASS
+import kotlin.annotation.AnnotationTarget.FUNCTION
 import kotlin.jvm.JvmStatic
 
+/**
+ * 计划被废弃的与 [OfflineImageResolver] 相关的API
+ *
+ * @since 4.11.0
+ */
+@RequiresOptIn(
+    message = "计划被废弃的与 `OfflineImageResolver` 相关的API. 详见 " +
+        "`love.forte.simbot.message.OfflineImageResolver` 中的有关说明。",
+    level = RequiresOptIn.Level.ERROR
+)
+@Retention(BINARY)
+@Target(CLASS, FUNCTION)
+@MustBeDocumented
+public annotation class ScheduledDeprecatedOfflineImageResolverApi
 
 /**
  * 使用 [OfflineImageResolver] 分析处理一个 [OfflineImage].
@@ -37,6 +54,7 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
+@ScheduledDeprecatedOfflineImageResolverApi
 public interface OfflineImageResolver<C> {
 
     /**
@@ -63,7 +81,6 @@ public interface OfflineImageResolver<C> {
             when (image) {
                 is OfflineByteArrayImage -> resolveByteArray(image, context)
                 is OfflineResourceImage -> resolveResource(image, context)
-                else -> resolveUnknown(image, context)
             }
         }
     }
@@ -74,6 +91,7 @@ public interface OfflineImageResolver<C> {
  * 对其中可能出现的实际内容物（例如 [ByteArray] 或 [String]）进行处理。
  */
 @ScheduledDeprecatedResourceApi
+@ScheduledDeprecatedOfflineImageResolverApi
 public interface OfflineImageValueResolver<C> :
     OfflineImageResolver<C>,
     ResourceResolver<C> {

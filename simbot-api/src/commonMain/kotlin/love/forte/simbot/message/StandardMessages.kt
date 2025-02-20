@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -380,6 +380,7 @@ public sealed interface OfflineImage : Image {
 /**
  * 一个基于 [Resource] 的 [OfflineImage] 实现。
  */
+@SubclassOptInRequired(OfflineImageImplementation::class)
 public interface OfflineResourceImage : OfflineImage {
     /**
      * 关联的资源对象

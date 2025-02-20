@@ -2199,6 +2199,9 @@ public final class love/forte/simbot/message/OfflineImage$Companion {
 	public final fun ofResource (Llove/forte/simbot/resource/Resource;)Llove/forte/simbot/message/OfflineImage;
 }
 
+public abstract interface annotation class love/forte/simbot/message/OfflineImageImplementation : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/message/OfflineImageResolver {
 	public static final field Companion Llove/forte/simbot/message/OfflineImageResolver$Companion;
 	public static fun resolve (Llove/forte/simbot/message/OfflineImageResolver;Llove/forte/simbot/message/OfflineImage;Ljava/lang/Object;)V
@@ -2333,6 +2336,9 @@ public abstract interface class love/forte/simbot/message/RemoteUrlAwareImage : 
 }
 
 public abstract interface class love/forte/simbot/message/RichMediaMessage : love/forte/simbot/message/StandardMessage {
+}
+
+public abstract interface annotation class love/forte/simbot/message/ScheduledDeprecatedOfflineImageResolverApi : java/lang/annotation/Annotation {
 }
 
 public final class love/forte/simbot/message/SimpleOfflineResourceImage : love/forte/simbot/message/OfflineResourceImage {
