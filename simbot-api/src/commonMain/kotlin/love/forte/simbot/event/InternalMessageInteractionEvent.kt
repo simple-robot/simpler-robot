@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,33 +23,22 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotManager
-
 
 /**
- * 与 Bot 相关的阶段性事件。
- * 例如bot被注册了、bot被启动了。
+ * 在内部一个跟 [Message][love.forte.simbot.message.Message] 的交互有关的事件。
+ *
+ * @since 4.11.0
  *
  * @author ForteScarlet
  */
-public interface BotStageEvent : InternalNotificationEvent, BotEvent {
+public interface InternalMessageInteractionEvent : InternalEvent {
     /**
-     * 相关的 bot.
+     * 进行消息交互的实体。
      */
-    override val bot: Bot
+    public val content: Any
+
+    /**
+     * 进行交互的消息内容。
+     */
+    public val message: InteractionMessage
 }
-
-/**
- * 当一个 Bot 已经在某个 [BotManager] 中被注册后的事件。
- *
- * @author ForteScarlet
- */
-public interface BotRegisteredEvent : BotStageEvent
-
-/**
- * 当一个 Bot **首次** 启动成功后的事件。
- *
- * @author ForteScarlet
- */
-public interface BotStartedEvent : BotStageEvent
