@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -35,6 +35,7 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberChangeEvent : ChangeEvent, MemberEvent {
     /**
      * 发送了变化的 [Member]。
@@ -49,6 +50,7 @@ public interface MemberChangeEvent : ChangeEvent, MemberEvent {
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberChangeEvent : ChangeEvent, GuildMemberEvent {
     /**
      * 变化成员所在 [Guild]
@@ -68,6 +70,7 @@ public interface GuildMemberChangeEvent : ChangeEvent, GuildMemberEvent {
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GroupMemberChangeEvent : ChangeEvent, ChatGroupMemberEvent {
     /**
      * 变化成员所在 [ChatGroup]

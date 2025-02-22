@@ -33,6 +33,7 @@ import love.forte.simbot.bot.Bot
  * @since 4.11.0
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ReplySupportInteractionEvent : BotEvent, InternalMessageInteractionEvent {
     /**
      * 所属Bot。
@@ -60,6 +61,7 @@ public interface ReplySupportInteractionEvent : BotEvent, InternalMessageInterac
  * @since 4.11.0
  * @see ReplySupport
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ReplySupportPreReplyEvent : ReplySupportInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -73,6 +75,7 @@ public interface ReplySupportPreReplyEvent : ReplySupportInteractionEvent, Inter
  *
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ReplySupportPostReplyEvent : ReplySupportInteractionEvent, InternalMessagePostSendEvent
 
 // region MessageEvent
@@ -83,6 +86,7 @@ public interface ReplySupportPostReplyEvent : ReplySupportInteractionEvent, Inte
  * @see MessageEvent
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MessageEventInteractionEvent : ReplySupportInteractionEvent {
     override val content: MessageEvent
 }
@@ -94,6 +98,7 @@ public interface MessageEventInteractionEvent : ReplySupportInteractionEvent {
  * @see MessageEvent
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MessageEventPreReplyEvent : MessageEventInteractionEvent, ReplySupportPreReplyEvent
 
 /**
@@ -103,6 +108,7 @@ public interface MessageEventPreReplyEvent : MessageEventInteractionEvent, Reply
  * @see MessageEvent
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MessageEventPostReplyEvent : MessageEventInteractionEvent, ReplySupportPostReplyEvent
 // endregion
 
@@ -114,6 +120,7 @@ public interface MessageEventPostReplyEvent : MessageEventInteractionEvent, Repl
  * @see ContactMessageEvent
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ContactMessageEvent
 }
@@ -125,6 +132,7 @@ public interface ContactMessageEventInteractionEvent : MessageEventInteractionEv
  * @since 4.11.0
  * @see ContactMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteractionEvent, MessageEventPreReplyEvent
 
 /**
@@ -134,6 +142,7 @@ public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteracti
  * @since 4.11.0
  * @see ContactMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteractionEvent, MessageEventPostReplyEvent
 
 // endregion
@@ -146,6 +155,7 @@ public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteract
  * @since 4.11.0
  * @see ChatRoomMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatRoomMessageEvent
 }
@@ -157,6 +167,7 @@ public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionE
  * @since 4.11.0
  * @see ChatRoomMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPreReplyEvent
 
 /**
@@ -166,6 +177,7 @@ public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInterac
  * @since 4.11.0
  * @see ChatRoomMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPostReplyEvent
 
 //region ChatGroup
@@ -254,6 +266,7 @@ public interface ChatChannelMessageEventPostReplyEvent :
  * @since 4.11.0
  * @see MemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: MemberMessageEvent
 }
@@ -265,6 +278,7 @@ public interface MemberMessageEventInteractionEvent : MessageEventInteractionEve
  * @since 4.11.0
  * @see MemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: MemberMessageEvent
 }
@@ -276,6 +290,7 @@ public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteraction
  * @since 4.11.0
  * @see MemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: MemberMessageEvent
 }
@@ -289,6 +304,7 @@ public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractio
  * @since 4.11.0
  * @see GuildMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: GuildMemberMessageEvent
 }
@@ -300,6 +316,7 @@ public interface GuildMemberMessageEventInteractionEvent : MessageEventInteracti
  * @since 4.11.0
  * @see GuildMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberMessageEventPreReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -313,6 +330,7 @@ public interface GuildMemberMessageEventPreReplyEvent :
  * @since 4.11.0
  * @see GuildMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberMessageEventPostReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
@@ -328,6 +346,7 @@ public interface GuildMemberMessageEventPostReplyEvent :
  * @since 4.11.0
  * @see ChatGroupMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatGroupMemberMessageEvent
 }
@@ -339,6 +358,7 @@ public interface ChatGroupMemberMessageEventInteractionEvent : MessageEventInter
  * @since 4.11.0
  * @see ChatGroupMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberMessageEventPreReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -352,6 +372,7 @@ public interface ChatGroupMemberMessageEventPreReplyEvent :
  * @since 4.11.0
  * @see ChatGroupMemberMessageEvent
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberMessageEventPostReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {

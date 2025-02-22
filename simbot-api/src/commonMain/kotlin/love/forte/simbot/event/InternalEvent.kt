@@ -39,6 +39,7 @@ package love.forte.simbot.event
  * @since 4.11.0
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalEvent : Event
 
 /**
@@ -47,6 +48,7 @@ public interface InternalEvent : Event
  *
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalNotificationEvent : InternalEvent
 
 /**
@@ -65,6 +67,7 @@ public interface InternalNotificationEvent : InternalEvent
  * @since 4.11.0
  *
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalInterceptionEvent : InternalEvent
 
 /**
