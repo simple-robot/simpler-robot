@@ -40,8 +40,6 @@
    <img alt="code-size" src="https://img.shields.io/github/languages/code-size/simple-robot/simpler-robot" />
    
    <img alt="issues" src="https://img.shields.io/github/issues-closed/simple-robot/simpler-robot?color=green" />
-   <img alt="last-commit" src="https://img.shields.io/github/last-commit/simple-robot/simpler-robot" />
-   <img alt="search-hit" src="https://img.shields.io/github/search/simple-robot/simpler-robot/simbot" />
    <img alt="top-language" src="https://img.shields.io/github/languages/top/simple-robot/simpler-robot" />
 <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/simple-robot/simpler-robot" /></a>
 
