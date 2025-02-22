@@ -56,7 +56,11 @@ public interface InternalNotificationEvent : InternalEvent
  * 例如针对 [SendSupport.send][love.forte.simbot.ability.SendSupport.send]
  * 进行拦截，并改变其入参。
  *
- * 在拦截过程中产生的异常应当最终在内部被包装为 [InternalInterceptionException] 再抛出。
+ * ## 异常处理
+ *
+ * 在拦截过程中，如果产生了异常，它们不会影响后续事件的继续调度，
+ * 而所有产生的异常都会被收集到 [InternalInterceptionException.suppressedExceptions] 中，
+ * 并在最终抛出并影响原函数的执行。
  *
  * @since 4.11.0
  *
@@ -64,7 +68,11 @@ public interface InternalNotificationEvent : InternalEvent
 public interface InternalInterceptionEvent : InternalEvent
 
 /**
- * [InternalInterceptionEvent] 中产生的异常的包装。
+ * [InternalInterceptionEvent] 中产生的异常的收集与包装。
+ * 更多参考 [InternalInterceptionEvent] 中有关异常的说明。
+ *
+ * @see InternalInterceptionEvent
+ * @since 4.11.0
  */
 public open class InternalInterceptionException : RuntimeException {
     public constructor() : super()
