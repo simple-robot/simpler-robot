@@ -57,6 +57,10 @@ override val developers: List<Developer> = developers {
 为其他来者留下一盏指路的明灯~
 
 ## 代码贡献
+
+> [!info]
+> 如果您要提交代码贡献，请向开发分支 `v4-dev` 提交 PR 。
+
 ### 注释风格
 
 simbot核心库对源代码的注释有着一些约定。

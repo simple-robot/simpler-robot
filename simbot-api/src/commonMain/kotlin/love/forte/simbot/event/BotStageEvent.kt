@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -33,7 +33,7 @@ import love.forte.simbot.bot.BotManager
  *
  * @author ForteScarlet
  */
-public interface BotStageEvent : BotEvent {
+public interface BotStageEvent : InternalNotificationEvent, BotEvent {
     /**
      * 相关的 bot.
      */
