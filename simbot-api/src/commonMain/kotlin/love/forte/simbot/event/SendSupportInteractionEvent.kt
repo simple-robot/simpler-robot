@@ -35,6 +35,7 @@ import love.forte.simbot.definition.*
  * @since 4.11.0
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteractionEvent {
     /**
      * 当前进行行为的 [SendSupport] 实例。
@@ -52,6 +53,7 @@ public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteract
  * @since 4.11.0
  * @see SendSupport
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface SendSupportPreSendEvent : SendSupportInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -65,6 +67,7 @@ public interface SendSupportPreSendEvent : SendSupportInteractionEvent, Internal
  *
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface SendSupportPostSendEvent : SendSupportInteractionEvent, InternalMessagePostSendEvent
 
 //region Contact
@@ -74,6 +77,7 @@ public interface SendSupportPostSendEvent : SendSupportInteractionEvent, Interna
  * @see Contact
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactInteractionEvent : SendSupportInteractionEvent {
     override val content: Contact
 }
@@ -83,6 +87,7 @@ public interface ContactInteractionEvent : SendSupportInteractionEvent {
  * @see Contact
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSendEvent {
     override val content: Contact
 }
@@ -92,6 +97,7 @@ public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSe
  * @see Contact
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPostSendEvent {
     override val content: Contact
 }
@@ -104,6 +110,7 @@ public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPost
  * @see Member
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberInteractionEvent : SendSupportInteractionEvent {
     override val content: Member
 }
@@ -113,6 +120,7 @@ public interface MemberInteractionEvent : SendSupportInteractionEvent {
  * @see Member
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSendEvent {
     override val content: Member
 }
@@ -122,6 +130,7 @@ public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSend
  * @see Member
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSendEvent {
     override val content: Member
 }
@@ -134,6 +143,7 @@ public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSe
  * @see ChatRoom
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
     override val content: ChatRoom
 }
@@ -143,6 +153,7 @@ public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
  * @see ChatRoom
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPreSendEvent {
     override val content: ChatRoom
 }
@@ -152,6 +163,7 @@ public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPre
  * @see ChatRoom
  * @since 4.11.0
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomPostSendEvent : ChatRoomInteractionEvent, SendSupportPostSendEvent {
     override val content: ChatRoom
 }

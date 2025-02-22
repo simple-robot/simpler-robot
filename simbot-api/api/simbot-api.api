@@ -1452,6 +1452,9 @@ public final class love/forte/simbot/event/EventResult_jvmKt {
 	public static final fun collectCollectableReactively (Llove/forte/simbot/event/StandardEventResult$CollectableReactivelyResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface annotation class love/forte/simbot/event/FuzzyEventTypeImplementation : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/event/GroupMemberChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/ChatGroupMemberEvent {
 	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun getContent ()Ljava/lang/Object;
@@ -1848,7 +1851,7 @@ public abstract interface class love/forte/simbot/event/OrganizationEvent : love
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
-public abstract interface class love/forte/simbot/event/OrganizationJoinRequestEvent : love/forte/simbot/event/OrganizationEvent {
+public abstract interface class love/forte/simbot/event/OrganizationJoinRequestEvent : love/forte/simbot/event/OrganizationRequestEvent {
 	public fun getRequester ()Llove/forte/simbot/definition/User;
 	public fun getRequesterAsync ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun getRequesterId ()Llove/forte/simbot/common/id/ID;

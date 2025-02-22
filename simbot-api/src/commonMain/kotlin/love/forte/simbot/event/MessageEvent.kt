@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -34,6 +34,7 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * 一个含有 [MessageContent] 的事件。
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MessageContentAwareEvent : Event {
     /**
      * 事件中收到的消息内容。
@@ -46,6 +47,7 @@ public interface MessageContentAwareEvent : Event {
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MessageEvent : BotEvent, ReplySupport, MessageContentAwareEvent {
     /**
      * 这个消息的发送者的ID。
@@ -64,6 +66,7 @@ public interface MessageEvent : BotEvent, ReplySupport, MessageContentAwareEvent
  * @see ActorAuthorAwareMessageEvent
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface AuthorAwareMessageEvent : MessageEvent {
     /**
      * 此消息的发送者。发送者存在一个 ID 标识。
@@ -77,6 +80,7 @@ public interface AuthorAwareMessageEvent : MessageEvent {
  * @see MemberAuthorAwareMessageEvent
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ActorAuthorAwareMessageEvent : AuthorAwareMessageEvent {
     /**
      * 此消息的发送 [Actor]。
@@ -91,6 +95,7 @@ public interface ActorAuthorAwareMessageEvent : AuthorAwareMessageEvent {
  * @see ChatChannelMessageEvent
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MemberAuthorAwareMessageEvent : ActorAuthorAwareMessageEvent {
     /**
      * 此消息的发送 [Member]。
@@ -104,6 +109,7 @@ public interface MemberAuthorAwareMessageEvent : ActorAuthorAwareMessageEvent {
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatRoomMessageEvent : MessageEvent, ChatRoomEvent
 
 /**
@@ -111,6 +117,7 @@ public interface ChatRoomMessageEvent : MessageEvent, ChatRoomEvent
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMessageEvent : ChatRoomMessageEvent, ChatGroupEvent, MemberAuthorAwareMessageEvent
 
 /**
@@ -118,6 +125,7 @@ public interface ChatGroupMessageEvent : ChatRoomMessageEvent, ChatGroupEvent, M
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatChannelMessageEvent : ChatRoomMessageEvent, ChatChannelEvent, MemberAuthorAwareMessageEvent
 
 /**
@@ -125,6 +133,7 @@ public interface ChatChannelMessageEvent : ChatRoomMessageEvent, ChatChannelEven
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEvent : MessageEvent, MemberEvent
 
 /**
@@ -133,6 +142,7 @@ public interface MemberMessageEvent : MessageEvent, MemberEvent
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberMessageEvent : MessageEvent, MemberEvent {
     /**
      * 事件中 [member][content] 所在的 [ChatGroup]。
@@ -146,6 +156,7 @@ public interface ChatGroupMemberMessageEvent : MessageEvent, MemberEvent {
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberMessageEvent : MessageEvent, MemberEvent {
     /**
      * 事件中 [member][content] 所在的 [Guild]。
@@ -156,4 +167,5 @@ public interface GuildMemberMessageEvent : MessageEvent, MemberEvent {
 /**
  * 一个 [Bot] 从 [Contact] 处收到私聊消息的事件。
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactMessageEvent : MessageEvent, ContactEvent

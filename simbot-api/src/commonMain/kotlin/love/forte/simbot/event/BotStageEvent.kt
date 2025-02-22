@@ -33,6 +33,7 @@ import love.forte.simbot.bot.BotManager
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface BotStageEvent : InternalNotificationEvent, BotEvent {
     /**
      * 相关的 bot.
@@ -45,6 +46,7 @@ public interface BotStageEvent : InternalNotificationEvent, BotEvent {
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface BotRegisteredEvent : BotStageEvent
 
 /**
@@ -52,4 +54,5 @@ public interface BotRegisteredEvent : BotStageEvent
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface BotStartedEvent : BotStageEvent

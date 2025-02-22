@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,7 @@ import love.forte.simbot.suspendrunner.STP
  * 某 [Organization] 产生了某种变化的事件，例如发生了 [成员变动][MemberIncreaseOrDecreaseEvent]。
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OrganizationChangeEvent : ChangeEvent, OrganizationEvent {
     /**
      * 已经发生了变化的 [Organization]。
@@ -49,6 +50,7 @@ public interface OrganizationChangeEvent : ChangeEvent, OrganizationEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MemberIncreaseOrDecreaseEvent : OrganizationChangeEvent {
     /**
      * 增加或减少成员的 [Organization]。
@@ -74,6 +76,7 @@ public interface MemberIncreaseOrDecreaseEvent : OrganizationChangeEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MemberIncreaseEvent : MemberIncreaseOrDecreaseEvent {
     /**
      * 增加成员的 [Organization]。
@@ -96,6 +99,7 @@ public interface MemberIncreaseEvent : MemberIncreaseOrDecreaseEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MemberDecreaseEvent : MemberIncreaseOrDecreaseEvent {
     /**
      * 减少成员的 [Organization]。
@@ -120,6 +124,7 @@ public interface MemberDecreaseEvent : MemberIncreaseOrDecreaseEvent {
  * @see ChatGroupMemberDecreaseEvent
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberIncreaseOrDecreaseEvent : MemberIncreaseOrDecreaseEvent, ChatGroupEvent {
     /**
      * 发送成员变动的 [ChatGroup]。
@@ -132,6 +137,7 @@ public interface ChatGroupMemberIncreaseOrDecreaseEvent : MemberIncreaseOrDecrea
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberIncreaseEvent : MemberIncreaseEvent, ChatGroupMemberIncreaseOrDecreaseEvent {
     override suspend fun content(): ChatGroup
 }
@@ -141,6 +147,7 @@ public interface ChatGroupMemberIncreaseEvent : MemberIncreaseEvent, ChatGroupMe
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberDecreaseEvent : MemberDecreaseEvent, ChatGroupMemberIncreaseOrDecreaseEvent {
     override suspend fun content(): ChatGroup
 }
@@ -152,6 +159,7 @@ public interface ChatGroupMemberDecreaseEvent : MemberDecreaseEvent, ChatGroupMe
  * @see GuildMemberDecreaseEvent
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface GuildMemberIncreaseOrDecreaseEvent : MemberIncreaseOrDecreaseEvent, GuildEvent {
     /**
      * 发送成员变动的 [Guild]。
@@ -164,6 +172,7 @@ public interface GuildMemberIncreaseOrDecreaseEvent : MemberIncreaseOrDecreaseEv
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildMemberIncreaseOrDecreaseEvent {
     override suspend fun content(): Guild
 }
@@ -173,6 +182,7 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildMemberIncr
  * @author ForteScarlet
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildMemberIncreaseOrDecreaseEvent {
     override suspend fun content(): Guild
 }

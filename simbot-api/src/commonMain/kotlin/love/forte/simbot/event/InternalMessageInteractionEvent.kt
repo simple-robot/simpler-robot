@@ -40,6 +40,7 @@ import love.forte.simbot.message.MessageReceipt
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalMessageInteractionEvent : InternalEvent {
     /**
      * 进行消息交互的实体。
@@ -62,6 +63,7 @@ public interface InternalMessageInteractionEvent : InternalEvent {
  *
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalMessagePreSendEvent :
     InternalInterceptionEvent,
     InternalMessageInteractionEvent {
@@ -97,6 +99,7 @@ public interface InternalMessagePreSendEvent :
  *
  * @since 4.11.0
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface InternalMessagePostSendEvent : InternalMessageInteractionEvent {
     /**
      * 在消息发送时
