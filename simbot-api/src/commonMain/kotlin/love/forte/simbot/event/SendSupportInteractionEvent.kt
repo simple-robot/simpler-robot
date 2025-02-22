@@ -24,9 +24,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.ability.SendSupport
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
-import love.forte.simbot.message.MessageReceipt
 
 
 /**
@@ -39,69 +37,35 @@ import love.forte.simbot.message.MessageReceipt
  */
 public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteractionEvent {
     /**
-     * 所属Bot。
-     */
-    override val bot: Bot
-
-    /**
      * 当前进行行为的 [SendSupport] 实例。
      */
     override val content: SendSupport
-
-    /**
-     * [SendSupport.send] 所尝试进行传递的参数。
-     */
-    override val message: InteractionMessage
 }
 
 /**
  * 针对 [SendSupport.send] 的内部拦截事件。
  * 可以对其中的参数进行修改。
  *
+ * 注意：尽可能避免在处理此事件的时候再次进行消息发送，
+ * 以避免出现循环导致应用程序资源匮乏或无法正常运行。
+ *
  * @since 4.11.0
  * @see SendSupport
  */
-public interface SendSupportPreSendEvent :
-    SendSupportInteractionEvent, InternalInterceptionEvent {
-    /**
-     * 最初在 [SendSupport.send] 调用时传递的参数。
-     * 不会因为 [currentMessage] 的变化而改变。
-     */
-    override val message: InteractionMessage
-
-    /**
-     * 可以进行修改的 [InteractionMessage] 内容，会在事件处理完成后被替换为原本的参数。
-     *
-     * [currentMessage] 的变化不会影响 [message] 的值。
-     *
-     * 修改不是线程安全的，不要并发地进行修改，也不可以在异步中延迟修改。
-     * 如果在 [currentMessage] 已经被使用后仍尝试修改，会抛出 [IllegalStateException]。
-     *
-     * @throws IllegalStateException 如果在 [currentMessage] 已经被使用后仍尝试修改，会抛出此异常。
-     */
-    public var currentMessage: InteractionMessage
-}
+public interface SendSupportPreSendEvent : SendSupportInteractionEvent, InternalMessagePreSendEvent
 
 /**
  * 针对 [SendSupport.send] 的内部通知事件。
  * 会在 [SendSupport.send] 执行成功后带着它的相关结果进行异步通知。
  *
+ * 注意：尽可能避免在处理此事件的时候再次进行消息发送，
+ * 以避免出现循环导致应用程序资源匮乏或无法正常运行。
+ *
  * @see SendSupport
  *
  * @since 4.11.0
  */
-public interface SendSupportPostSendEvent :
-    SendSupportInteractionEvent, InternalNotificationEvent {
-    /**
-     * 在 [SendSupport.send] 调用时传递的参数。
-     */
-    override val message: InteractionMessage
-
-    /**
-     * [SendSupport.send] 执行成功后的结果。
-     */
-    public val receipt: MessageReceipt
-}
+public interface SendSupportPostSendEvent : SendSupportInteractionEvent, InternalMessagePostSendEvent
 
 //region Contact
 
