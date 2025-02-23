@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,26 +21,31 @@
  *
  */
 
-import io.gitlab.arturbosch.detekt.Detekt
+import changelog.GenerateChangelogTask
+import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
+import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+import java.net.URI
+import java.time.Year
 
 plugins {
     idea
-    id("simbot.dokka-multi-module")
+    id("org.jetbrains.dokka")
+    // id("simbot.dokka-multi-module")
     id("com.github.gmazzo.buildconfig") version "5.5.1" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
-    id("simbot.changelog-generator")
     alias(libs.plugins.suspendTransform) apply false
-    // id("love.forte.plugin.suspend-transform") version "2.1.0-0.9.4" apply false
-
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
     alias(libs.plugins.kotlinxKover)
 
     alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
+
+
 }
 
 setupGroup(P.Simbot)
@@ -81,10 +86,6 @@ subprojects {
     }
 
     afterEvaluate {
-        if (plugins.hasPlugin("io.gitlab.arturbosch.detekt")) {
-            return@afterEvaluate
-        }
-
         applyKover(root)
 
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
@@ -112,7 +113,7 @@ detekt {
 }
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
-tasks.withType<Detekt>().configureEach {
+tasks.detekt {
     // internal 处理器不管
     exclude("internal-processors/**")
     // tests 不管
@@ -153,12 +154,13 @@ fun Project.applyKover(rp: Project) {
 apiValidation {
     ignoredPackages.add("*.internal.*")
 
-    this.ignoredProjects.addAll(
+    ignoredProjects.addAll(
         listOf(
             "interface-uml-processor",
             "simbot-test",
             "tests",
             "spring-boot-starter-test",
+            "simbot-processor-class-builder-test"
         )
     )
 
@@ -170,6 +172,10 @@ apiValidation {
             "love.forte.simbot.resource.ExperimentalIOResourceAPI",
         ),
     )
+
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker.Container")
+    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker\$Container")
 
     apiDumpDirectory = "api"
 }
@@ -190,6 +196,17 @@ idea {
 //     }
 //     // "true" for default behavior
 // }
+
+// Changelog
+
+tasks.register<GenerateSubChangelogTask>("createChangelog") {
+    tag = "v${P.VERSION}"
+    versions.put("Kotlin", libs.versions.kotlin.get())
+}
+
+tasks.register<GenerateChangelogTask>("updateChangelog") {
+    newestTag = "v${P.VERSION}"
+}
 
 // region Suspend Transform configs
 @Suppress("MaxLineLength")
@@ -374,6 +391,149 @@ fun Project.configureSuspendTransform() {
         // addJsTransformers(
         //     SuspendTransforms.suspendTransTransformerForJsPromise,
         // )
+    }
+}
+// endregion
+
+// region Dokka
+subprojects {
+    afterEvaluate {
+        val p = this
+        if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+            dokka {
+                dokkaSourceSets.configureEach {
+                    configModuleMdInclude(p)
+                    configSourceLink(p)
+                    configExternalDocumentations()
+                }
+            }
+            rootProject.dependencies.dokka(p)
+        }
+    }
+}
+
+fun DokkaSourceSetSpec.configModuleMdInclude(project: Project) {
+    val moduleFile = project.file("Module.md")
+    if (moduleFile.exists() && moduleFile.length() > 0) {
+        includes.from("Module.md")
+    }
+}
+
+fun DokkaSourceSetSpec.configSourceLink(project: Project) {
+    sourceLink {
+        localDirectory.set(File(project.projectDir, "src"))
+        val relativeTo = project.projectDir.relativeTo(rootProject.projectDir).toString()
+            .replace('\\', '/')
+        // remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src/").toURL())
+        remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src"))
+        remoteLineSuffix.set("#L")
+    }
+}
+
+fun DokkaSourceSetSpec.configExternalDocumentations() {
+    fun externalDocumentation(name: String, docUrl: URI, suffix: String = "package-list") {
+        externalDocumentationLinks.register(name) {
+            url.set(docUrl)
+            packageListUrl.set(docUrl.resolve(suffix))
+        }
+    }
+
+    // kotlin-coroutines doc
+    externalDocumentation(
+        "kotlinx.coroutines",
+        URI.create("https://kotlinlang.org/api/kotlinx.coroutines/")
+    )
+
+    // kotlin-serialization doc
+    externalDocumentation(
+        "kotlinx.serialization",
+        URI.create("https://kotlinlang.org/api/kotlinx.serialization/")
+    )
+
+    // ktor
+    externalDocumentation(
+        "ktor",
+        URI.create("https://api.ktor.io/")
+    )
+
+    // SLF4J
+    externalDocumentation(
+        "slf4j",
+        URI.create("https://www.slf4j.org/apidocs/"),
+        "element-list"
+    )
+
+    // Spring Framework
+    // TODO 准确的版本号?
+    externalDocumentation(
+        "spring-framework",
+        URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api/"),
+        "element-list"
+    )
+
+    // Spring Boot
+    externalDocumentation(
+        "spring-boot",
+        URI.create("https://docs.spring.io/spring-boot/docs/${libs.versions.spring.boot.v3.get()}/api/"),
+        "element-list"
+    )
+}
+
+dokka {
+    moduleName = "Simple Robot"
+
+    dokkaPublications.all {
+        if (isSimbotLocal()) {
+            logger.info("Is 'SIMBOT_LOCAL', offline")
+            offlineMode = true
+        }
+    }
+
+    dokkaSourceSets.configureEach {
+        skipEmptyPackages = true
+        suppressGeneratedFiles = false
+
+        documentedVisibilities(
+            VisibilityModifier.Public,
+            VisibilityModifier.Protected
+        )
+
+        tasks.withType(JavaCompile::class.java).firstOrNull()
+            ?.targetCompatibility?.toInt().also {
+                logger.info("project {} found jdkVersionValue: {}", project, it)
+            }?.also {
+                jdkVersion = it
+            }
+
+        configModuleMdInclude(project)
+
+        perPackageOption {
+            matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
+            suppress.set(true)
+        }
+
+        configExternalDocumentations()
+    }
+
+    pluginsConfiguration.html {
+        customAssets.from(
+            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+        )
+
+        customStyleSheets.from(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
+
+        if (!isSimbotLocal()) {
+            templatesDir = rootProject.file(".simbot/dokka-templates")
+        }
+
+        footerMessage =
+            "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. " +
+            "All rights reserved."
+
+        separateInheritedMembers = true
+        mergeImplicitExpectActualDeclarations = true
+        homepageLink = P.HOMEPAGE
     }
 }
 // endregion

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -33,7 +33,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
-    id("simbot.dokka-module-configuration")
+    id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
 }
 
@@ -66,6 +66,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(
             "-Xexpect-actual-classes"
+        )
+        optIn.addAll(
+            "love.forte.simbot.resource.ResourceImplementation",
+            "love.forte.simbot.message.OfflineImageImplementation",
         )
     }
 

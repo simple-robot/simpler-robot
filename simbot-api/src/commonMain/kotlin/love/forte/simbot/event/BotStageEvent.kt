@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -33,7 +33,8 @@ import love.forte.simbot.bot.BotManager
  *
  * @author ForteScarlet
  */
-public interface BotStageEvent : BotEvent {
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+public interface BotStageEvent : InternalNotificationEvent, BotEvent {
     /**
      * 相关的 bot.
      */
@@ -45,6 +46,7 @@ public interface BotStageEvent : BotEvent {
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface BotRegisteredEvent : BotStageEvent
 
 /**
@@ -52,4 +54,5 @@ public interface BotRegisteredEvent : BotStageEvent
  *
  * @author ForteScarlet
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface BotStartedEvent : BotStageEvent

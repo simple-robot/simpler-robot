@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,7 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ActorEvent : BotEvent, ContentEvent {
     /**
      * 被作为事件中心的 [Actor]。
@@ -46,6 +47,7 @@ public interface ActorEvent : BotEvent, ContentEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ContactEvent : ActorEvent {
     /**
      * 被作为事件中心的 [Contact]。
@@ -59,6 +61,7 @@ public interface ContactEvent : ActorEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OrganizationEvent : ActorEvent {
     /**
      * 被作为事件中心的 [Organization]。
@@ -72,6 +75,7 @@ public interface OrganizationEvent : ActorEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatRoomEvent : ActorEvent {
     /**
      * 被作为事件中心的 [ChatRoom]。
@@ -86,6 +90,7 @@ public interface ChatRoomEvent : ActorEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatGroupEvent : ChatRoomEvent, OrganizationEvent {
     /**
      * 被作为事件中心的 [ChatGroup]。
@@ -99,6 +104,7 @@ public interface ChatGroupEvent : ChatRoomEvent, OrganizationEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface GuildEvent : OrganizationEvent {
     /**
      * 被作为事件中心的 [Guild]。
@@ -111,6 +117,7 @@ public interface GuildEvent : OrganizationEvent {
  * 此类型由一些存在组织信息、但组织信息不是主要信息的事件类型实现。
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OrganizationSourceEvent : BotEvent, SourceEvent {
     /**
      * 事件中的 [Organization].
@@ -124,6 +131,7 @@ public interface OrganizationSourceEvent : BotEvent, SourceEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChannelEvent : ActorEvent, OrganizationSourceEvent {
     /**
      * 事件中的 [channel][content] 所属的 [Guild]。
@@ -143,6 +151,7 @@ public interface ChannelEvent : ActorEvent, OrganizationSourceEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatChannelEvent : ChannelEvent, ChatRoomEvent {
     /**
      * 被作为事件中心的 [ChatChannel]。
@@ -156,6 +165,7 @@ public interface ChatChannelEvent : ChannelEvent, ChatRoomEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface MemberEvent : ActorEvent, OrganizationSourceEvent {
     /**
      * 事件中 [member][content] 所属的 [Organization]。
@@ -175,6 +185,7 @@ public interface MemberEvent : ActorEvent, OrganizationSourceEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberEvent : MemberEvent {
     /**
      * 事件中 [member][content] 所属的 [ChatGroup]。
@@ -193,6 +204,7 @@ public interface ChatGroupMemberEvent : MemberEvent {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface GuildMemberEvent : MemberEvent {
     /**
      * 事件中 [member][content] 所属的 [Guild]。

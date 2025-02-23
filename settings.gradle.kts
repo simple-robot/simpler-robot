@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2021-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -26,6 +26,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        mavenLocal()
     }
 }
 
@@ -44,6 +45,9 @@ include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
 // processors
 include("simbot-processors:simbot-processor-message-element-polymorphic-include")
+include("simbot-processors:class-builder:simbot-processor-class-builder")
+include("simbot-processors:class-builder:simbot-processor-class-builder-annotation")
+include("simbot-processors:class-builder:simbot-processor-class-builder-test")
 
 include(":simbot-commons:simbot-common-annotations")
 include(":simbot-commons:simbot-common-collection")

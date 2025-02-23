@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -34,7 +34,9 @@ import kotlin.jvm.JvmStatic
 @RequiresOptIn(
     message = "计划被废弃的与 `Resource` 相关的API. 详见 " +
         "`love.forte.simbot.resource.ResourceResolver` 和 " +
-        "`love.forte.simbot.resource.Resource` 中的有关说明。"
+        "`love.forte.simbot.resource.Resource` 中的有关说明。",
+    // since 4.11.0
+    level = RequiresOptIn.Level.ERROR
 )
 @Retention(BINARY)
 @Target(CLASS, FUNCTION)

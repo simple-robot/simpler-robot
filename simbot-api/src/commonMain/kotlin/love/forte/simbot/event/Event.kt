@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -35,6 +35,7 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface Event : IDContainer {
     /**
      * 事件的ID。
@@ -56,6 +57,7 @@ public interface Event : IDContainer {
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ComponentEvent : Event {
     /**
      * 所属组件
@@ -68,6 +70,7 @@ public interface ComponentEvent : Event {
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface BotEvent : ComponentEvent {
     /**
      * 相关的 [Bot]。
@@ -88,6 +91,7 @@ public interface BotEvent : ComponentEvent {
  * 一个事件中可以提供的主、次要信息会优先使用 [ContentEvent] 和 [SourceEvent] 提供。
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ContentEvent : Event {
     /**
      * 这个事件的主要事件中心值。
@@ -101,6 +105,7 @@ public interface ContentEvent : Event {
  * 一个事件中可以提供的主、次要信息会优先使用 [ContentEvent] 和 [SourceEvent] 提供。
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface SourceEvent : Event {
     /**
      * 这个事件的“源头”。
@@ -114,6 +119,7 @@ public interface SourceEvent : Event {
  * @author ForteScarlet
  */
 @STP
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface ChangeEvent : ContentEvent {
     /**
      * 发生了变化的主体。

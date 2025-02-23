@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -40,6 +40,7 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface RequestEvent : BotEvent, RejectSupport, AcceptSupport {
     /**
      * 伴随请求的附加消息。
@@ -96,6 +97,7 @@ public interface RequestEvent : BotEvent, RejectSupport, AcceptSupport {
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
 public interface OrganizationRequestEvent : RequestEvent, OrganizationEvent
 
 /**
@@ -103,7 +105,8 @@ public interface OrganizationRequestEvent : RequestEvent, OrganizationEvent
  *
  * @author ForteScarlet
  */
-public interface OrganizationJoinRequestEvent : OrganizationEvent {
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface OrganizationJoinRequestEvent : OrganizationRequestEvent {
     /**
      * 申请者的 ID。
      */
@@ -125,6 +128,7 @@ public interface OrganizationJoinRequestEvent : OrganizationEvent {
  *
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupJoinRequestEvent : OrganizationJoinRequestEvent, ChatGroupEvent {
     /**
      * 被申请加入的 [ChatGroup]。
@@ -139,6 +143,7 @@ public interface ChatGroupJoinRequestEvent : OrganizationJoinRequestEvent, ChatG
  *
  */
 @STP
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildJoinRequestEvent : OrganizationJoinRequestEvent, GuildEvent {
     /**
      * 被申请加入的 [Guild]。

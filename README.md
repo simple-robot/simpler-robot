@@ -40,8 +40,6 @@
    <img alt="code-size" src="https://img.shields.io/github/languages/code-size/simple-robot/simpler-robot" />
    
    <img alt="issues" src="https://img.shields.io/github/issues-closed/simple-robot/simpler-robot?color=green" />
-   <img alt="last-commit" src="https://img.shields.io/github/last-commit/simple-robot/simpler-robot" />
-   <img alt="search-hit" src="https://img.shields.io/github/search/simple-robot/simpler-robot/simbot" />
    <img alt="top-language" src="https://img.shields.io/github/languages/top/simple-robot/simpler-robot" />
 <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/simple-robot/simpler-robot" /></a>
 
@@ -142,7 +140,7 @@ fun Application.registerListeners() {
 ## 协助我们
 为我们点亮一个 **✨star🌟** 便是能够给予我们继续走下去的最大动力与支持！
 
-- 阅读 [贡献指南](docs/CONTRIBUTING_CN.md) 来了解如何贡献你的力量！ 
+- 阅读 [**贡献指南**](docs/CONTRIBUTING_CN.md) 来了解如何贡献你的力量！ 
 - 你可以通过 [**讨论区**][discussions] 与其他人或者simbot开发团队相互友好交流。
 - 如果你通过此项目创建了一个很酷的开源项目，欢迎通过 [ISSUES][issues]、[讨论区][discussions]
   等方式留下你的开源项目信息，并将你酷酷的项目展示在作品展示区。

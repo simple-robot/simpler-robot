@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -469,6 +469,7 @@ public annotation class MessagesBuilderDsl
  *
  * @see MessagesBuilder
  */
+@MessagesBuilderDsl
 public interface MessagesAddable<T : MessagesAddable<T>> {
     /**
      * Add an element to the [MessagesBuilder] container.

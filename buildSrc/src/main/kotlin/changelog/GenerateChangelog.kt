@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,218 +23,288 @@
 
 package changelog
 
-import org.gradle.api.Project
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileWriter
-import java.io.RandomAccessFile
-import java.nio.file.Files
 import java.util.*
 
-data class CommitLog(val message: String, val hash: MutableList<String>, val pre: String?)
+/**
+ * 生成 `.changelog` 目录下的子 changelog 文件。
+ */
+abstract class GenerateSubChangelogTask : DefaultTask() {
+    @get:Input
+    abstract val tag: Property<String>
 
-fun Project.generateChangelog(tag: String) {
-    println("Generate change log for $tag ...")
-    // configurations.runtimeClasspath
-    val changelogDir = rootProject.file(".changelog").also {
-        it.mkdirs()
+    @get:Input
+    abstract val versions: MapProperty<String, String>
+
+    @get:OutputDirectory
+    abstract val subChangelogDir: DirectoryProperty
+
+    init {
+        group = "documentation"
+        subChangelogDir.convention(project.layout.projectDirectory.dir(".changelog"))
     }
 
-    File(changelogDir, "$tag.md").also {
-        if (!it.exists()) {
-            it.createNewFile()
-        }
-    }
+    @TaskAction
+    fun action() {
+        val tag = tag.get()
+        val versions = versions.get()
 
-    val rootChangelogFile = rootProject.file("CHANGELOG.md").also {
-        if (!it.exists()) {
-            it.createNewFile()
-        }
-    }
+        val subChangelogDirFile = subChangelogDir.get()
+        subChangelogDirFile.asFile.mkdirs()
 
-    // 获取上一个tag
-    var firstTag: String? = null
-    var currentTag = false
-    val lastTag = ByteArrayOutputStream().use { output ->
-        rootProject.exec {
-            commandLine("git", "tag", "--sort=-committerdate")
-            standardOutput = output
-        }
-
-        var lastTag: String? = null
-
-        for (lineTag in output.toString().lines()) {
-            if (!lineTag.startsWith('v')) {
-                continue
+        val subChangeLogFile = subChangelogDirFile.file("$tag.md")
+        subChangeLogFile.asFile.also {
+            if (!it.exists()) {
+                it.createNewFile()
             }
 
-            if (lineTag == tag) {
-                currentTag = true
-                continue
-            }
-
-            if (firstTag == null) {
-                firstTag = lineTag
-            }
-
-            if (currentTag) {
-                // first after current tag
-                lastTag = lineTag
-                break
-            }
-
-        }
-
-        if (lastTag == null) {
-            lastTag = firstTag
-        }
-
-        lastTag
-    }
-
-
-
-    ByteArrayOutputStream().use { output ->
-        rootProject.exec {
-            val commandList = mutableListOf("git", "log", "--no-merges", "--oneline").apply {
-                if (lastTag != null) {
-                    if (currentTag) add("$lastTag..$tag") else add("$lastTag..HEAD")
+            if (versions.isNotEmpty()) {
+                it.printWriter(Charsets.UTF_8).use { writer ->
+                    writer.println("**版本信息**")
+                    writer.println("")
+                    writer.println("> 部分相关的构建版本信息")
+                    writer.println("")
+                    writer.println("| 依赖 | 版本 |")
+                    writer.println("| ---- | ---- |")
+                    versions.forEach { (k, v) ->
+                        writer.println("| $k | `v$v` |")
+                    }
+                    writer.println("")
                 }
             }
-            commandLine(commandList)
-            standardOutput = output
         }
 
+    }
+}
 
-        val lines = LinkedList<CommitLog>()
-        // 不要:
+/**
+ * 根据 git 提交记录更新 CHANGELOG 文件。
+ */
+@Suppress("MaxLineLength", "ArgumentListWrapping")
+abstract class GenerateChangelogTask : DefaultTask() {
+    private data class CommitTagLogs(val logs: LinkedList<CommitLog> = LinkedList(), val compare: String? = null)
+
+    private data class CommitLog(
+        val message: String,
+        val hashes: LinkedList<String> = LinkedList(),
+        val pre: String?,
+        val compare: String? = null,
+    )
+
+    @get:Input
+    abstract val newestTag: Property<String>
+
+    @get:OutputDirectory
+    abstract val tempOutputDir: DirectoryProperty
+
+    @get:OutputFile
+    abstract val changelogOutput: RegularFileProperty
+
+    init {
+        group = "documentation"
+        tempOutputDir.convention(project.layout.buildDirectory.dir("tmp/updateChangelog"))
+        changelogOutput.convention(project.rootProject.layout.projectDirectory.file("CHANGELOG.md"))
+    }
+
+    @TaskAction
+    fun action() {
+        val newestTag = newestTag.get()
+        logger.info("Generate change log for {} ...", newestTag)
+        val tempOutput = tempOutputDir.file("CHANGELOG.tmp${System.currentTimeMillis()}.md").get()
+        val tempFile = tempOutput.asFile
+        if (!(tempFile.exists())) {
+            tempFile.createNewFile()
+        }
+        // Write empty
+        tempFile.writeText("")
+
+        val tagList = ByteArrayOutputStream().use { commandOutput ->
+            project.rootProject.exec {
+                commandLine("git", "tag", "--sort=-committerdate")
+                standardOutput = commandOutput
+            }
+
+            val tagSet = linkedSetOf<String>()
+
+            for (lineTag in commandOutput.toString().lines()) {
+                if (!lineTag.startsWith('v')) {
+                    continue
+                }
+
+                if (lineTag.contains("preview", true) || lineTag.contains("dev", true)) {
+                    continue
+                }
+
+                tagSet.add(lineTag)
+            }
+
+            tagSet
+        }
+
+        val tags = tagList.toList()
+
+        val commitLogs = LinkedHashMap<String, CommitTagLogs>()
         val excludes = listOf("release", "submodule", "ci", "chore", "doc")
-        val match = Regex("((?!(${excludes.joinToString("|")}))[a-zA-Z0-9-_]+)(\\(.+\\))?: *.+")
 
-        output.toString()
-            .lines()
-            .asReversed()
-            .asSequence()
-            .filter { line ->
-                line.isNotEmpty()
-            }.mapNotNull { line ->
-                val split = line.trim().split(" ", limit = 2)
+        fun recordTagLogLines(tag: String, command: String?) {
+            val tagLogLines = ByteArrayOutputStream().use { output ->
+                if (command != null) {
+                    project.rootProject.exec {
+                        val commandList = mutableListOf(
+                            "git",
+                            "log",
+                            "--no-merges",
+                            "--oneline", // 以简洁的一行格式显示提交信息
+                            "--abbrev-commit", // 使用短提交哈希值
+                            command
+                        )
+                        commandLine(commandList)
+                        standardOutput = output
+                    }
+                }
+
+                output.toString().lines()
+            }
+            // previous = tag
+
+            val commitTagLogs = commitLogs.computeIfAbsent(tag) {
+                CommitTagLogs(compare = command)
+            }
+
+            val commitLogList = commitTagLogs.logs
+
+            for (logLine in tagLogLines) {
+                if (logLine.isBlank()) continue
+                val split = logLine.trim().split(" ", limit = 2)
                 val hash = split[0]
-                val message = split.getOrNull(1)?.trim() ?: return@mapNotNull null
+                val message = split.getOrNull(1)?.trim() ?: continue
 
-                hash to message
-            }.filter { (_, message) ->
-                if (message.startsWith("release")) {
-                    return@filter false
+                if (excludes.any { message.startsWith(it) }) {
+                    continue
                 }
 
-                match.matches(message)
-            }.forEach { (hash, message) ->
+
                 fun add(pre: String?) {
-                    lines.addLast(CommitLog(message, mutableListOf(hash), pre))
+                    commitLogList.addLast(
+                        CommitLog(
+                            message = message,
+                            pre = pre,
+                            compare = command
+                        ).apply {
+                            hashes.add(hash)
+                        }
+                    )
                 }
 
-                if (lines.isEmpty()) {
-                    add(null)
+                if (commitLogList.isEmpty()) {
+                    // 看看上一个 tag 的
+                    val iter = commitLogs.iterator()
+                    var previousTagList: CommitTagLogs? = null
+                    var previousEntry: Map.Entry<String, CommitTagLogs>? = null
+                    while (iter.hasNext()) {
+                        val next = iter.next()
+                        if (previousEntry?.key == tag) {
+                            previousTagList = previousEntry.value
+                            break
+                        }
+                        previousEntry = next
+                    }
+
+                    add(previousTagList?.logs?.lastOrNull()?.hashes?.last())
                 } else {
-                    val last = lines.last()
+                    val last = commitLogList.last()
                     if (last.message == message) {
-                        last.hash.add(0, hash)
+                        last.hashes.addFirst(hash)
                     } else {
-                        add(last.hash.last())
+                        add(last.hashes.last())
                     }
                 }
             }
-
-        val tmpDir = rootProject.layout.buildDirectory.dir("tmp/changelog").get().asFile.apply { mkdirs() }
-
-        val tmpFile =
-            Files.createTempFile(tmpDir.toPath(), "changelog", "tmp").toFile()
-
-        // copy source file to tmp file
-        RandomAccessFile(rootChangelogFile, "r").channel.use { srcChannel ->
-            RandomAccessFile(tmpFile, "rw").channel.use { destChannel ->
-                srcChannel.transferTo(0, srcChannel.size(), destChannel)
-            }
         }
 
-        FileWriter(rootChangelogFile).buffered().use { writer ->
-            writer.appendLine("# $tag")
-            if ("-dev" in tag) {
+        val firstTag = tags.firstOrNull()
+        if (firstTag != null) {
+            recordTagLogLines(newestTag, "$firstTag..HEAD")
+        }
+
+        tags.forEach { println("\t$it") }
+
+        val iter = tags.listIterator()
+        while (iter.hasNext()) {
+            // tag的内容，是上一个tag..当前这个tag, 也就是 previousTag..currentTag
+            val currentTag = iter.next()
+            if (iter.hasNext()) {
+                val previousTag = tags[iter.nextIndex()]
+                recordTagLogLines(currentTag, "$previousTag..$currentTag")
+            } else {
+                // 最后也就是最初的tag
+                // recordTagLogLines(currentTag, currentTag)
+                // 直接忽略它
+            }
+
+        }
+
+        FileWriter(tempFile, true).buffered().use { writer ->
+            writer.appendLine("# CHANGELOG")
+            writer.appendLine("> 由自动任务基于Git提交记录生成，详细更新内容请参考对应版本的 release 。")
+            writer.appendLine()
+
+            for ((tag, commitTagLogs) in commitLogs) {
+                val commitLogList = commitTagLogs.logs
+
+                writer.appendLine("## $tag")
+                writer.appendLine()
                 writer.appendLine(
-                    """
-                        > [!warning]
-                        > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
-                        
-                    """.trimIndent()
+                    "> Release & Pull Notes: " +
+                        link(tag, "https://github.com/simple-robot/simpler-robot/releases/tag/$tag")
                 )
-            }
-            writer.appendLine(
-                """
-                
-                > Release & Pull Notes: [$tag](https://github.com/simple-robot/simpler-robot/releases/tag/$tag) 
-                
-            """.trimIndent()
-            )
-
-            lines.asReversed()
-                .forEach { (message, hashList, preHash) ->
-                    if (hashList.size == 1) {
-                        writer.appendLine("- $message ([`${hashList[0]}`](https://github.com/simple-robot/simpler-robot/commit/${hashList[0]}))")
+                val compare = commitTagLogs.compare?.replace("HEAD", newestTag)
+                if (compare != null) {
+                    writer.appendLine(">")
+                    writer.appendLine(
+                        "> Commit compare: " +
+                            link(compare, "https://github.com/simple-robot/simpler-robot/compare/$compare")
+                    )
+                }
+                writer.appendLine()
+                for ((message, hashList, preHash) in commitLogList) {
+                    val firstHash = hashList[0]
+                    val hashLink = if (hashList.size == 1) {
+                        link("`$firstHash`", "https://github.com/simple-robot/simpler-robot/commit/$firstHash")
                     } else {
-                        val pre = hashList[0]
-                        val post: String = preHash ?: lastTag ?: "HEAD"
-                        writer.appendLine("- $message ([`$pre..${hashList.last()}`](https://github.com/simple-robot/simpler-robot/compare/$pre..$post))")
-                        writer.newLine()
-                        writer.appendLine("    <details><summary><code>$pre..${hashList.last()}</code></summary>")
-                        writer.newLine()
-                        hashList.forEach { hash ->
-                            writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash)")
-                        }
-                        writer.newLine()
-                        writer.appendLine("    </details>\n")
-
-
-                        /*
-                        <details><summary>ec1e591a..cd1a6df5</summary>
-
-                                - 1
-
-                        - 2
-                        - 3
-
-                        </details>
-                         */
-
-
+                        val pre = firstHash
+                        val post: String = preHash ?: "HEAD"
+                        link(
+                            "`$pre..${hashList.last()}`",
+                            "https://github.com/simple-robot/simpler-robot/compare/$pre..$post"
+                        )
                     }
+                    writer.appendLine("- $hashLink: $message")
                 }
-
-            writer.newLine()
-        }
-
-        tmpFile.inputStream().use { input ->
-            FileWriter(rootChangelogFile, true).use { writer ->
-                var skip = false
-                input.bufferedReader().use { r ->
-                    r.lineSequence().forEach { oldLine ->
-                        when {
-                            skip && oldLine.startsWith('#') && oldLine != "# $tag" -> {
-                                skip = false
-                            }
-
-                            oldLine.trim() == "# $tag" -> {
-                                skip = true
-                            }
-
-                            !skip -> {
-                                writer.appendLine(oldLine)
-                            }
-                        }
-                    }
-                }
+                writer.newLine()
             }
         }
+
+        val changelogFile = changelogOutput.asFile.get()
+        if (!changelogFile.exists()) {
+            changelogFile.createNewFile()
+        }
+
+        tempFile.copyTo(changelogFile, overwrite = true)
+        tempFile.deleteOnExit()
     }
 
+    private fun link(name: String, link: String): String {
+        return "[$name]($link)"
+    }
 }

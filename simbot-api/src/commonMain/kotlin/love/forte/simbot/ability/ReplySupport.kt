@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 
 package love.forte.simbot.ability
 
+import love.forte.simbot.event.InternalInterceptionException
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -45,6 +46,8 @@ public interface ReplySupport {
      * 发送一段纯文本消息。
      *
      * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
      * @throws Exception 可能产生任何异常
      */
     public suspend fun reply(text: String): MessageReceipt
@@ -53,6 +56,8 @@ public interface ReplySupport {
      * 发送一个消息 [Message]。
      *
      * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
      * @throws Exception 可能产生任何异常
      */
     public suspend fun reply(message: Message): MessageReceipt
@@ -63,6 +68,8 @@ public interface ReplySupport {
      * 并在不支持的情况下降级为使用 [MessageContent.messages]。
      *
      * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
      * @throws Exception 可能产生任何异常
      */
     public suspend fun reply(messageContent: MessageContent): MessageReceipt

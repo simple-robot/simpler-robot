@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,16 +23,16 @@
 
 plugins {
     kotlin("jvm")
-    id("simbot.dokka-module-configuration")
+    id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
 }
 
-configJavaCompileWithModule()
+configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
 apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
 }
 
 dependencies {

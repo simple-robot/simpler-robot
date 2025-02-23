@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,20 +21,26 @@
  *
  */
 
-import love.forte.simbot.message.OfflineImage;
 import love.forte.simbot.resource.Resources;
+import love.forte.simbot.resource.SourceResource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * @author ForteScarlet
  */
 public class ResourceTests {
-    public static void main(String[] args) throws IOException {
-        OfflineImage.ofResource(Resources.valueOf(File.createTempFile("", "")));
 
+    @Test
+    public void testResourceCreation() throws IOException {
+        var fr = Resources.valueOf(new File("test"));
+        var pr = Resources.valueOf(Paths.get("test.txt"));
 
-
+        Assertions.assertInstanceOf(SourceResource.class, fr);
+        Assertions.assertInstanceOf(SourceResource.class, pr);
     }
 }
