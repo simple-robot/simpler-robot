@@ -21,8 +21,8 @@
  *
  */
 
-import changelog.createSubChangelogFile
-import changelog.generateChangelog
+import changelog.GenerateChangelogTask
+import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
@@ -199,21 +199,13 @@ idea {
 
 // Changelog
 
-tasks.create("createChangelog") {
-    group = "documentation"
-    doFirst {
-        createSubChangelogFile(
-            "v${P.VERSION}",
-            mapOf("Kotlin" to libs.versions.kotlin.get())
-        )
-    }
+tasks.register<GenerateSubChangelogTask>("createChangelog") {
+    tag = "v${P.VERSION}"
+    versions.put("Kotlin", libs.versions.kotlin.get())
 }
 
-tasks.create("updateChangelog") {
-    group = "documentation"
-    doFirst {
-        generateChangelog("v${P.VERSION}")
-    }
+tasks.register<GenerateChangelogTask>("updateChangelog") {
+    newestTag = "v${P.VERSION}"
 }
 
 // region Suspend Transform configs

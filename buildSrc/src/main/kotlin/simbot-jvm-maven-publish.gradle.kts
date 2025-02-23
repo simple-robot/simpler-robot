@@ -76,7 +76,7 @@ checkPublishConfigurable {
                         url.set("https://github.com/simple-robot/simpler-robot/issues")
                     }
                 }
-                showMaven()
+                // showMaven()
             }
         }
     }
