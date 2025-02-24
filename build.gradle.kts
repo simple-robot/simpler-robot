@@ -25,6 +25,7 @@ import changelog.GenerateChangelogTask
 import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import java.net.URI
@@ -406,6 +407,7 @@ subprojects {
                     configSourceLink(p)
                     configExternalDocumentations()
                 }
+                configHtmlCustom()
             }
             rootProject.dependencies.dokka(p)
         }
@@ -479,6 +481,30 @@ fun DokkaSourceSetSpec.configExternalDocumentations() {
     )
 }
 
+fun DokkaExtension.configHtmlCustom() {
+    pluginsConfiguration.html {
+        customAssets.from(
+            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+        )
+
+        customStyleSheets.from(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
+
+        if (!isSimbotLocal()) {
+            templatesDir = rootProject.file(".simbot/dokka-templates")
+        }
+
+        footerMessage =
+            "© 2021-${Year.now().value} " +
+                "<a href='https://github.com/simple-robot'>Simple Robot</a>. " +
+                "All rights reserved."
+
+        separateInheritedMembers = true
+        mergeImplicitExpectActualDeclarations = true
+        homepageLink = P.HOMEPAGE
+    }
+}
+
 dokka {
     moduleName = "Simple Robot"
 
@@ -515,25 +541,6 @@ dokka {
         configExternalDocumentations()
     }
 
-    pluginsConfiguration.html {
-        customAssets.from(
-            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
-            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
-        )
-
-        customStyleSheets.from(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
-
-        if (!isSimbotLocal()) {
-            templatesDir = rootProject.file(".simbot/dokka-templates")
-        }
-
-        footerMessage =
-            "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. " +
-            "All rights reserved."
-
-        separateInheritedMembers = true
-        mergeImplicitExpectActualDeclarations = true
-        homepageLink = P.HOMEPAGE
-    }
+    configHtmlCustom()
 }
 // endregion
