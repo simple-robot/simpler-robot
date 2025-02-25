@@ -13,7 +13,7 @@ slf4j = "2.0.16"
 # https://github.com/google/ksp
 ksp = "2.1.0-1.0.29"
 # https://square.github.io/kotlinpoet/
-kotlinPoet = "2.0.0"
+kotlinPoet = "2.1.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.7.3"
