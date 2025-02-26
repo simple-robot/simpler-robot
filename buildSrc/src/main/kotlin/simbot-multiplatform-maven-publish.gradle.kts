@@ -78,58 +78,9 @@ signing {
     sign(publishingExtension.publications)
 }
 
-// multiplatformConfigPublishing {
-//     project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
-//     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-//     releasesRepository = ReleaseRepository
-//     snapshotRepository = SnapshotRepository
-//     gpg = Gpg.ofSystemPropOrNull()
-//
-//     val jarJavadoc by tasks.registering(Jar::class) {
-//         group = "documentation"
-//         archiveClassifier.set("javadoc")
-//         if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-//             dependsOn(tasks.dokkaHtml)
-//             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-//         }
-//     }
-//
-//     artifact(jarJavadoc)
-//
-//     if (isSimbotLocal()) {
-//         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
-//         mainHost = null
-//     }
-//
-//     publicationsFromMainHost += listOf("wasm", "wasm32", "wasm_js")
-//     mainHostSupportedTargets += listOf("wasm", "wasm32", "wasm_js")
-// }
-
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
 val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
 tasks.withType<PublishToMavenRepository>().configureEach {
     mustRunAfter(signingTasks)
 }
 
-fun MavenPublication.showMaven() {
-    val pom = pom
-    // // show project info
-    logger.lifecycle(
-        """
-        |=======================================================
-        |= multiplatform.maven.name:            {}
-        |= multiplatform.maven.groupId:         {}
-        |= multiplatform.maven.artifactId:      {}
-        |= multiplatform.maven.version:         {}
-        |= multiplatform.maven.pom.description: {}
-        |= multiplatform.maven.pom.name:        {}
-        |=======================================================
-        """.trimIndent(),
-        name,
-        groupId,
-        artifactId,
-        version,
-        pom.description.get(),
-        pom.name.get(),
-    )
-}
