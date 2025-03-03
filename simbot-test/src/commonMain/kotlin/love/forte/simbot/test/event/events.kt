@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -31,6 +31,7 @@ import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.event.BotEvent
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -42,6 +43,7 @@ import love.forte.simbot.test.message.TestMessageContent
  * 用于测试的 [Event] 基类
  *
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public interface BaseTestEvent : Event {
     override val time: Timestamp
         get() = testTimestamp
@@ -55,12 +57,14 @@ public interface BaseTestEvent : Event {
 /**
  * 用于测试的 [Event] 实现
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public open class TestEvent(override val id: ID = UUID.random()) : Event, BaseTestEvent
 
 
 /**
  * 用于测试的 [MessageEvent] 实现
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public open class TestMessageEvent(
     override var id: ID = UUID.random(),
     override var bot: Bot = TestBot(),
@@ -90,6 +94,7 @@ public open class TestMessageReceipt(public var onDelete: (Array<out DeleteOptio
 /**
  * 用于测试的 [BotEvent] 实现
  */
+@OptIn(FuzzyEventTypeImplementation::class)
 public open class TestBotEvent(override val id: ID, override val bot: Bot) :
     BotEvent,
     BaseTestEvent
