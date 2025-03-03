@@ -1627,7 +1627,7 @@ public abstract interface class love/forte/simbot/event/InternalMessageInteracti
 	public abstract fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
 }
 
-public abstract interface class love/forte/simbot/event/InternalMessagePostSendEvent : love/forte/simbot/event/InternalMessageInteractionEvent {
+public abstract interface class love/forte/simbot/event/InternalMessagePostSendEvent : love/forte/simbot/event/InternalMessageInteractionEvent, love/forte/simbot/event/InternalNotificationEvent {
 	public abstract fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
 	public abstract fun getReceipt ()Llove/forte/simbot/message/MessageReceipt;
 }
