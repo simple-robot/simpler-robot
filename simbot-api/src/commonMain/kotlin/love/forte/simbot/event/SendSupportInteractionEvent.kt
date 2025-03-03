@@ -83,7 +83,7 @@ public interface ContactInteractionEvent : SendSupportInteractionEvent {
 }
 
 /**
- * 针对 [Member.send] 的内部交互事件, 在 [Member.send] 执行前拦截。
+ * 针对 [Contact.send] 的内部交互事件, 在 [Contact.send] 执行前拦截。
  * @see Contact
  * @since 4.11.0
  */
@@ -93,7 +93,7 @@ public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSe
 }
 
 /**
- * 针对 [Member.send] 的内部交互事件, 在 [Member.send] 执行后通知。
+ * 针对 [Contact.send] 的内部交互事件, 在 [Contact.send] 执行后通知。
  * @see Contact
  * @since 4.11.0
  */
