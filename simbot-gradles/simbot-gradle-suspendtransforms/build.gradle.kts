@@ -36,5 +36,8 @@ kotlin {
 }
 
 dependencies {
-    api(libs.suspend.transform.gradle)
+    compileOnly(gradleApi())
+    compileOnly(kotlin("gradle-plugin"))
+    compileOnly(kotlin("gradle-plugin-api"))
+    compileOnly(libs.suspend.transform.gradle)
 }
