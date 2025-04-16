@@ -36,7 +36,6 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
 inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> Unit = {}) {
-    withJava()
     compilerOptions {
         javaParameters.set(true)
         freeCompilerArgs.addAll(
@@ -102,7 +101,14 @@ inline fun Project.configJavaCompileWithModule(
             options.compilerArgumentProviders.add(
                 CommandLineArgumentProvider {
                     // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-                    listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+                    val sourceSet = sourceSets.findByName("main") ?: sourceSets.findByName("jvmMain")
+                    if (sourceSet != null) {
+                        listOf("--patch-module", "$moduleName=${sourceSet.output.asPath}")
+                    } else {
+                        emptyList()
+                    }
+                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
                 }
             )
         }

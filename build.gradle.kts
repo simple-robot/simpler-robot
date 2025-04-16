@@ -23,8 +23,15 @@
 
 import changelog.GenerateChangelogTask
 import changelog.GenerateSubChangelogTask
-import love.forte.plugin.suspendtrans.*
-import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
+import love.forte.plugin.suspendtrans.configuration.ClassInfo
+import love.forte.plugin.suspendtrans.configuration.SuspendTransformConfigurations.jvmAsyncAnnotationInfo
+import love.forte.plugin.suspendtrans.configuration.SuspendTransformConfigurations.jvmAsyncTransformer
+import love.forte.plugin.suspendtrans.configuration.SuspendTransformConfigurations.jvmBlockingAnnotationInfo
+import love.forte.plugin.suspendtrans.configuration.SuspendTransformConfigurations.jvmBlockingTransformer
+import love.forte.plugin.suspendtrans.configuration.SuspendTransformConfigurations.jvmSyntheticClassInfo
+import love.forte.plugin.suspendtrans.gradle.ClassInfoSpec
+import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
+import love.forte.plugin.suspendtrans.gradle.TransformerSpec
 
 plugins {
     idea
@@ -205,184 +212,303 @@ tasks.register<GenerateChangelogTask>("updateChangelog") {
 }
 
 // region Suspend Transform configs
-@Suppress("MaxLineLength")
-object SuspendTransforms {
-    private val javaIncludeAnnotationApi4JClassInfo = ClassInfo("love.forte.simbot.annotations", "Api4J")
-    private val javaIncludeAnnotationApi4J = IncludeAnnotation(javaIncludeAnnotationApi4JClassInfo).apply {
-        includeProperty = true
+object SuspendTransformPlugins {
+    const val OPT_ANNOTATION_PACKAGE: String = "love.forte.simbot.annotations"
+    const val SUSPEND_RUNNER_PACKAGE: String = "love.forte.simbot.suspendrunner"
+
+    const val API4J_NAME: String = "Api4J"
+    const val API4JS_NAME: String = "Api4Js"
+
+    const val RUN_IN_BLOCKING_FUN_NAME: String = "$\$runInBlocking"
+    const val RUN_IN_ASYNC_FUN_NAME: String = "$\$runInAsyncNullable"
+    const val AS_RESERVE_FUN_NAME: String = "$\$asReserve"
+
+    const val SUSPEND_TRANS_ANNO_NAME: String = "SuspendTrans"
+    const val SUSPEND_TRANS_PROPERTY_ANNO_NAME: String = "SuspendTransProperty"
+
+    fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
+        transformers { transformersContainer ->
+            fun TransformerSpec.includeApi4J(clear: Boolean = true) {
+                if (clear) {
+                    syntheticFunctionIncludeAnnotations.clear()
+                }
+                addSyntheticFunctionIncludeAnnotation { includeAnnotationSpec ->
+                    includeAnnotationSpec.classInfo { classInfoSpec ->
+                        classInfoSpec.packageName.set(OPT_ANNOTATION_PACKAGE)
+                        classInfoSpec.className.set(API4J_NAME)
+                    }
+                    includeAnnotationSpec.includeProperty.set(true)
+                }
+            }
+
+            fun TransformerSpec.blockingFunction() {
+                transformFunctionInfo { functionInfoSpec ->
+                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionInfoSpec.functionName.set(RUN_IN_BLOCKING_FUN_NAME)
+                }
+            }
+
+            fun TransformerSpec.asyncFunction() {
+                transformFunctionInfo { functionInfoSpec ->
+                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionInfoSpec.functionName.set(RUN_IN_ASYNC_FUN_NAME)
+                }
+            }
+
+            fun TransformerSpec.reserveFunction() {
+                transformFunctionInfo { functionInfoSpec ->
+                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionInfoSpec.functionName.set(AS_RESERVE_FUN_NAME)
+                }
+            }
+
+            // @JvmBlocking
+            transformersContainer.addJvmBlocking { transformerSpec ->
+                transformerSpec.includeApi4J()
+                transformerSpec.blockingFunction()
+            }
+            // @JvmAsync
+            transformersContainer.addJvmAsync { transformerSpec ->
+                transformerSpec.includeApi4J()
+                transformerSpec.asyncFunction()
+            }
+
+            fun TransformerSpec.suspendTrans(
+                baseNameProperty: String,
+                suffixProperty: String,
+                asPropertyProperty: String,
+                defaultSuffix: String,
+            ) {
+                markAnnotation { markAnnotationSpec ->
+                    markAnnotationSpec.classInfo { classInfoSpec ->
+                        classInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
+                        classInfoSpec.className.set(SUSPEND_TRANS_ANNO_NAME)
+                    }
+
+                    markAnnotationSpec.baseNameProperty.set(baseNameProperty)
+                    markAnnotationSpec.suffixProperty.set(suffixProperty)
+                    markAnnotationSpec.asPropertyProperty.set(asPropertyProperty)
+                    markAnnotationSpec.defaultSuffix.set(defaultSuffix)
+                    markAnnotationSpec.defaultAsProperty.set(false)
+                }
+            }
+
+            fun TransformerSpec.suspendTransProperty(
+                baseNameProperty: String,
+                suffixProperty: String,
+                asPropertyProperty: String,
+                defaultSuffix: String,
+            ) {
+                markAnnotation { markAnnotationSpec ->
+                    markAnnotationSpec.classInfo { classInfoSpec ->
+                        classInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
+                        classInfoSpec.className.set(SUSPEND_TRANS_PROPERTY_ANNO_NAME)
+                    }
+
+                    markAnnotationSpec.baseNameProperty.set(baseNameProperty)
+                    markAnnotationSpec.suffixProperty.set(suffixProperty)
+                    markAnnotationSpec.asPropertyProperty.set(asPropertyProperty)
+                    markAnnotationSpec.defaultSuffix.set(defaultSuffix)
+                    markAnnotationSpec.defaultAsProperty.set(true)
+                }
+            }
+
+            fun addJvmSuspendTrans(
+                baseNameProperty: String,
+                suffixProperty: String,
+                asPropertyProperty: String,
+                defaultSuffix: String,
+                function: TransformerSpec.() -> Unit,
+                transformReturnType: (ClassInfoSpec.() -> Unit)?,
+                transformReturnTypeGeneric: Boolean,
+                copyExcludes: List<ClassInfo>,
+            ) {
+                transformersContainer.addJvm { transformerSpec ->
+                    transformerSpec.suspendTrans(
+                        baseNameProperty,
+                        suffixProperty,
+                        asPropertyProperty,
+                        defaultSuffix,
+                    )
+
+                    transformReturnType?.also { ci ->
+                        transformerSpec.transformReturnType { classInfoSpec ->
+                            classInfoSpec.ci()
+                        }
+                    }
+                    transformerSpec.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
+                    transformerSpec.addOriginFunctionIncludeAnnotation { includeAnnotationSpec ->
+                        includeAnnotationSpec.classInfo { classInfoSpec ->
+                            classInfoSpec.from(jvmSyntheticClassInfo)
+                        }
+                    }
+
+                    transformerSpec.function()
+                    transformerSpec.includeApi4J()
+
+                    transformerSpec.copyAnnotationsToSyntheticFunction.set(true)
+
+                    for (exclude in copyExcludes) {
+                        transformerSpec.addCopyAnnotationExclude { classInfoSpec ->
+                            classInfoSpec.from(exclude)
+                        }
+                    }
+                }
+            }
+
+            fun addJvmSuspendTransProperty(
+                baseNameProperty: String,
+                suffixProperty: String,
+                asPropertyProperty: String,
+                defaultSuffix: String,
+                function: TransformerSpec.() -> Unit,
+                transformReturnType: (ClassInfoSpec.() -> Unit)?,
+                transformReturnTypeGeneric: Boolean,
+                copyExcludes: List<ClassInfo>,
+            ) {
+                transformersContainer.addJvm { transformerSpec ->
+                    transformerSpec.suspendTransProperty(
+                        baseNameProperty,
+                        suffixProperty,
+                        asPropertyProperty,
+                        defaultSuffix,
+                    )
+
+                    transformReturnType?.also { ci ->
+                        transformerSpec.transformReturnType { classInfoSpec ->
+                            classInfoSpec.ci()
+                        }
+                    }
+                    transformerSpec.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
+                    transformerSpec.addOriginFunctionIncludeAnnotation { includeAnnotationSpec ->
+                        includeAnnotationSpec.classInfo { classInfoSpec ->
+                            classInfoSpec.from(jvmSyntheticClassInfo)
+                        }
+                    }
+
+                    transformerSpec.function()
+                    transformerSpec.includeApi4J()
+
+                    transformerSpec.copyAnnotationsToSyntheticFunction.set(true)
+
+                    for (exclude in copyExcludes) {
+                        transformerSpec.addCopyAnnotationExclude { classInfoSpec ->
+                            classInfoSpec.from(exclude)
+                        }
+                    }
+                }
+            }
+
+            // @SuspendTrans for blocking
+            addJvmSuspendTrans(
+                baseNameProperty = "blockingBaseName",
+                suffixProperty = "blockingSuffix",
+                asPropertyProperty = "blockingAsProperty",
+                defaultSuffix = jvmBlockingAnnotationInfo.defaultSuffix,
+                function = { blockingFunction() },
+                transformReturnType = null,
+                transformReturnTypeGeneric = false,
+                copyExcludes = jvmBlockingTransformer.copyAnnotationExcludes,
+            )
+
+            // @SuspendTrans for Async
+            addJvmSuspendTrans(
+                baseNameProperty = "asyncBaseName",
+                suffixProperty = "asyncSuffix",
+                asPropertyProperty = "asyncAsProperty",
+                defaultSuffix = jvmAsyncAnnotationInfo.defaultSuffix,
+                function = { asyncFunction() },
+                transformReturnType = {
+                    packageName.set("java.util.concurrent")
+                    className.set("CompletableFuture")
+                },
+                transformReturnTypeGeneric = true,
+                copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+            )
+
+            // @SuspendTrans for Reserve
+            addJvmSuspendTrans(
+                baseNameProperty = "reserveBaseName",
+                suffixProperty = "reserveSuffix",
+                asPropertyProperty = "reserveAsProperty",
+                defaultSuffix = "Reserve",
+                function = { reserveFunction() },
+                transformReturnType = {
+                    packageName.set("love.forte.simbot.suspendrunner.reserve")
+                    className.set("SuspendReserve")
+                },
+                transformReturnTypeGeneric = true,
+                copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+            )
+
+            // @SuspendTrans for blocking
+            addJvmSuspendTransProperty(
+                baseNameProperty = "blockingBaseName",
+                suffixProperty = "blockingSuffix",
+                asPropertyProperty = "blockingAsProperty",
+                defaultSuffix = jvmBlockingAnnotationInfo.defaultSuffix,
+                function = { blockingFunction() },
+                transformReturnType = null,
+                transformReturnTypeGeneric = false,
+                copyExcludes = jvmBlockingTransformer.copyAnnotationExcludes,
+            )
+
+            // @SuspendTrans for Async
+            addJvmSuspendTransProperty(
+                baseNameProperty = "asyncBaseName",
+                suffixProperty = "asyncSuffix",
+                asPropertyProperty = "asyncAsProperty",
+                defaultSuffix = jvmAsyncAnnotationInfo.defaultSuffix,
+                function = { asyncFunction() },
+                transformReturnType = {
+                    packageName.set("java.util.concurrent")
+                    className.set("CompletableFuture")
+                },
+                transformReturnTypeGeneric = true,
+                copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+            )
+
+            // @SuspendTrans for Reserve
+            addJvmSuspendTransProperty(
+                baseNameProperty = "reserveBaseName",
+                suffixProperty = "reserveSuffix",
+                asPropertyProperty = "reserveAsProperty",
+                defaultSuffix = "Reserve",
+                function = { reserveFunction() },
+                transformReturnType = {
+                    packageName.set("love.forte.simbot.suspendrunner.reserve")
+                    className.set("SuspendReserve")
+                },
+                transformReturnTypeGeneric = true,
+                copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+            )
+        }
     }
-    private val javaIncludeAnnotations = listOf(javaIncludeAnnotationApi4J)
-
-    private val jsIncludeAnnotationApi4JsClassInfo = ClassInfo("love.forte.simbot.annotations", "Api4Js")
-    private val jsIncludeAnnotationApi4Js = IncludeAnnotation(jsIncludeAnnotationApi4JsClassInfo).apply {
-        includeProperty = true
-    }
-    private val jsIncludeAnnotations = listOf(jsIncludeAnnotationApi4Js)
-
-
-    private val SuspendReserveClassInfo = ClassInfo(
-        packageName = "love.forte.simbot.suspendrunner.reserve",
-        className = "SuspendReserve",
-    )
-
-    /**
-     * JvmBlocking
-     */
-    val jvmBlockingTransformer = SuspendTransformConfiguration.jvmBlockingTransformer.copy(
-        syntheticFunctionIncludeAnnotations = javaIncludeAnnotations,
-        transformFunctionInfo = FunctionInfo("love.forte.simbot.suspendrunner", null, "$\$runInBlocking"),
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmBlockingTransformer.copyAnnotationExcludes + SuspendTransformConfiguration.jvmBlockingTransformer.markAnnotation.classInfo
-    )
-
-    /**
-     * JvmAsync
-     */
-    val jvmAsyncTransformer = SuspendTransformConfiguration.jvmAsyncTransformer.copy(
-        syntheticFunctionIncludeAnnotations = javaIncludeAnnotations,
-        transformFunctionInfo = FunctionInfo("love.forte.simbot.suspendrunner", null, "$\$runInAsyncNullable"),
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + SuspendTransformConfiguration.jvmAsyncTransformer.markAnnotation.classInfo
-    )
-
-    /**
-     * JvmReserve
-     */
-    val jvmReserveTransformer = SuspendTransformConfiguration.jvmAsyncTransformer.copy(
-        syntheticFunctionIncludeAnnotations = javaIncludeAnnotations,
-        transformFunctionInfo = FunctionInfo("love.forte.simbot.suspendrunner", null, "$\$asReserve"),
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + SuspendTransformConfiguration.jvmAsyncTransformer.markAnnotation.classInfo,
-        transformReturnType = SuspendReserveClassInfo,
-        transformReturnTypeGeneric = true,
-    )
-
-    /**
-     * JsPromise
-     */
-    val jsPromiseTransformer = SuspendTransformConfiguration.jsPromiseTransformer.copy(
-        syntheticFunctionIncludeAnnotations = javaIncludeAnnotations,
-        transformFunctionInfo = FunctionInfo("love.forte.simbot.suspendrunner", null, "$\$runInPromise"),
-        copyAnnotationExcludes = SuspendTransformConfiguration.jsPromiseTransformer.copyAnnotationExcludes + SuspendTransformConfiguration.jsPromiseTransformer.markAnnotation.classInfo,
-    )
-
-    //region @JvmSuspendTrans
-    private val suspendTransMarkAnnotationClassInfo = ClassInfo("love.forte.simbot.suspendrunner", "SuspendTrans")
-
-    private val jvmSuspendTransMarkAnnotationForBlocking = MarkAnnotation(
-        suspendTransMarkAnnotationClassInfo,
-        baseNameProperty = "blockingBaseName",
-        suffixProperty = "blockingSuffix",
-        asPropertyProperty = "blockingAsProperty",
-        defaultSuffix = SuspendTransformConfiguration.jvmBlockingAnnotationInfo.defaultSuffix,
-    )
-    private val jvmSuspendTransMarkAnnotationForAsync = MarkAnnotation(
-        suspendTransMarkAnnotationClassInfo,
-        baseNameProperty = "asyncBaseName",
-        suffixProperty = "asyncSuffix",
-        asPropertyProperty = "asyncAsProperty",
-        defaultSuffix = SuspendTransformConfiguration.jvmAsyncAnnotationInfo.defaultSuffix,
-    )
-    private val jvmSuspendTransMarkAnnotationForReserve = MarkAnnotation(
-        suspendTransMarkAnnotationClassInfo,
-        baseNameProperty = "reserveBaseName",
-        suffixProperty = "reserveSuffix",
-        asPropertyProperty = "reserveAsProperty",
-        defaultSuffix = "Reserve",
-    )
-    private val jsSuspendTransMarkAnnotationForPromise = MarkAnnotation(
-        suspendTransMarkAnnotationClassInfo,
-        baseNameProperty = "jsPromiseBaseName",
-        suffixProperty = "jsPromiseSuffix",
-        asPropertyProperty = "jsPromiseAsProperty",
-        defaultSuffix = "Async",
-    )
-
-    val suspendTransTransformerForJvmBlocking = jvmBlockingTransformer.copy(
-        markAnnotation = jvmSuspendTransMarkAnnotationForBlocking,
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmBlockingTransformer.copyAnnotationExcludes + jvmSuspendTransMarkAnnotationForBlocking.classInfo
-    )
-
-    val suspendTransTransformerForJvmAsync = jvmAsyncTransformer.copy(
-        markAnnotation = jvmSuspendTransMarkAnnotationForAsync,
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + jvmSuspendTransMarkAnnotationForAsync.classInfo
-    )
-
-    val suspendTransTransformerForJvmReserve = jvmReserveTransformer.copy(
-        markAnnotation = jvmSuspendTransMarkAnnotationForReserve,
-        copyAnnotationExcludes = jvmReserveTransformer.copyAnnotationExcludes + jvmSuspendTransMarkAnnotationForReserve.classInfo,
-    )
-
-    val suspendTransTransformerForJsPromise = jsPromiseTransformer.copy(
-        markAnnotation = jvmSuspendTransMarkAnnotationForReserve,
-        copyAnnotationExcludes = jsPromiseTransformer.copyAnnotationExcludes + jsSuspendTransMarkAnnotationForPromise.classInfo,
-    )
-    //endregion
-
-    //region @JvmSuspendTransProperty
-    private val jvmSuspendTransPropMarkAnnotationClassInfo =
-        ClassInfo("love.forte.simbot.suspendrunner", "SuspendTransProperty")
-
-    private val jvmSuspendTransPropMarkAnnotationForBlocking = MarkAnnotation(
-        jvmSuspendTransPropMarkAnnotationClassInfo,
-        baseNameProperty = "blockingBaseName",
-        suffixProperty = "blockingSuffix",
-        asPropertyProperty = "blockingAsProperty",
-        defaultSuffix = "",
-        defaultAsProperty = true
-    )
-    private val jvmSuspendTransPropMarkAnnotationForAsync = MarkAnnotation(
-        jvmSuspendTransPropMarkAnnotationClassInfo,
-        baseNameProperty = "asyncBaseName",
-        suffixProperty = "asyncSuffix",
-        asPropertyProperty = "asyncAsProperty",
-        defaultSuffix = SuspendTransformConfiguration.jvmAsyncAnnotationInfo.defaultSuffix,
-        defaultAsProperty = true
-    )
-    private val jvmSuspendTransPropMarkAnnotationForReserve = MarkAnnotation(
-        jvmSuspendTransPropMarkAnnotationClassInfo,
-        baseNameProperty = "reserveBaseName",
-        suffixProperty = "reserveSuffix",
-        asPropertyProperty = "reserveAsProperty",
-        defaultSuffix = "Reserve",
-        defaultAsProperty = true
-    )
-
-    val jvmSuspendTransPropTransformerForBlocking = jvmBlockingTransformer.copy(
-        markAnnotation = jvmSuspendTransPropMarkAnnotationForBlocking,
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmBlockingTransformer.copyAnnotationExcludes + jvmSuspendTransPropMarkAnnotationForBlocking.classInfo
-    )
-
-    val jvmSuspendTransPropTransformerForAsync = jvmAsyncTransformer.copy(
-        markAnnotation = jvmSuspendTransPropMarkAnnotationForAsync,
-        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + jvmSuspendTransPropMarkAnnotationForAsync.classInfo
-    )
-
-    val jvmSuspendTransPropTransformerForReserve = jvmReserveTransformer.copy(
-        markAnnotation = jvmSuspendTransPropMarkAnnotationForReserve,
-        copyAnnotationExcludes = jvmReserveTransformer.copyAnnotationExcludes + jvmSuspendTransPropMarkAnnotationForReserve.classInfo
-    )
-    //endregion
 }
 
 fun Project.configureSuspendTransform() {
-    extensions.configure<SuspendTransformGradleExtension>("suspendTransform") {
+    extensions.configure<SuspendTransformPluginExtension>("suspendTransformPlugin") {
         includeRuntime = false
         includeAnnotation = false
-
-        addJvmTransformers(
-            // @JvmBlocking
-            SuspendTransforms.jvmBlockingTransformer,
-            // @JvmAsync
-            SuspendTransforms.jvmAsyncTransformer,
-
-            // @JvmSuspendTrans
-            SuspendTransforms.suspendTransTransformerForJvmBlocking,
-            SuspendTransforms.suspendTransTransformerForJvmAsync,
-            SuspendTransforms.suspendTransTransformerForJvmReserve,
-
-            // @JvmSuspendTransProperty
-            SuspendTransforms.jvmSuspendTransPropTransformerForBlocking,
-            SuspendTransforms.jvmSuspendTransPropTransformerForAsync,
-            SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
-        )
+        with(SuspendTransformPlugins) {
+            addSimbotJvmTransforms()
+        }
+        // addJvmTransformers(
+        //     // @JvmBlocking
+        //     SuspendTransforms.jvmBlockingTransformer,
+        //     // @JvmAsync
+        //     SuspendTransforms.jvmAsyncTransformer,
+        //
+        //     // @JvmSuspendTrans
+        //     SuspendTransforms.suspendTransTransformerForJvmBlocking,
+        //     SuspendTransforms.suspendTransTransformerForJvmAsync,
+        //     SuspendTransforms.suspendTransTransformerForJvmReserve,
+        //
+        //     // @JvmSuspendTransProperty
+        //     SuspendTransforms.jvmSuspendTransPropTransformerForBlocking,
+        //     SuspendTransforms.jvmSuspendTransPropTransformerForAsync,
+        //     SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
+        // )
 
         // addJsTransformers(
         //     SuspendTransforms.suspendTransTransformerForJsPromise,

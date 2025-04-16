@@ -138,8 +138,8 @@ kotlin {
 
 dependencies {
     // add("kspJvm", libs.suspend.reversal.processor)
-    add("kspJvm", project(":internal-processors:interface-uml-processor"))
-    add("kspCommonMainMetadata", project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
+    "kspJvm"(project(":internal-processors:interface-uml-processor"))
+    "kspCommonMainMetadata"(project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
 }
 
 ksp {
