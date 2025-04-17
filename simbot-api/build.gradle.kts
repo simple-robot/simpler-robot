@@ -25,6 +25,7 @@ import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import love.forte.plugin.suspendtrans.gradle.SuspendTransPluginConstants
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.time.Instant
 
@@ -99,6 +100,12 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.serialization.properties)
+
+                implementation(
+                    SuspendTransPluginConstants.ANNOTATION_GROUP +
+                        ":" + SuspendTransPluginConstants.ANNOTATION_NAME +
+                        ":" + SuspendTransPluginConstants.ANNOTATION_VERSION
+                )
             }
         }
 
