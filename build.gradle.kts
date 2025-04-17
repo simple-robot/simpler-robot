@@ -213,6 +213,7 @@ tasks.register<GenerateChangelogTask>("updateChangelog") {
 
 // region Suspend Transform configs
 object SuspendTransformPlugins {
+    // love.forte.simbot.suspendrunner.SuspendTrans
     const val OPT_ANNOTATION_PACKAGE: String = "love.forte.simbot.annotations"
     const val SUSPEND_RUNNER_PACKAGE: String = "love.forte.simbot.suspendrunner"
 
@@ -227,50 +228,39 @@ object SuspendTransformPlugins {
     const val SUSPEND_TRANS_PROPERTY_ANNO_NAME: String = "SuspendTransProperty"
 
     fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
-        transformers { transformersContainer ->
+        transformers {
             fun TransformerSpec.includeApi4J(clear: Boolean = true) {
                 if (clear) {
                     syntheticFunctionIncludeAnnotations.clear()
                 }
-                addSyntheticFunctionIncludeAnnotation { includeAnnotationSpec ->
-                    includeAnnotationSpec.classInfo { classInfoSpec ->
-                        classInfoSpec.packageName.set(OPT_ANNOTATION_PACKAGE)
-                        classInfoSpec.className.set(API4J_NAME)
+                addSyntheticFunctionIncludeAnnotation {
+                    classInfo {
+                        packageName.set(OPT_ANNOTATION_PACKAGE)
+                        className.set(API4J_NAME)
                     }
-                    includeAnnotationSpec.includeProperty.set(true)
+                    includeProperty.set(true)
                 }
             }
 
             fun TransformerSpec.blockingFunction() {
-                transformFunctionInfo { functionInfoSpec ->
-                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
-                    functionInfoSpec.functionName.set(RUN_IN_BLOCKING_FUN_NAME)
+                transformFunctionInfo {
+                    packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionName.set(RUN_IN_BLOCKING_FUN_NAME)
                 }
             }
 
             fun TransformerSpec.asyncFunction() {
-                transformFunctionInfo { functionInfoSpec ->
-                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
-                    functionInfoSpec.functionName.set(RUN_IN_ASYNC_FUN_NAME)
+                transformFunctionInfo {
+                    packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionName.set(RUN_IN_ASYNC_FUN_NAME)
                 }
             }
 
             fun TransformerSpec.reserveFunction() {
-                transformFunctionInfo { functionInfoSpec ->
-                    functionInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
-                    functionInfoSpec.functionName.set(AS_RESERVE_FUN_NAME)
+                transformFunctionInfo {
+                    packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    functionName.set(AS_RESERVE_FUN_NAME)
                 }
-            }
-
-            // @JvmBlocking
-            transformersContainer.addJvmBlocking { transformerSpec ->
-                transformerSpec.includeApi4J()
-                transformerSpec.blockingFunction()
-            }
-            // @JvmAsync
-            transformersContainer.addJvmAsync { transformerSpec ->
-                transformerSpec.includeApi4J()
-                transformerSpec.asyncFunction()
             }
 
             fun TransformerSpec.suspendTrans(
@@ -279,17 +269,17 @@ object SuspendTransformPlugins {
                 asPropertyProperty: String,
                 defaultSuffix: String,
             ) {
-                markAnnotation { markAnnotationSpec ->
-                    markAnnotationSpec.classInfo { classInfoSpec ->
-                        classInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
-                        classInfoSpec.className.set(SUSPEND_TRANS_ANNO_NAME)
+                markAnnotation {
+                    classInfo {
+                        packageName.set(SUSPEND_RUNNER_PACKAGE)
+                        className.set(SUSPEND_TRANS_ANNO_NAME)
                     }
 
-                    markAnnotationSpec.baseNameProperty.set(baseNameProperty)
-                    markAnnotationSpec.suffixProperty.set(suffixProperty)
-                    markAnnotationSpec.asPropertyProperty.set(asPropertyProperty)
-                    markAnnotationSpec.defaultSuffix.set(defaultSuffix)
-                    markAnnotationSpec.defaultAsProperty.set(false)
+                    this.baseNameProperty.set(baseNameProperty)
+                    this.suffixProperty.set(suffixProperty)
+                    this.asPropertyProperty.set(asPropertyProperty)
+                    this.defaultSuffix.set(defaultSuffix)
+                    this.defaultAsProperty.set(false)
                 }
             }
 
@@ -299,17 +289,17 @@ object SuspendTransformPlugins {
                 asPropertyProperty: String,
                 defaultSuffix: String,
             ) {
-                markAnnotation { markAnnotationSpec ->
-                    markAnnotationSpec.classInfo { classInfoSpec ->
-                        classInfoSpec.packageName.set(SUSPEND_RUNNER_PACKAGE)
-                        classInfoSpec.className.set(SUSPEND_TRANS_PROPERTY_ANNO_NAME)
+                markAnnotation {
+                    classInfo {
+                        packageName.set(SUSPEND_RUNNER_PACKAGE)
+                        className.set(SUSPEND_TRANS_PROPERTY_ANNO_NAME)
                     }
 
-                    markAnnotationSpec.baseNameProperty.set(baseNameProperty)
-                    markAnnotationSpec.suffixProperty.set(suffixProperty)
-                    markAnnotationSpec.asPropertyProperty.set(asPropertyProperty)
-                    markAnnotationSpec.defaultSuffix.set(defaultSuffix)
-                    markAnnotationSpec.defaultAsProperty.set(true)
+                    this.baseNameProperty.set(baseNameProperty)
+                    this.suffixProperty.set(suffixProperty)
+                    this.asPropertyProperty.set(asPropertyProperty)
+                    this.defaultSuffix.set(defaultSuffix)
+                    this.defaultAsProperty.set(true)
                 }
             }
 
@@ -323,8 +313,8 @@ object SuspendTransformPlugins {
                 transformReturnTypeGeneric: Boolean,
                 copyExcludes: List<ClassInfo>,
             ) {
-                transformersContainer.addJvm { transformerSpec ->
-                    transformerSpec.suspendTrans(
+                addJvm {
+                    suspendTrans(
                         baseNameProperty,
                         suffixProperty,
                         asPropertyProperty,
@@ -332,25 +322,25 @@ object SuspendTransformPlugins {
                     )
 
                     transformReturnType?.also { ci ->
-                        transformerSpec.transformReturnType { classInfoSpec ->
-                            classInfoSpec.ci()
+                        transformReturnType {
+                            ci()
                         }
                     }
-                    transformerSpec.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
-                    transformerSpec.addOriginFunctionIncludeAnnotation { includeAnnotationSpec ->
-                        includeAnnotationSpec.classInfo { classInfoSpec ->
-                            classInfoSpec.from(jvmSyntheticClassInfo)
+                    this.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
+                    addOriginFunctionIncludeAnnotation {
+                        classInfo {
+                            from(jvmSyntheticClassInfo)
                         }
                     }
 
-                    transformerSpec.function()
-                    transformerSpec.includeApi4J()
+                    function()
+                    includeApi4J()
 
-                    transformerSpec.copyAnnotationsToSyntheticFunction.set(true)
+                    copyAnnotationsToSyntheticFunction.set(true)
 
                     for (exclude in copyExcludes) {
-                        transformerSpec.addCopyAnnotationExclude { classInfoSpec ->
-                            classInfoSpec.from(exclude)
+                        addCopyAnnotationExclude {
+                            from(exclude)
                         }
                     }
                 }
@@ -366,8 +356,8 @@ object SuspendTransformPlugins {
                 transformReturnTypeGeneric: Boolean,
                 copyExcludes: List<ClassInfo>,
             ) {
-                transformersContainer.addJvm { transformerSpec ->
-                    transformerSpec.suspendTransProperty(
+                addJvm {
+                    suspendTransProperty(
                         baseNameProperty,
                         suffixProperty,
                         asPropertyProperty,
@@ -375,25 +365,26 @@ object SuspendTransformPlugins {
                     )
 
                     transformReturnType?.also { ci ->
-                        transformerSpec.transformReturnType { classInfoSpec ->
-                            classInfoSpec.ci()
+                        transformReturnType {
+                            ci()
                         }
                     }
-                    transformerSpec.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
-                    transformerSpec.addOriginFunctionIncludeAnnotation { includeAnnotationSpec ->
-                        includeAnnotationSpec.classInfo { classInfoSpec ->
-                            classInfoSpec.from(jvmSyntheticClassInfo)
+                    this.transformReturnTypeGeneric.set(transformReturnTypeGeneric)
+                    addOriginFunctionIncludeAnnotation {
+                        classInfo {
+                            from(jvmSyntheticClassInfo)
                         }
                     }
 
-                    transformerSpec.function()
-                    transformerSpec.includeApi4J()
+                    function()
+                    includeApi4J()
 
-                    transformerSpec.copyAnnotationsToSyntheticFunction.set(true)
+                    copyAnnotationsToSyntheticFunction.set(true)
+                    copyAnnotationsToSyntheticProperty.set(true)
 
                     for (exclude in copyExcludes) {
-                        transformerSpec.addCopyAnnotationExclude { classInfoSpec ->
-                            classInfoSpec.from(exclude)
+                        addCopyAnnotationExclude {
+                            from(exclude)
                         }
                     }
                 }
@@ -446,7 +437,7 @@ object SuspendTransformPlugins {
                 baseNameProperty = "blockingBaseName",
                 suffixProperty = "blockingSuffix",
                 asPropertyProperty = "blockingAsProperty",
-                defaultSuffix = jvmBlockingAnnotationInfo.defaultSuffix,
+                defaultSuffix = "",
                 function = { blockingFunction() },
                 transformReturnType = null,
                 transformReturnTypeGeneric = false,
@@ -482,6 +473,19 @@ object SuspendTransformPlugins {
                 transformReturnTypeGeneric = true,
                 copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
             )
+
+            // @JvmAsync
+            addJvmAsync {
+                includeApi4J()
+                asyncFunction()
+            }
+
+            // @JvmBlocking
+            addJvmBlocking {
+                includeApi4J()
+                blockingFunction()
+            }
+
         }
     }
 }
