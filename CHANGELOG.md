@@ -1,13 +1,30 @@
 # CHANGELOG
 > 由自动任务基于Git提交记录生成，详细更新内容请参考对应版本的 release 。
 
+## v4.11.1
+
+> Release & Pull Notes: [v4.11.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.11.1)
+>
+> Commit compare: [v4.11.0..v4.11.1](https://github.com/simple-robot/simpler-robot/compare/v4.11.0..v4.11.1)
+
+- [`596944ac3`](https://github.com/simple-robot/simpler-robot/commit/596944ac3): build(deps): bump org.jetbrains.kotlinx:lincheck from 2.37 to 2.38
+- [`8a02fa71b`](https://github.com/simple-robot/simpler-robot/commit/8a02fa71b): build(deps): bump org.jetbrains.kotlinx:lincheck from 2.36 to 2.37
+- [`900d6cd82`](https://github.com/simple-robot/simpler-robot/commit/900d6cd82): build(deps): bump suspendTransform from 2.1.0-0.11.0 to 2.1.0-0.11.1
+- [`e25f03b53`](https://github.com/simple-robot/simpler-robot/commit/e25f03b53): improve(docs): 优化Dokka配置
+- [`727dd225a`](https://github.com/simple-robot/simpler-robot/commit/727dd225a): 为 `InternalMessagePostSendEvent` 追加实现 `InternalNotificationEvent`；修复部分文档内容
+- [`958605fbd`](https://github.com/simple-robot/simpler-robot/commit/958605fbd): version to 4.11.1
+- [`0ba8d63ec`](https://github.com/simple-robot/simpler-robot/commit/0ba8d63ec): build(deps): bump io.mockk:mockk from 1.13.16 to 1.13.17
+- [`f68ac8618`](https://github.com/simple-robot/simpler-robot/commit/f68ac8618): 清理部分代码
+- [`3416999ea`](https://github.com/simple-robot/simpler-robot/commit/3416999ea): build(deps): bump org.slf4j:slf4j-api from 2.0.16 to 2.0.17
+- [`b46e345dc`](https://github.com/simple-robot/simpler-robot/commit/b46e345dc): improve(build): dokka config
+
 ## v4.11.0
 
 > Release & Pull Notes: [v4.11.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.11.0)
 >
 > Commit compare: [v4.10.0..v4.11.0](https://github.com/simple-robot/simpler-robot/compare/v4.10.0..v4.11.0)
 
-- [`5f616b5bf`](https://github.com/simple-robot/simpler-robot/commit/5f616b5bf): 改善changelog相关task实现，移除不再使用的 .changelog 目录，更新CHANGELOG
+- [`83197d8e5`](https://github.com/simple-robot/simpler-robot/commit/83197d8e5): 改善changelog相关task实现，移除不再使用的 .changelog 目录，更新CHANGELOG
 - [`57013f53d`](https://github.com/simple-robot/simpler-robot/commit/57013f53d): Add FuzzyEventTypeImplementation opt-in annotation for event type clarity
 - [`4ce3a069e`](https://github.com/simple-robot/simpler-robot/commit/4ce3a069e): Update README.md
 - [`907bc6ccf`](https://github.com/simple-robot/simpler-robot/commit/907bc6ccf): 补充部分注释
