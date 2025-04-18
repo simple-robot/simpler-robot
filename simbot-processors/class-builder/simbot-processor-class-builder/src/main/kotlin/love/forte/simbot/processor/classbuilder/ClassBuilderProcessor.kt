@@ -31,6 +31,7 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeName
@@ -58,19 +59,26 @@ internal class ClassBuilderProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         // find all @ClassBuilder
-        resolveAllExpectClassBuilders(resolver)
-
-        return emptyList()
+        return resolveAllExpectClassBuilders(resolver)
     }
 
     /**
      * 扫描找到所有的 `love.forte.simbot.processor.classbuilder.annotation.ClassBuilder` 注解的类。
      */
-    private fun resolveAllExpectClassBuilders(resolver: Resolver) {
-        val buildersMap = mutableMapOf<ClassName, TypeName>()
+    private fun resolveAllExpectClassBuilders(resolver: Resolver): List<KSAnnotated> {
+        val invalidSymbols = mutableListOf<KSAnnotated>()
 
+        val buildersMap = mutableMapOf<ClassName, TypeName>()
         resolver.getSymbolsWithAnnotation(ClassBuilderAnnotationName)
             .filterIsInstance<KSClassDeclaration>()
+            .filter {
+                val validate = it.validate()
+                if (!validate) {
+                    invalidSymbols.add(it)
+                }
+
+                validate
+            }
             .onEach {
                 if (!(it.classKind == ClassKind.CLASS && !it.isAbstract())) {
                     environment.reportError(
@@ -96,6 +104,8 @@ internal class ClassBuilderProcessor(
                     buildersMap
                 )
             }
+
+        return invalidSymbols
     }
 
     override fun finish() {
