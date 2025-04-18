@@ -100,7 +100,7 @@ public interface InternalMessagePreSendEvent :
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-public interface InternalMessagePostSendEvent : InternalMessageInteractionEvent {
+public interface InternalMessagePostSendEvent : InternalNotificationEvent, InternalMessageInteractionEvent {
     /**
      * 在消息发送时
      * (例如 [SendSupport.send] 或 [ReplySupport.reply] )

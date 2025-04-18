@@ -41,6 +41,13 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
+    compilerOptions {
+        optIn.addAll(
+            "love.forte.simbot.resource.ResourceImplementation",
+            "love.forte.simbot.message.OfflineImageImplementation",
+        )
+    }
+
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {

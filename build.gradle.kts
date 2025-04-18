@@ -25,10 +25,6 @@ import changelog.GenerateChangelogTask
 import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.*
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
-import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
-import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
-import java.net.URI
-import java.time.Year
 
 plugins {
     idea
@@ -401,82 +397,14 @@ subprojects {
         val p = this
         if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
             dokka {
-                dokkaSourceSets.configureEach {
-                    configModuleMdInclude(p)
-                    configSourceLink(p)
-                    configExternalDocumentations()
+                configSourceSets(p)
+                pluginsConfiguration.html {
+                    configHtmlCustoms(p)
                 }
             }
             rootProject.dependencies.dokka(p)
         }
     }
-}
-
-fun DokkaSourceSetSpec.configModuleMdInclude(project: Project) {
-    val moduleFile = project.file("Module.md")
-    if (moduleFile.exists() && moduleFile.length() > 0) {
-        includes.from("Module.md")
-    }
-}
-
-fun DokkaSourceSetSpec.configSourceLink(project: Project) {
-    sourceLink {
-        localDirectory.set(File(project.projectDir, "src"))
-        val relativeTo = project.projectDir.relativeTo(rootProject.projectDir).toString()
-            .replace('\\', '/')
-        // remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src/").toURL())
-        remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src"))
-        remoteLineSuffix.set("#L")
-    }
-}
-
-fun DokkaSourceSetSpec.configExternalDocumentations() {
-    fun externalDocumentation(name: String, docUrl: URI, suffix: String = "package-list") {
-        externalDocumentationLinks.register(name) {
-            url.set(docUrl)
-            packageListUrl.set(docUrl.resolve(suffix))
-        }
-    }
-
-    // kotlin-coroutines doc
-    externalDocumentation(
-        "kotlinx.coroutines",
-        URI.create("https://kotlinlang.org/api/kotlinx.coroutines/")
-    )
-
-    // kotlin-serialization doc
-    externalDocumentation(
-        "kotlinx.serialization",
-        URI.create("https://kotlinlang.org/api/kotlinx.serialization/")
-    )
-
-    // ktor
-    externalDocumentation(
-        "ktor",
-        URI.create("https://api.ktor.io/")
-    )
-
-    // SLF4J
-    externalDocumentation(
-        "slf4j",
-        URI.create("https://www.slf4j.org/apidocs/"),
-        "element-list"
-    )
-
-    // Spring Framework
-    // TODO 准确的版本号?
-    externalDocumentation(
-        "spring-framework",
-        URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api/"),
-        "element-list"
-    )
-
-    // Spring Boot
-    externalDocumentation(
-        "spring-boot",
-        URI.create("https://docs.spring.io/spring-boot/docs/${libs.versions.spring.boot.v3.get()}/api/"),
-        "element-list"
-    )
 }
 
 dokka {
@@ -489,51 +417,10 @@ dokka {
         }
     }
 
-    dokkaSourceSets.configureEach {
-        skipEmptyPackages = true
-        suppressGeneratedFiles = false
-
-        documentedVisibilities(
-            VisibilityModifier.Public,
-            VisibilityModifier.Protected
-        )
-
-        tasks.withType(JavaCompile::class.java).firstOrNull()
-            ?.targetCompatibility?.toInt().also {
-                logger.info("project {} found jdkVersionValue: {}", project, it)
-            }?.also {
-                jdkVersion = it
-            }
-
-        configModuleMdInclude(project)
-
-        perPackageOption {
-            matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
-            suppress.set(true)
-        }
-
-        configExternalDocumentations()
-    }
+    configSourceSets(project)
 
     pluginsConfiguration.html {
-        customAssets.from(
-            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
-            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
-        )
-
-        customStyleSheets.from(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
-
-        if (!isSimbotLocal()) {
-            templatesDir = rootProject.file(".simbot/dokka-templates")
-        }
-
-        footerMessage =
-            "© 2021-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. " +
-            "All rights reserved."
-
-        separateInheritedMembers = true
-        mergeImplicitExpectActualDeclarations = true
-        homepageLink = P.HOMEPAGE
+        configHtmlCustoms(project)
     }
 }
 // endregion

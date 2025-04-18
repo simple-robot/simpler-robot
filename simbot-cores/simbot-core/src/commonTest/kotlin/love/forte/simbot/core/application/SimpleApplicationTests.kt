@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -35,10 +35,7 @@ import love.forte.simbot.application.onRequestCancel
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListenerContext
-import love.forte.simbot.event.EventResult
-import love.forte.simbot.event.pushAndCollect
+import love.forte.simbot.event.*
 import love.forte.simbot.plugin.createPlugin
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -87,9 +84,9 @@ class SimpleApplicationTests {
                         priority = 2
                     }) {
                         println("context2: $this")
-                        println("context2.eventListenerContext: ${eventListenerContext}")
+                        println("context2.eventListenerContext: $eventListenerContext")
                         val newEventListenerContext = object : EventListenerContext by eventListenerContext {
-                            override fun toString(): String = "DeleteEventListenerContext(${eventListenerContext})"
+                            override fun toString(): String = "DeleteEventListenerContext($eventListenerContext)"
                         }
                         println("newEventListenerContext: $newEventListenerContext")
                         val res = this.invoke(newEventListenerContext)
@@ -113,9 +110,10 @@ class SimpleApplicationTests {
                     }) {
                         invoke()
                     }
-                    addDispatchInterceptor({
-                        priority = 1
-                    }
+                    addDispatchInterceptor(
+                        {
+                            priority = 1
+                        }
                     ) {
                         invoke()
                     }
@@ -194,6 +192,7 @@ class SimpleApplicationTests {
     }
 }
 
+@OptIn(FuzzyEventTypeImplementation::class)
 private class TestEvent : Event {
     override val id: ID = UUID.random()
 
