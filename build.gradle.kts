@@ -229,6 +229,17 @@ object SuspendTransformPlugins {
 
     fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
         transformers {
+            fun TransformerSpec.excludeTransMarks() {
+                addCopyAnnotationExclude {
+                    packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    className.set(SUSPEND_TRANS_ANNO_NAME)
+                }
+                addCopyAnnotationExclude {
+                    packageName.set(SUSPEND_RUNNER_PACKAGE)
+                    className.set(SUSPEND_TRANS_PROPERTY_ANNO_NAME)
+                }
+            }
+
             fun TransformerSpec.includeApi4J(clear: Boolean = true) {
                 if (clear) {
                     syntheticFunctionIncludeAnnotations.clear()
@@ -263,7 +274,7 @@ object SuspendTransformPlugins {
                 }
             }
 
-            fun TransformerSpec.suspendTrans(
+            fun TransformerSpec.markSuspendTrans(
                 baseNameProperty: String,
                 suffixProperty: String,
                 asPropertyProperty: String,
@@ -283,7 +294,7 @@ object SuspendTransformPlugins {
                 }
             }
 
-            fun TransformerSpec.suspendTransProperty(
+            fun TransformerSpec.markSuspendTransProperty(
                 baseNameProperty: String,
                 suffixProperty: String,
                 asPropertyProperty: String,
@@ -314,7 +325,7 @@ object SuspendTransformPlugins {
                 copyExcludes: List<ClassInfo>,
             ) {
                 addJvm {
-                    suspendTrans(
+                    markSuspendTrans(
                         baseNameProperty,
                         suffixProperty,
                         asPropertyProperty,
@@ -343,6 +354,7 @@ object SuspendTransformPlugins {
                             from(exclude)
                         }
                     }
+                    excludeTransMarks()
                 }
             }
 
@@ -357,7 +369,7 @@ object SuspendTransformPlugins {
                 copyExcludes: List<ClassInfo>,
             ) {
                 addJvm {
-                    suspendTransProperty(
+                    markSuspendTransProperty(
                         baseNameProperty,
                         suffixProperty,
                         asPropertyProperty,
@@ -387,6 +399,7 @@ object SuspendTransformPlugins {
                             from(exclude)
                         }
                     }
+                    excludeTransMarks()
                 }
             }
 
@@ -477,12 +490,14 @@ object SuspendTransformPlugins {
             // @JvmAsync
             addJvmAsync {
                 includeApi4J()
+                excludeTransMarks()
                 asyncFunction()
             }
 
             // @JvmBlocking
             addJvmBlocking {
                 includeApi4J()
+                excludeTransMarks()
                 blockingFunction()
             }
 

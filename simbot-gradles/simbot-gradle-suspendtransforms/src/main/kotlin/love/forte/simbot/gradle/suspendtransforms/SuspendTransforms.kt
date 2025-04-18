@@ -55,7 +55,7 @@ import love.forte.plugin.suspendtrans.*
  *
  */
 @Suppress("MemberVisibilityCanBePrivate", "DEPRECATION")
-@Deprecated("Deprecated, use SuspendTransformPlugins plz.")
+@Deprecated("Deprecated extensions, use SuspendTransformPlugins plz.")
 public object SuspendTransforms {
     private val javaIncludeAnnotationApi4JClassInfo = ClassInfo("love.forte.simbot.annotations", "Api4J")
     private val javaIncludeAnnotationApi4J = IncludeAnnotation(javaIncludeAnnotationApi4JClassInfo)
@@ -247,7 +247,7 @@ public object SuspendTransforms {
  */
 @Suppress("DEPRECATION")
 @JvmOverloads
-@Deprecated("Deprecated")
+@Deprecated("Deprecated extensions, use `SuspendTransformPluginExtension.addSimbotJvmTransforms` plz.")
 public fun SuspendTransformConfiguration.addSimbotJvmTransformers(
     useTargetMarker: Boolean = false,
 ) {
