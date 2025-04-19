@@ -29,7 +29,7 @@ plugins {
 repositories {
     mavenCentral()
     gradlePluginPortal()
-    // mavenLocal()
+    mavenLocal()
 }
 
 val kotlinVersion: String = libs.versions.kotlin.get()
@@ -46,7 +46,7 @@ dependencies {
     implementation(libs.gradleNexusPublishPlugin)
 
     // suspend transform
-    // implementation(libs.suspend.transform.gradle)
+    implementation(libs.suspend.transform.gradle)
 
     // gradle common
     implementation(libs.bundles.gradle.common)
