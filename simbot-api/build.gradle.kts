@@ -32,7 +32,7 @@ import java.time.Instant
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    alias(libs.plugins.suspendTransform)
+    id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")

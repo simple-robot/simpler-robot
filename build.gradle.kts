@@ -32,7 +32,8 @@ plugins {
     id("com.github.gmazzo.buildconfig") version "5.5.1" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
-    alias(libs.plugins.suspendTransform) apply false
+    id("love.forte.plugin.suspend-transform") apply false
+    // alias(libs.plugins.suspendTransform) apply false
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
