@@ -25,6 +25,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.definition.*
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -41,6 +42,12 @@ public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteract
      * 当前进行行为的 [SendSupport] 实例。
      */
     override val content: SendSupport
+
+    /**
+     * 消息发送的目标，即 [content] 本身。
+     */
+    @STP
+    override suspend fun target(): SendSupport = content
 }
 
 /**
@@ -80,6 +87,9 @@ public interface SendSupportPostSendEvent : SendSupportInteractionEvent, Interna
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactInteractionEvent : SendSupportInteractionEvent {
     override val content: Contact
+
+    @STP
+    override suspend fun target(): Contact = content
 }
 
 /**
@@ -90,6 +100,9 @@ public interface ContactInteractionEvent : SendSupportInteractionEvent {
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSendEvent {
     override val content: Contact
+
+    @STP
+    override suspend fun target(): Contact = content
 }
 
 /**
@@ -100,6 +113,9 @@ public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSe
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPostSendEvent {
     override val content: Contact
+
+    @STP
+    override suspend fun target(): Contact = content
 }
 //endregion
 
@@ -113,6 +129,9 @@ public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPost
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberInteractionEvent : SendSupportInteractionEvent {
     override val content: Member
+
+    @STP
+    override suspend fun target(): Member = content
 }
 
 /**
@@ -123,6 +142,9 @@ public interface MemberInteractionEvent : SendSupportInteractionEvent {
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSendEvent {
     override val content: Member
+
+    @STP
+    override suspend fun target(): Member = content
 }
 
 /**
@@ -133,6 +155,9 @@ public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSend
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSendEvent {
     override val content: Member
+
+    @STP
+    override suspend fun target(): Member = content
 }
 //endregion
 
@@ -146,6 +171,9 @@ public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSe
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
     override val content: ChatRoom
+
+    @STP
+    override suspend fun target(): ChatRoom = content
 }
 
 /**
@@ -156,6 +184,9 @@ public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPreSendEvent {
     override val content: ChatRoom
+
+    @STP
+    override suspend fun target(): ChatRoom = content
 }
 
 /**
@@ -166,6 +197,9 @@ public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPre
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomPostSendEvent : ChatRoomInteractionEvent, SendSupportPostSendEvent {
     override val content: ChatRoom
+
+    @STP
+    override suspend fun target(): ChatRoom = content
 }
 //endregion
 
@@ -178,6 +212,9 @@ public interface ChatRoomPostSendEvent : ChatRoomInteractionEvent, SendSupportPo
  */
 public interface ChatGroupInteractionEvent : ChatRoomInteractionEvent {
     override val content: ChatGroup
+
+    @STP
+    override suspend fun target(): ChatGroup = content
 }
 
 /**
@@ -187,6 +224,9 @@ public interface ChatGroupInteractionEvent : ChatRoomInteractionEvent {
  */
 public interface ChatGroupPreSendEvent : ChatGroupInteractionEvent, ChatRoomPreSendEvent {
     override val content: ChatGroup
+
+    @STP
+    override suspend fun target(): ChatGroup = content
 }
 
 /**
@@ -196,6 +236,9 @@ public interface ChatGroupPreSendEvent : ChatGroupInteractionEvent, ChatRoomPreS
  */
 public interface ChatGroupPostSendEvent : ChatGroupInteractionEvent, ChatRoomPostSendEvent {
     override val content: ChatGroup
+
+    @STP
+    override suspend fun target(): ChatGroup = content
 }
 //endregion
 
@@ -210,6 +253,9 @@ public interface ChatGroupPostSendEvent : ChatGroupInteractionEvent, ChatRoomPos
  */
 public interface ChatChannelInteractionEvent : ChatRoomInteractionEvent {
     override val content: ChatChannel
+
+    @STP
+    override suspend fun target(): ChatChannel = content
 }
 
 /**
@@ -221,6 +267,9 @@ public interface ChatChannelPreSendEvent :
     ChatChannelInteractionEvent,
     ChatRoomPreSendEvent {
     override val content: ChatChannel
+
+    @STP
+    override suspend fun target(): ChatChannel = content
 }
 
 /**
@@ -232,5 +281,8 @@ public interface ChatChannelPostSendEvent :
     ChatChannelInteractionEvent,
     ChatRoomPostSendEvent {
     override val content: ChatChannel
+
+    @STP
+    override suspend fun target(): ChatChannel = content
 }
 //endregion
