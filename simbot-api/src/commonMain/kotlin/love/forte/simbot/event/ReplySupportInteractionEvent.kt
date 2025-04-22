@@ -25,6 +25,8 @@ package love.forte.simbot.event
 
 import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.bot.Bot
+import love.forte.simbot.definition.*
+import love.forte.simbot.suspendrunner.STP
 
 
 /**
@@ -123,6 +125,14 @@ public interface MessageEventPostReplyEvent : MessageEventInteractionEvent, Repl
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ContactMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ContactMessageEvent
+
+    /**
+     * 发送目标为一个 [Contact], 同 [ContactMessageEvent.content]。
+     *
+     * @see ContactMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Contact = content.content()
 }
 
 /**
@@ -133,7 +143,17 @@ public interface ContactMessageEventInteractionEvent : MessageEventInteractionEv
  * @see ContactMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteractionEvent, MessageEventPreReplyEvent
+public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteractionEvent, MessageEventPreReplyEvent {
+    override val content: ContactMessageEvent
+
+    /**
+     * 发送目标为一个 [Contact], 同 [ContactMessageEvent.content]。
+     *
+     * @see ContactMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Contact = content.content()
+}
 
 /**
  * 针对 [ContactMessageEvent.reply] 的内部通知事件。
@@ -143,7 +163,17 @@ public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteracti
  * @see ContactMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteractionEvent, MessageEventPostReplyEvent
+public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteractionEvent, MessageEventPostReplyEvent {
+    override val content: ContactMessageEvent
+
+    /**
+     * 发送目标为一个 [Contact], 同 [ContactMessageEvent.content]。
+     *
+     * @see ContactMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Contact = content.content()
+}
 
 // endregion
 
@@ -158,6 +188,14 @@ public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteract
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatRoomMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatRoom], 同 [ChatRoomMessageEvent.content]。
+     *
+     * @see ChatRoomMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatRoom = content.content()
 }
 
 /**
@@ -168,7 +206,17 @@ public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionE
  * @see ChatRoomMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPreReplyEvent
+public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPreReplyEvent {
+    override val content: ChatRoomMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatRoom], 同 [ChatRoomMessageEvent.content]。
+     *
+     * @see ChatRoomMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatRoom = content.content()
+}
 
 /**
  * 针对 [ChatRoomMessageEvent.reply] 的内部通知事件。
@@ -178,7 +226,17 @@ public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInterac
  * @see ChatRoomMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPostReplyEvent
+public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPostReplyEvent {
+    override val content: ChatRoomMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatRoom], 同 [ChatRoomMessageEvent.content]。
+     *
+     * @see ChatRoomMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatRoom = content.content()
+}
 
 //region ChatGroup
 
@@ -190,6 +248,14 @@ public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventIntera
  */
 public interface ChatGroupMessageEventInteractionEvent : ChatRoomMessageEventInteractionEvent {
     override val content: ChatGroupMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatGroup], 同 [ChatGroupMessageEvent.content]。
+     *
+     * @see ChatGroupMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatGroup = content.content()
 }
 
 /**
@@ -203,6 +269,14 @@ public interface ChatGroupMessageEventPreReplyEvent :
     ChatGroupMessageEventInteractionEvent,
     ChatRoomMessageEventPreReplyEvent {
     override val content: ChatGroupMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatGroup], 同 [ChatGroupMessageEvent.content]。
+     *
+     * @see ChatGroupMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatGroup = content.content()
 }
 
 /**
@@ -216,6 +290,14 @@ public interface ChatGroupMessageEventPostReplyEvent :
     ChatGroupMessageEventInteractionEvent,
     ChatRoomMessageEventPostReplyEvent {
     override val content: ChatGroupMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatGroup], 同 [ChatGroupMessageEvent.content]。
+     *
+     * @see ChatGroupMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatGroup = content.content()
 }
 //endregion
 //region ChatChannel
@@ -228,6 +310,14 @@ public interface ChatGroupMessageEventPostReplyEvent :
  */
 public interface ChatChannelMessageEventInteractionEvent : ChatRoomMessageEventInteractionEvent {
     override val content: ChatChannelMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatChannel], 同 [ChatChannelMessageEvent.content]。
+     *
+     * @see ChatChannelMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatChannel = content.content()
 }
 
 /**
@@ -241,6 +331,14 @@ public interface ChatChannelMessageEventPreReplyEvent :
     ChatChannelMessageEventInteractionEvent,
     ChatRoomMessageEventPreReplyEvent {
     override val content: ChatChannelMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatChannel], 同 [ChatChannelMessageEvent.content]。
+     *
+     * @see ChatChannelMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatChannel = content.content()
 }
 
 /**
@@ -254,6 +352,14 @@ public interface ChatChannelMessageEventPostReplyEvent :
     ChatChannelMessageEventInteractionEvent,
     ChatRoomMessageEventPostReplyEvent {
     override val content: ChatChannelMessageEvent
+
+    /**
+     * 发送目标为一个 [ChatChannel], 同 [ChatChannelMessageEvent.content]。
+     *
+     * @see ChatChannelMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): ChatChannel = content.content()
 }
 //endregion
 //endregion
@@ -269,6 +375,14 @@ public interface ChatChannelMessageEventPostReplyEvent :
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: MemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [MemberMessageEvent.content]。
+     *
+     * @see MemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -281,6 +395,14 @@ public interface MemberMessageEventInteractionEvent : MessageEventInteractionEve
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: MemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [MemberMessageEvent.content]。
+     *
+     * @see MemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -293,6 +415,14 @@ public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteraction
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: MemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [MemberMessageEvent.content]。
+     *
+     * @see MemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 //endregion
 
@@ -307,6 +437,14 @@ public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractio
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface GuildMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: GuildMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [GuildMemberMessageEvent.content]。
+     *
+     * @see GuildMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -321,6 +459,14 @@ public interface GuildMemberMessageEventPreReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
     override val content: GuildMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [GuildMemberMessageEvent.content]。
+     *
+     * @see GuildMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -335,6 +481,14 @@ public interface GuildMemberMessageEventPostReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
     override val content: GuildMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [GuildMemberMessageEvent.content]。
+     *
+     * @see GuildMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 //endregion
 
@@ -349,6 +503,14 @@ public interface GuildMemberMessageEventPostReplyEvent :
 @OptIn(FuzzyEventTypeImplementation::class)
 public interface ChatGroupMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatGroupMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [ChatGroupMemberMessageEvent.content]。
+     *
+     * @see ChatGroupMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -363,6 +525,14 @@ public interface ChatGroupMemberMessageEventPreReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
     override val content: ChatGroupMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [ChatGroupMemberMessageEvent.content]。
+     *
+     * @see ChatGroupMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 
 /**
@@ -377,5 +547,13 @@ public interface ChatGroupMemberMessageEventPostReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
     override val content: ChatGroupMemberMessageEvent
+
+    /**
+     * 发送目标为一个 [Member], 同 [ChatGroupMemberMessageEvent.content]。
+     *
+     * @see ChatGroupMemberMessageEvent.content
+     */
+    @STP
+    override suspend fun target(): Member = content.content()
 }
 //endregion
