@@ -77,8 +77,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.jetbrains.annotations)
-                implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
                 api(project(":simbot-commons:simbot-common-streamable"))
