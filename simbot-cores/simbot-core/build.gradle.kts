@@ -66,7 +66,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":simbot-commons:simbot-common-annotations"))
+                api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-commons:simbot-common-collection"))
 
                 api(project(":simbot-api"))

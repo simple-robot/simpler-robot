@@ -25,13 +25,14 @@ import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import love.forte.plugin.suspendtrans.gradle.SuspendTransPluginConstants
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.time.Instant
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    alias(libs.plugins.suspendTransform)
+    id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
@@ -76,8 +77,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.jetbrains.annotations)
-                implementation(project(":simbot-commons:simbot-common-annotations"))
                 implementation(project(":simbot-logger"))
 
                 api(project(":simbot-commons:simbot-common-streamable"))
@@ -99,6 +100,12 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.serialization.properties)
+
+                implementation(
+                    SuspendTransPluginConstants.ANNOTATION_GROUP +
+                        ":" + SuspendTransPluginConstants.ANNOTATION_NAME +
+                        ":" + SuspendTransPluginConstants.ANNOTATION_VERSION
+                )
             }
         }
 
@@ -138,8 +145,8 @@ kotlin {
 
 dependencies {
     // add("kspJvm", libs.suspend.reversal.processor)
-    add("kspJvm", project(":internal-processors:interface-uml-processor"))
-    add("kspCommonMainMetadata", project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
+    "kspJvm"(project(":internal-processors:interface-uml-processor"))
+    "kspCommonMainMetadata"(project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
 }
 
 ksp {

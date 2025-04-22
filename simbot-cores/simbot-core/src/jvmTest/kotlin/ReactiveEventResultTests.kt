@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -30,6 +30,7 @@ import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.nonBlock
 import reactor.core.publisher.Mono
 import java.util.concurrent.atomic.AtomicBoolean
@@ -66,7 +67,7 @@ import kotlin.test.assertTrue
 class ReactiveEventResultTests {
 
     @Test
-    @OptIn(ExperimentalSimbotAPI::class)
+    @OptIn(ExperimentalSimbotAPI::class, FuzzyEventTypeImplementation::class)
     fun reactiveResultCollectTest() = runTest {
         val app = launchSimpleApplication { }
         val event = object : Event {

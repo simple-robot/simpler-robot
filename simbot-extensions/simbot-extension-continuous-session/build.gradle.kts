@@ -27,7 +27,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
-    alias(libs.plugins.suspendTransform)
+    id("love.forte.plugin.suspend-transform")
     id("org.jetbrains.dokka")
 }
 
@@ -56,7 +56,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":simbot-commons:simbot-common-annotations"))
+                api(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-api"))
             }
         }
