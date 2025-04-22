@@ -92,7 +92,7 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref =
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.38"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.39"
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 # https://square.github.io/kotlinpoet/interop-ksp/
