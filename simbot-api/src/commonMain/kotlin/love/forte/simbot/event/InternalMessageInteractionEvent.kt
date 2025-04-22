@@ -26,6 +26,7 @@ package love.forte.simbot.event
 import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.suspendrunner.STP
 
 /**
  * 在内部一个跟 [Message][love.forte.simbot.message.Message] 的交互有关的事件。
@@ -44,6 +45,9 @@ import love.forte.simbot.message.MessageReceipt
 public interface InternalMessageInteractionEvent : InternalEvent {
     /**
      * 进行消息交互的实体。
+     * 实体取决于当前**被拦截**的主要源目标，
+     * 例如一个 [SendSupport] (参考 [SendSupportInteractionEvent])
+     * 或一个 [ReplySupport] (参考 [ReplySupportInteractionEvent])。
      */
     public val content: Any
 
@@ -51,8 +55,33 @@ public interface InternalMessageInteractionEvent : InternalEvent {
      * 进行交互的消息内容，例如
      * [SendSupport.send] 或 [ReplySupport.reply]
      * 调用时传递的参数。
+     *
+     * @see InteractionMessage
      */
     public val message: InteractionMessage
+
+    /**
+     * 消息的发送目标/目的地。
+     *
+     * 与 [content] 不同，[target] 代表消息将会被发送到哪个目标中。
+     * 在 [SendSupportInteractionEvent] 下，它通常等于 [content],
+     * 而在 [ReplySupportInteractionEvent] 下，它则需要从 [content] 中获取，
+     * 例如在 [ChatGroupMessageEventInteractionEvent] 中消息的发送目标是
+     * [ChatGroup][love.forte.simbot.definition.ChatGroup] 而不是 [ChatGroupMessageEvent]。
+     *
+     * 是否会真正挂起取决于具体实现。
+     *
+     * 如果组件未实现(例如向下兼容的较低版本组件)或无法确定/获取发送目标，则可能得到 `null`。
+     *
+     * @since 4.12
+     *
+     * @return 消息的最终发送目标。大概率是一个 [SendSupport] 或
+     * [Actor][love.forte.simbot.definition.Actor],
+     * 但无法做出保证。
+     * 如果组件未实现(例如向下兼容的较低版本组件)或无法确定/获取发送目标，则可能得到 `null`。
+     */
+    @STP
+    public suspend fun target(): Any? = null
 }
 
 /**
