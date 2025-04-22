@@ -1766,21 +1766,24 @@ public abstract class love/forte/simbot/event/InteractionMessage$Extension : lov
 	public fun <init> ()V
 }
 
-public final class love/forte/simbot/event/InteractionMessage$Message : love/forte/simbot/event/InteractionMessage {
+public final class love/forte/simbot/event/InteractionMessage$Message : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMessage ()Llove/forte/simbot/message/Message;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class love/forte/simbot/event/InteractionMessage$MessageContent : love/forte/simbot/event/InteractionMessage {
+public final class love/forte/simbot/event/InteractionMessage$MessageContent : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class love/forte/simbot/event/InteractionMessage$Text : love/forte/simbot/event/InteractionMessage {
+public abstract class love/forte/simbot/event/InteractionMessage$Standard : love/forte/simbot/event/InteractionMessage {
+}
+
+public final class love/forte/simbot/event/InteractionMessage$Text : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
