@@ -29,10 +29,14 @@ import kotlin.jvm.JvmStatic
 
 /**
  * 拦截或通知中 [SendSupport.send] 或 [ReplySupport.reply] 的消息内容。
+ *
+ * @since 4.11.0
  */
 public sealed class InteractionMessage {
     /**
      * 当参数类型为 [String] 时，表示发送的文本消息。
+     *
+     * @since 4.11.0
      */
     public class Text internal constructor(public val text: String) : InteractionMessage() {
         override fun equals(other: Any?): Boolean {
@@ -55,6 +59,8 @@ public sealed class InteractionMessage {
 
     /**
      * 当参数类型为 [love.forte.simbot.message.Message] 时，表示发送的消息。
+     *
+     * @since 4.11.0
      */
     public class Message internal constructor(public val message: love.forte.simbot.message.Message) :
         InteractionMessage() {
@@ -79,6 +85,8 @@ public sealed class InteractionMessage {
 
     /**
      * 当参数类型为 [love.forte.simbot.message.MessageContent] 时，表示发送的消息内容。
+     *
+     * @since 4.11.0
      */
     public class MessageContent internal constructor(
         public val messageContent: love.forte.simbot.message.MessageContent
@@ -104,6 +112,8 @@ public sealed class InteractionMessage {
     /**
      * 如果组件或 [SendSupport] 的实现者提供了其他三个类型参数以外的参数，
      * 则需要通过 [Extension] 对其进行扩展。
+     *
+     * @since 4.11.0
      */
     public abstract class Extension : InteractionMessage()
 
