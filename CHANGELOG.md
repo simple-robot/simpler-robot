@@ -1,6 +1,40 @@
 # CHANGELOG
 > 由自动任务基于Git提交记录生成，详细更新内容请参考对应版本的 release 。
 
+## v4.12.0
+
+> Release & Pull Notes: [v4.12.0](https://github.com/simple-robot/simpler-robot/releases/tag/v4.12.0)
+>
+> Commit compare: [v4.11.1..v4.12.0](https://github.com/simple-robot/simpler-robot/compare/v4.11.1..v4.12.0)
+
+- [`cd58dcadf`](https://github.com/simple-robot/simpler-robot/commit/cd58dcadf): Release: v4.12.0
+- [`8b7e714ac`](https://github.com/simple-robot/simpler-robot/commit/8b7e714ac): build(deps): bump org.jetbrains.kotlinx:lincheck from 2.38 to 2.39
+- [`170e0cdab`](https://github.com/simple-robot/simpler-robot/commit/170e0cdab): 调整 InteractionMessage 的sealed结构
+- [`21460e229`](https://github.com/simple-robot/simpler-robot/commit/21460e229): apiDump
+- [`b01bae9cd`](https://github.com/simple-robot/simpler-robot/commit/b01bae9cd): Add `target` method to message event interfaces
+- [`c7a4fd57b`](https://github.com/simple-robot/simpler-robot/commit/c7a4fd57b): Add suspendable `target` method to interaction event interfaces
+- [`28bfd1fe7`](https://github.com/simple-robot/simpler-robot/commit/28bfd1fe7): Add `target` resolution and enhance InteractionMessage docs
+- [`d81a85daf`](https://github.com/simple-robot/simpler-robot/commit/d81a85daf): 准备一些不一定用得上的模块
+- [`2e58a4ac2`](https://github.com/simple-robot/simpler-robot/commit/2e58a4ac2): build(deps): bump com.github.gmazzo.buildconfig from 5.5.1 to 5.6.2
+- [`16ee8e84c`](https://github.com/simple-robot/simpler-robot/commit/16ee8e84c): fix Gradle build config
+- [`0a2cc850c`](https://github.com/simple-robot/simpler-robot/commit/0a2cc850c): improve(common-annotations): 对 `simbot-common-annotations` 模块的引用传递
+- [`56b2f3854`](https://github.com/simple-robot/simpler-robot/commit/56b2f3854): 移除/隐藏一些 mavenLocal()
+- [`3351c072c`](https://github.com/simple-robot/simpler-robot/commit/3351c072c): 改善 Gradle 模块，调整部分配置
+- [`1cb7018a1`](https://github.com/simple-robot/simpler-robot/commit/1cb7018a1): 调整 gradle 的 suspend-transform 配置信息
+- [`b7e1a0078`](https://github.com/simple-robot/simpler-robot/commit/b7e1a0078): 简单调整 class-builder 的内部逻辑
+- [`f3d62d987`](https://github.com/simple-robot/simpler-robot/commit/f3d62d987): 奇怪的问题似乎被解决了。从哪儿解决的？
+- [`22ac56231`](https://github.com/simple-robot/simpler-robot/commit/22ac56231): 奇怪的问题：只有第一个被add的transformer才会生效？
+- [`566522038`](https://github.com/simple-robot/simpler-robot/commit/566522038): Update Kotlin to 2.1.20, stkcp to 2.1.20-0.12.0 (local), ksp to 2.1.20-1.0.32
+- [`32d76bd81`](https://github.com/simple-robot/simpler-robot/commit/32d76bd81): 调整 gradle 的 suspend-transform 配置信息
+- [`20a9185f8`](https://github.com/simple-robot/simpler-robot/commit/20a9185f8): 简单调整 class-builder 的内部逻辑
+- [`fcee015ad`](https://github.com/simple-robot/simpler-robot/commit/fcee015ad): 奇怪的问题似乎被解决了。从哪儿解决的？
+- [`7b1e13ab7`](https://github.com/simple-robot/simpler-robot/commit/7b1e13ab7): 奇怪的问题：只有第一个被add的transformer才会生效？
+- [`7ccc3b51b`](https://github.com/simple-robot/simpler-robot/commit/7ccc3b51b): Update Kotlin to 2.1.20, stkcp to 2.1.20-0.12.0 (local), ksp to 2.1.20-1.0.32
+- [`d6c3bc458`](https://github.com/simple-robot/simpler-robot/commit/d6c3bc458): build(deps): bump io.projectreactor:reactor-test from 3.7.3 to 3.7.5
+- [`4df7fce73`](https://github.com/simple-robot/simpler-robot/commit/4df7fce73): build(deps): bump io.projectreactor:reactor-core from 3.7.3 to 3.7.5
+- [`f269ce144`](https://github.com/simple-robot/simpler-robot/commit/f269ce144): build(deps): bump org.jetbrains.kotlinx:kotlinx-io-core
+- [`9d7803228`](https://github.com/simple-robot/simpler-robot/commit/9d7803228): build(deps): bump com.squareup:kotlinpoet-ksp from 2.0.0 to 2.1.0
+
 ## v4.11.1
 
 > Release & Pull Notes: [v4.11.1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.11.1)

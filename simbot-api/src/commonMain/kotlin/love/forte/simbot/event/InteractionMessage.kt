@@ -29,12 +29,35 @@ import kotlin.jvm.JvmStatic
 
 /**
  * 拦截或通知中 [SendSupport.send] 或 [ReplySupport.reply] 的消息内容。
+ *
+ * 主要分为 [标准类型][Standard] 和 [扩展类型][Extension].
+ *
+ * [Standard] 用于表示三个标准库中提供的 Message 标准类型: 文本 [Text], 消息 [Message], 事件消息 [MessageContent].
+ * [Extension] 用于当 [Standard] 无法满足组件需求时进行的额外扩展。
+ *
+ * @since 4.11.0
  */
 public sealed class InteractionMessage {
     /**
-     * 当参数类型为 [String] 时，表示发送的文本消息。
+     * 用于表示三个标准库中提供的消息标准类型:
+     * - 文本 [Text]
+     * - 消息 [Message]
+     * - 事件消息 [MessageContent]
+     *
+     * @see InteractionMessage.Text
+     * @see InteractionMessage.Message
+     * @see InteractionMessage.MessageContent
+     *
+     * @since 4.12
      */
-    public class Text internal constructor(public val text: String) : InteractionMessage() {
+    public sealed class Standard : InteractionMessage()
+
+    /**
+     * 当参数类型为 [String] 时，表示发送的文本消息。
+     *
+     * @since 4.11.0
+     */
+    public class Text internal constructor(public val text: String) : Standard() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Text) return false
@@ -55,9 +78,10 @@ public sealed class InteractionMessage {
 
     /**
      * 当参数类型为 [love.forte.simbot.message.Message] 时，表示发送的消息。
+     *
+     * @since 4.11.0
      */
-    public class Message internal constructor(public val message: love.forte.simbot.message.Message) :
-        InteractionMessage() {
+    public class Message internal constructor(public val message: love.forte.simbot.message.Message) : Standard() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Message) return false
@@ -79,10 +103,12 @@ public sealed class InteractionMessage {
 
     /**
      * 当参数类型为 [love.forte.simbot.message.MessageContent] 时，表示发送的消息内容。
+     *
+     * @since 4.11.0
      */
     public class MessageContent internal constructor(
         public val messageContent: love.forte.simbot.message.MessageContent
-    ) : InteractionMessage() {
+    ) : Standard() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is MessageContent) return false
@@ -104,6 +130,8 @@ public sealed class InteractionMessage {
     /**
      * 如果组件或 [SendSupport] 的实现者提供了其他三个类型参数以外的参数，
      * 则需要通过 [Extension] 对其进行扩展。
+     *
+     * @since 4.11.0
      */
     public abstract class Extension : InteractionMessage()
 

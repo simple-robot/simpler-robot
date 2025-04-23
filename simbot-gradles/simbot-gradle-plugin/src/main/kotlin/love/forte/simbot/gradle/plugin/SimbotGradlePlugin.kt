@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,28 +21,13 @@
  *
  */
 
-plugins {
-    `java-library`
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-}
+package love.forte.simbot.gradle.plugin
 
-configJavaCompileWithModule("simbot.spring.common")
-apply(plugin = "simbot-jvm-maven-publish")
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-kotlin {
-    explicitApi()
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    api(project(":simbot-commons:simbot-common-annotations"))
-    api(project(":simbot-quantcat:simbot-quantcat-common"))
-    api(project(":simbot-cores:simbot-core"))
-
-    compileOnly(libs.javax.annotation.api)
-
-    testImplementation(libs.kotlinx.serialization.json)
-}
-
+/**
+ *
+ * @author ForteScarlet
+ */
+public interface SimbotGradlePlugin : Plugin<Project>

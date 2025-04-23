@@ -1045,6 +1045,13 @@ public abstract interface class love/forte/simbot/event/ChatChannelEvent : love/
 
 public abstract interface class love/forte/simbot/event/ChatChannelInteractionEvent : love/forte/simbot/event/ChatRoomInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatChannelMessageEvent : love/forte/simbot/event/ChatChannelEvent, love/forte/simbot/event/ChatRoomMessageEvent, love/forte/simbot/event/MemberAuthorAwareMessageEvent {
@@ -1052,22 +1059,54 @@ public abstract interface class love/forte/simbot/event/ChatChannelMessageEvent 
 
 public abstract interface class love/forte/simbot/event/ChatChannelMessageEventInteractionEvent : love/forte/simbot/event/ChatRoomMessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatChannelMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatChannelMessageEventPostReplyEvent : love/forte/simbot/event/ChatChannelMessageEventInteractionEvent, love/forte/simbot/event/ChatRoomMessageEventPostReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatChannelMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatChannelMessageEventPreReplyEvent : love/forte/simbot/event/ChatChannelMessageEventInteractionEvent, love/forte/simbot/event/ChatRoomMessageEventPreReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatChannelMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatChannelPostSendEvent : love/forte/simbot/event/ChatChannelInteractionEvent, love/forte/simbot/event/ChatRoomPostSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatChannelPreSendEvent : love/forte/simbot/event/ChatChannelInteractionEvent, love/forte/simbot/event/ChatRoomPreSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupEvent : love/forte/simbot/event/ChatRoomEvent, love/forte/simbot/event/OrganizationEvent {
@@ -1083,6 +1122,13 @@ public abstract interface class love/forte/simbot/event/ChatGroupEvent : love/fo
 
 public abstract interface class love/forte/simbot/event/ChatGroupInteractionEvent : love/forte/simbot/event/ChatRoomInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupJoinRequestEvent : love/forte/simbot/event/ChatGroupEvent, love/forte/simbot/event/OrganizationJoinRequestEvent {
@@ -1155,14 +1201,29 @@ public abstract interface class love/forte/simbot/event/ChatGroupMemberMessageEv
 
 public abstract interface class love/forte/simbot/event/ChatGroupMemberMessageEventInteractionEvent : love/forte/simbot/event/MessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupMemberMessageEventPostReplyEvent : love/forte/simbot/event/ChatGroupMemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPostReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupMemberMessageEventPreReplyEvent : love/forte/simbot/event/ChatGroupMemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPreReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupMessageEvent : love/forte/simbot/event/ChatGroupEvent, love/forte/simbot/event/ChatRoomMessageEvent, love/forte/simbot/event/MemberAuthorAwareMessageEvent {
@@ -1170,22 +1231,54 @@ public abstract interface class love/forte/simbot/event/ChatGroupMessageEvent : 
 
 public abstract interface class love/forte/simbot/event/ChatGroupMessageEventInteractionEvent : love/forte/simbot/event/ChatRoomMessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupMessageEventPostReplyEvent : love/forte/simbot/event/ChatGroupMessageEventInteractionEvent, love/forte/simbot/event/ChatRoomMessageEventPostReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupMessageEventPreReplyEvent : love/forte/simbot/event/ChatGroupMessageEventInteractionEvent, love/forte/simbot/event/ChatRoomMessageEventPreReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatGroupMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupPostSendEvent : love/forte/simbot/event/ChatGroupInteractionEvent, love/forte/simbot/event/ChatRoomPostSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatGroupPreSendEvent : love/forte/simbot/event/ChatGroupInteractionEvent, love/forte/simbot/event/ChatRoomPreSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomEvent : love/forte/simbot/event/ActorEvent {
@@ -1199,6 +1292,12 @@ public abstract interface class love/forte/simbot/event/ChatRoomEvent : love/for
 
 public abstract interface class love/forte/simbot/event/ChatRoomInteractionEvent : love/forte/simbot/event/SendSupportInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomMessageEvent : love/forte/simbot/event/ChatRoomEvent, love/forte/simbot/event/MessageEvent {
@@ -1206,20 +1305,49 @@ public abstract interface class love/forte/simbot/event/ChatRoomMessageEvent : l
 
 public abstract interface class love/forte/simbot/event/ChatRoomMessageEventInteractionEvent : love/forte/simbot/event/MessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ChatRoomMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomMessageEventPostReplyEvent : love/forte/simbot/event/ChatRoomMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPostReplyEvent {
+	public abstract fun getContent ()Llove/forte/simbot/event/ChatRoomMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomMessageEventPreReplyEvent : love/forte/simbot/event/ChatRoomMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPreReplyEvent {
+	public abstract fun getContent ()Llove/forte/simbot/event/ChatRoomMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomPostSendEvent : love/forte/simbot/event/ChatRoomInteractionEvent, love/forte/simbot/event/SendSupportPostSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ChatRoomPreSendEvent : love/forte/simbot/event/ChatRoomInteractionEvent, love/forte/simbot/event/SendSupportPreSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ComponentEvent : love/forte/simbot/event/Event {
@@ -1237,6 +1365,12 @@ public abstract interface class love/forte/simbot/event/ContactEvent : love/fort
 
 public abstract interface class love/forte/simbot/event/ContactInteractionEvent : love/forte/simbot/event/SendSupportInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Contact;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContactMessageEvent : love/forte/simbot/event/ContactEvent, love/forte/simbot/event/MessageEvent {
@@ -1244,20 +1378,49 @@ public abstract interface class love/forte/simbot/event/ContactMessageEvent : lo
 
 public abstract interface class love/forte/simbot/event/ContactMessageEventInteractionEvent : love/forte/simbot/event/MessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/ContactMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContactMessageEventPostReplyEvent : love/forte/simbot/event/ContactMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPostReplyEvent {
+	public abstract fun getContent ()Llove/forte/simbot/event/ContactMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContactMessageEventPreReplyEvent : love/forte/simbot/event/ContactMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPreReplyEvent {
+	public abstract fun getContent ()Llove/forte/simbot/event/ContactMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContactPostSendEvent : love/forte/simbot/event/ContactInteractionEvent, love/forte/simbot/event/SendSupportPostSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Contact;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContactPreSendEvent : love/forte/simbot/event/ContactInteractionEvent, love/forte/simbot/event/SendSupportPreSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Contact;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Contact;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/ContentEvent : love/forte/simbot/event/Event {
@@ -1561,14 +1724,29 @@ public abstract interface class love/forte/simbot/event/GuildMemberMessageEvent 
 
 public abstract interface class love/forte/simbot/event/GuildMemberMessageEventInteractionEvent : love/forte/simbot/event/MessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/GuildMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/GuildMemberMessageEventPostReplyEvent : love/forte/simbot/event/GuildMemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPostReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/GuildMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/GuildMemberMessageEventPreReplyEvent : love/forte/simbot/event/GuildMemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPreReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/GuildMemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class love/forte/simbot/event/InteractionMessage {
@@ -1588,21 +1766,24 @@ public abstract class love/forte/simbot/event/InteractionMessage$Extension : lov
 	public fun <init> ()V
 }
 
-public final class love/forte/simbot/event/InteractionMessage$Message : love/forte/simbot/event/InteractionMessage {
+public final class love/forte/simbot/event/InteractionMessage$Message : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMessage ()Llove/forte/simbot/message/Message;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class love/forte/simbot/event/InteractionMessage$MessageContent : love/forte/simbot/event/InteractionMessage {
+public final class love/forte/simbot/event/InteractionMessage$MessageContent : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class love/forte/simbot/event/InteractionMessage$Text : love/forte/simbot/event/InteractionMessage {
+public abstract class love/forte/simbot/event/InteractionMessage$Standard : love/forte/simbot/event/InteractionMessage {
+}
+
+public final class love/forte/simbot/event/InteractionMessage$Text : love/forte/simbot/event/InteractionMessage$Standard {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -1625,6 +1806,10 @@ public class love/forte/simbot/event/InternalInterceptionException : java/lang/R
 public abstract interface class love/forte/simbot/event/InternalMessageInteractionEvent : love/forte/simbot/event/InternalEvent {
 	public abstract fun getContent ()Ljava/lang/Object;
 	public abstract fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public fun getTarget ()Ljava/lang/Object;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/InternalMessagePostSendEvent : love/forte/simbot/event/InternalMessageInteractionEvent, love/forte/simbot/event/InternalNotificationEvent {
@@ -1789,6 +1974,12 @@ public abstract interface class love/forte/simbot/event/MemberIncreaseOrDecrease
 
 public abstract interface class love/forte/simbot/event/MemberInteractionEvent : love/forte/simbot/event/SendSupportInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Member;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MemberMessageEvent : love/forte/simbot/event/MemberEvent, love/forte/simbot/event/MessageEvent {
@@ -1796,22 +1987,49 @@ public abstract interface class love/forte/simbot/event/MemberMessageEvent : lov
 
 public abstract interface class love/forte/simbot/event/MemberMessageEventInteractionEvent : love/forte/simbot/event/MessageEventInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/MemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MemberMessageEventPostReplyEvent : love/forte/simbot/event/MemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPostReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/MemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MemberMessageEventPreReplyEvent : love/forte/simbot/event/MemberMessageEventInteractionEvent, love/forte/simbot/event/MessageEventPreReplyEvent {
 	public abstract fun getContent ()Llove/forte/simbot/event/MemberMessageEvent;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MemberPostSendEvent : love/forte/simbot/event/MemberInteractionEvent, love/forte/simbot/event/SendSupportPostSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Member;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MemberPreSendEvent : love/forte/simbot/event/MemberInteractionEvent, love/forte/simbot/event/SendSupportPreSendEvent {
 	public abstract fun getContent ()Llove/forte/simbot/definition/Member;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public synthetic fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTarget ()Llove/forte/simbot/definition/Member;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/MessageContentAwareEvent : love/forte/simbot/event/Event {
@@ -1905,6 +2123,11 @@ public final class love/forte/simbot/event/RequestEvent$Type : java/lang/Enum {
 
 public abstract interface class love/forte/simbot/event/SendSupportInteractionEvent : love/forte/simbot/event/BotEvent, love/forte/simbot/event/InternalMessageInteractionEvent {
 	public abstract fun getContent ()Llove/forte/simbot/ability/SendSupport;
+	public synthetic fun getTarget ()Ljava/lang/Object;
+	public fun getTarget ()Llove/forte/simbot/ability/SendSupport;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class love/forte/simbot/event/SendSupportPostSendEvent : love/forte/simbot/event/InternalMessagePostSendEvent, love/forte/simbot/event/SendSupportInteractionEvent {

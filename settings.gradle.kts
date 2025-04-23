@@ -26,7 +26,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        mavenLocal()
+        // mavenLocal()
     }
 }
 
@@ -41,6 +41,7 @@ plugins {
 include(":internal-processors:interface-uml-processor")
 
 // gradle
+// include(":simbot-gradles:simbot-gradle-plugin")
 include(":simbot-gradles:simbot-gradle-suspendtransforms")
 
 // processors

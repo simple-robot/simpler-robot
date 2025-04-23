@@ -1,3 +1,20 @@
+public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransformPlugins {
+	public static final field API4JS_NAME Ljava/lang/String;
+	public static final field API4J_NAME Ljava/lang/String;
+	public static final field AS_RESERVE_FUN_NAME Ljava/lang/String;
+	public static final field INSTANCE Llove/forte/simbot/gradle/suspendtransforms/SuspendTransformPlugins;
+	public static final field OPT_ANNOTATION_PACKAGE Ljava/lang/String;
+	public static final field RUN_IN_ASYNC_FUN_NAME Ljava/lang/String;
+	public static final field RUN_IN_BLOCKING_FUN_NAME Ljava/lang/String;
+	public static final field SUSPEND_RUNNER_PACKAGE Ljava/lang/String;
+	public static final field SUSPEND_TRANS_ANNO_NAME Ljava/lang/String;
+	public static final field SUSPEND_TRANS_PROPERTY_ANNO_NAME Ljava/lang/String;
+}
+
+public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransformPluginsKt {
+	public static final fun addSimbotJvmTransforms (Llove/forte/plugin/suspendtrans/gradle/SuspendTransformPluginExtension;)V
+}
+
 public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransforms {
 	public static final field INSTANCE Llove/forte/simbot/gradle/suspendtransforms/SuspendTransforms;
 	public final fun getJsPromiseTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
