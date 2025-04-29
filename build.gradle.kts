@@ -29,7 +29,7 @@ plugins {
     idea
     id("org.jetbrains.dokka")
     // id("simbot.dokka-multi-module")
-    id("com.github.gmazzo.buildconfig") version "5.6.2" apply false
+    id("com.github.gmazzo.buildconfig") version "5.6.4" apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
     id("love.forte.plugin.suspend-transform") apply false
