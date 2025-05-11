@@ -3,6 +3,8 @@ public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransformPl
 	public static final field API4J_NAME Ljava/lang/String;
 	public static final field AS_RESERVE_FUN_NAME Ljava/lang/String;
 	public static final field INSTANCE Llove/forte/simbot/gradle/suspendtransforms/SuspendTransformPlugins;
+	public static final field JB_BLOCKING_ANNOTATION_NAME Ljava/lang/String;
+	public static final field JB_BLOCKING_ANNOTATION_PACKAGE Ljava/lang/String;
 	public static final field OPT_ANNOTATION_PACKAGE Ljava/lang/String;
 	public static final field RUN_IN_ASYNC_FUN_NAME Ljava/lang/String;
 	public static final field RUN_IN_BLOCKING_FUN_NAME Ljava/lang/String;
