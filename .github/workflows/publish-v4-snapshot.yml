@@ -56,7 +56,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-      - run: gradle assemble allTests -s
+      - run: gradle assemble allTests -s --warning-mode all -Pkotlin.native.enableKlibsCrossCompilation=false
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4

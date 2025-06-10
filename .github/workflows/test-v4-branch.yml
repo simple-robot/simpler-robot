@@ -45,6 +45,7 @@ jobs:
             allTests
             -s
             --warning-mode all
+            -Pkotlin.native.enableKlibsCrossCompilation=false
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
