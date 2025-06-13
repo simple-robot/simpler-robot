@@ -39,7 +39,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.api")
-apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {

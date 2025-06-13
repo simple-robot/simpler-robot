@@ -29,7 +29,14 @@ detekt = "1.23.8"
 # https://github.com/gradle-nexus/publish-plugin
 gradleNexusPublishPlugin = "2.0.0"
 
+# https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
+# https://github.com/vanniktech/gradle-maven-publish-plugin
+# https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
+maven-publish-plugin = "0.32.0"
+
 [libraries]
+maven-publish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "maven-publish-plugin" }
+
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:26.0.2"
 

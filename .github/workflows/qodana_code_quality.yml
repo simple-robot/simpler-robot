@@ -9,7 +9,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.6
+  GRADLE_VERSION: 8.10.2
 
 jobs:
   qodana:
@@ -47,5 +47,3 @@ jobs:
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 #          GITHUB_TOKEN: ${{ secrets.FORLIY_ACCESS_TOKEN }}
-
-

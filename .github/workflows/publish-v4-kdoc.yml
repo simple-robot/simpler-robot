@@ -6,7 +6,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.6
+  GRADLE_VERSION: 8.10.2
   IS_CI: true
   GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
   GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
@@ -34,20 +34,17 @@ jobs:
           cache: 'gradle'
 
       # setup Gradle
-      - name: Gradle generate documentation
-        uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-          arguments: |
-            dokkaGenerate
-            -s
-            --warning-mode all
-            -x test
-            --build-cache
-            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=2G -Dfile.encoding=UTF-8" 
-            -Porg.gradle.daemon=false
+
+      - name: Generate documentation
+        run: gradle dokkaGenerate -s --warning-mode all -x test --build-cache
         env:
           SIMBOT_IS_SNAPSHOT: false
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=2G -Dfile.encoding=UTF-8"
+          ORG_GRADLE_PROJECT_org.gradle.daemon: "false"
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository

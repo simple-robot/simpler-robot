@@ -33,7 +33,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.common.streamable")
-apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
