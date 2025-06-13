@@ -21,66 +21,124 @@
  *
  */
 
+import com.vanniktech.maven.publish.SonatypeHost
+import gradle.kotlin.dsl.accessors._962842af322993b246b9354775ec3900.mavenPublishing
 import love.forte.gradle.common.core.Gpg
+import love.forte.gradle.common.core.project.setup
+import love.forte.gradle.common.core.property.ofIf
 import love.forte.gradle.common.publication.configure.configPublishMaven
 import love.forte.gradle.common.publication.configure.publishingExtension
 import love.forte.gradle.common.publication.configure.setupPom
+import org.gradle.internal.impldep.org.bouncycastle.asn1.x509.X509ObjectIdentifiers.organization
 
 plugins {
     signing
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
 }
 
-val isSnapshot = isSnapshot()
+val p = project
 
-val jarJavadoc by tasks.registering(Jar::class) {
-    group = "documentation"
-    archiveClassifier.set("javadoc")
-    if (!(isSnapshot || isSimbotLocal())) {
-        dependsOn(tasks.dokkaGeneratePublicationHtml)
-        from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
+// val jarJavadoc by tasks.registering(Jar::class) {
+//     group = "documentation"
+//     archiveClassifier.set("javadoc")
+//     if (!(isSnapshot || isSimbotLocal())) {
+//         dependsOn(tasks.dokkaGeneratePublicationHtml)
+//         from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
+//     }
+// }
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    if (!isSimbotLocal()) {
+        signAllPublications()
     }
-}
+    coordinates(groupId = p.group.toString(), artifactId = p.name, version = p.version.toString())
 
-publishing {
-    repositories {
-        mavenLocal()
-        if (isSnapshot) {
-            configPublishMaven(SnapshotRepository)
-        } else {
-            configPublishMaven(ReleaseRepository)
-        }
-    }
-
-    publications {
-        withType<MavenPublication> {
-            artifacts {
-                artifact(jarJavadoc)
-            }
-
-            setupPom(project.name, P.Simbot)
-            pom {
-                issueManagement {
-                    system.set("GitHub Issues")
-                    url.set("https://github.com/simple-robot/simpler-robot/issues")
+    pom {
+        name = p.name
+        description = p.description
+        url = P.HOMEPAGE
+        licenses {
+            P.Simbot.licenses.forEach { license ->
+                license {
+                    name ofIf license.name
+                    url ofIf license.url
+                    distribution ofIf license.distribution
+                    comments ofIf license.comments
                 }
             }
-            // showMaven()
+        }
+
+        val scm = P.Simbot.scm
+        scm {
+            url ofIf scm.url
+            connection ofIf scm.connection
+            developerConnection ofIf scm.developerConnection
+            tag ofIf scm.tag
+        }
+
+        developers {
+            P.Simbot.developers.forEach { developer ->
+                developer {
+                    id ofIf developer.id
+                    name ofIf developer.name
+                    email ofIf developer.email
+                    url ofIf developer.url
+                    organization ofIf developer.organization
+                    organizationUrl ofIf developer.organizationUrl
+                    timezone ofIf developer.timezone
+                    roles.addAll(developer.roles)
+                    properties.putAll(developer.properties)
+                }
+            }
+        }
+
+        issueManagement {
+            system.set("GitHub Issues")
+            url.set("https://github.com/simple-robot/simpler-robot/issues")
         }
     }
 }
 
-signing {
-    val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
-    val (keyId, secretKey, password) = gpg
-    useInMemoryPgpKeys(keyId, secretKey, password)
-    sign(publishingExtension.publications)
-}
+// publishing {
+//     repositories {
+//         mavenLocal()
+//         if (isSnapshot) {
+//             configPublishMaven(SnapshotRepository)
+//         } else {
+//             configPublishMaven(ReleaseRepository)
+//         }
+//     }
+//
+//     publications {
+//         withType<MavenPublication> {
+//             artifacts {
+//                 artifact(jarJavadoc)
+//             }
+//
+//             setupPom(project.name, P.Simbot)
+//             pom {
+//                 issueManagement {
+//                     system.set("GitHub Issues")
+//                     url.set("https://github.com/simple-robot/simpler-robot/issues")
+//                 }
+//             }
+//             // showMaven()
+//         }
+//     }
+// }
+//
+// signing {
+//     val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
+//     val (keyId, secretKey, password) = gpg
+//     useInMemoryPgpKeys(keyId, secretKey, password)
+//     sign(publishingExtension.publications)
+// }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
-val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
-tasks.withType<PublishToMavenRepository>().configureEach {
-    mustRunAfter(signingTasks)
-}
+// val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
+// tasks.withType<PublishToMavenRepository>().configureEach {
+//     mustRunAfter(signingTasks)
+// }
 

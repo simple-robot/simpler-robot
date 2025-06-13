@@ -20,14 +20,14 @@ on: # push
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.6
+  GRADLE_VERSION: 8.10.2
   NODE_VERSION: 22
   IS_CI: true
-  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
-  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_KEY_CONTENTS: ${{ secrets.GPG_SECRET_KEY }}
+  SIGNING_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  MAVEN_CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+  MAVEN_CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
   SIMBOT_IS_SNAPSHOT: true
   SIMBOT_SNAPSHOT_ONLY: true
   GRADLE_OPTS: "-XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
@@ -53,10 +53,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-      - run: gradle assemble allTests -s --warning-mode all -Pkotlin.native.enableKlibsCrossCompilation=false
+
+      - name: Run All Tests
+        run: gradle assemble allTests -s --warning-mode all
+        env:
+          ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -84,19 +88,21 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Publish snapshots
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-          arguments: |
-            publishToSonatype
-            closeAndReleaseStagingRepositories
-            --info 
-            --warning-mode all
-            -x test
-            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+
+      - name: Publish snapshots
+        run: gradle publishAndReleaseToMavenCentral --info --warning-mode all -x test
         env:
           SIMBOT_IS_SNAPSHOT: true
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ env.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ env.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ env.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ env.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ env.GPG_KEY_CONTENTS }}
 
   # parallel=true 容易出现 Metaspace 的异常? 去了试试
 
@@ -121,21 +127,16 @@ jobs:
           cache: 'gradle'
 
       # setup Gradle
-      - name: Gradle generate documentation
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
-          arguments: |
-            dokkaGenerate
-            -s
-            --warning-mode all
-            -x test
-            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
 
-#            -Porg.gradle.parallel=false
-#            -Porg.gradle.daemon=false
+      - name: Generate documentation
+        run: gradle dokkaGenerate -s --warning-mode all -x test
         env:
           SIMBOT_IS_SNAPSHOT: true
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository

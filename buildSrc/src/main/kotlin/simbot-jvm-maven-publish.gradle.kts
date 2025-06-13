@@ -21,93 +21,70 @@
  *
  */
 
-import love.forte.gradle.common.core.Gpg
-import love.forte.gradle.common.publication.configure.configPublishMaven
-import love.forte.gradle.common.publication.configure.publishingExtension
-import love.forte.gradle.common.publication.configure.setupPom
-import utils.checkPublishConfigurable
+import com.vanniktech.maven.publish.SonatypeHost
+import love.forte.gradle.common.core.property.ofIf
 
 plugins {
     signing
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
 }
 
 // if (!isCi || isLinux) {
 
+val p = project
 
-checkPublishConfigurable {
-    val isSnapshot = isSnapshot()
-    val jarSources by tasks.registering(Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
+// checkPublishConfigurable {
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    if (!isSimbotLocal()) {
+        signAllPublications()
     }
+    coordinates(groupId = p.group.toString(), artifactId = p.name, version = p.version.toString())
 
-    val jarJavadoc by tasks.registering(Jar::class) {
-        if (!(isSnapshot || isSimbotLocal())) {
-            dependsOn(tasks.dokkaGeneratePublicationHtml)
-            from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
-        }
-        archiveClassifier.set("javadoc")
-    }
-
-    publishing {
-        repositories {
-            mavenLocal()
-            if (isSnapshot) {
-                configPublishMaven(SnapshotRepository)
-            } else {
-                configPublishMaven(ReleaseRepository)
+    pom {
+        name = p.name
+        description = p.description
+        url = P.HOMEPAGE
+        licenses {
+            P.Simbot.licenses.forEach { license ->
+                license {
+                    name ofIf license.name
+                    url ofIf license.url
+                    distribution ofIf license.distribution
+                    comments ofIf license.comments
+                }
             }
         }
 
-        publications {
-            create<MavenPublication>("simbotDist") {
-                from(components.getByName("java"))
-                artifacts {
-                    artifact(jarSources)
-                    artifact(jarJavadoc)
-                }
+        val scm = P.Simbot.scm
+        scm {
+            url ofIf scm.url
+            connection ofIf scm.connection
+            developerConnection ofIf scm.developerConnection
+            tag ofIf scm.tag
+        }
 
-                setupPom(project.name, P.Simbot)
-                pom {
-                    issueManagement {
-                        system.set("GitHub Issues")
-                        url.set("https://github.com/simple-robot/simpler-robot/issues")
-                    }
+        developers {
+            P.Simbot.developers.forEach { developer ->
+                developer {
+                    id ofIf developer.id
+                    name ofIf developer.name
+                    email ofIf developer.email
+                    url ofIf developer.url
+                    organization ofIf developer.organization
+                    organizationUrl ofIf developer.organizationUrl
+                    timezone ofIf developer.timezone
+                    roles.addAll(developer.roles)
+                    properties.putAll(developer.properties)
                 }
-                // showMaven()
             }
         }
-    }
 
-    signing {
-        val gpg = Gpg.ofSystemPropOrNull() ?: return@signing
-        val (keyId, secretKey, password) = gpg
-        useInMemoryPgpKeys(keyId, secretKey, password)
-        sign(publishingExtension.publications)
+        issueManagement {
+            system.set("GitHub Issues")
+            url.set("https://github.com/simple-robot/simpler-robot/issues")
+        }
     }
 }
-
-fun MavenPublication.showMaven() {
-    val pom = pom
-    // // show project info
-    logger.lifecycle(
-        """
-        |=======================================================
-        |= jvm.maven.name:            {}
-        |= jvm.maven.groupId:         {}
-        |= jvm.maven.artifactId:      {}
-        |= jvm.maven.version:         {}
-        |= jvm.maven.pom.description: {}
-        |= jvm.maven.pom.name:        {}
-        |=======================================================
-        """.trimIndent(),
-        name,
-        groupId,
-        artifactId,
-        version,
-        pom.description.get(),
-        pom.name.get(),
-    )
-}
+// }
