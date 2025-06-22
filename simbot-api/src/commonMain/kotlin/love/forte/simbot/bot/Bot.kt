@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -27,7 +27,6 @@ package love.forte.simbot.bot
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.join
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import love.forte.simbot.ability.CompletionAware
@@ -54,6 +53,16 @@ import kotlin.jvm.JvmName
  * [Bot] 实现 [BotRelations] 并提供了部分基础的行为关系对象，
  * 它们可以提供针对 [Guild]、[ChatGroup]、[Contact] 等常见行为对象的操作。
  * [Bot] 的实现者也许会根据不同的平台扩展这些行为类型或提供更多的行为类型。
+ *
+ * ## 扩展类型
+ *
+ * 对于组件实现者来说，[Bot] 有一些具有特殊含义的额外拓展类型。
+ * 可参考:
+ * - [ConfigurableBot]
+ * - [InitializableBot]
+ *
+ * @see ConfigurableBot
+ * @see InitializableBot
  *
  * @author ForteScarlet
  */

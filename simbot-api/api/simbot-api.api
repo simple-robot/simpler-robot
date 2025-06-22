@@ -445,6 +445,10 @@ public final class love/forte/simbot/bot/Bots {
 	public static final fun startIn (Llove/forte/simbot/bot/Bot;Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/Job;
 }
 
+public abstract interface class love/forte/simbot/bot/ConfigurableBot : love/forte/simbot/bot/Bot {
+	public abstract fun getConfiguration ()Ljava/lang/Object;
+}
+
 public class love/forte/simbot/bot/ConflictBotException : love/forte/simbot/bot/BotException {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
@@ -486,6 +490,15 @@ public abstract interface class love/forte/simbot/bot/GuildRelation {
 	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
 	public abstract synthetic fun guild (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/bot/InitializableBot : love/forte/simbot/bot/ConfigurableBot {
+	public abstract synthetic fun init (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun initAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun initBlocking ()Z
+	public fun initReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun isInitialized ()Z
+	public abstract fun isInitializing ()Z
 }
 
 public abstract class love/forte/simbot/bot/JobBasedBot : love/forte/simbot/bot/Bot {
