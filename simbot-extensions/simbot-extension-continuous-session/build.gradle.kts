@@ -32,7 +32,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
-apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

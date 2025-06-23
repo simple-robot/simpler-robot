@@ -30,7 +30,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

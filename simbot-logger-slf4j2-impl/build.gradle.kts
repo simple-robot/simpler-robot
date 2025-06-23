@@ -31,7 +31,7 @@ plugins {
 group = P.GROUP_LOGGER
 
 configJavaCompileWithModule("simbot.logger.slf4j2impl")
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

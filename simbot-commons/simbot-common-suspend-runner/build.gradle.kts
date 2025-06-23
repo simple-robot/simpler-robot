@@ -31,7 +31,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.common.suspendrunner")
-apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
@@ -80,7 +80,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.reactor)
                 implementation(libs.kotlinx.coroutines.rx2)
                 implementation(libs.kotlinx.coroutines.rx3)
-                implementation("io.projectreactor:reactor-test:3.7.5")
+                implementation("io.projectreactor:reactor-test:3.7.7")
             }
         }
     }

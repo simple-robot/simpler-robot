@@ -51,6 +51,9 @@ public object SuspendTransformPlugins {
     public const val API4J_NAME: String = "Api4J"
     public const val API4JS_NAME: String = "Api4Js"
 
+    public const val JB_BLOCKING_ANNOTATION_PACKAGE: String = "org.jetbrains.annotations"
+    public const val JB_BLOCKING_ANNOTATION_NAME: String = "Blocking"
+
     public const val RUN_IN_BLOCKING_FUN_NAME: String = "$\$runInBlocking"
     public const val RUN_IN_ASYNC_FUN_NAME: String = "$\$runInAsyncNullable"
     public const val AS_RESERVE_FUN_NAME: String = "$\$asReserve"
@@ -76,7 +79,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             }
         }
 
-        fun TransformerSpec.includeApi4J(clear: Boolean = true) {
+        fun TransformerSpec.includeApi4J(clear: Boolean = true, blocking: Boolean = false) {
             if (clear) {
                 syntheticFunctionIncludeAnnotations.clear()
             }
@@ -86,6 +89,14 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                     className.set(API4J_NAME)
                 }
                 includeProperty.set(true)
+            }
+            if (blocking) {
+                addSyntheticFunctionIncludeAnnotation {
+                    classInfo {
+                        packageName.set(SuspendTransformPlugins.JB_BLOCKING_ANNOTATION_PACKAGE)
+                        className.set(SuspendTransformPlugins.JB_BLOCKING_ANNOTATION_NAME)
+                    }
+                }
             }
         }
 
@@ -159,6 +170,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnType: (ClassInfoSpec.() -> Unit)?,
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
+            blocking: Boolean = false,
         ) {
             addJvm {
                 markSuspendTrans(
@@ -181,7 +193,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                 }
 
                 function()
-                includeApi4J()
+                includeApi4J(blocking = blocking)
 
                 copyAnnotationsToSyntheticFunction.set(true)
 
@@ -203,6 +215,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnType: (ClassInfoSpec.() -> Unit)?,
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
+            blocking: Boolean = false,
         ) {
             addJvm {
                 markSuspendTransProperty(
@@ -225,7 +238,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                 }
 
                 function()
-                includeApi4J()
+                includeApi4J(blocking = blocking)
 
                 copyAnnotationsToSyntheticFunction.set(true)
                 copyAnnotationsToSyntheticProperty.set(true)
@@ -249,6 +262,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnType = null,
             transformReturnTypeGeneric = false,
             copyExcludes = jvmBlockingTransformer.copyAnnotationExcludes,
+            blocking = true,
         )
 
         // @SuspendTrans for Async
@@ -291,6 +305,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnType = null,
             transformReturnTypeGeneric = false,
             copyExcludes = jvmBlockingTransformer.copyAnnotationExcludes,
+            blocking = true,
         )
 
         // @SuspendTrans for Async
@@ -332,7 +347,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
 
         // @JvmBlocking
         addJvmBlocking {
-            includeApi4J()
+            includeApi4J(blocking = true)
             excludeTransMarks()
             blockingFunction()
         }

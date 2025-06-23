@@ -16,20 +16,27 @@ ksp = "2.1.20-1.0.32"
 kotlinPoet = "2.1.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
-reactor = "3.7.5"
+reactor = "3.7.7"
 # simbots
 #suspendTransform = "2.1.0-0.10.1"
 suspendTransform = "2.1.20-0.12.0"
 gradleCommon = "0.6.0"
 # tests
-mockk = "1.13.17"
+mockk = "1.14.2"
 # detekt
 # https://detekt.dev/docs/intro
 detekt = "1.23.8"
 # https://github.com/gradle-nexus/publish-plugin
 gradleNexusPublishPlugin = "2.0.0"
 
+# https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
+# https://github.com/vanniktech/gradle-maven-publish-plugin
+# https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
+maven-publish-plugin = "0.32.0"
+
 [libraries]
+maven-publish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "maven-publish-plugin" }
+
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:26.0.2"
 

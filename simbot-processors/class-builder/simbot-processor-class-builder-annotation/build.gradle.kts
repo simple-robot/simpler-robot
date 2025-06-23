@@ -30,7 +30,7 @@ configJavaCompileWithModule(
     moduleName = "simbot.processor.classbuilder.annotation",
     jvmVersion = JVMConstants.KT_JVM_TARGET
 )
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

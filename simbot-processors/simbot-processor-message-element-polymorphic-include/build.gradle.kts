@@ -28,7 +28,7 @@ plugins {
 }
 
 configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

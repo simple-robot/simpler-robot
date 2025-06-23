@@ -29,7 +29,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.spring.common")
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()

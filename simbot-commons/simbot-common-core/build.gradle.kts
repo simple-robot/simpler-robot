@@ -34,7 +34,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.common.core")
-apply(plugin = "simbot-multiplatform-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
@@ -91,7 +91,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-junit5"))
                 implementation(libs.kotlinx.coroutines.reactor)
-                implementation("io.projectreactor:reactor-test:3.7.5")
+                implementation("io.projectreactor:reactor-test:3.7.7")
             }
         }
     }

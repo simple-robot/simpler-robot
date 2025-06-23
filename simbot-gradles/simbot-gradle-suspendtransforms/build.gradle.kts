@@ -53,7 +53,7 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.gradle.suspendtransforms")
-apply(plugin = "simbot-jvm-maven-publish")
+apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
