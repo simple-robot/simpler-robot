@@ -57,7 +57,7 @@ repositories {
             }
         }
     }
-    // mavenLocal()
+    mavenLocal()
 }
 
 val root = project
@@ -78,7 +78,7 @@ subprojects {
                 }
             }
         }
-        // mavenLocal()
+        mavenLocal()
     }
 
     afterEvaluate {
