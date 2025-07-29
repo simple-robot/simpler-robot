@@ -7,7 +7,7 @@ kotlinx-serialization = "1.7.3"
 kotlinx-io = "0.7.0"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
-ktor = "2.3.12"
+ktor = "3.2.3"
 slf4j = "2.0.17"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
