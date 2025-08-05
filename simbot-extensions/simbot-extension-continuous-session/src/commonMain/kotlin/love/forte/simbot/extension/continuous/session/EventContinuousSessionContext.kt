@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -66,7 +66,9 @@ import kotlin.jvm.JvmName
  *
  * @see ContinuousSessionContext
  */
-public interface EventContinuousSessionContext : ContinuousSessionContext<Event, EventResult>, Plugin {
+@ExperimentalContinuousSessionAPI
+public interface EventContinuousSessionContext :
+    ContinuousSessionContext<Event, EventResult>, Plugin {
 
     public companion object Factory :
         PluginFactory<EventContinuousSessionContext, EventContinuousSessionContextConfiguration> {
@@ -93,6 +95,7 @@ private class EventContinuousSessionContextImpl(coroutineContext: CoroutineConte
 /**
  * [EventContinuousSessionContext.Factory] 使用的配置类。
  */
+@ExperimentalContinuousSessionAPI
 public class EventContinuousSessionContextConfiguration {
     /**
      * 用于 [EventContinuousSessionContext] 中的协程上下文。

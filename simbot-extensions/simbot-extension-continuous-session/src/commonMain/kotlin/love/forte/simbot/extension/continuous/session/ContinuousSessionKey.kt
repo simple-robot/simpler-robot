@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,26 +21,20 @@
  *
  */
 
-import kotlinx.coroutines.test.runTest
-import love.forte.simbot.core.application.launchSimpleApplication
-import love.forte.simbot.extension.continuous.session.EventContinuousSessionContext
-import love.forte.simbot.plugin.find
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+package love.forte.simbot.extension.continuous.session
 
 /**
- *
+ * A Key for [ContinuousSession].
+ * @see UnitContinuousSessionKey
+ * @param C The type of session's context
  * @author ForteScarlet
+ * @since 4.14.0
  */
-class InAppTests {
+public interface ContinuousSessionKey<C>
 
-    @Test
-    fun installSessionContextTest() = runTest {
-        val app = launchSimpleApplication {
-            install(EventContinuousSessionContext)
-        }
-
-        assertNotNull(app.plugins.find<EventContinuousSessionContext>())
-    }
-
-}
+/**
+ * A [ContinuousSessionKey] for [Unit].
+ * @author ForteScarlet
+ * @since 4.14.0
+ */
+public class UnitContinuousSessionKey : ContinuousSessionKey<Unit>

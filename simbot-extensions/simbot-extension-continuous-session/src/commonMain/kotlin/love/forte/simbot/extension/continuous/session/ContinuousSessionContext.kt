@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -43,9 +43,10 @@ import kotlin.jvm.JvmSynthetic
  * var dispatcher = ExecutorsKt.from(Executors.newVirtualThreadPerTaskExecutor());
  * ```
  */
-public fun interface InSession<T, R> {
+@ExperimentalContinuousSessionAPI
+public fun interface InSession<C, T, R> {
     @JvmSynthetic
-    public suspend fun ContinuousSessionReceiver<T, R>.invoke()
+    public suspend fun ContinuousSessionReceiver<C, T, R>.invoke()
 }
 
 /**
@@ -115,6 +116,7 @@ public fun interface InSession<T, R> {
  *
  * @author ForteScarlet
  */
+@ExperimentalContinuousSessionAPI
 public interface ContinuousSessionContext<T, R> {
 
     /**
@@ -132,36 +134,36 @@ public interface ContinuousSessionContext<T, R> {
      *
      * @throws ConflictSessionKeyException 如果 [strategy] 为 [ConflictStrategy.FAILURE] 并且出现了冲突
      */
-    public fun session(
-        key: Any,
+    public fun <C> session(
+        key: ContinuousSessionKey<C>,
         strategy: ConflictStrategy = ConflictStrategy.FAILURE,
-        inSession: InSession<T, R>
-    ): ContinuousSessionProvider<T, R>
+        inSession: InSession<C, T, R>
+    ): ContinuousSessionProvider<C, T, R>
 
     /**
      * 尝试创建一组 `ContinuousSession`, 并在出现 [key] 冲突时使用 [ConflictStrategy.FAILURE] 作为冲突解决策略。
      */
-    public fun session(
-        key: Any,
-        inSession: InSession<T, R>
-    ): ContinuousSessionProvider<T, R> = session(key, ConflictStrategy.FAILURE, inSession)
+    public fun <C> session(
+        key: ContinuousSessionKey<C>,
+        inSession: InSession<C, T, R>
+    ): ContinuousSessionProvider<C, T, R> = session(key, ConflictStrategy.FAILURE, inSession)
 
     /**
      * 根据 [key] 获取指定的 [ContinuousSessionProvider] 并在找不到时返回 `null`。
      */
-    public operator fun get(key: Any): ContinuousSessionProvider<T, R>?
+    public operator fun <C> get(key: ContinuousSessionKey<C>): ContinuousSessionProvider<C, T, R>?
 
     /**
      * 判断是否包含某个 [key] 对应的会话。
      */
-    public operator fun contains(key: Any): Boolean
+    public operator fun contains(key: ContinuousSessionKey<*>): Boolean
 
     /**
      * 移除某个指定 [key] 的会话。
      * [remove] 仅会从记录中移除，不会使用 [ContinuousSessionProvider.cancel]，
      * 需要由调用者主动使用。
      */
-    public fun remove(key: Any): ContinuousSessionProvider<T, R>?
+    public fun <C> remove(key: ContinuousSessionKey<C>): ContinuousSessionProvider<C, T, R>?
 
     /**
      * 创建会话时的冲突策略

@@ -38,6 +38,10 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
+    compilerOptions {
+        optIn.add("love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI")
+    }
+
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {

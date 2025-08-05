@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -24,11 +24,8 @@
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.coroutines.IOOrDefault
-import love.forte.simbot.extension.continuous.session.ContinuousSessionContext
+import love.forte.simbot.extension.continuous.session.*
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.EXISTING
-import love.forte.simbot.extension.continuous.session.InSession
-import love.forte.simbot.extension.continuous.session.SessionAwaitOnFailureException
-import love.forte.simbot.extension.continuous.session.SessionCompletedWithoutResumeException
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -40,12 +37,12 @@ class ContinuousSessionTest {
         val parentJob = Job()
         withContext(Dispatchers.IOOrDefault) {
             coroutineScope {
-                val key = Any()
+                val key = UnitContinuousSessionKey()
                 val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
                 val session = context.session(key) {
-                    assertEquals(1, await { it.toString() })
-                    assertEquals(2, await { it.toString() })
-                    assertEquals(3, await { it.toString() })
+                    assertEquals(1, awaitValue { (_, it) -> it.toString() })
+                    assertEquals(2, awaitValue { (_, it) -> it.toString() })
+                    assertEquals(3, awaitValue { (_, it) -> it.toString() })
                     // done
                 }
 
@@ -73,10 +70,10 @@ class ContinuousSessionTest {
         val parentJob = Job()
         withContext(Dispatchers.IOOrDefault) {
             coroutineScope {
-                val key = Any()
+                val key = UnitContinuousSessionKey()
                 val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
                 val session = context.session(key) {
-                    assertEquals(1, await { it.toString() }) // .also { println("await: $it") }
+                    assertEquals(1, awaitValue { (_, it) -> it.toString() }) // .also { println("await: $it") }
                     val ex = assertFails {
                         await { throw IllegalStateException("error on $it") } // .also { println("await: $it") }
                     }
@@ -110,15 +107,15 @@ class ContinuousSessionTest {
 
         withContext(Dispatchers.IOOrDefault) {
             coroutineScope {
-                val key = Any()
+                val key = UnitContinuousSessionKey()
                 val session = context.session(key) {
                     val v1 = withTimeoutOrNull(50.milliseconds) {
-                        await { it.toString() }
+                        await { (_, it) -> it.toString() }
                     }
 
                     assertNull(v1, "Expected timeout value to be null, but was: $v1")
                     firstTimeoutJob.complete()
-                    assertEquals(1, await { it.toString() })
+                    assertEquals(1, awaitValue { (_, it) -> it.toString() })
                 }
 
                 firstTimeoutJob.join()
@@ -146,11 +143,11 @@ class ContinuousSessionTest {
     fun sessionGetTest() = runTest {
         val parentJob = Job()
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default + parentJob)
-        val key = Any()
+        val key = UnitContinuousSessionKey()
 
 
-        val inSession = InSession<Int, String> {
-            suspend fun awaitValue(): Int = await { it.toString() }
+        val inSession = InSession<Unit, Int, String> {
+            suspend fun awaitValue(): Int = awaitValue { (_, it) -> it.toString() }
             assertEquals(1, awaitValue())
             assertEquals(2, awaitValue())
             assertEquals(3, awaitValue())
@@ -167,8 +164,8 @@ class ContinuousSessionTest {
     @Test
     fun sessionContinuationTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
-        val key = Any()
-        val inSession = InSession<Int, String> {
+        val key = UnitContinuousSessionKey()
+        val inSession = InSession<Unit, Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)
@@ -195,8 +192,8 @@ class ContinuousSessionTest {
     @Test
     fun sessionContinuationWithoutResumeTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
-        val key = Any()
-        val inSession = InSession<Int, String> {
+        val key = UnitContinuousSessionKey()
+        val inSession = InSession<Unit, Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)
@@ -221,8 +218,8 @@ class ContinuousSessionTest {
     @Test
     fun sessionContinuationWithoutResumeMultiTest() = runTest {
         val context = ContinuousSessionContext<Int, String>(Dispatchers.Default)
-        val key = Any()
-        val inSession = InSession<Int, String> {
+        val key = UnitContinuousSessionKey()
+        val inSession = InSession<Unit, Int, String> {
             val c = await()
             val value = c.value
             assertEquals(1, value)

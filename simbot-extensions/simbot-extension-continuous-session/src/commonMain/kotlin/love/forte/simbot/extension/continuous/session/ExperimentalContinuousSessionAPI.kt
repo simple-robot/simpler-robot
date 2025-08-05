@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,26 +21,10 @@
  *
  */
 
-import kotlinx.coroutines.test.runTest
-import love.forte.simbot.core.application.launchSimpleApplication
-import love.forte.simbot.extension.continuous.session.EventContinuousSessionContext
-import love.forte.simbot.plugin.find
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+package love.forte.simbot.extension.continuous.session
 
-/**
- *
- * @author ForteScarlet
- */
-class InAppTests {
-
-    @Test
-    fun installSessionContextTest() = runTest {
-        val app = launchSimpleApplication {
-            install(EventContinuousSessionContext)
-        }
-
-        assertNotNull(app.plugins.find<EventContinuousSessionContext>())
-    }
-
-}
+@RequiresOptIn(
+    message = "This is an experimental api. It may be changed or removed in the future.",
+    level = RequiresOptIn.Level.ERROR
+)
+public annotation class ExperimentalContinuousSessionAPI

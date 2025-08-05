@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -30,6 +30,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.OnCompletion
+import love.forte.simbot.extension.continuous.session.ContinuousSessionReceiver.Received
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -37,6 +38,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 
 
 /**
@@ -55,7 +57,8 @@ import kotlin.jvm.JvmName
  *
  * @author ForteScarlet
  */
-public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
+@ExperimentalContinuousSessionAPI
+public interface ContinuousSessionProvider<C, in T, out R> : CompletionAware {
     /**
      * 推送一个事件到对应的 [ContinuousSessionReceiver] 中并挂起直到将其
      * [消费][ContinuousSessionReceiver.await] 或被关闭。
@@ -67,7 +70,7 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
      * @throws Throwable 任何由 [SessionContinuation.resumeWithException] 直接 resume 的异常本身
      */
     @ST
-    public suspend fun push(value: T): R
+    public suspend fun push(value: T, context: C): R
 
     /**
      * 关闭对应的 `session`。
@@ -107,9 +110,28 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
     /**
      * 注册一个当 `session` 完成任务后执行的回调 [handle]。
      * 也可以通过此回调得知被终止时的异常。
+     *
+     * NOTE:回调的执行基于 [Job.invokeOnCompletion]，它的执行可能是并发的，
+     * 它的逻辑应当快速、非阻塞。
+     *
+     * @see Job.invokeOnCompletion
      */
     override fun onCompletion(handle: OnCompletion)
 }
+
+/**
+ * 推送一个事件到对应的 [ContinuousSessionReceiver] 中并挂起直到将其
+ * [消费][ContinuousSessionReceiver.await] 或被关闭。
+ *
+ * @throws CancellationException 如果会话已经结束或关闭
+ * @throws SessionPushOnFailureException 如果推送行为本身失败，例如会话已经结束或关闭
+ * @throws SessionAwaitOnFailureException 如果推送行为成功、
+ * 但是在 [ContinuousSessionReceiver.await] 时出现了异常（例如构造响应结果时出现异常）
+ * @throws Throwable 任何由 [SessionContinuation.resumeWithException] 直接 resume 的异常本身
+ */
+@ST
+public suspend fun <T, R> ContinuousSessionProvider<Unit, T, R>.push(value: T): R =
+    push(value, Unit)
 
 /**
  * 一组 `Session` 的元素之一，
@@ -128,7 +150,17 @@ public interface ContinuousSessionProvider<in T, out R> : CompletionAware {
  *
  * @author ForteScarlet
  */
-public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
+@ExperimentalContinuousSessionAPI
+public interface ContinuousSessionReceiver<C, out T, R> : CoroutineScope {
+    @ExperimentalContinuousSessionAPI
+    public interface Received<C, out T> {
+        public val context: C
+        public val value: T
+
+        public operator fun component1(): C = context
+        public operator fun component2(): T = value
+    }
+
     /**
      * [ContinuousSessionReceiver] 作为 [CoroutineScope] 的协程上下文。
      * 其中不会包含 [Job]。
@@ -140,7 +172,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * 并在接收到时恢复一个结果 [result]。
      *
      * ```kotlin
-     * val value = await(result)
+     * val (context, value) = await(result)
      * // ...
      * ```
      *
@@ -150,7 +182,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
      */
     @ST(asyncSuffix = "AsFuture")
-    public suspend fun await(result: R): T
+    public suspend fun await(result: R): Received<C, T>
 
     /**
      * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push]，
@@ -161,7 +193,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * 包装并恢复(`resume`)给 [ContinuousSessionProvider.push]。
      *
      * ```kotlin
-     * val value = await { v -> v.toResult() /* 根据结果 value 计算一个结果 */ }
+     * val (context, value) = await { (c, v) -> v.toResult() /* 根据结果 value 计算一个结果 */ }
      * // ...
      * ```
      *
@@ -171,7 +203,7 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      * @throws ClosedReceiveChannelException 如果内部的管道的接收已经被关闭
      */
     @ST(asyncSuffix = "AsFuture")
-    public suspend fun await(result: (T) -> R): T
+    public suspend fun await(result: (Received<C, T>) -> R): Received<C, T>
 
     /**
      * 等待 [ContinuousSessionProvider] 的下一次 [推送][ContinuousSessionProvider.push] 结果，
@@ -216,8 +248,82 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
      *
      */
     @ST(asyncSuffix = "AsFuture")
-    public suspend fun await(): SessionContinuation<T, R>
+    public suspend fun await(): SessionContinuation<C, T, R>
 }
+
+/**
+ * ```Kotlin
+ * // It's inline fun
+ * awaitWith { context, value -> result }
+ * ```
+ *
+ * @since 4.14.0
+ */
+@ExperimentalContinuousSessionAPI
+public suspend inline fun <C, T, R> ContinuousSessionReceiver<C, T, R>.awaitWith(
+    block: (C, T) -> R
+) {
+    val continuation = await()
+    try {
+        continuation.resume(block(continuation.context, continuation.value))
+    } catch (e: Throwable) {
+        continuation.resumeWithException(e)
+    }
+}
+
+/**
+ * @since 4.14.0
+ */
+@ExperimentalContinuousSessionAPI
+public sealed class MultipleAwaitResult<T> {
+    public abstract val value: T
+
+    public data class Valid<T>(override val value: T) : MultipleAwaitResult<T>()
+    public data class Invalid<T>(override val value: T) : MultipleAwaitResult<T>()
+
+    public companion object Factory {
+        @JvmStatic
+        public fun <T> valid(value: T): Valid<T> = Valid(value)
+
+        @JvmStatic
+        public fun <T> invalid(value: T): Invalid<T> = Invalid(value)
+    }
+}
+
+/**
+ * 进行多轮次处理。如果 [block] 的返回值类型不是 [MultipleAwaitResult.Valid],
+ * 则 [multipleAwaitWith] 会继续 await 直到得到 [MultipleAwaitResult.Valid] 结果或产生了异常。
+ *
+ * @since 4.14.0
+ */
+@ExperimentalContinuousSessionAPI
+public suspend inline fun <C, T, R> ContinuousSessionReceiver<C, T, R>.multipleAwaitWith(
+    block: MultipleAwaitResult.Factory.(C, T) -> MultipleAwaitResult<R>
+): R {
+    while (true) {
+        val continuation = await()
+        try {
+            val result = MultipleAwaitResult.block(continuation.context, continuation.value)
+            val value = result.value
+            continuation.resume(value)
+            if (result is MultipleAwaitResult.Valid) {
+                return value
+            }
+        } catch (e: Throwable) {
+            continuation.resumeWithException(e)
+            throw e
+        }
+    }
+}
+
+
+@ExperimentalContinuousSessionAPI
+public suspend fun <C, T, R> ContinuousSessionReceiver<C, T, R>.awaitValue(result: R): T =
+    await(result).value
+
+@ExperimentalContinuousSessionAPI
+public suspend fun <C, T, R> ContinuousSessionReceiver<C, T, R>.awaitValue(result: (Received<C, T>) -> R): T =
+    await(result).value
 
 /**
  * [ContinuousSessionReceiver.await] 的返回值类型，
@@ -229,11 +335,18 @@ public interface ContinuousSessionReceiver<out T, R> : CoroutineScope {
  * [推送][ContinuousSessionProvider.push] 处，
  * 并应当尽可能保证能够调用 [resume] 或 [resumeWithException] 一次。
  */
-public interface SessionContinuation<out T, in R> {
+@ExperimentalContinuousSessionAPI
+public interface SessionContinuation<C, out T, in R> : ContinuousSessionReceiver.Received<C, T> {
+    override val context: C
+
     /**
      * 获取本次接收到的 [ContinuousSessionProvider.push] 结果。
      */
-    public val value: T
+    override val value: T
+
+    public val isActive: Boolean
+    public val isCancelled: Boolean
+    public val isCompleted: Boolean
 
     /**
      * 响应恢复结果 [result] 到本次接收到的 [ContinuousSessionProvider.push]。
@@ -251,19 +364,31 @@ public interface SessionContinuation<out T, in R> {
 /**
  * 构建一个基于 [CancellableContinuation] 实现的 [SessionContinuation] 实例。
  */
-public fun <T, R> createSimpleSessionContinuation(
+@ExperimentalContinuousSessionAPI
+public fun <C, T, R> createSimpleSessionContinuation(
+    context: C,
     value: T,
     continuation: CancellableContinuation<R>,
     handle: DisposableHandle? = null
-): SessionContinuation<T, R> =
-    SimpleSessionContinuation(value, continuation, handle)
+): SessionContinuation<C, T, R> =
+    SimpleSessionContinuation(context, value, continuation, handle)
 
 
-private class SimpleSessionContinuation<out T, in R>(
+private class SimpleSessionContinuation<C, out T, in R>(
+    override val context: C,
     override val value: T,
     private val continuation: CancellableContinuation<R>,
     private val handle: DisposableHandle?
-) : SessionContinuation<T, R> {
+) : SessionContinuation<C, T, R> {
+    override val isActive: Boolean
+        get() = continuation.isActive
+
+    override val isCancelled: Boolean
+        get() = continuation.isCancelled
+
+    override val isCompleted: Boolean
+        get() = continuation.isCompleted
+
     override fun resume(result: R) {
         continuation.resume(result)
         handle?.dispose()
@@ -279,4 +404,5 @@ private class SimpleSessionContinuation<out T, in R>(
  * 组合 [ContinuousSessionProvider] 和 [ContinuousSessionReceiver]
  * 的 `session` 类型。
  */
-public interface ContinuousSession<T, R> : ContinuousSessionProvider<T, R>, ContinuousSessionReceiver<T, R>
+@ExperimentalContinuousSessionAPI
+public interface ContinuousSession<C, T, R> : ContinuousSessionProvider<C, T, R>, ContinuousSessionReceiver<C, T, R>
