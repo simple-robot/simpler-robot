@@ -28,7 +28,10 @@ import com.google.devtools.ksp.processing.KSBuiltIns
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
-import com.squareup.kotlinpoet.CodeBlock
+import love.forte.codegentle.common.code.CodePart
+import love.forte.codegentle.common.code.CodeValueBuilder
+import love.forte.codegentle.common.code.inControlFlow
+import love.forte.codegentle.common.naming.canonicalName
 
 internal val ClassBuilderAnnotationName: String = ClassBuilderClassName.canonicalName
 
@@ -151,23 +154,23 @@ internal fun KSType.isArray(resolver: Resolver): Boolean {
     return resolver.builtIns.arrayType.isAssignableFrom(notNullThis)
 }
 
-internal inline fun CodeBlock.Builder.inReturnApplyBlock(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
-    beginControlFlow("return apply")
-    block()
-    endControlFlow()
+internal inline fun CodeValueBuilder.inReturnApplyBlock(block: CodeValueBuilder.() -> Unit = {}): CodeValueBuilder {
+    addCode("return ")
+    inControlFlow(beginControlFlow = "apply", block = block)
     return this
 }
 
-internal inline fun CodeBlock.Builder.inStatement(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
-    add("«")
+
+internal inline fun CodeValueBuilder.inStatement(block: CodeValueBuilder.() -> Unit = {}): CodeValueBuilder {
+    addCode("%V", CodePart.statementBegin())
     block()
-    add("\n»")
+    addCode("%V%V", CodePart.newline(), CodePart.statementEnd())
     return this
 }
 
-internal inline fun CodeBlock.Builder.inReturnApplyStatement(
-    block: CodeBlock.Builder.() -> Unit = {}
-): CodeBlock.Builder {
+internal inline fun CodeValueBuilder.inReturnApplyStatement(
+    block: CodeValueBuilder.() -> Unit = {}
+): CodeValueBuilder {
     return inReturnApplyBlock {
         inStatement {
             block()
@@ -175,13 +178,48 @@ internal inline fun CodeBlock.Builder.inReturnApplyStatement(
     }
 }
 
-internal inline fun CodeBlock.Builder.inControlFlow(
-    controlFlow: String,
-    vararg args: Any?,
-    block: CodeBlock.Builder.() -> Unit = {}
-): CodeBlock.Builder {
-    beginControlFlow(controlFlow, *args)
-    block()
-    endControlFlow()
-    return this
-}
+// internal inline fun CodeValueBuilder.inControlFlow(
+//     controlFlow: String,
+//     vararg args: CodeArgumentPart,
+//     block: CodeValueBuilder.() -> Unit = {}
+// ): CodeValueBuilder {
+//     beginControlFlow(controlFlow, *args)
+//     block()
+//     endControlFlow()
+//     return this
+// }
+
+// internal inline fun CodeBlock.Builder.inReturnApplyBlock(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
+//     beginControlFlow("return apply")
+//     block()
+//     endControlFlow()
+//     return this
+// }
+//
+// internal inline fun CodeBlock.Builder.inStatement(block: CodeBlock.Builder.() -> Unit = {}): CodeBlock.Builder {
+//     add("«")
+//     block()
+//     add("\n»")
+//     return this
+// }
+//
+// internal inline fun CodeBlock.Builder.inReturnApplyStatement(
+//     block: CodeBlock.Builder.() -> Unit = {}
+// ): CodeBlock.Builder {
+//     return inReturnApplyBlock {
+//         inStatement {
+//             block()
+//         }
+//     }
+// }
+//
+// internal inline fun CodeBlock.Builder.inControlFlow(
+//     controlFlow: String,
+//     vararg args: Any?,
+//     block: CodeBlock.Builder.() -> Unit = {}
+// ): CodeBlock.Builder {
+//     beginControlFlow(controlFlow, *args)
+//     block()
+//     endControlFlow()
+//     return this
+// }

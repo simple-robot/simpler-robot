@@ -32,6 +32,23 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 }
 
+repositories {
+    mavenLocal {
+        content {
+            includeGroup("love.forte.codegentle")
+        }
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+        isAllowInsecureProtocol = true
+        metadataSources.artifact()
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+}
+
 dependencies {
     testImplementation(kotlin("test-junit5"))
     testImplementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-annotation"))

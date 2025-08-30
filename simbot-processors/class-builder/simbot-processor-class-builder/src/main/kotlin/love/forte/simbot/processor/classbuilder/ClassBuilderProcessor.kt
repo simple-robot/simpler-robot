@@ -32,10 +32,12 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.ksp.writeTo
+import love.forte.codegentle.common.naming.ClassName
+import love.forte.codegentle.common.naming.TypeName
+import love.forte.codegentle.kotlin.KotlinFile
+import love.forte.codegentle.kotlin.KotlinModifier
+import love.forte.codegentle.kotlin.ksp.writeTo
+import love.forte.codegentle.kotlin.strategy.DefaultKotlinWriteStrategy
 
 
 internal data class ExpectBuilderDeclaration(
@@ -110,10 +112,14 @@ internal class ClassBuilderProcessor(
 
     override fun finish() {
         // 生成 Builders
-        data class FileWithSource(val file: FileSpec, val sources: List<KSFile>)
+        data class FileWithSource(val file: KotlinFile, val sources: List<KSFile>)
 
         // prepare all first
         classBuilders.values.forEach { it.prepare() }
+
+        val strategy = object : DefaultKotlinWriteStrategy() {
+            override fun defaultVisibility(): KotlinModifier = KotlinModifier.PUBLIC
+        }
 
         // generate all to KSFile
         classBuilders.map { (_, generator) ->
@@ -124,7 +130,8 @@ internal class ClassBuilderProcessor(
             file.writeTo(
                 environment.codeGenerator,
                 true,
-                sources
+                sources,
+                strategy
             )
         }
 

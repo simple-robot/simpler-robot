@@ -29,10 +29,25 @@ import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.KModifier.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.ksp.*
+import love.forte.codegentle.common.code.*
+import love.forte.codegentle.common.ksp.toClassName
+import love.forte.codegentle.common.ksp.toClassNameOrNull
+import love.forte.codegentle.common.naming.*
+import love.forte.codegentle.common.ref.TypeRef
+import love.forte.codegentle.common.ref.addMember
+import love.forte.codegentle.common.ref.ref
+import love.forte.codegentle.kotlin.KotlinFile
+import love.forte.codegentle.kotlin.KotlinModifier
+import love.forte.codegentle.kotlin.KotlinSimpleFileBuilder
+import love.forte.codegentle.kotlin.ksp.toTypeRef
+import love.forte.codegentle.kotlin.ksp.toTypeVariableRef
+import love.forte.codegentle.kotlin.modifiers
+import love.forte.codegentle.kotlin.naming.KotlinAnnotationNames
+import love.forte.codegentle.kotlin.naming.KotlinClassNames
+import love.forte.codegentle.kotlin.naming.KotlinClassNames.COLLECTION
+import love.forte.codegentle.kotlin.naming.KotlinLambdaTypeName
+import love.forte.codegentle.kotlin.ref.addKotlinAnnotation
+import love.forte.codegentle.kotlin.spec.*
 import java.util.Locale
 import kotlin.collections.ArrayDeque
 import kotlin.properties.Delegates
@@ -49,62 +64,79 @@ internal class BuilderGenerator(
 
     val sources = mutableSetOf<KSFile>()
 
-    lateinit var typeVariables: List<TypeVariableName>
+    lateinit var typeVariables: List<TypeRef<TypeVariableName>>
     lateinit var parameters: List<BuilderProperty>
     lateinit var properties: List<BuilderProperty>
-    lateinit var typeSpecBuilder: TypeSpec.Builder
-    lateinit var fileSpecBuilder: FileSpec.Builder
+    lateinit var typeSpecBuilder: KotlinSimpleTypeSpec.Builder
+    lateinit var fileSpecBuilder: KotlinSimpleFileBuilder
 
     fun prepare() {
         val type = declaration.type
         type.containingFile?.also { sources.add(it) }
 
-        val typeParameterResolver = type.typeParameters.toTypeParameterResolver()
 
-        typeVariables = type.typeParameters.map { it.toTypeVariableName(typeParameterResolver) }
+        // val typeParameterResolver = type.typeParameters.toTypeParameterResolver()
 
-        val builderClassName = ClassName(type.packageName.asString(), declaration.builderName)
+        typeVariables = type.typeParameters.map { it.toTypeVariableRef() }
+
+        val builderClassName = ClassName(
+            type.packageName.asString().parseToPackageName(),
+            declaration.builderName
+        )
 
         var builderTypeName: TypeName = builderClassName
 
         if (typeVariables.isNotEmpty()) {
-            builderTypeName = builderClassName.parameterizedBy(typeVariables)
+            builderTypeName = builderClassName.parameterized(typeVariables)
         }
 
         builders[type.toClassName()] = builderTypeName
 
-        typeSpecBuilder = TypeSpec.classBuilder(builderClassName)
+        typeSpecBuilder = KotlinSimpleTypeSpec.builder(KotlinTypeSpec.Kind.CLASS, builderClassName.name)
 
         if (declaration.annotationData.open) {
-            typeSpecBuilder.addModifiers(OPEN)
+            typeSpecBuilder.addModifier(KotlinModifier.OPEN)
         }
 
         if (declaration.annotationData.internal) {
-            typeSpecBuilder.addModifiers(INTERNAL)
+            typeSpecBuilder.addModifiers(KotlinModifier.INTERNAL)
         }
 
         // types
         typeSpecBuilder.addTypeVariables(typeVariables)
 
         // 添加注解
-        typeSpecBuilder.addAnnotation(
-            AnnotationSpec.builder(BuilderForClassName)
-                .addMember("%T::class", type.toClassName())
-                .build()
-        )
+        typeSpecBuilder.addKotlinAnnotation(BuilderForClassName) {
+            addMember(format = "%V::class") {
+                emitType(type.toClassName())
+            }
+        }
 
         // marks
         declaration.annotationData.marks.forEach {
-            typeSpecBuilder.addAnnotation(it.toClassName())
+            it.toClassNameOrNull()?.also(typeSpecBuilder::addKotlinAnnotation)
         }
 
-        fileSpecBuilder = FileSpec.builder(type.packageName.asString(), declaration.builderName)
+        fileSpecBuilder = KotlinFile.builder(type.packageName.asString().parseToPackageName())
+            .name(declaration.builderName)
+
         // 添加 Suppress("ALL", "unused", "RedundantVisibilityModifier")
-        fileSpecBuilder.addAnnotation(
-            AnnotationSpec.builder(Suppress::class)
-                .addMember("%S, %S, %S, %S", "ALL", "unused", "UNCHECKED_CAST", "RedundantVisibilityModifier")
-                .build()
-        )
+        fileSpecBuilder.addKotlinAnnotation(KotlinAnnotationNames.SUPPRESS) {
+            addMember(format = "%V, %V, %V, %V") {
+                emitString("ALL")
+                emitString("unused")
+                emitString("UNCHECKED_CAST")
+                emitString("RedundantVisibilityModifier")
+            }
+            // addMultipleMembers(
+            //     codeValues = listOf(
+            //         CodeValue("%V", CodePart.string("ALL")),
+            //         CodeValue("%V", CodePart.string("unused")),
+            //         CodeValue("%V", CodePart.string("UNCHECKED_CAST")),
+            //         CodeValue("%V", CodePart.string("RedundantVisibilityModifier")),
+            //     )
+            // )
+        }
 
         val parameterPropertyNames = mutableSetOf<String>()
 
@@ -130,7 +162,7 @@ internal class BuilderGenerator(
                         declaration = declaration,
                         fileBuilder = fileSpecBuilder,
                         typeBuilder = typeSpecBuilder,
-                        typeParameterResolver = typeParameterResolver,
+                        // typeParameterResolver = typeParameterResolver,
                         generator = this,
                         builderTypeName = builderTypeName,
                         typeParameters = typeVariables,
@@ -168,7 +200,7 @@ internal class BuilderGenerator(
                     declaration = declaration,
                     fileBuilder = fileSpecBuilder,
                     typeBuilder = typeSpecBuilder,
-                    typeParameterResolver = typeParameterResolver,
+                    // typeParameterResolver = typeParameterResolver,
                     generator = this,
                     builderTypeName = builderTypeName,
                     typeParameters = typeVariables,
@@ -183,7 +215,7 @@ internal class BuilderGenerator(
             .toList()
     }
 
-    fun generate(): FileSpec {
+    fun generate(): KotlinFile {
         for (parameterProperty in parameters) {
             parameterProperty.emit()
         }
@@ -198,70 +230,70 @@ internal class BuilderGenerator(
         return fileSpecBuilder.build()
     }
 
-    private fun TypeSpec.Builder.emitBuild(typeVariables: List<TypeVariableName>) {
-        addFunction(
-            FunSpec.builder("build").apply {
-                if (declaration.annotationData.open) {
-                    addModifiers(OPEN)
-                }
-                if (typeVariables.isEmpty()) {
-                    returns(declaration.type.toClassName())
-                } else {
-                    returns(declaration.type.toClassName().parameterizedBy(typeVariables))
-                }
-                addCode(
-                    buildCodeBlock {
-                        // return T(a = a, b = b, ...).also { it.c = c; it.d = d; }
-                        add("return %T(", declaration.type.toClassName())
-                        for ((index, parameter) in this@BuilderGenerator.parameters.withIndex()) {
-                            val accessName = if (parameter.isNullableOrIsOptional) {
-                                "${parameter.name}?"
-                            } else {
-                                parameter.name
-                            }
+    private fun KotlinSimpleTypeSpec.Builder.emitBuild(typeVariables: List<TypeRef<TypeVariableName>>) {
+        addFunction("build") {
+            if (declaration.annotationData.open) {
+                modifiers.open()
+            }
 
-                            val passing = parameter.passing?.let { p ->
-                                buildCodeBlock {
-                                    add(accessName)
-                                    add(p)
-                                }
-                            } ?: CodeBlock.of(parameter.name)
+            if (typeVariables.isEmpty()) {
+                returns(declaration.type.toClassName().ref())
+            } else {
+                returns(declaration.type.toClassName().parameterized(typeVariables).ref())
+            }
 
-                            if (index == 0) {
-                                add("${parameter.name} = ")
-                                add(passing)
-                            } else {
-                                add(", ${parameter.name} = ")
-                                add(passing)
-                            }
+            addCode {
+                // return T(a = a, b = b, ...).also { it.c = c; it.d = d; }
+                addCode("return %V(", CodePart.type(declaration.type.toClassName()))
+                for ((index, parameter) in this@BuilderGenerator.parameters.withIndex()) {
+                    val accessName = if (parameter.isNullableOrIsOptional) {
+                        "${parameter.name}?"
+                    } else {
+                        parameter.name
+                    }
+
+                    val passing = parameter.passing?.let { p ->
+                        CodeValue {
+                            addCode(accessName)
+                            addCode(p)
                         }
-                        add(")")
-                        inControlFlow(".also") {
-                            for ((index, property) in this@BuilderGenerator.properties.withIndex()) {
-                                // this.xxx?.also { value -> it.xxx = value }
-                                val name = property.name
-                                val localName = "v$index"
-                                val accessName = if (property.isNullableOrIsOptional) "$name?" else name
-                                val passing: CodeBlock = property.passing?.let { p ->
-                                    buildCodeBlock {
-                                        add("(")
-                                        add(accessName)
-                                        add(p)
-                                        add(")")
-                                    }
-                                } ?: CodeBlock.of(name)
+                    } ?: CodeValue(parameter.name)
 
-                                inStatement {
-                                    add(passing)
-                                    add("?.also { $localName -> it.$name = $localName")
-                                    add(" }")
-                                }
+                    if (index == 0) {
+                        addCode("${parameter.name} = ")
+                        addCode(passing)
+                    } else {
+                        addCode(", ${parameter.name} = ")
+                        addCode(passing)
+                    }
+                }
+                addCode(")")
+                // addCode(".also {\n")
+                inControlFlow(".also") {
+                    for ((index, property) in this@BuilderGenerator.properties.withIndex()) {
+                        // this.xxx?.also { value -> it.xxx = value }
+                        val name = property.name
+                        val localName = "v$index"
+                        val accessName = if (property.isNullableOrIsOptional) "$name?" else name
+                        val passing: CodeValue = property.passing?.let { p ->
+                            CodeValue {
+                                addCode("(")
+                                addCode(accessName)
+                                addCode(p)
+                                addCode(")")
                             }
+                        } ?: CodeValue(name)
+
+                        inStatement {
+                            addCode(passing)
+                            addCode("?.also { $localName -> it.$name = $localName")
+                            addCode(" }")
                         }
                     }
-                )
-            }.build()
-        )
+                }
+                // addCode("\n}")
+            }
+        }
     }
 }
 
@@ -280,12 +312,12 @@ internal class BuilderProperty(
     val resolver: Resolver,
     val environment: SymbolProcessorEnvironment,
     val declaration: ExpectBuilderDeclaration,
-    val fileBuilder: FileSpec.Builder,
-    val typeBuilder: TypeSpec.Builder,
-    val typeParameterResolver: TypeParameterResolver,
+    val fileBuilder: KotlinSimpleFileBuilder,
+    val typeBuilder: KotlinSimpleTypeSpec.Builder,
+    // val typeParameterResolver: TypeParameterResolver,
     val generator: BuilderGenerator,
     val builderTypeName: TypeName,
-    val typeParameters: List<TypeVariableName>,
+    val typeParameters: List<TypeRef<TypeVariableName>>,
     val builderNames: Map<ClassName, TypeName>,
     val isVararg: Boolean,
     val isRequired: Boolean,
@@ -294,7 +326,7 @@ internal class BuilderProperty(
     val node: KSNode?
 ) {
     companion object {
-        val DelegatesClassName = Delegates::class.asClassName()
+        val DelegatesClassName = Delegates::class.toClassName()
     }
 
     val firstUpperName: String = name.replaceFirstChar { it.uppercase(Locale.US) }
@@ -311,7 +343,7 @@ internal class BuilderProperty(
         }
 
     // 只要 name.xxx 后面的内容，从 . 开始，例如 `.toList`。
-    var passing: CodeBlock? = null
+    var passing: CodeValue? = null
 
     @Suppress("ReturnCount")
     fun findBuilder(type: KSType): TypeName? {
@@ -370,12 +402,12 @@ internal class BuilderProperty(
         val className = builderClassDeclaration.toClassName()
 
         val typeParameters = builderClassDeclaration.typeParameters.map {
-            it.toTypeVariableName(typeParameterResolver)
+            it.toTypeVariableRef() // typeParameterResolver
         }
 
         var returnTypeName: TypeName = className
         if (typeParameters.isNotEmpty()) {
-            returnTypeName = className.parameterizedBy(typeParameters)
+            returnTypeName = className.parameterized(typeParameters)
         }
 
         return returnTypeName
@@ -393,26 +425,26 @@ internal class BuilderProperty(
     private abstract inner class Emitter {
         abstract fun emit(queue: ArrayDeque<Emitter>)
 
-        fun addProperty(property: PropertySpec.Builder) {
+        fun addProperty(property: KotlinPropertySpec.Builder) {
             if (isRequired) {
-                property.addKdoc("Required property for [%T.$name]\n", declaration.type.toClassName())
+                property.addDoc("Required property for [%V.$name]\n", CodePart.type(declaration.type.toClassName()))
             } else if (isNullable) {
-                property.addKdoc("Nullable property for [%T.$name]\n", declaration.type.toClassName())
+                property.addDoc("Nullable property for [%V.$name]\n", CodePart.type(declaration.type.toClassName()))
             } else {
-                property.addKdoc("Optional property for [%T.$name]\n", declaration.type.toClassName())
+                property.addDoc("Optional property for [%V.$name]\n", CodePart.type(declaration.type.toClassName()))
             }
-            property.addKdoc("@see %T.$name\n", declaration.type.toClassName())
+            property.addDoc("@see %V.$name\n", CodePart.type(declaration.type.toClassName()))
 
             typeBuilder.addProperty(property.build())
         }
 
-        fun addFunction(function: FunSpec.Builder) {
-            function.addKdoc("@see ${declaration.builderName}.$name\n")
-            function.addKdoc("@see %T.$name\n", declaration.type.toClassName())
+        fun addFunction(function: KotlinFunctionSpec.Builder) {
+            function.addDoc("@see ${declaration.builderName}.$name\n")
+            function.addDoc("@see %V.$name\n", CodePart.type(declaration.type.toClassName()))
             typeBuilder.addFunction(function.build())
         }
 
-        fun addExtension(function: FunSpec.Builder) {
+        fun addExtension(function: KotlinFunctionSpec.Builder) {
             fileBuilder.addFunction(function.build())
         }
     }
@@ -448,21 +480,25 @@ internal class BuilderProperty(
             // 原本的类型如果不可为null，使用notNull代理，否则初始为null
             // 添加属性。
             // 原始类型如果不是nullable，那么这里就是 delegate
-            val propertySpec = PropertySpec.builder(
+            val propertySpec = KotlinPropertySpec.builder(
                 name,
-                typeOrNullable.toTypeName(typeParameterResolver)
+                // typeOrNullable.toTypeName(typeParameterResolver)
+                typeOrNullable.toTypeRef()
             ).apply {
                 if (declaration.annotationData.open) {
-                    addModifiers(PROTECTED, OPEN)
+                    modifiers {
+                        protected()
+                        open()
+                    }
                 } else {
-                    addModifiers(PRIVATE)
+                    modifiers.private()
                 }
                 mutable(true)
                 if (isNullableOrIsOptional) {
                     initializer("null")
                 } else {
                     // by kotlin.properties.Delegates.notNull()
-                    delegate("%T.notNull()", DelegatesClassName)
+                    delegate("%V.notNull()", CodePart.type(DelegatesClassName))
                 }
             }
 
@@ -481,20 +517,24 @@ internal class BuilderProperty(
      */
     private inner class SimplePropertyEmitter : PropertyEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
-            val propertySpec = PropertySpec.builder(
+            val propertySpec = KotlinPropertySpec.builder(
                 name,
-                typeOrNullable.toTypeName(typeParameterResolver)
+                // typeOrNullable.toTypeName(typeParameterResolver)
+                typeOrNullable.toTypeRef()
             ).apply {
                 if (declaration.annotationData.open) {
-                    addModifiers(PROTECTED, OPEN)
+                    modifiers {
+                        protected()
+                        open()
+                    }
                 } else {
-                    addModifiers(PRIVATE)
+                    modifiers.private()
                 }
                 mutable(true)
                 if (isNullableOrIsOptional) {
                     initializer("null")
                 } else {
-                    addModifiers(LATEINIT)
+                    modifiers.lateinit()
                 }
             }
 
@@ -521,7 +561,7 @@ internal class BuilderProperty(
             }
 
             var propertyType: KSType
-            var initializer: CodeBlock
+            var initializer: CodeValue
 
             var isSet = false
 
@@ -533,11 +573,18 @@ internal class BuilderProperty(
                         ?.asType(typeParameter?.let(::listOf) ?: emptyList())
                         ?: environment.reportError("Cannot find MutableSet class KSType", node)
 
-                    initializer = CodeBlock.of(
-                        "%M<%T>()",
-                        MemberName("kotlin.collections", "mutableSetOf"),
-                        typeParameter?.toTypeName(typeParameterResolver) ?: ANY
-                    )
+                    // initializer = CodeBlock.of(
+                    //     "%M<%T>()",
+                    //     MemberName("kotlin.collections", "mutableSetOf"),
+                    //     typeParameter?.toTypeName(typeParameterResolver) ?: ANY
+                    // )
+
+                    initializer = CodeValue(
+                        "%V<%V>()",
+                    ) {
+                        emitName(MemberName("kotlin.collections".parseToPackageName(), "mutableSetOf"))
+                        emitType(typeParameter?.toTypeRef() ?: KotlinClassNames.ANY.ref())
+                    }
                 }
 
                 // list, collection, 都用list
@@ -547,11 +594,16 @@ internal class BuilderProperty(
                         ?.asType(typeParameter?.let(::listOf) ?: emptyList())
                         ?: environment.reportError("Cannot find MutableList class KSType", node)
 
-                    initializer = CodeBlock.of(
-                        "%M<%T>()",
-                        MemberName("kotlin.collections", "mutableListOf"),
-                        typeParameter?.toTypeName(typeParameterResolver) ?: ANY
-                    )
+                    // initializer = CodeBlock.of(
+                    //     "%M<%T>()",
+                    //     MemberName("kotlin.collections", "mutableListOf"),
+                    //     typeParameter?.toTypeName(typeParameterResolver) ?: ANY
+                    // )
+
+                    initializer = CodeValue("%V<%V>()") {
+                        emitName(MemberName("kotlin.collections", "mutableListOf"))
+                        emitType(typeParameter?.toTypeRef() ?: KotlinClassNames.ANY.ref())
+                    }
                 }
             }
 
@@ -559,17 +611,21 @@ internal class BuilderProperty(
                 propertyType = propertyType.makeNullable()
             }
 
-            val propertySpec = PropertySpec.builder(
+            val propertySpec = KotlinPropertySpec.builder(
                 name,
-                propertyType.toTypeName(typeParameterResolver)
+                // propertyType.toTypeName(typeParameterResolver)
+                propertyType.toTypeRef()
             ).apply {
                 if (declaration.annotationData.open) {
-                    addModifiers(PROTECTED, OPEN)
+                    modifiers {
+                        protected()
+                        open()
+                    }
                 } else {
-                    addModifiers(PRIVATE)
+                    modifiers.private()
                 }
                 mutable(true)
-                initializer(if (isNullableOrIsOptional) CodeBlock.of("null") else initializer)
+                initializer(if (isNullableOrIsOptional) CodeValue("null") else initializer)
             }
 
             addProperty(propertySpec)
@@ -579,30 +635,30 @@ internal class BuilderProperty(
             passing = if (isMutable) {
                 // toMutableSet/List
                 if (isSet) {
-                    CodeBlock.of(".%M()", MemberName("kotlin.collections", "toMutableSet", true))
+                    CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toMutableSet")))
                 } else {
-                    CodeBlock.of(".%M()", MemberName("kotlin.collections", "toMutableList", true))
+                    CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toMutableList")))
                 }
             } else if (isVararg || type.isArray(resolver)) {
                 if (typeParameter?.type?.resolve()?.declaration is KSClassDeclaration) {
                     // reified type
-                    CodeBlock.of(".%M()", MemberName("kotlin.collections", "toTypedArray", true))
+                    CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toTypedArray")))
 
                 } else {
                     // typedArray.toTypedArray<Any?>() as Array<T>
-                    val asType = if (isNullableOrIsOptional) "Array<%T>?" else "Array<%T>"
-                    CodeBlock.of(
-                        ".%M<Any?>() as $asType",
-                        MemberName("kotlin.collections", "toTypedArray", true),
-                        typeParameter?.type?.toTypeName(typeParameterResolver) ?: ANY
-                    )
+                    val asType = if (isNullableOrIsOptional) "Array<%V>?" else "Array<%V>"
+                    CodeValue(".%V<Any?>() as $asType") {
+                        emitName(MemberName("kotlin.collections", "toTypedArray"))
+                        // typeParameter?.type?.toTypeName(typeParameterResolver) ?: ANY
+                        emitType(typeParameter?.type?.toTypeRef() ?: KotlinClassNames.ANY.ref())
+                    }
                 }
             } else {
                 // toList/Set
                 if (isSet) {
-                    CodeBlock.of(".%M()", MemberName("kotlin.collections", "toSet", true))
+                    CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toSet")))
                 } else {
-                    CodeBlock.of(".%M()", MemberName("kotlin.collections", "toList", true))
+                    CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toList")))
                 }
             }
 
@@ -641,28 +697,33 @@ internal class BuilderProperty(
                     node
                 )
 
-            val initializer: CodeBlock = CodeBlock.of(
-                "%M<%T, %T>()",
-                MemberName("kotlin.collections", "mutableMapOf"),
-                keyTypeArgument?.toTypeName(typeParameterResolver) ?: ANY,
-                valueTypeArgument?.toTypeName(typeParameterResolver) ?: ANY
-            )
+            val initializer = CodeValue("%V<%V, %V>()") {
+                emitName(MemberName("kotlin.collections", "mutableMapOf"))
+                // keyTypeArgument?.toTypeRef(typeParameterResolver) ?: ANY
+                // valueTypeArgument?.toTypeRef(typeParameterResolver) ?: ANY
+                emitType(keyTypeArgument?.toTypeRef() ?: KotlinClassNames.ANY.ref())
+                emitType(valueTypeArgument?.toTypeRef() ?: KotlinClassNames.ANY.ref())
+            }
 
             if (isNullableOrIsOptional) {
                 propertyType = propertyType.makeNullable()
             }
 
-            val propertySpec = PropertySpec.builder(
+            val propertySpec = KotlinPropertySpec.builder(
                 name,
-                propertyType.toTypeName(typeParameterResolver)
+                // propertyType.toTypeName(typeParameterResolver)
+                propertyType.toTypeRef()
             ).apply {
                 if (declaration.annotationData.open) {
-                    addModifiers(PROTECTED, OPEN)
+                    modifiers {
+                        protected()
+                        open()
+                    }
                 } else {
-                    addModifiers(PRIVATE)
+                    modifiers.private()
                 }
                 mutable(true)
-                initializer(if (isNullableOrIsOptional) CodeBlock.of("null") else initializer)
+                initializer(if (isNullableOrIsOptional) CodeValue("null") else initializer)
             }
 
             addProperty(propertySpec)
@@ -670,9 +731,9 @@ internal class BuilderProperty(
             val isMutable = type.isMap(resolver, mutable = true)
 
             passing = if (isMutable) {
-                CodeBlock.of(".%M()", MemberName("kotlin.collections", "toMutableMap", true))
+                CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toMutableMap")))
             } else {
-                CodeBlock.of(".%M()", MemberName("kotlin.collections", "toMap", true))
+                CodeValue(".%V()", CodePart.name(MemberName("kotlin.collections", "toMap")))
             }
 
             queue.add(SelfFunctionEmitter(propertyType))
@@ -700,20 +761,21 @@ internal class BuilderProperty(
     private inner class SelfFunctionEmitter(val propertyType: KSType) : FunctionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
             addFunction(
-                FunSpec.builder(name).apply {
-                    addModifiers(PUBLIC)
+                KotlinFunctionSpec.builder(name).apply {
+                    modifiers.public()
                     if (declaration.annotationData.open) {
-                        addModifiers(OPEN)
+                        modifiers.open()
                     }
-                    returns(this@BuilderProperty.builderTypeName)
-                    addParameter(name, propertyType.toTypeName(typeParameterResolver))
-                    addCode(
-                        buildCodeBlock {
-                            inReturnApplyBlock {
-                                addStatement("this.$name = $name")
-                            }
+                    returns(this@BuilderProperty.builderTypeName.ref())
+                    // addParameter(name, propertyType.toTypeName(typeParameterResolver))
+                    val name = this@BuilderProperty.name
+                    addParameter(name, propertyType.toTypeRef())
+                    addCode {
+                        // addCode("return apply { this.$name = $name }")
+                        inReturnApplyBlock {
+                            addStatement("this.$name = $name")
                         }
-                    )
+                    }
                 }
             )
         }
@@ -721,28 +783,26 @@ internal class BuilderProperty(
 
     private abstract inner class CollectionOrMapFunctionEmitter(
         val propertyType: KSType,
-        val propertyInitializer: CodeBlock,
+        val propertyInitializer: CodeValue,
         val elementType: KSType,
     ) : FunctionEmitter() {
-        val accessFun: FunSpec? = if (isNullableOrIsOptional) {
-            FunSpec.builder("_access$firstUpperName").apply {
-                // Supress FunctionName
-                addAnnotation(
-                    AnnotationSpec.builder(Suppress::class)
-                        .addMember("%S", "FunctionName")
-                        .build()
-                )
-                addModifiers(PRIVATE)
-                returns(propertyType.makeNotNullable().toTypeName(typeParameterResolver))
-                addCode(
-                    buildCodeBlock {
-                        inStatement {
-                            add("return $name ?: ")
-                            add(propertyInitializer)
-                            add(".also { this.$name = it }")
-                        }
+        val accessFun: KotlinFunctionSpec? = if (isNullableOrIsOptional) {
+            KotlinFunctionSpec.builder("_access$firstUpperName").apply {
+                // Suppress FunctionName
+                addKotlinAnnotation(KotlinAnnotationNames.SUPPRESS) {
+                    addMember(format = "%V", argumentParts = arrayOf(CodePart.string("FunctionName")))
+                }
+                modifiers.private()
+                // returns(propertyType.makeNotNullable().toTypeName(typeParameterResolver))
+                returns(propertyType.makeNotNullable().toTypeRef())
+                val name = this@BuilderProperty.name
+                addCode {
+                    inStatement {
+                        addCode("return $name ?: ")
+                        addCode(propertyInitializer)
+                        addCode(".also { this.$name = it }")
                     }
-                )
+                }
             }.build().also {
                 typeBuilder.addFunction(it)
             }
@@ -751,25 +811,25 @@ internal class BuilderProperty(
         }
 
         val accessor = accessFun?.let { funSpec ->
-            CodeBlock.of("%N()", funSpec)
+            CodeValue("%V()", CodePart.name(funSpec.name))
         } ?: if (isNullableOrIsOptional) {
-            CodeBlock.of("$name?")
+            CodeValue("$name?")
         } else {
-            CodeBlock.of(name)
+            CodeValue(name)
         }
 
         /**
          * 函数已经包含 name，returns
          */
-        inline fun addAddFunction(block: FunSpec.Builder.() -> Unit) {
+        inline fun addAddFunction(block: KotlinFunctionSpec.Builder.() -> Unit) {
             addFunction(
-                FunSpec.builder("add$firstUpperName").apply {
-                    addKdoc("Add an element to [$name]\n")
-                    addModifiers(PUBLIC)
+                KotlinFunctionSpec.builder("add$firstUpperName").apply {
+                    addDoc("Add an element to [$name]\n")
+                    modifiers.public()
                     if (declaration.annotationData.open) {
-                        addModifiers(OPEN)
+                        modifiers.open()
                     }
-                    returns(builderTypeName)
+                    returns(builderTypeName.ref())
                     block()
                 }
             )
@@ -778,15 +838,15 @@ internal class BuilderProperty(
         /**
          * 函数已经包含 name，returns
          */
-        inline fun addAddAllFunction(block: FunSpec.Builder.() -> Unit) {
+        inline fun addAddAllFunction(block: KotlinFunctionSpec.Builder.() -> Unit) {
             addFunction(
-                FunSpec.builder("addAll$firstUpperName").apply {
-                    addKdoc("Add all elements to [$name].\n")
-                    addModifiers(PUBLIC)
+                KotlinFunctionSpec.builder("addAll$firstUpperName").apply {
+                    addDoc("Add all elements to [$name].\n")
+                    modifiers.public()
                     if (declaration.annotationData.open) {
-                        addModifiers(OPEN)
+                        modifiers.open()
                     }
-                    returns(builderTypeName)
+                    returns(builderTypeName.ref())
                     block()
                 }
             )
@@ -795,18 +855,18 @@ internal class BuilderProperty(
         /**
          * 函数已经包含 name，returns
          */
-        inline fun addClearFunction(block: FunSpec.Builder.() -> Unit) {
+        inline fun addClearFunction(block: KotlinFunctionSpec.Builder.() -> Unit) {
             addFunction(
-                FunSpec.builder("clear$firstUpperName").apply {
-                    addKdoc("Clear elements of [$name].\n")
+                KotlinFunctionSpec.builder("clear$firstUpperName").apply {
+                    addDoc("Clear elements of [$name].\n")
                     if (isNullableOrIsOptional) {
-                        addKdoc("_[$name] Will be set to null internally._\n")
+                        addDoc("_[$name] Will be set to null internally._\n")
                     }
-                    addModifiers(PUBLIC)
+                    modifiers.public()
                     if (declaration.annotationData.open) {
-                        addModifiers(OPEN)
+                        modifiers.open()
                     }
-                    returns(builderTypeName)
+                    returns(builderTypeName.ref())
                     block()
                 }
             )
@@ -832,7 +892,7 @@ internal class BuilderProperty(
      */
     private inner class CollectionFunctionEmitter(
         propertyType: KSType,
-        propertyInitializer: CodeBlock,
+        propertyInitializer: CodeValue,
         elementType: KSType,
     ) : CollectionOrMapFunctionEmitter(
         propertyType,
@@ -841,60 +901,89 @@ internal class BuilderProperty(
     ) {
         override fun emit(queue: ArrayDeque<Emitter>) {
             // add(T)
-            val elementTypeName = elementType.toTypeName(typeParameterResolver)
+            // val elementTypeName = elementType.toTypeName(typeParameterResolver)
+            val elementTypeName = elementType.toTypeRef()
 
             addAddFunction {
                 addParameter("element", elementTypeName)
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyStatement {
-                            add(accessor)
-                            add(".add(element)")
-                        }
+                addCode {
+                    // addCode("return apply {")
+                    // inStatement {
+                    //     addCode(accessor)
+                    //     addCode(".add(element)")
+                    // }
+                    // addCode("}")
+                    // TODO?
+                    inReturnApplyStatement {
+                        addCode(accessor)
+                        addCode(".add(element)")
                     }
-                )
+                }
             }
 
             // addAll(Collection<T>)
             // addAll(vararg T)
 
             addAddAllFunction {
-                addParameter("elements", COLLECTION.parameterizedBy(elementTypeName))
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyStatement {
-                            add(accessor)
-                            add(".addAll(elements)")
-                        }
+                // addParameter("elements", COLLECTION.parameterizedBy(elementTypeName))
+                addParameter("elements", COLLECTION.parameterized(elementTypeName))
+                addCode {
+                    // addCode("return apply {")
+                    // inStatement {
+                    //     addCode(accessor)
+                    //     addCode(".addAll(elements)")
+                    // }
+                    // addCode("}")
+                    // TODO
+                    inReturnApplyStatement {
+                        addCode(accessor)
+                        addCode(".addAll(elements)")
                     }
-                )
+                }
             }
 
             addAddAllFunction {
-                addParameter("elements", elementTypeName, VARARG)
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyStatement {
-                            add(accessor)
-                            add(".addAll(elements.%M())", MemberName("kotlin.collections", "asList", true))
+                addParameter("elements", elementTypeName) {
+                    modifiers.vararg()
+                }
+                addCode {
+                    // addCode("return apply {")
+                    // inStatement {
+                    //     addCode(accessor)
+                    //     addCode(".addAll(elements.%V())") {
+                    //         emitName(MemberName(PackageNames.KOTLIN_COLLECTIONS, "asList"))
+                    //     }
+                    // }
+                    // addCode("}")
+                    // TODO
+                    inReturnApplyStatement {
+                        addCode(accessor)
+                        addCode(".addAll(elements.%V())") {
+                            emitName(MemberName(PackageNames.KOTLIN_COLLECTIONS, "asList"))
                         }
                     }
-                )
+                }
             }
 
             // clear()
             addClearFunction {
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyBlock {
-                            if (isNullableOrIsOptional) {
-                                addStatement("this.$name = null")
-                            } else {
-                                addStatement("this.$name.clear()")
-                            }
+                val name = this@BuilderProperty.name
+                addCode {
+                    // addCode("return apply {")
+                    // if (isNullableOrIsOptional) {
+                    //     addStatement("this.$name = null")
+                    // } else {
+                    //     addStatement("this.$name.clear()")
+                    // }
+                    // addCode("}")
+                    inReturnApplyBlock {
+                        if (isNullableOrIsOptional) {
+                            addStatement("this.$name = null")
+                        } else {
+                            addStatement("this.$name.clear()")
                         }
                     }
-                )
+                }
             }
 
             findBuilder(elementType)?.also {
@@ -905,7 +994,7 @@ internal class BuilderProperty(
 
     private inner class MapFunctionEmitter(
         propertyType: KSType,
-        propertyInitializer: CodeBlock,
+        propertyInitializer: CodeValue,
         val keyType: KSType,
         elementType: KSType,
     ) : CollectionOrMapFunctionEmitter(
@@ -914,8 +1003,10 @@ internal class BuilderProperty(
         elementType,
     ) {
         override fun emit(queue: ArrayDeque<Emitter>) {
-            val keyTypeName = keyType.toTypeName(typeParameterResolver)
-            val valueTypeName = elementType.toTypeName(typeParameterResolver)
+            // val keyTypeName = keyType.toTypeName(typeParameterResolver)
+            // val valueTypeName = elementType.toTypeName(typeParameterResolver)
+            val keyTypeName = keyType.toTypeRef()
+            val valueTypeName = elementType.toTypeRef()
 
             // add(K, V)
             addAddFunction {
@@ -923,42 +1014,68 @@ internal class BuilderProperty(
                 // value
                 addParameter("key", keyTypeName)
                 addParameter("value", valueTypeName)
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyStatement {
-                            add(accessor)
-                            add(".put(key, value)")
-                        }
+                addCode {
+                    // addCode("return apply {")
+                    // inStatement {
+                    //     addCode(accessor)
+                    //     addCode(".put(key, value)")
+                    // }
+                    // addCode("}")
+                    // TODO
+                    inReturnApplyStatement {
+                        addCode(accessor)
+                        addCode(".put(key, value)")
                     }
-                )
+                }
             }
 
             // addAll(Map<K, V>)
             addAddAllFunction {
-                addParameter("elements", MAP.parameterizedBy(keyTypeName, valueTypeName))
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyStatement {
-                            add(accessor)
-                            add(".putAll(elements)")
-                        }
+                addParameter("elements", KotlinClassNames.MAP.parameterized(keyTypeName, valueTypeName))
+                addCode {
+                    // addCode("return apply {")
+                    // inStatement {
+                    //     addCode(accessor)
+                    //     addCode(".putAll(elements)")
+                    // }
+                    // addCode("}")
+                    // TODO
+                    inReturnApplyStatement {
+                        addCode(accessor)
+                        addCode(".putAll(elements)")
                     }
-                )
+                }
+                // addCode(
+                //     buildCodeBlock {
+                //         inReturnApplyStatement {
+                //             add(accessor)
+                //             add(".putAll(elements)")
+                //         }
+                //     }
+                // )
             }
 
             // clear()
+            val name = this@BuilderProperty.name
             addClearFunction {
-                addCode(
-                    buildCodeBlock {
-                        inReturnApplyBlock {
-                            if (isNullableOrIsOptional) {
-                                addStatement("this.$name = null")
-                            } else {
-                                addStatement("this.$name.clear()")
-                            }
+                addCode {
+                    // addCode("return apply { ")
+                    // if (isNullableOrIsOptional) {
+                    //     addStatement("this.$name = null")
+                    // } else {
+                    //     addStatement("this.$name.clear()")
+                    // }
+                    // addCode(" }")
+                    // TODO
+                    inReturnApplyBlock {
+                        if (isNullableOrIsOptional) {
+                            addStatement("this.$name = null")
+                        } else {
+                            addStatement("this.$name.clear()")
                         }
                     }
-                )
+                }
+
             }
 
             findBuilder(keyType)?.also { keyBuilder ->
@@ -984,25 +1101,28 @@ internal class BuilderProperty(
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = "add$firstUpperName"
             addExtension(
-                FunSpec.builder(fn).apply {
-                    addKdoc("@see %T", otherBuilderName)
-                    addModifiers(INLINE)
+                KotlinFunctionSpec.builder(fn).apply {
+                    addDoc("@see %V", CodePart.type(otherBuilderName))
+                    modifiers.inline()
                     if (declaration.annotationData.internal) {
-                        addModifiers(INTERNAL)
+                        modifiers.internal()
                     } else {
-                        addModifiers(PUBLIC)
+                        modifiers.public()
                     }
-                    returns(builderTypeName)
-                    receiver(builderTypeName)
+                    returns(builderTypeName.ref())
+                    receiver(builderTypeName.ref())
                     addTypeVariables(typeParameters)
                     addParameter(
                         "block",
-                        LambdaTypeName.get(
-                            receiver = otherBuilderName,
-                            returnType = UNIT
-                        )
+                        KotlinLambdaTypeName {
+                            receiver(otherBuilderName.ref())
+                        }
+                        // KotlinLambdaTypeName.get(
+                        //     receiver = otherBuilderName,
+                        //     returnType = UNIT
+                        // )
                     )
-                    addCode("return $fn(%T().also(block).build())", otherBuilderName)
+                    addCode("return $fn(%V().also(block).build())", CodePart.type(otherBuilderName))
                 }
             )
         }
@@ -1020,32 +1140,31 @@ internal class BuilderProperty(
      * ```
      */
     private inner class MapBuilderExtensionEmitter(
-        val keyType: TypeName,
+        val keyType: TypeRef<*>,
         val otherBuilderName: TypeName,
     ) : ExtensionEmitter() {
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = "add$firstUpperName"
             addExtension(
-                FunSpec.builder(fn).apply {
-                    addKdoc("@see %T", otherBuilderName)
-                    addModifiers(INLINE)
+                KotlinFunctionSpec.builder(fn).apply {
+                    addDoc("@see %V", CodePart.type(otherBuilderName))
+                    modifiers.inline()
                     if (declaration.annotationData.internal) {
-                        addModifiers(INTERNAL)
+                        modifiers.internal()
                     } else {
-                        addModifiers(PUBLIC)
+                        modifiers.public()
                     }
-                    returns(builderTypeName)
-                    receiver(builderTypeName)
+                    returns(builderTypeName.ref())
+                    receiver(builderTypeName.ref())
                     addTypeVariables(typeParameters)
                     addParameter("key", keyType)
                     addParameter(
                         "block",
-                        LambdaTypeName.get(
-                            receiver = otherBuilderName,
-                            returnType = UNIT
-                        )
+                        KotlinLambdaTypeName {
+                            receiver(otherBuilderName.ref())
+                        }
                     )
-                    addCode("return $fn(key, %T().also(block).build())", otherBuilderName)
+                    addCode("return $fn(key, %V().also(block).build())", CodePart.type(otherBuilderName))
                 }
             )
         }
@@ -1057,27 +1176,26 @@ internal class BuilderProperty(
         override fun emit(queue: ArrayDeque<Emitter>) {
             val fn = name
             addExtension(
-                FunSpec.builder(fn).apply {
-                    addKdoc("@see ${declaration.builderName}.$fn\n")
-                    addKdoc("@see %T.$name\n", declaration.type.toClassName())
-                    addKdoc("@see %T", otherBuilderName)
-                    addModifiers(INLINE)
+                KotlinFunctionSpec.builder(fn).apply {
+                    addDoc("@see ${declaration.builderName}.$fn\n")
+                    addDoc("@see %V.$name\n", CodePart.type(declaration.type.toClassName()))
+                    addDoc("@see %V", CodePart.type(otherBuilderName))
+                    modifiers.inline()
                     if (declaration.annotationData.internal) {
-                        addModifiers(INTERNAL)
+                        modifiers.internal()
                     } else {
-                        addModifiers(PUBLIC)
+                        modifiers.public()
                     }
-                    returns(builderTypeName)
-                    receiver(builderTypeName)
+                    returns(builderTypeName.ref())
+                    receiver(builderTypeName.ref())
                     addTypeVariables(typeParameters)
                     addParameter(
                         "block",
-                        LambdaTypeName.get(
-                            receiver = otherBuilderName,
-                            returnType = UNIT
-                        )
+                        KotlinLambdaTypeName {
+                            receiver(otherBuilderName.ref())
+                        }
                     )
-                    addCode("return $fn(%T().also(block).build())", otherBuilderName)
+                    addCode("return $fn(%V().also(block).build())", CodePart.type(otherBuilderName))
                 }
             )
         }

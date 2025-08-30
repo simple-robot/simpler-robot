@@ -118,7 +118,7 @@ class TestClass2 {
     var times: Int = 1
 }
 
-internal inline fun <T> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): MyTestClass<T> {
+internal inline fun <T : Any> MyTestClass(block: MyTestClassBuilder<T>.() -> Unit): MyTestClass<T> {
     return MyTestClassBuilder<T>().apply(block).build()
 }
 

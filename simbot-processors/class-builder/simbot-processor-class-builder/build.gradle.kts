@@ -26,19 +26,43 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
+configJavaCompileWithModule(jvmVersion = "11")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
+    configKotlinJvm(11)
+}
+
+repositories {
+    mavenLocal {
+        content {
+            includeGroup("love.forte.codegentle")
+        }
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+        isAllowInsecureProtocol = true
+        metadataSources.artifact()
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
 }
 
 dependencies {
     implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
+    // implementation(libs.kotlinPoet.ksp)
+
+    implementation("love.forte.codegentle:codegentle-kotlin:0.0.1-SNAPSHOT")
+    implementation("love.forte.codegentle:codegentle-kotlin-ksp:0.0.1-SNAPSHOT")
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }

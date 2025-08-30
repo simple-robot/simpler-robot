@@ -21,15 +21,19 @@
  *
  */
 
-package love.forte.simbot.processor.classbuilder
+package love.forte.simbot.processor.classbuilder.test
 
-import love.forte.codegentle.common.naming.ClassName
-import love.forte.codegentle.common.naming.parseToPackageName
+import kotlin.test.Test
 
-// internal val BuilderForClassName = KPClassName("love.forte.simbot.processor.classbuilder.annotation", "BuilderFor")
-// internal val ClassBuilderClassName = KPClassName("love.forte.simbot.processor.classbuilder.annotation", "ClassBuilder")
 
-internal val BuilderForClassName =
-    ClassName("love.forte.simbot.processor.classbuilder.annotation".parseToPackageName(), "BuilderFor")
-internal val ClassBuilderClassName =
-    ClassName("love.forte.simbot.processor.classbuilder.annotation".parseToPackageName(), "ClassBuilder")
+/**
+ *
+ * @author ForteScarlet
+ */
+class MyTestClassTests {
+    @Test
+    fun simpleTestMyTestClass() {
+        // TODO
+    }
+
+}
