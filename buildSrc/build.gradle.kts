@@ -29,7 +29,7 @@ plugins {
 repositories {
     mavenCentral()
     gradlePluginPortal()
-    // mavenLocal()
+    mavenLocal()
 }
 
 val kotlinVersion: String = libs.versions.kotlin.get()

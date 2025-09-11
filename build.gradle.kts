@@ -30,6 +30,9 @@ plugins {
     id("org.jetbrains.dokka")
     // id("simbot.dokka-multi-module")
     id("com.github.gmazzo.buildconfig") version "5.6.7" apply false
+    kotlin("multiplatform") apply false
+    kotlin("jvm") apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.detekt)
     id("simbot.nexus-publish")
     id("love.forte.plugin.suspend-transform") apply false
@@ -57,7 +60,7 @@ repositories {
             }
         }
     }
-    // mavenLocal()
+    mavenLocal()
 }
 
 val root = project
@@ -78,7 +81,7 @@ subprojects {
                 }
             }
         }
-        // mavenLocal()
+        mavenLocal()
     }
 
     afterEvaluate {
