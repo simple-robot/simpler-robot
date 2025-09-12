@@ -1,0 +1,31 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-annotations>
+open annotation class love.forte.simbot.annotations/Api4J : kotlin/Annotation { // love.forte.simbot.annotations/Api4J|null[0]
+    constructor <init>() // love.forte.simbot.annotations/Api4J.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.annotations/Api4Js : kotlin/Annotation { // love.forte.simbot.annotations/Api4Js|null[0]
+    constructor <init>() // love.forte.simbot.annotations/Api4Js.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.annotations/ExperimentalSimbotAPI : kotlin/Annotation { // love.forte.simbot.annotations/ExperimentalSimbotAPI|null[0]
+    constructor <init>() // love.forte.simbot.annotations/ExperimentalSimbotAPI.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.annotations/FragileSimbotAPI : kotlin/Annotation { // love.forte.simbot.annotations/FragileSimbotAPI|null[0]
+    constructor <init>() // love.forte.simbot.annotations/FragileSimbotAPI.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.annotations/InternalInheritanceAPI : kotlin/Annotation { // love.forte.simbot.annotations/InternalInheritanceAPI|null[0]
+    constructor <init>() // love.forte.simbot.annotations/InternalInheritanceAPI.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.annotations/InternalSimbotAPI : kotlin/Annotation { // love.forte.simbot.annotations/InternalSimbotAPI|null[0]
+    constructor <init>() // love.forte.simbot.annotations/InternalSimbotAPI.<init>|<init>(){}[0]
+}

@@ -1,0 +1,65 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-apidefinition>
+abstract interface <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/ApiDefinition { // love.forte.simbot.common.apidefinition/ApiDefinition|null[0]
+    abstract val body // love.forte.simbot.common.apidefinition/ApiDefinition.body|{}body[0]
+        abstract fun <get-body>(): kotlin/Any? // love.forte.simbot.common.apidefinition/ApiDefinition.body.<get-body>|<get-body>(){}[0]
+    abstract val method // love.forte.simbot.common.apidefinition/ApiDefinition.method|{}method[0]
+        abstract fun <get-method>(): io.ktor.http/HttpMethod // love.forte.simbot.common.apidefinition/ApiDefinition.method.<get-method>|<get-method>(){}[0]
+    abstract val resultDeserializationStrategy // love.forte.simbot.common.apidefinition/ApiDefinition.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        abstract fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<#A> // love.forte.simbot.common.apidefinition/ApiDefinition.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+    abstract val url // love.forte.simbot.common.apidefinition/ApiDefinition.url|{}url[0]
+        abstract fun <get-url>(): io.ktor.http/Url // love.forte.simbot.common.apidefinition/ApiDefinition.url.<get-url>|<get-url>(){}[0]
+    open val headers // love.forte.simbot.common.apidefinition/ApiDefinition.headers|{}headers[0]
+        open fun <get-headers>(): io.ktor.http/Headers // love.forte.simbot.common.apidefinition/ApiDefinition.headers.<get-headers>|<get-headers>(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/BodyComputableApiDefinition : love.forte.simbot.common.apidefinition/RestApiDefinition<#A> { // love.forte.simbot.common.apidefinition/BodyComputableApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/BodyComputableApiDefinition.<init>|<init>(){}[0]
+
+    open val body // love.forte.simbot.common.apidefinition/BodyComputableApiDefinition.body|{}body[0]
+        open fun <get-body>(): kotlin/Any? // love.forte.simbot.common.apidefinition/BodyComputableApiDefinition.body.<get-body>|<get-body>(){}[0]
+
+    abstract fun createBody(): kotlin/Any? // love.forte.simbot.common.apidefinition/BodyComputableApiDefinition.createBody|createBody(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/DeleteApiDefinition : love.forte.simbot.common.apidefinition/RestApiDefinition<#A> { // love.forte.simbot.common.apidefinition/DeleteApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/DeleteApiDefinition.<init>|<init>(){}[0]
+
+    open val body // love.forte.simbot.common.apidefinition/DeleteApiDefinition.body|{}body[0]
+        open fun <get-body>(): kotlin/Any? // love.forte.simbot.common.apidefinition/DeleteApiDefinition.body.<get-body>|<get-body>(){}[0]
+    open val method // love.forte.simbot.common.apidefinition/DeleteApiDefinition.method|{}method[0]
+        open fun <get-method>(): io.ktor.http/HttpMethod // love.forte.simbot.common.apidefinition/DeleteApiDefinition.method.<get-method>|<get-method>(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/GetApiDefinition : love.forte.simbot.common.apidefinition/RestApiDefinition<#A> { // love.forte.simbot.common.apidefinition/GetApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/GetApiDefinition.<init>|<init>(){}[0]
+
+    open val body // love.forte.simbot.common.apidefinition/GetApiDefinition.body|{}body[0]
+        open fun <get-body>(): kotlin/Any? // love.forte.simbot.common.apidefinition/GetApiDefinition.body.<get-body>|<get-body>(){}[0]
+    open val method // love.forte.simbot.common.apidefinition/GetApiDefinition.method|{}method[0]
+        open fun <get-method>(): io.ktor.http/HttpMethod // love.forte.simbot.common.apidefinition/GetApiDefinition.method.<get-method>|<get-method>(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/PostApiDefinition : love.forte.simbot.common.apidefinition/BodyComputableApiDefinition<#A> { // love.forte.simbot.common.apidefinition/PostApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/PostApiDefinition.<init>|<init>(){}[0]
+
+    open val method // love.forte.simbot.common.apidefinition/PostApiDefinition.method|{}method[0]
+        open fun <get-method>(): io.ktor.http/HttpMethod // love.forte.simbot.common.apidefinition/PostApiDefinition.method.<get-method>|<get-method>(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/PutApiDefinition : love.forte.simbot.common.apidefinition/BodyComputableApiDefinition<#A> { // love.forte.simbot.common.apidefinition/PutApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/PutApiDefinition.<init>|<init>(){}[0]
+
+    open val method // love.forte.simbot.common.apidefinition/PutApiDefinition.method|{}method[0]
+        open fun <get-method>(): io.ktor.http/HttpMethod // love.forte.simbot.common.apidefinition/PutApiDefinition.method.<get-method>|<get-method>(){}[0]
+}
+
+abstract class <#A: out kotlin/Any> love.forte.simbot.common.apidefinition/RestApiDefinition : love.forte.simbot.common.apidefinition/ApiDefinition<#A> { // love.forte.simbot.common.apidefinition/RestApiDefinition|null[0]
+    constructor <init>() // love.forte.simbot.common.apidefinition/RestApiDefinition.<init>|<init>(){}[0]
+}

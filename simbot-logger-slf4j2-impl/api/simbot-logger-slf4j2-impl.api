@@ -209,8 +209,8 @@ public abstract interface class love/forte/simbot/logger/slf4j2/color/Color {
 	public abstract fun getColorIndex ()I
 	public abstract fun getPrefix ()Ljava/lang/String;
 	public abstract fun getSuffix ()Ljava/lang/String;
-	public abstract fun isBackGround ()Z
-	public abstract fun isFont ()Z
+	public fun isBackGround ()Z
+	public fun isFont ()Z
 }
 
 public final class love/forte/simbot/logger/slf4j2/color/Color$DefaultImpls {

@@ -25,6 +25,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     kotlin("multiplatform")
@@ -40,6 +41,11 @@ apply(plugin = "simbot-maven-publish")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = false
+    }
 
     compilerOptions {
         optIn.addAll(

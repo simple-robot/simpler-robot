@@ -1,0 +1,84 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Alias: native => [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-collection>
+open annotation class love.forte.simbot.common.collection/ExperimentalSimbotCollectionApi : kotlin/Annotation { // love.forte.simbot.common.collection/ExperimentalSimbotCollectionApi|null[0]
+    constructor <init>() // love.forte.simbot.common.collection/ExperimentalSimbotCollectionApi.<init>|<init>(){}[0]
+}
+
+abstract interface <#A: kotlin/Any?> love.forte.simbot.common.collection/ConcurrentQueue : kotlin.collections/Iterable<#A> { // love.forte.simbot.common.collection/ConcurrentQueue|null[0]
+    abstract val size // love.forte.simbot.common.collection/ConcurrentQueue.size|{}size[0]
+        abstract fun <get-size>(): kotlin/Int // love.forte.simbot.common.collection/ConcurrentQueue.size.<get-size>|<get-size>(){}[0]
+
+    abstract fun add(#A) // love.forte.simbot.common.collection/ConcurrentQueue.add|add(1:0){}[0]
+    abstract fun clear() // love.forte.simbot.common.collection/ConcurrentQueue.clear|clear(){}[0]
+    abstract fun isEmpty(): kotlin/Boolean // love.forte.simbot.common.collection/ConcurrentQueue.isEmpty|isEmpty(){}[0]
+    abstract fun iterator(): kotlin.collections/Iterator<#A> // love.forte.simbot.common.collection/ConcurrentQueue.iterator|iterator(){}[0]
+    abstract fun remove(#A) // love.forte.simbot.common.collection/ConcurrentQueue.remove|remove(1:0){}[0]
+    abstract fun removeIf(kotlin/Function1<#A, kotlin/Boolean>) // love.forte.simbot.common.collection/ConcurrentQueue.removeIf|removeIf(kotlin.Function1<1:0,kotlin.Boolean>){}[0]
+}
+
+abstract interface <#A: kotlin/Any?> love.forte.simbot.common.collection/PriorityConcurrentQueue : kotlin.collections/Iterable<#A> { // love.forte.simbot.common.collection/PriorityConcurrentQueue|null[0]
+    abstract val size // love.forte.simbot.common.collection/PriorityConcurrentQueue.size|{}size[0]
+        abstract fun <get-size>(): kotlin/Int // love.forte.simbot.common.collection/PriorityConcurrentQueue.size.<get-size>|<get-size>(){}[0]
+
+    abstract fun add(kotlin/Int, #A) // love.forte.simbot.common.collection/PriorityConcurrentQueue.add|add(kotlin.Int;1:0){}[0]
+    abstract fun clear() // love.forte.simbot.common.collection/PriorityConcurrentQueue.clear|clear(){}[0]
+    abstract fun isEmpty(): kotlin/Boolean // love.forte.simbot.common.collection/PriorityConcurrentQueue.isEmpty|isEmpty(){}[0]
+    abstract fun isEmpty(kotlin/Int): kotlin/Boolean // love.forte.simbot.common.collection/PriorityConcurrentQueue.isEmpty|isEmpty(kotlin.Int){}[0]
+    abstract fun iterator(): kotlin.collections/Iterator<#A> // love.forte.simbot.common.collection/PriorityConcurrentQueue.iterator|iterator(){}[0]
+    abstract fun remove(#A) // love.forte.simbot.common.collection/PriorityConcurrentQueue.remove|remove(1:0){}[0]
+    abstract fun remove(kotlin/Int, #A) // love.forte.simbot.common.collection/PriorityConcurrentQueue.remove|remove(kotlin.Int;1:0){}[0]
+    abstract fun removeIf(kotlin/Function1<#A, kotlin/Boolean>) // love.forte.simbot.common.collection/PriorityConcurrentQueue.removeIf|removeIf(kotlin.Function1<1:0,kotlin.Boolean>){}[0]
+    abstract fun removeIf(kotlin/Int, kotlin/Function1<#A, kotlin/Boolean>) // love.forte.simbot.common.collection/PriorityConcurrentQueue.removeIf|removeIf(kotlin.Int;kotlin.Function1<1:0,kotlin.Boolean>){}[0]
+}
+
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> love.forte.simbot.common.collection/concurrentMutableMap(): kotlin.collections/MutableMap<#A, #B> // love.forte.simbot.common.collection/concurrentMutableMap|concurrentMutableMap(){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlin.collections/Collection<#A>).love.forte.simbot.common.collection/toImmutable(): kotlin.collections/Collection<#A> // love.forte.simbot.common.collection/toImmutable|toImmutable@kotlin.collections.Collection<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> love.forte.simbot.common.collection/createConcurrentQueue(): love.forte.simbot.common.collection/ConcurrentQueue<#A> // love.forte.simbot.common.collection/createConcurrentQueue|createConcurrentQueue(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> love.forte.simbot.common.collection/createPriorityConcurrentQueue(): love.forte.simbot.common.collection/PriorityConcurrentQueue<#A> // love.forte.simbot.common.collection/createPriorityConcurrentQueue|createPriorityConcurrentQueue(){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/internalComputeIfAbsentImpl(#A, kotlin/Function1<#A, #B>): #B // love.forte.simbot.common.collection/internalComputeIfAbsentImpl|internalComputeIfAbsentImpl@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/internalComputeIfPresentImpl(#A, kotlin/Function2<#A, #B!!, #B?>): #B? // love.forte.simbot.common.collection/internalComputeIfPresentImpl|internalComputeIfPresentImpl@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/internalComputeImpl(#A, kotlin/Function2<#A, #B?, #B?>): #B? // love.forte.simbot.common.collection/internalComputeImpl|internalComputeImpl@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1?,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/internalMergeImpl(#A, #B!!, kotlin/Function2<#B!!, #B!!, #B?>): #B? // love.forte.simbot.common.collection/internalMergeImpl|internalMergeImpl@kotlin.collections.MutableMap<0:0,0:1>(0:0;0:1;kotlin.Function2<0:1,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/internalRemoveValueImpl(#A, crossinline kotlin/Function0<#B>): kotlin/Boolean // love.forte.simbot.common.collection/internalRemoveValueImpl|internalRemoveValueImpl@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function0<0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/removeValue(#A, crossinline kotlin/Function0<#B>): kotlin/Boolean // love.forte.simbot.common.collection/removeValue|removeValue@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function0<0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).love.forte.simbot.common.collection/asIterator(kotlinx.coroutines/CoroutineScope, crossinline kotlin/Function1<kotlinx.coroutines.channels/ChannelIterator<#A>, kotlin/Boolean>, crossinline kotlin/Function1<kotlinx.coroutines.channels/ChannelIterator<#A>, #A>): kotlin.collections/Iterator<#A> // love.forte.simbot.common.collection/asIterator|asIterator@kotlinx.coroutines.flow.Flow<0:0>(kotlinx.coroutines.CoroutineScope;kotlin.Function1<kotlinx.coroutines.channels.ChannelIterator<0:0>,kotlin.Boolean>;kotlin.Function1<kotlinx.coroutines.channels.ChannelIterator<0:0>,0:0>){0§<kotlin.Any?>}[0]
+
+// Targets: [native]
+abstract interface <#A: kotlin/Any?, #B: kotlin/Any?> love.forte.simbot.common.collection/MutableMapOperators : kotlin.collections/MutableMap<#A, #B> { // love.forte.simbot.common.collection/MutableMapOperators|null[0]
+    abstract fun computeIfAbsentOperator(#A, kotlin/Function1<#A, #B>): #B // love.forte.simbot.common.collection/MutableMapOperators.computeIfAbsentOperator|computeIfAbsentOperator(1:0;kotlin.Function1<1:0,1:1>){}[0]
+    abstract fun computeIfPresentOperator(#A, kotlin/Function2<#A, #B!!, #B?>): #B? // love.forte.simbot.common.collection/MutableMapOperators.computeIfPresentOperator|computeIfPresentOperator(1:0;kotlin.Function2<1:0,1:1,1:1?>){}[0]
+    abstract fun computeOperator(#A, kotlin/Function2<#A, #B?, #B?>): #B? // love.forte.simbot.common.collection/MutableMapOperators.computeOperator|computeOperator(1:0;kotlin.Function2<1:0,1:1?,1:1?>){}[0]
+    abstract fun mergeOperator(#A, #B!!, kotlin/Function2<#B!!, #B!!, #B?>): #B? // love.forte.simbot.common.collection/MutableMapOperators.mergeOperator|mergeOperator(1:0;1:1;kotlin.Function2<1:1,1:1,1:1?>){}[0]
+    abstract fun removeValue(#A, #B): kotlin/Boolean // love.forte.simbot.common.collection/MutableMapOperators.removeValue|removeValue(1:0;1:1){}[0]
+}
+
+// Targets: [native]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValue(#A, crossinline kotlin/Function2<#A, #B?, #B?>): #B? // love.forte.simbot.common.collection/computeValue|computeValue@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1?,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [native]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValueIfAbsent(#A, crossinline kotlin/Function1<#A, #B>): #B // love.forte.simbot.common.collection/computeValueIfAbsent|computeValueIfAbsent@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [native]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValueIfPresent(#A, crossinline kotlin/Function2<#A, #B!!, #B?>): #B? // love.forte.simbot.common.collection/computeValueIfPresent|computeValueIfPresent@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [native]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/mergeValue(#A, #B!!, crossinline kotlin/Function2<#B!!, #B!!, #B?>): #B? // love.forte.simbot.common.collection/mergeValue|mergeValue@kotlin.collections.MutableMap<0:0,0:1>(0:0;0:1;kotlin.Function2<0:1,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [js, wasmJs]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValue(#A, kotlin/Function2<#A, #B?, #B?>): #B? // love.forte.simbot.common.collection/computeValue|computeValue@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1?,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [js, wasmJs]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValueIfAbsent(#A, kotlin/Function1<#A, #B>): #B // love.forte.simbot.common.collection/computeValueIfAbsent|computeValueIfAbsent@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [js, wasmJs]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/computeValueIfPresent(#A, kotlin/Function2<#A, #B!!, #B?>): #B? // love.forte.simbot.common.collection/computeValueIfPresent|computeValueIfPresent@kotlin.collections.MutableMap<0:0,0:1>(0:0;kotlin.Function2<0:0,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+
+// Targets: [js, wasmJs]
+final inline fun <#A: kotlin/Any?, #B: kotlin/Any?> (kotlin.collections/MutableMap<#A, #B>).love.forte.simbot.common.collection/mergeValue(#A, #B!!, kotlin/Function2<#B!!, #B!!, #B?>): #B? // love.forte.simbot.common.collection/mergeValue|mergeValue@kotlin.collections.MutableMap<0:0,0:1>(0:0;0:1;kotlin.Function2<0:1,0:1,0:1?>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]

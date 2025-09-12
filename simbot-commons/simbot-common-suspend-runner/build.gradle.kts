@@ -24,6 +24,7 @@
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     kotlin("multiplatform")
@@ -36,6 +37,15 @@ apply(plugin = "simbot-maven-publish")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        filters.excluded.byNames.addAll(
+            "love.forte.simbot.suspendrunner.SuspendMarker",
+            "love.forte.simbot.suspendrunner.SuspendMarker.Container",
+            "love.forte.simbot.suspendrunner.SuspendMarker\$Container",
+        )
+    }
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -26,13 +26,13 @@ package love.forte.simbot.logger
 /**
  * 日志。
  *
- * 在JS平台中会通过 `console` 向控制台输出日志信息,
- * 并会尝试为不同种类的api分配对应的 `console` api.
- * - [Logger.trace] 使用 `console.log`
- * - [Logger.debug] 使用 `console.log`
- * - [Logger.info] 使用 `console.info`
- * - [Logger.warn] 使用 `console.warn`
- * - [Logger.error] 使用 `console.error`
+ * 在JS平台中会通过 [kotlin.js.console] 向控制台输出日志信息,
+ * 并会尝试为不同种类的api分配对应的 [console][kotlin.js.Console] api.
+ * - [Logger.trace] 使用 [console.log][kotlin.js.Console.log]
+ * - [Logger.debug] 使用 [console.log][kotlin.js.Console.log]
+ * - [Logger.info] 使用 [console.info][kotlin.js.Console.info]
+ * - [Logger.warn] 使用 [console.warn][kotlin.js.Console.warn]
+ * - [Logger.error] 使用 [console.error][kotlin.js.Console.error]
  *
  * @author ForteScarlet
  */

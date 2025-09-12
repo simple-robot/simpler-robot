@@ -1,0 +1,21 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-streamable>
+final class <#A: out kotlin/Any?> love.forte.simbot.common.streamable/Streamable : kotlin.collections/Iterable<#A> { // love.forte.simbot.common.streamable/Streamable|null[0]
+    final fun <#A1: kotlin.collections/MutableCollection<in #A>> collectTo(#A1): #A1 // love.forte.simbot.common.streamable/Streamable.collectTo|collectTo(0:0){0§<kotlin.collections.MutableCollection<in|1:0>>}[0]
+    final fun asSequence(): kotlin.sequences/Sequence<#A> // love.forte.simbot.common.streamable/Streamable.asSequence|asSequence(){}[0]
+    final fun collectToList(): kotlin.collections/List<#A> // love.forte.simbot.common.streamable/Streamable.collectToList|collectToList(){}[0]
+    final fun iterator(): kotlin.collections/Iterator<#A> // love.forte.simbot.common.streamable/Streamable.iterator|iterator(){}[0]
+
+    final object Companion { // love.forte.simbot.common.streamable/Streamable.Companion|null[0]
+        final fun <#A2: kotlin/Any?> (kotlin.sequences/Sequence<#A2>).asStreamable(): love.forte.simbot.common.streamable/Streamable<#A2> // love.forte.simbot.common.streamable/Streamable.Companion.asStreamable|asStreamable@kotlin.sequences.Sequence<0:0>(){0§<kotlin.Any?>}[0]
+    }
+
+    // Targets: [js, wasmJs]
+    final fun collectToArray(): kotlin/Array<out #A> // love.forte.simbot.common.streamable/Streamable.collectToArray|collectToArray(){}[0]
+}

@@ -24,6 +24,7 @@
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     kotlin("multiplatform")
@@ -37,6 +38,12 @@ apply(plugin = "simbot-maven-publish")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    // 实验性模块，暂时不保证ABI
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = false
+    }
 
     compilerOptions {
         optIn.add("love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI")

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -39,6 +39,7 @@ import kotlin.js.Promise
  * @see StandardEventResult.CollectableReactivelyResult.content
  * @return The collected result.
  */
+@OptIn(ExperimentalWasmJsInterop::class)
 public actual suspend fun StandardEventResult.CollectableReactivelyResult.collectCollectableReactively(): Any? {
     return when (val c = content) {
         null -> null

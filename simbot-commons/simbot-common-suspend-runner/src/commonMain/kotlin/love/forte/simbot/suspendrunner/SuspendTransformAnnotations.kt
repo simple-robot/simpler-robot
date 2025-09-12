@@ -47,7 +47,6 @@ public annotation class SuspendTrans(
  *
  * @see SuspendTrans
  */
-@Suppress("SpellCheckingInspection")
 public typealias ST = SuspendTrans
 
 
@@ -87,10 +86,9 @@ public annotation class SuspendTransProperty(
  *
  * @see SuspendTransProperty
  */
-@Suppress("SpellCheckingInspection")
 public typealias STP = SuspendTransProperty
 
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 @Deprecated("Only used by auto-generate", level = DeprecationLevel.HIDDEN)
 @Repeatable
 public annotation class SuspendMarker(val value: String)
