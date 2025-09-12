@@ -38,16 +38,6 @@ public final class love/forte/simbot/common/collection/Maps_jvmKt {
 	public static final fun removeValue (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Z
 }
 
-public final class love/forte/simbot/common/collection/Maps_jvmKt$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
-	public fun <init> (Lkotlin/jvm/functions/Function2;)V
-	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class love/forte/simbot/common/collection/Maps_jvmKt$sam$i$java_util_function_Function$0 : java/util/function/Function {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
 public abstract interface class love/forte/simbot/common/collection/PriorityConcurrentQueue : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
 	public abstract fun add (ILjava/lang/Object;)V
 	public abstract fun clear ()V

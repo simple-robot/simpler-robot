@@ -141,16 +141,6 @@ public final class love/forte/simbot/common/attribute/MutableAttributeMap$Compan
 	public static synthetic fun create$default (Llove/forte/simbot/common/attribute/MutableAttributeMap$Companion;Ljava/util/Map;ILjava/lang/Object;)Llove/forte/simbot/common/attribute/MutableAttributeMap;
 }
 
-public final class love/forte/simbot/common/attribute/MutableAttributeMapImpl$inlined$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
-	public fun <init> (Lkotlin/jvm/functions/Function2;)V
-	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class love/forte/simbot/common/attribute/MutableAttributeMapImpl$inlined$sam$i$java_util_function_Function$0 : java/util/function/Function {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
 public abstract interface class love/forte/simbot/common/collectable/Collectable {
 	public abstract fun asFlow ()Lkotlinx/coroutines/flow/Flow;
 	public abstract synthetic fun collect (Llove/forte/simbot/common/function/Action;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
