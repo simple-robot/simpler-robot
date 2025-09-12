@@ -25,7 +25,7 @@ public class love/forte/simbot/processor/message/element/polymorphic/include/Mes
 	public static final synthetic fun write$Self (Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
-public synthetic class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

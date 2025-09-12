@@ -75,7 +75,7 @@ public final class love/forte/simbot/common/attribute/Attribute {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/common/attribute/Attribute$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/common/attribute/Attribute$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public fun <init> (Lkotlinx/serialization/KSerializer;)V
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
