@@ -47,8 +47,8 @@ fun isSnapshot(): Boolean = _isSnapshot
 @Suppress("MemberVisibilityCanBePrivate")
 sealed class P(override val group: String) : ProjectDetail() {
     companion object {
-        const val VERSION = "4.13.0"
-        const val NEXT_VERSION = "4.14.0"
+        const val VERSION = "4.14.0"
+        const val NEXT_VERSION = "4.14.1"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 
