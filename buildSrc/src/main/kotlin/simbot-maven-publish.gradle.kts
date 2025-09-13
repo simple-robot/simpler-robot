@@ -21,15 +21,7 @@
  *
  */
 
-import com.vanniktech.maven.publish.SonatypeHost
-import gradle.kotlin.dsl.accessors._962842af322993b246b9354775ec3900.mavenPublishing
-import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.ofIf
-import love.forte.gradle.common.publication.configure.configPublishMaven
-import love.forte.gradle.common.publication.configure.publishingExtension
-import love.forte.gradle.common.publication.configure.setupPom
-import org.jetbrains.kotlin.com.intellij.openapi.util.text.HtmlChunk.p
-import utils.checkPublishConfigurable
 
 plugins {
     signing
@@ -39,57 +31,55 @@ plugins {
 
 val p = project
 
-// checkPublishConfigurable {
-    mavenPublishing {
-        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-        if (!isSimbotLocal()) {
-            signAllPublications()
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+    if (!isSimbotLocal()) {
+        signAllPublications()
+    }
+    coordinates(groupId = p.group.toString(), artifactId = p.name, version = p.version.toString())
+
+    pom {
+        name = p.name
+        description = p.description
+        url = P.HOMEPAGE
+        licenses {
+            P.Simbot.licenses.forEach { license ->
+                license {
+                    name ofIf license.name
+                    url ofIf license.url
+                    distribution ofIf license.distribution
+                    comments ofIf license.comments
+                }
+            }
         }
-        coordinates(groupId = p.group.toString(), artifactId = p.name, version = p.version.toString())
 
-        pom {
-            name = p.name
-            description = p.description
-            url = P.HOMEPAGE
-            licenses {
-                P.Simbot.licenses.forEach { license ->
-                    license {
-                        name ofIf license.name
-                        url ofIf license.url
-                        distribution ofIf license.distribution
-                        comments ofIf license.comments
-                    }
+        val scm = P.Simbot.scm
+        scm {
+            url ofIf scm.url
+            connection ofIf scm.connection
+            developerConnection ofIf scm.developerConnection
+            tag ofIf scm.tag
+        }
+
+        developers {
+            P.Simbot.developers.forEach { developer ->
+                developer {
+                    id ofIf developer.id
+                    name ofIf developer.name
+                    email ofIf developer.email
+                    url ofIf developer.url
+                    organization ofIf developer.organization
+                    organizationUrl ofIf developer.organizationUrl
+                    timezone ofIf developer.timezone
+                    roles.addAll(developer.roles)
+                    properties.putAll(developer.properties)
                 }
             }
+        }
 
-            val scm = P.Simbot.scm
-            scm {
-                url ofIf scm.url
-                connection ofIf scm.connection
-                developerConnection ofIf scm.developerConnection
-                tag ofIf scm.tag
-            }
-
-            developers {
-                P.Simbot.developers.forEach { developer ->
-                    developer {
-                        id ofIf developer.id
-                        name ofIf developer.name
-                        email ofIf developer.email
-                        url ofIf developer.url
-                        organization ofIf developer.organization
-                        organizationUrl ofIf developer.organizationUrl
-                        timezone ofIf developer.timezone
-                        roles.addAll(developer.roles)
-                        properties.putAll(developer.properties)
-                    }
-                }
-            }
-
-            issueManagement {
-                system.set("GitHub Issues")
-                url.set("https://github.com/simple-robot/simpler-robot/issues")
-            }
+        issueManagement {
+            system.set("GitHub Issues")
+            url.set("https://github.com/simple-robot/simpler-robot/issues")
         }
     }
-// }
+}

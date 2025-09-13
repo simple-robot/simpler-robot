@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -64,61 +64,73 @@ internal class SimpleConsoleLogger(
     }
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleTrace(displayName: String, value: String) {
     js("console.log('[trace][' + displayName + ']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleTrace(value: String) {
     js("console.log('[trace]:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleDebug(displayName: String, value: String) {
     js("console.log('[debug][' + displayName + ']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleDebug(value: String) {
     js("console.log('[debug]:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleLog(displayName: String, value: String) {
     js("console.log('[' + displayName + ']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleLog(value: String) {
     js("console.log(value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleInfo(displayName: String, value: String) {
     js("console.info('['+displayName+']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleInfo(value: String) {
     js("console.info(value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleWarn(displayName: String, value: String) {
     js("console.warn('[' + displayName + ']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleWarn(value: String) {
     js("console.warn(value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleError(displayName: String, value: String) {
     js("console.error('[' + displayName + ']:', value)")
 }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun consoleError(value: String) {
     js("console.error(value)")

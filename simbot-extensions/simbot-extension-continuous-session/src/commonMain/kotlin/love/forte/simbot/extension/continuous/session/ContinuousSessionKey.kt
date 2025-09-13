@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,18 +21,20 @@
  *
  */
 
-package love.forte.simbot.common.time
+package love.forte.simbot.extension.continuous.session
 
 /**
- * Represents a date object capable of providing the current epoch time in milliseconds.
- * This class is designed to work with JavaScript environments and provides a bridge
- * to access the `getTime` method which retrieves the number of milliseconds since
- * January 1, 1970, 00:00:00 UTC.
- *
- * Due to its external nature, instances of this class should be obtained through
- * platform-specific methods rather than instantiated directly.
+ * A Key for [ContinuousSession].
+ * @see UnitContinuousSessionKey
+ * @param C The type of session's context
+ * @author ForteScarlet
+ * @since 4.14.0
  */
-@OptIn(ExperimentalWasmJsInterop::class)
-internal external class Date : JsAny {
-    fun getTime(): Double
-}
+public interface ContinuousSessionKey<C>
+
+/**
+ * A [ContinuousSessionKey] for [Unit].
+ * @author ForteScarlet
+ * @since 4.14.0
+ */
+public class UnitContinuousSessionKey : ContinuousSessionKey<Unit>

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -37,6 +37,7 @@ import love.forte.simbot.common.collection.computeValueIfAbsent
 import love.forte.simbot.common.collection.concurrentMutableMap
 import love.forte.simbot.common.collection.removeValue
 import love.forte.simbot.extension.continuous.session.ContinuousSessionContext.ConflictStrategy.*
+import love.forte.simbot.extension.continuous.session.ContinuousSessionReceiver.Received
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -49,47 +50,62 @@ import kotlin.jvm.JvmName
  *
  * @author ForteScarlet
  */
+@ExperimentalContinuousSessionAPI
 public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: CoroutineContext) :
     ContinuousSessionContext<T, R> {
-    protected val sessions: MutableMap<Any, ContinuousSessionProvider<T, R>> = concurrentMutableMap()
+    protected val sessions: MutableMap<Any, ContinuousSessionProvider<*, T, R>> = concurrentMutableMap()
     protected val launchScope: CoroutineScope = CoroutineScope(coroutineContext)
     protected val subScope: CoroutineScope =
         if (coroutineContext[Job] == null) launchScope else CoroutineScope(coroutineContext.minusKey(Job))
 
-    protected abstract fun computeSession(key: Any, inSession: InSession<T, R>): ContinuousSessionProvider<T, R>
+    protected abstract fun <C> computeSession(
+        key: ContinuousSessionKey<C>,
+        inSession: InSession<C, T, R>
+    ): ContinuousSessionProvider<C, T, R>
 
-    override fun session(
-        key: Any,
+    @Suppress("UNCHECKED_CAST")
+    override fun <C> session(
+        key: ContinuousSessionKey<C>,
         strategy: ContinuousSessionContext.ConflictStrategy,
-        inSession: InSession<T, R>
-    ): ContinuousSessionProvider<T, R> {
-        return when (strategy) {
+        inSession: InSession<C, T, R>
+    ): ContinuousSessionProvider<C, T, R> {
+        val p = when (strategy) {
             FAILURE -> {
                 sessions.computeValue(key) { k, old ->
-                    if (old != null && old.isActive) error("Session with key $key already exists")
+                    if (old != null && old.isActive) {
+                        throw ConflictSessionKeyException("Session with key $k already exists")
+                    }
 
-                    computeSession(k, inSession)
+                    computeSession(key, inSession)
                 }!!
             }
 
             REPLACE -> {
                 sessions.computeValue(key) { k, old ->
                     old?.cancel(ReplacedBecauseOfConflictSessionKeyException("conflict key $k"))
-                    computeSession(k, inSession)
+                    computeSession(key, inSession)
                 }!!
             }
 
             EXISTING -> {
-                sessions.computeValueIfAbsent(key) { k -> computeSession(k, inSession) }
+                sessions.computeValueIfAbsent(key) { _ -> computeSession(key, inSession) }
             }
         }
+
+        return p as ContinuousSessionProvider<C, T, R>
     }
 
     // 是否检测 isActive?
 
-    override fun get(key: Any): ContinuousSessionProvider<T, R>? = sessions[key]
-    override fun contains(key: Any): Boolean = sessions.containsKey(key)
-    override fun remove(key: Any): ContinuousSessionProvider<T, R>? = sessions[key]
+    @Suppress("UNCHECKED_CAST")
+    override fun <C> get(key: ContinuousSessionKey<C>): ContinuousSessionProvider<C, T, R>? =
+        sessions[key] as? ContinuousSessionProvider<C, T, R>?
+
+    override fun contains(key: ContinuousSessionKey<*>): Boolean = sessions.containsKey(key)
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <C> remove(key: ContinuousSessionKey<C>): ContinuousSessionProvider<C, T, R>? =
+        sessions.remove(key) as? ContinuousSessionProvider<C, T, R>?
 }
 
 /**
@@ -97,6 +113,7 @@ public abstract class AbstractContinuousSessionContext<T, R>(coroutineContext: C
  */
 @JvmName("createContinuousSessionContext")
 @Suppress("FunctionNaming")
+@ExperimentalContinuousSessionAPI
 public fun <T, R> ContinuousSessionContext(coroutineContext: CoroutineContext): ContinuousSessionContext<T, R> =
     SimpleContinuousSessionContext(coroutineContext)
 
@@ -104,13 +121,16 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
     AbstractContinuousSessionContext<T, R>(coroutineContext) {
     private val parentJob = coroutineContext[Job]
 
-    override fun computeSession(key: Any, inSession: InSession<T, R>): SimpleSessionImpl<T, R> {
+    override fun <C> computeSession(
+        key: ContinuousSessionKey<C>,
+        inSession: InSession<C, T, R>
+    ): SimpleSessionImpl<C, T, R> {
         val job = SupervisorJob(parentJob)
-        val channel = Channel<SessionData<T, R>>(
+        val channel = Channel<SessionData<C, T, R>>(
             capacity = Channel.RENDEZVOUS,
             onBufferOverflow = BufferOverflow.SUSPEND,
-            onUndeliveredElement = { (value, c) ->
-                c.resumeWithException(SessionPushOnFailureException("Undelivered value: $value"))
+            onUndeliveredElement = { (_, value, continuation) ->
+                continuation.resumeWithException(SessionPushOnFailureException("Undelivered value: $value"))
             }
         )
 
@@ -118,8 +138,6 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
 
         job.invokeOnCompletion {
             sessions.removeValue(key) { session }
-        }
-        job.invokeOnCompletion {
             channel.cancel(it?.let { e -> CancellationException(e.message, e) })
         }
 
@@ -137,14 +155,18 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
     }
 }
 
-private data class SessionData<T, R>(val value: T, val continuation: CancellableContinuation<R>)
+private data class SessionData<C, T, R>(
+    val context: C,
+    val value: T,
+    val continuation: CancellableContinuation<R>
+)
 
-private class SimpleSessionImpl<T, R>(
-    private val key: Any,
+private class SimpleSessionImpl<C, T, R>(
+    private val key: ContinuousSessionKey<C>,
     private val job: CompletableJob,
-    private val channel: Channel<SessionData<T, R>>,
+    private val channel: Channel<SessionData<C, T, R>>,
     private val launchScope: CoroutineScope
-) : ContinuousSession<T, R> {
+) : ContinuousSession<C, T, R> {
     override val coroutineContext: CoroutineContext
         get() = launchScope.coroutineContext
 
@@ -165,11 +187,11 @@ private class SimpleSessionImpl<T, R>(
         job.join()
     }
 
-    override suspend fun push(value: T): R {
+    override suspend fun push(value: T, context: C): R {
         checkJob()
 
         return suspendCancellableCoroutine { continuation ->
-            val data = SessionData(value, continuation)
+            val data = SessionData(context, value, continuation)
             launchScope.launch {
                 kotlin.runCatching {
                     channel.send(data)
@@ -222,37 +244,41 @@ private class SimpleSessionImpl<T, R>(
 
     private fun checkJob() {
         if (!job.isActive) {
-            throw CancellationException("Session (key=$key) is not active")
+            throw CancellationException("Session with key [$key] is not active")
         }
     }
 
-    private suspend fun receive() = channel.receive()
-
-    override suspend fun await(result: R): T {
+    private suspend fun receive(): SessionData<C, T, R> {
         checkJob()
 
-        val (value, continuation) = receive()
-        continuation.resume(result)
-        return value
+        return channel.receive()
     }
 
-    override suspend fun await(result: (T) -> R): T {
-        checkJob()
+    private data class ReceivedImpl<C, T>(
+        override val context: C,
+        override val value: T
+    ) : Received<C, T>
 
-        val (value, continuation) = receive()
+    override suspend fun await(result: R): Received<C, T> {
+        val (context, value, continuation) = receive()
+        continuation.resume(result)
+        return ReceivedImpl(context, value)
+    }
+
+    override suspend fun await(result: (Received<C, T>) -> R): Received<C, T> {
+        val (context, value, continuation) = receive()
+        val received = ReceivedImpl(context, value)
         try {
-            continuation.resume(result(value))
+            continuation.resume(result(received))
         } catch (e: Throwable) {
             continuation.resumeWithException(SessionAwaitOnFailureException(e.message, e))
             throw e
         }
-        return value
+        return received
     }
 
-    override suspend fun await(): SessionContinuation<T, R> {
-        checkJob()
-
-        val (value, continuation) = receive()
+    override suspend fun await(): SessionContinuation<C, T, R> {
+        val (context, value, continuation) = receive()
         val handle =
             job.invokeOnCompletion { cause ->
                 continuation.resumeWithException(
@@ -262,7 +288,7 @@ private class SimpleSessionImpl<T, R>(
                 )
             }
 
-        return createSimpleSessionContinuation(value, continuation, handle)
+        return createSimpleSessionContinuation(context, value, continuation, handle)
     }
 }
 

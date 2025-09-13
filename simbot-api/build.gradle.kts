@@ -21,7 +21,7 @@
  *
  */
 
-import com.google.devtools.ksp.gradle.KspTaskMetadata
+import com.google.devtools.ksp.gradle.KspAATask
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
@@ -36,10 +36,11 @@ plugins {
     alias(libs.plugins.ksp)
     id("org.jetbrains.dokka")
     id("com.github.gmazzo.buildconfig")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.api")
-apply(plugin = "simbot-maven-publish")
+// apply(plugin = "simbot-maven-publish")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -76,6 +77,8 @@ kotlin {
 
     sourceSets {
         commonMain {
+            kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/metadata/commonMain/kotlin"))
+
             dependencies {
                 api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.jetbrains.annotations)
@@ -146,7 +149,18 @@ kotlin {
 dependencies {
     // add("kspJvm", libs.suspend.reversal.processor)
     "kspJvm"(project(":internal-processors:interface-uml-processor"))
-    "kspCommonMainMetadata"(project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
+    kspCommonMainMetadata(project(":simbot-processors:simbot-processor-message-element-polymorphic-include"))
+}
+
+// https://github.com/google/ksp/issues/963#issuecomment-2919262595
+tasks.withType<KspAATask>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.sourcesJar.configure {
+    dependsOn("kspCommonMainKotlinMetadata")
 }
 
 ksp {
@@ -161,14 +175,6 @@ ksp {
     arg("simbot.processor.message-element-polymorphic-include.localOnly", "true")
     arg("simbot.processor.message-element-polymorphic-include.outputPackage", "love.forte.simbot.message")
     arg("simbot.processor.message-element-polymorphic-include.visibility", "internal")
-}
-
-kotlin.sourceSets.commonMain {
-    // solves all implicit dependency trouble and IDEs source code detection
-    // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
-    tasks.withType<KspTaskMetadata> {
-        kotlin.srcDir(destinationDirectory.file("kotlin"))
-    }
 }
 
 // BuildConfig for the current version

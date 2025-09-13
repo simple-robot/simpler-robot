@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -27,6 +27,7 @@ package love.forte.simbot.common.time
 /**
  * 得到一个记录了当前 epoch 时间的 Timestamp 实例。
  */
+@OptIn(ExperimentalWasmJsInterop::class)
 internal actual fun nowInternal(): Timestamp = DateTimestamp(Date())
 
 
@@ -36,6 +37,7 @@ internal actual fun nowInternal(): Timestamp = DateTimestamp(Date())
  * @author ForteScarlet
  */
 @Suppress("MemberVisibilityCanBePrivate")
+@OptIn(ExperimentalWasmJsInterop::class)
 public class DateTimestamp(public val date: JsAny) : Timestamp {
     private val _date: Date = date.unsafeCast()
 

@@ -1,0 +1,109 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-atomic>
+abstract interface <#A: kotlin/Any?> love.forte.simbot.common.atomic/AtomicRef { // love.forte.simbot.common.atomic/AtomicRef|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicRef.value|{}value[0]
+        abstract fun <get-value>(): #A // love.forte.simbot.common.atomic/AtomicRef.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(#A) // love.forte.simbot.common.atomic/AtomicRef.value.<set-value>|<set-value>(1:0){}[0]
+
+    abstract fun compareAndExchange(#A, #A): #A // love.forte.simbot.common.atomic/AtomicRef.compareAndExchange|compareAndExchange(1:0;1:0){}[0]
+    abstract fun compareAndSet(#A, #A): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicRef.compareAndSet|compareAndSet(1:0;1:0){}[0]
+    abstract fun getAndSet(#A): #A // love.forte.simbot.common.atomic/AtomicRef.getAndSet|getAndSet(1:0){}[0]
+}
+
+abstract interface love.forte.simbot.common.atomic/AtomicBoolean { // love.forte.simbot.common.atomic/AtomicBoolean|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicBoolean.value|{}value[0]
+        abstract fun <get-value>(): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicBoolean.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(kotlin/Boolean) // love.forte.simbot.common.atomic/AtomicBoolean.value.<set-value>|<set-value>(kotlin.Boolean){}[0]
+
+    abstract fun compareAndExchange(kotlin/Boolean, kotlin/Boolean): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicBoolean.compareAndExchange|compareAndExchange(kotlin.Boolean;kotlin.Boolean){}[0]
+    abstract fun compareAndSet(kotlin/Boolean, kotlin/Boolean): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicBoolean.compareAndSet|compareAndSet(kotlin.Boolean;kotlin.Boolean){}[0]
+    abstract fun getAndSet(kotlin/Boolean): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicBoolean.getAndSet|getAndSet(kotlin.Boolean){}[0]
+}
+
+abstract interface love.forte.simbot.common.atomic/AtomicInt { // love.forte.simbot.common.atomic/AtomicInt|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicInt.value|{}value[0]
+        abstract fun <get-value>(): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(kotlin/Int) // love.forte.simbot.common.atomic/AtomicInt.value.<set-value>|<set-value>(kotlin.Int){}[0]
+
+    abstract fun compareAndExchange(kotlin/Int, kotlin/Int): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.compareAndExchange|compareAndExchange(kotlin.Int;kotlin.Int){}[0]
+    abstract fun compareAndSet(kotlin/Int, kotlin/Int): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicInt.compareAndSet|compareAndSet(kotlin.Int;kotlin.Int){}[0]
+    abstract fun decrementAndGet(kotlin/Int = ...): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.decrementAndGet|decrementAndGet(kotlin.Int){}[0]
+    abstract fun getAndDecrement(kotlin/Int = ...): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.getAndDecrement|getAndDecrement(kotlin.Int){}[0]
+    abstract fun getAndIncrement(kotlin/Int = ...): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.getAndIncrement|getAndIncrement(kotlin.Int){}[0]
+    abstract fun getAndSet(kotlin/Int): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.getAndSet|getAndSet(kotlin.Int){}[0]
+    abstract fun incrementAndGet(kotlin/Int = ...): kotlin/Int // love.forte.simbot.common.atomic/AtomicInt.incrementAndGet|incrementAndGet(kotlin.Int){}[0]
+}
+
+abstract interface love.forte.simbot.common.atomic/AtomicLong { // love.forte.simbot.common.atomic/AtomicLong|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicLong.value|{}value[0]
+        abstract fun <get-value>(): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(kotlin/Long) // love.forte.simbot.common.atomic/AtomicLong.value.<set-value>|<set-value>(kotlin.Long){}[0]
+
+    abstract fun compareAndExchange(kotlin/Long, kotlin/Long): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.compareAndExchange|compareAndExchange(kotlin.Long;kotlin.Long){}[0]
+    abstract fun compareAndSet(kotlin/Long, kotlin/Long): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicLong.compareAndSet|compareAndSet(kotlin.Long;kotlin.Long){}[0]
+    abstract fun decrementAndGet(kotlin/Long = ...): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.decrementAndGet|decrementAndGet(kotlin.Long){}[0]
+    abstract fun getAndDecrement(kotlin/Long = ...): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.getAndDecrement|getAndDecrement(kotlin.Long){}[0]
+    abstract fun getAndIncrement(kotlin/Long = ...): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.getAndIncrement|getAndIncrement(kotlin.Long){}[0]
+    abstract fun getAndSet(kotlin/Long): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.getAndSet|getAndSet(kotlin.Long){}[0]
+    abstract fun incrementAndGet(kotlin/Long = ...): kotlin/Long // love.forte.simbot.common.atomic/AtomicLong.incrementAndGet|incrementAndGet(kotlin.Long){}[0]
+}
+
+abstract interface love.forte.simbot.common.atomic/AtomicUInt { // love.forte.simbot.common.atomic/AtomicUInt|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicUInt.value|{}value[0]
+        abstract fun <get-value>(): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(kotlin/UInt) // love.forte.simbot.common.atomic/AtomicUInt.value.<set-value>|<set-value>(kotlin.UInt){}[0]
+
+    abstract fun compareAndExchange(kotlin/UInt, kotlin/UInt): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.compareAndExchange|compareAndExchange(kotlin.UInt;kotlin.UInt){}[0]
+    abstract fun compareAndSet(kotlin/UInt, kotlin/UInt): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicUInt.compareAndSet|compareAndSet(kotlin.UInt;kotlin.UInt){}[0]
+    abstract fun decrementAndGet(kotlin/UInt = ...): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.decrementAndGet|decrementAndGet(kotlin.UInt){}[0]
+    abstract fun getAndDecrement(kotlin/UInt = ...): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.getAndDecrement|getAndDecrement(kotlin.UInt){}[0]
+    abstract fun getAndIncrement(kotlin/UInt = ...): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.getAndIncrement|getAndIncrement(kotlin.UInt){}[0]
+    abstract fun getAndSet(kotlin/UInt): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.getAndSet|getAndSet(kotlin.UInt){}[0]
+    abstract fun incrementAndGet(kotlin/UInt = ...): kotlin/UInt // love.forte.simbot.common.atomic/AtomicUInt.incrementAndGet|incrementAndGet(kotlin.UInt){}[0]
+}
+
+abstract interface love.forte.simbot.common.atomic/AtomicULong { // love.forte.simbot.common.atomic/AtomicULong|null[0]
+    abstract var value // love.forte.simbot.common.atomic/AtomicULong.value|{}value[0]
+        abstract fun <get-value>(): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.value.<get-value>|<get-value>(){}[0]
+        abstract fun <set-value>(kotlin/ULong) // love.forte.simbot.common.atomic/AtomicULong.value.<set-value>|<set-value>(kotlin.ULong){}[0]
+
+    abstract fun compareAndExchange(kotlin/ULong, kotlin/ULong): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.compareAndExchange|compareAndExchange(kotlin.ULong;kotlin.ULong){}[0]
+    abstract fun compareAndSet(kotlin/ULong, kotlin/ULong): kotlin/Boolean // love.forte.simbot.common.atomic/AtomicULong.compareAndSet|compareAndSet(kotlin.ULong;kotlin.ULong){}[0]
+    abstract fun decrementAndGet(kotlin/ULong = ...): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.decrementAndGet|decrementAndGet(kotlin.ULong){}[0]
+    abstract fun getAndDecrement(kotlin/ULong = ...): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.getAndDecrement|getAndDecrement(kotlin.ULong){}[0]
+    abstract fun getAndIncrement(kotlin/ULong = ...): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.getAndIncrement|getAndIncrement(kotlin.ULong){}[0]
+    abstract fun getAndSet(kotlin/ULong): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.getAndSet|getAndSet(kotlin.ULong){}[0]
+    abstract fun incrementAndGet(kotlin/ULong = ...): kotlin/ULong // love.forte.simbot.common.atomic/AtomicULong.incrementAndGet|incrementAndGet(kotlin.ULong){}[0]
+}
+
+final fun (love.forte.simbot.common.atomic/AtomicInt).love.forte.simbot.common.atomic/minusAssign(kotlin/Int) // love.forte.simbot.common.atomic/minusAssign|minusAssign@love.forte.simbot.common.atomic.AtomicInt(kotlin.Int){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicInt).love.forte.simbot.common.atomic/plusAssign(kotlin/Int) // love.forte.simbot.common.atomic/plusAssign|plusAssign@love.forte.simbot.common.atomic.AtomicInt(kotlin.Int){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicLong).love.forte.simbot.common.atomic/minusAssign(kotlin/Long) // love.forte.simbot.common.atomic/minusAssign|minusAssign@love.forte.simbot.common.atomic.AtomicLong(kotlin.Long){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicLong).love.forte.simbot.common.atomic/plusAssign(kotlin/Long) // love.forte.simbot.common.atomic/plusAssign|plusAssign@love.forte.simbot.common.atomic.AtomicLong(kotlin.Long){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicUInt).love.forte.simbot.common.atomic/minusAssign(kotlin/UInt) // love.forte.simbot.common.atomic/minusAssign|minusAssign@love.forte.simbot.common.atomic.AtomicUInt(kotlin.UInt){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicUInt).love.forte.simbot.common.atomic/plusAssign(kotlin/UInt) // love.forte.simbot.common.atomic/plusAssign|plusAssign@love.forte.simbot.common.atomic.AtomicUInt(kotlin.UInt){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicULong).love.forte.simbot.common.atomic/minusAssign(kotlin/ULong) // love.forte.simbot.common.atomic/minusAssign|minusAssign@love.forte.simbot.common.atomic.AtomicULong(kotlin.ULong){}[0]
+final fun (love.forte.simbot.common.atomic/AtomicULong).love.forte.simbot.common.atomic/plusAssign(kotlin/ULong) // love.forte.simbot.common.atomic/plusAssign|plusAssign@love.forte.simbot.common.atomic.AtomicULong(kotlin.ULong){}[0]
+final fun <#A: kotlin/Any?> love.forte.simbot.common.atomic/atomicRef(#A): love.forte.simbot.common.atomic/AtomicRef<#A> // love.forte.simbot.common.atomic/atomicRef|atomicRef(0:0){0§<kotlin.Any?>}[0]
+final fun love.forte.simbot.common.atomic/atomic(kotlin/Boolean): love.forte.simbot.common.atomic/AtomicBoolean // love.forte.simbot.common.atomic/atomic|atomic(kotlin.Boolean){}[0]
+final fun love.forte.simbot.common.atomic/atomic(kotlin/Int): love.forte.simbot.common.atomic/AtomicInt // love.forte.simbot.common.atomic/atomic|atomic(kotlin.Int){}[0]
+final fun love.forte.simbot.common.atomic/atomic(kotlin/Long): love.forte.simbot.common.atomic/AtomicLong // love.forte.simbot.common.atomic/atomic|atomic(kotlin.Long){}[0]
+final fun love.forte.simbot.common.atomic/atomic(kotlin/UInt): love.forte.simbot.common.atomic/AtomicUInt // love.forte.simbot.common.atomic/atomic|atomic(kotlin.UInt){}[0]
+final fun love.forte.simbot.common.atomic/atomic(kotlin/ULong): love.forte.simbot.common.atomic/AtomicULong // love.forte.simbot.common.atomic/atomic|atomic(kotlin.ULong){}[0]
+final fun love.forte.simbot.common.atomic/atomicUL(kotlin/ULong): love.forte.simbot.common.atomic/AtomicULong // love.forte.simbot.common.atomic/atomicUL|atomicUL(kotlin.ULong){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicInt).love.forte.simbot.common.atomic/update(kotlin/Function1<kotlin/Int, kotlin/Int>): kotlin/Int // love.forte.simbot.common.atomic/update|update@love.forte.simbot.common.atomic.AtomicInt(kotlin.Function1<kotlin.Int,kotlin.Int>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicInt).love.forte.simbot.common.atomic/updateAndGet(kotlin/Function1<kotlin/Int, kotlin/Int>): kotlin/Int // love.forte.simbot.common.atomic/updateAndGet|updateAndGet@love.forte.simbot.common.atomic.AtomicInt(kotlin.Function1<kotlin.Int,kotlin.Int>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicLong).love.forte.simbot.common.atomic/update(kotlin/Function1<kotlin/Long, kotlin/Long>): kotlin/Long // love.forte.simbot.common.atomic/update|update@love.forte.simbot.common.atomic.AtomicLong(kotlin.Function1<kotlin.Long,kotlin.Long>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicLong).love.forte.simbot.common.atomic/updateAndGet(kotlin/Function1<kotlin/Long, kotlin/Long>): kotlin/Long // love.forte.simbot.common.atomic/updateAndGet|updateAndGet@love.forte.simbot.common.atomic.AtomicLong(kotlin.Function1<kotlin.Long,kotlin.Long>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicUInt).love.forte.simbot.common.atomic/update(kotlin/Function1<kotlin/UInt, kotlin/UInt>): kotlin/UInt // love.forte.simbot.common.atomic/update|update@love.forte.simbot.common.atomic.AtomicUInt(kotlin.Function1<kotlin.UInt,kotlin.UInt>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicUInt).love.forte.simbot.common.atomic/updateAndGet(kotlin/Function1<kotlin/UInt, kotlin/UInt>): kotlin/UInt // love.forte.simbot.common.atomic/updateAndGet|updateAndGet@love.forte.simbot.common.atomic.AtomicUInt(kotlin.Function1<kotlin.UInt,kotlin.UInt>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicULong).love.forte.simbot.common.atomic/update(kotlin/Function1<kotlin/ULong, kotlin/ULong>): kotlin/ULong // love.forte.simbot.common.atomic/update|update@love.forte.simbot.common.atomic.AtomicULong(kotlin.Function1<kotlin.ULong,kotlin.ULong>){}[0]
+final inline fun (love.forte.simbot.common.atomic/AtomicULong).love.forte.simbot.common.atomic/updateAndGet(kotlin/Function1<kotlin/ULong, kotlin/ULong>): kotlin/ULong // love.forte.simbot.common.atomic/updateAndGet|updateAndGet@love.forte.simbot.common.atomic.AtomicULong(kotlin.Function1<kotlin.ULong,kotlin.ULong>){}[0]
+final inline fun <#A: kotlin/Any?> (love.forte.simbot.common.atomic/AtomicRef<#A>).love.forte.simbot.common.atomic/update(kotlin/Function1<#A, #A>): #A // love.forte.simbot.common.atomic/update|update@love.forte.simbot.common.atomic.AtomicRef<0:0>(kotlin.Function1<0:0,0:0>){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> (love.forte.simbot.common.atomic/AtomicRef<#A>).love.forte.simbot.common.atomic/updateAndGet(kotlin/Function1<#A, #A>): #A // love.forte.simbot.common.atomic/updateAndGet|updateAndGet@love.forte.simbot.common.atomic.AtomicRef<0:0>(kotlin.Function1<0:0,0:0>){0§<kotlin.Any?>}[0]

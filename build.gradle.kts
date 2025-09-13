@@ -24,24 +24,24 @@
 import changelog.GenerateChangelogTask
 import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     idea
     id("org.jetbrains.dokka")
-    // id("simbot.dokka-multi-module")
-    id("com.github.gmazzo.buildconfig") version "5.6.5" apply false
+    id("com.github.gmazzo.buildconfig") version "5.6.7" apply false
+    kotlin("multiplatform") apply false
+    kotlin("jvm") apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.detekt)
-    id("simbot.nexus-publish")
     id("love.forte.plugin.suspend-transform") apply false
-    // alias(libs.plugins.suspendTransform) apply false
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
     alias(libs.plugins.kotlinxKover)
-
-    alias(libs.plugins.kotlinxBinaryCompatibilityValidator)
-
-
 }
 
 setupGroup(P.Simbot)
@@ -87,6 +87,8 @@ subprojects {
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
             configureSuspendTransform()
         }
+
+        configKotlinAbiValidation()
     }
 }
 
@@ -147,34 +149,58 @@ fun Project.applyKover(rp: Project) {
 }
 //endregion
 
-apiValidation {
-    ignoredPackages.add("*.internal.*")
+@OptIn(ExperimentalAbiValidation::class)
+fun Project.configKotlinAbiValidation() {
+    when {
+        plugins.hasPlugin("org.jetbrains.kotlin.jvm") -> {
+            extensions.configure<KotlinJvmProjectExtension>("kotlin") {
+                extensions.configure<AbiValidationExtension>("abiValidation") {
+                    enabled.convention(true)
+                    configAbiValidation()
+                }
+            }
+        }
 
-    ignoredProjects.addAll(
-        listOf(
-            "interface-uml-processor",
-            "simbot-test",
-            "tests",
-            "spring-boot-starter-test",
-            "simbot-processor-class-builder-test"
-        )
-    )
-
-    // 实验性和内部API可能无法保证二进制兼容
-    nonPublicMarkers.addAll(
-        listOf(
-            "love.forte.simbot.annotations.ExperimentalSimbotAPI",
-            "love.forte.simbot.annotations.InternalSimbotAPI",
-            "love.forte.simbot.resource.ExperimentalIOResourceAPI",
-        ),
-    )
-
-    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker")
-    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker.Container")
-    ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker\$Container")
-
-    apiDumpDirectory = "api"
+        plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
+            extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+                extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
+                    enabled.convention(true)
+                    configAbiValidation()
+                }
+            }
+        }
+    }
 }
+
+// apiValidation {
+//     ignoredPackages.add("*.internal.*")
+//
+//     ignoredProjects.addAll(
+//         listOf(
+//             "interface-uml-processor",
+//             "simbot-test",
+//             "tests",
+//             "spring-boot-starter-test",
+//             "simbot-processor-class-builder-test"
+//         )
+//     )
+//
+//     // 实验性和内部API可能无法保证二进制兼容
+//     nonPublicMarkers.addAll(
+//         listOf(
+//             "love.forte.simbot.annotations.ExperimentalSimbotAPI",
+//             "love.forte.simbot.annotations.InternalSimbotAPI",
+//             "love.forte.simbot.resource.ExperimentalIOResourceAPI",
+//             "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI"
+//         ),
+//     )
+//
+//     ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker")
+//     ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker.Container")
+//     ignoredClasses.add("love.forte.simbot.suspendrunner.SuspendMarker\$Container")
+//
+//     apiDumpDirectory = "api"
+// }
 
 idea {
     module {

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,18 +21,17 @@
  *
  */
 
-package love.forte.simbot.common.time
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
-/**
- * Represents a date object capable of providing the current epoch time in milliseconds.
- * This class is designed to work with JavaScript environments and provides a bridge
- * to access the `getTime` method which retrieves the number of milliseconds since
- * January 1, 1970, 00:00:00 UTC.
- *
- * Due to its external nature, instances of this class should be obtained through
- * platform-specific methods rather than instantiated directly.
- */
-@OptIn(ExperimentalWasmJsInterop::class)
-internal external class Date : JsAny {
-    fun getTime(): Double
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configAbiValidation() {
+    filters.excluded.byNames.add("**.internal.**")
+
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.annotations.ExperimentalSimbotAPI",
+        "love.forte.simbot.annotations.InternalSimbotAPI",
+        "love.forte.simbot.resource.ExperimentalIOResourceAPI",
+        "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI"
+    )
 }

@@ -94,7 +94,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Publish snapshots
-        run: gradle publishAllPublicationsToMavenCentralRepository --info --warning-mode all -x test
+        run: gradle publishToMavenCentral --info --warning-mode all -x test
         env:
           SIMBOT_IS_SNAPSHOT: true
           ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"

@@ -1,0 +1,71 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Alias: native => [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.logger:simbot-logger>
+final enum class love.forte.simbot.logger/LogLevel : kotlin/Enum<love.forte.simbot.logger/LogLevel> { // love.forte.simbot.logger/LogLevel|null[0]
+    enum entry DEBUG // love.forte.simbot.logger/LogLevel.DEBUG|null[0]
+    enum entry ERROR // love.forte.simbot.logger/LogLevel.ERROR|null[0]
+    enum entry INFO // love.forte.simbot.logger/LogLevel.INFO|null[0]
+    enum entry TRACE // love.forte.simbot.logger/LogLevel.TRACE|null[0]
+    enum entry WARN // love.forte.simbot.logger/LogLevel.WARN|null[0]
+
+    final val entries // love.forte.simbot.logger/LogLevel.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.logger/LogLevel> // love.forte.simbot.logger/LogLevel.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.logger/LogLevel // love.forte.simbot.logger/LogLevel.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.logger/LogLevel> // love.forte.simbot.logger/LogLevel.values|values#static(){}[0]
+}
+
+abstract interface love.forte.simbot.logger/Logger { // love.forte.simbot.logger/Logger|null[0]
+    abstract fun debug(kotlin/String) // love.forte.simbot.logger/Logger.debug|debug(kotlin.String){}[0]
+    abstract fun debug(kotlin/String, kotlin/Array<out kotlin/Any?>...) // love.forte.simbot.logger/Logger.debug|debug(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun error(kotlin/String) // love.forte.simbot.logger/Logger.error|error(kotlin.String){}[0]
+    abstract fun error(kotlin/String, kotlin/Array<out kotlin/Any?>...) // love.forte.simbot.logger/Logger.error|error(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun getName(): kotlin/String // love.forte.simbot.logger/Logger.getName|getName(){}[0]
+    abstract fun info(kotlin/String) // love.forte.simbot.logger/Logger.info|info(kotlin.String){}[0]
+    abstract fun info(kotlin/String, kotlin/Array<out kotlin/Any?>...) // love.forte.simbot.logger/Logger.info|info(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun isDebugEnabled(): kotlin/Boolean // love.forte.simbot.logger/Logger.isDebugEnabled|isDebugEnabled(){}[0]
+    abstract fun isErrorEnabled(): kotlin/Boolean // love.forte.simbot.logger/Logger.isErrorEnabled|isErrorEnabled(){}[0]
+    abstract fun isInfoEnabled(): kotlin/Boolean // love.forte.simbot.logger/Logger.isInfoEnabled|isInfoEnabled(){}[0]
+    abstract fun isTraceEnabled(): kotlin/Boolean // love.forte.simbot.logger/Logger.isTraceEnabled|isTraceEnabled(){}[0]
+    abstract fun isWarnEnabled(): kotlin/Boolean // love.forte.simbot.logger/Logger.isWarnEnabled|isWarnEnabled(){}[0]
+    abstract fun trace(kotlin/String) // love.forte.simbot.logger/Logger.trace|trace(kotlin.String){}[0]
+    abstract fun trace(kotlin/String, kotlin/Array<out kotlin/Any?>...) // love.forte.simbot.logger/Logger.trace|trace(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun warn(kotlin/String) // love.forte.simbot.logger/Logger.warn|warn(kotlin.String){}[0]
+    abstract fun warn(kotlin/String, kotlin/Array<out kotlin/Any?>...) // love.forte.simbot.logger/Logger.warn|warn(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+}
+
+final object love.forte.simbot.logger/LoggerFactory { // love.forte.simbot.logger/LoggerFactory|null[0]
+    final fun getLogger(kotlin/String): love.forte.simbot.logger/Logger // love.forte.simbot.logger/LoggerFactory.getLogger|getLogger(kotlin.String){}[0]
+    final fun getLogger(kotlin/String, love.forte.simbot.logger/LogLevel): love.forte.simbot.logger/Logger // love.forte.simbot.logger/LoggerFactory.getLogger|getLogger(kotlin.String;love.forte.simbot.logger.LogLevel){}[0]
+
+    // Targets: [js, wasmJs]
+    final var defaultLevel // love.forte.simbot.logger/LoggerFactory.defaultLevel|{}defaultLevel[0]
+        final fun <get-defaultLevel>(): love.forte.simbot.logger/LogLevel // love.forte.simbot.logger/LoggerFactory.defaultLevel.<get-defaultLevel>|<get-defaultLevel>(){}[0]
+        final fun <set-defaultLevel>(love.forte.simbot.logger/LogLevel) // love.forte.simbot.logger/LoggerFactory.defaultLevel.<set-defaultLevel>|<set-defaultLevel>(love.forte.simbot.logger.LogLevel){}[0]
+}
+
+final val love.forte.simbot.logger/isDebugEnabled // love.forte.simbot.logger/isDebugEnabled|@love.forte.simbot.logger.Logger{}isDebugEnabled[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-isDebugEnabled>(): kotlin/Boolean // love.forte.simbot.logger/isDebugEnabled.<get-isDebugEnabled>|<get-isDebugEnabled>@love.forte.simbot.logger.Logger(){}[0]
+final val love.forte.simbot.logger/isErrorEnabled // love.forte.simbot.logger/isErrorEnabled|@love.forte.simbot.logger.Logger{}isErrorEnabled[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-isErrorEnabled>(): kotlin/Boolean // love.forte.simbot.logger/isErrorEnabled.<get-isErrorEnabled>|<get-isErrorEnabled>@love.forte.simbot.logger.Logger(){}[0]
+final val love.forte.simbot.logger/isInfoEnabled // love.forte.simbot.logger/isInfoEnabled|@love.forte.simbot.logger.Logger{}isInfoEnabled[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-isInfoEnabled>(): kotlin/Boolean // love.forte.simbot.logger/isInfoEnabled.<get-isInfoEnabled>|<get-isInfoEnabled>@love.forte.simbot.logger.Logger(){}[0]
+final val love.forte.simbot.logger/isTraceEnabled // love.forte.simbot.logger/isTraceEnabled|@love.forte.simbot.logger.Logger{}isTraceEnabled[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-isTraceEnabled>(): kotlin/Boolean // love.forte.simbot.logger/isTraceEnabled.<get-isTraceEnabled>|<get-isTraceEnabled>@love.forte.simbot.logger.Logger(){}[0]
+final val love.forte.simbot.logger/isWarnEnabled // love.forte.simbot.logger/isWarnEnabled|@love.forte.simbot.logger.Logger{}isWarnEnabled[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-isWarnEnabled>(): kotlin/Boolean // love.forte.simbot.logger/isWarnEnabled.<get-isWarnEnabled>|<get-isWarnEnabled>@love.forte.simbot.logger.Logger(){}[0]
+final val love.forte.simbot.logger/name // love.forte.simbot.logger/name|@love.forte.simbot.logger.Logger{}name[0]
+    final inline fun (love.forte.simbot.logger/Logger).<get-name>(): kotlin/String // love.forte.simbot.logger/name.<get-name>|<get-name>@love.forte.simbot.logger.Logger(){}[0]
+
+final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.logger/LoggerFactory).love.forte.simbot.logger/logger(): love.forte.simbot.logger/Logger // love.forte.simbot.logger/logger|logger@love.forte.simbot.logger.LoggerFactory(){0§<kotlin.Any?>}[0]
+
+// Targets: [native]
+final var love.forte.simbot.logger/defaultLoggerLevel // love.forte.simbot.logger/defaultLoggerLevel|@love.forte.simbot.logger.LoggerFactory{}defaultLoggerLevel[0]
+    final fun (love.forte.simbot.logger/LoggerFactory).<get-defaultLoggerLevel>(): love.forte.simbot.logger/LogLevel // love.forte.simbot.logger/defaultLoggerLevel.<get-defaultLoggerLevel>|<get-defaultLoggerLevel>@love.forte.simbot.logger.LoggerFactory(){}[0]
+    final fun (love.forte.simbot.logger/LoggerFactory).<set-defaultLoggerLevel>(love.forte.simbot.logger/LogLevel) // love.forte.simbot.logger/defaultLoggerLevel.<set-defaultLoggerLevel>|<set-defaultLoggerLevel>@love.forte.simbot.logger.LoggerFactory(love.forte.simbot.logger.LogLevel){}[0]

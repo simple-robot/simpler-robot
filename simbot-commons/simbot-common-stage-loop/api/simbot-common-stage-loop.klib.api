@@ -1,0 +1,32 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-stage-loop>
+abstract interface <#A: love.forte.simbot.common.stageloop/Stage<#A>> love.forte.simbot.common.stageloop/StageLoop { // love.forte.simbot.common.stageloop/StageLoop|null[0]
+    abstract val currentStage // love.forte.simbot.common.stageloop/StageLoop.currentStage|{}currentStage[0]
+        abstract fun <get-currentStage>(): #A? // love.forte.simbot.common.stageloop/StageLoop.currentStage.<get-currentStage>|<get-currentStage>(){}[0]
+
+    abstract fun appendStage(#A) // love.forte.simbot.common.stageloop/StageLoop.appendStage|appendStage(1:0){}[0]
+    abstract fun poll(): #A? // love.forte.simbot.common.stageloop/StageLoop.poll|poll(){}[0]
+    abstract suspend fun invoke(#A?) // love.forte.simbot.common.stageloop/StageLoop.invoke|invoke(1:0?){}[0]
+}
+
+abstract class <#A: love.forte.simbot.common.stageloop/Stage<#A>> love.forte.simbot.common.stageloop/Stage { // love.forte.simbot.common.stageloop/Stage|null[0]
+    constructor <init>() // love.forte.simbot.common.stageloop/Stage.<init>|<init>(){}[0]
+
+    abstract suspend fun invoke(love.forte.simbot.common.stageloop/StageLoop<#A>) // love.forte.simbot.common.stageloop/Stage.invoke|invoke(love.forte.simbot.common.stageloop.StageLoop<1:0>){}[0]
+}
+
+abstract class <#A: love.forte.simbot.common.stageloop/State<#A>> love.forte.simbot.common.stageloop/State { // love.forte.simbot.common.stageloop/State|null[0]
+    constructor <init>() // love.forte.simbot.common.stageloop/State.<init>|<init>(){}[0]
+
+    abstract suspend fun invoke(): #A? // love.forte.simbot.common.stageloop/State.invoke|invoke(){}[0]
+}
+
+final fun <#A: love.forte.simbot.common.stageloop/Stage<#A>> love.forte.simbot.common.stageloop/DefaultStageLoop(): love.forte.simbot.common.stageloop/StageLoop<#A> // love.forte.simbot.common.stageloop/DefaultStageLoop|DefaultStageLoop(){0§<love.forte.simbot.common.stageloop.Stage<0:0>>}[0]
+final suspend inline fun <#A: love.forte.simbot.common.stageloop/Stage<#A>> (love.forte.simbot.common.stageloop/StageLoop<#A>).love.forte.simbot.common.stageloop/loop(crossinline kotlin/Function1<#A?, kotlin/Boolean> = ..., crossinline kotlin/Function1<kotlin/Throwable, kotlin/Unit> = ...) // love.forte.simbot.common.stageloop/loop|loop@love.forte.simbot.common.stageloop.StageLoop<0:0>(kotlin.Function1<0:0?,kotlin.Boolean>;kotlin.Function1<kotlin.Throwable,kotlin.Unit>){0§<love.forte.simbot.common.stageloop.Stage<0:0>>}[0]
+final suspend inline fun <#A: love.forte.simbot.common.stageloop/State<#A>> (#A).love.forte.simbot.common.stageloop/loop(kotlin/Function1<#A, kotlin/Boolean> = ..., kotlin/Function1<#A?, #A?> = ...): #A // love.forte.simbot.common.stageloop/loop|loop@0:0(kotlin.Function1<0:0,kotlin.Boolean>;kotlin.Function1<0:0?,0:0?>){0§<love.forte.simbot.common.stageloop.State<0:0>>}[0]

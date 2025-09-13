@@ -1,0 +1,636 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Alias: native => [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-core>
+final enum class love.forte.simbot.common.time/TimeUnit : kotlin/Enum<love.forte.simbot.common.time/TimeUnit> { // love.forte.simbot.common.time/TimeUnit|null[0]
+    enum entry DAYS // love.forte.simbot.common.time/TimeUnit.DAYS|null[0]
+    enum entry HOURS // love.forte.simbot.common.time/TimeUnit.HOURS|null[0]
+    enum entry MICROSECONDS // love.forte.simbot.common.time/TimeUnit.MICROSECONDS|null[0]
+    enum entry MILLISECONDS // love.forte.simbot.common.time/TimeUnit.MILLISECONDS|null[0]
+    enum entry MINUTES // love.forte.simbot.common.time/TimeUnit.MINUTES|null[0]
+    enum entry NANOSECONDS // love.forte.simbot.common.time/TimeUnit.NANOSECONDS|null[0]
+    enum entry SECONDS // love.forte.simbot.common.time/TimeUnit.SECONDS|null[0]
+
+    final val entries // love.forte.simbot.common.time/TimeUnit.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.common.time/TimeUnit> // love.forte.simbot.common.time/TimeUnit.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun convert(kotlin/Long, love.forte.simbot.common.time/TimeUnit): kotlin/Long // love.forte.simbot.common.time/TimeUnit.convert|convert(kotlin.Long;love.forte.simbot.common.time.TimeUnit){}[0]
+    final fun toDays(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toDays|toDays(kotlin.Long){}[0]
+    final fun toHours(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toHours|toHours(kotlin.Long){}[0]
+    final fun toMicros(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMicros|toMicros(kotlin.Long){}[0]
+    final fun toMillis(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMillis|toMillis(kotlin.Long){}[0]
+    final fun toMinutes(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMinutes|toMinutes(kotlin.Long){}[0]
+    final fun toNanos(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toNanos|toNanos(kotlin.Long){}[0]
+    final fun toSeconds(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toSeconds|toSeconds(kotlin.Long){}[0]
+    final fun valueOf(kotlin/String): love.forte.simbot.common.time/TimeUnit // love.forte.simbot.common.time/TimeUnit.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.common.time/TimeUnit> // love.forte.simbot.common.time/TimeUnit.values|values#static(){}[0]
+}
+
+abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.common.async/CompletionHandler { // love.forte.simbot.common.async/CompletionHandler|null[0]
+    abstract fun invoke(#A) // love.forte.simbot.common.async/CompletionHandler.invoke|invoke(1:0){}[0]
+}
+
+abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.common.function/Action { // love.forte.simbot.common.function/Action|null[0]
+    abstract fun invoke(#A) // love.forte.simbot.common.function/Action.invoke|invoke(1:0){}[0]
+}
+
+abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.common.function/Condition { // love.forte.simbot.common.function/Condition|null[0]
+    abstract fun invoke(#A): kotlin/Boolean // love.forte.simbot.common.function/Condition.invoke|invoke(1:0){}[0]
+}
+
+abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.common.function/ConfigurerFunction { // love.forte.simbot.common.function/ConfigurerFunction|null[0]
+    abstract fun (#A).invoke() // love.forte.simbot.common.function/ConfigurerFunction.invoke|invoke@1:0(){}[0]
+}
+
+abstract fun interface love.forte.simbot.common.async/AsyncHandler { // love.forte.simbot.common.async/AsyncHandler|null[0]
+    abstract fun invoke(kotlin/Throwable?) // love.forte.simbot.common.async/AsyncHandler.invoke|invoke(kotlin.Throwable?){}[0]
+}
+
+abstract fun interface love.forte.simbot.common.async/CancellationHandler { // love.forte.simbot.common.async/CancellationHandler|null[0]
+    abstract fun invoke(kotlin.coroutines.cancellation/CancellationException) // love.forte.simbot.common.async/CancellationHandler.invoke|invoke(kotlin.coroutines.cancellation.CancellationException){}[0]
+}
+
+abstract fun interface love.forte.simbot.common.async/ErrorHandler { // love.forte.simbot.common.async/ErrorHandler|null[0]
+    abstract fun invoke(kotlin/Throwable) // love.forte.simbot.common.async/ErrorHandler.invoke|invoke(kotlin.Throwable){}[0]
+}
+
+abstract interface <#A: kotlin/Any> love.forte.simbot.common.weak/WeakRef { // love.forte.simbot.common.weak/WeakRef|null[0]
+    abstract val value // love.forte.simbot.common.weak/WeakRef.value|{}value[0]
+        abstract fun <get-value>(): #A? // love.forte.simbot.common.weak/WeakRef.value.<get-value>|<get-value>(){}[0]
+
+    abstract fun clear() // love.forte.simbot.common.weak/WeakRef.clear|clear(){}[0]
+}
+
+abstract interface <#A: out kotlin/Any?> love.forte.simbot.common.collectable/Collectable { // love.forte.simbot.common.collectable/Collectable|null[0]
+    abstract fun asFlow(): kotlinx.coroutines.flow/Flow<#A> // love.forte.simbot.common.collectable/Collectable.asFlow|asFlow(){}[0]
+    abstract suspend fun collect(love.forte.simbot.common.function/Action<#A>) // love.forte.simbot.common.collectable/Collectable.collect|collect(love.forte.simbot.common.function.Action<1:0>){}[0]
+    open fun <#A1: kotlin/Any?> transform(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext, love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer<kotlinx.coroutines.flow/Flow<#A>, #A1>): #A1 // love.forte.simbot.common.collectable/Collectable.transform|transform(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext;love.forte.simbot.suspendrunner.reserve.SuspendReserve.Transformer<kotlinx.coroutines.flow.Flow<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> transform(love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer<kotlinx.coroutines.flow/Flow<#A>, #A1>): #A1 // love.forte.simbot.common.collectable/Collectable.transform|transform(love.forte.simbot.suspendrunner.reserve.SuspendReserve.Transformer<kotlinx.coroutines.flow.Flow<1:0>,0:0>){0§<kotlin.Any?>}[0]
+    open fun collectAsync(kotlinx.coroutines/CoroutineScope, love.forte.simbot.common.function/Action<#A>): love.forte.simbot.common.async/Async<kotlin/Unit> // love.forte.simbot.common.collectable/Collectable.collectAsync|collectAsync(kotlinx.coroutines.CoroutineScope;love.forte.simbot.common.function.Action<1:0>){}[0]
+}
+
+abstract interface <#A: out kotlin/Any?> love.forte.simbot.common.collectable/IterableCollectable : love.forte.simbot.common.collectable/SynchronouslyIterateCollectable<#A> { // love.forte.simbot.common.collectable/IterableCollectable|null[0]
+    abstract fun iterator(): kotlin.collections/Iterator<#A> // love.forte.simbot.common.collectable/IterableCollectable.iterator|iterator(){}[0]
+    open fun asFlow(): kotlinx.coroutines.flow/Flow<#A> // love.forte.simbot.common.collectable/IterableCollectable.asFlow|asFlow(){}[0]
+}
+
+abstract interface <#A: out kotlin/Any?> love.forte.simbot.common.collectable/SequenceCollectable : kotlin.collections/Iterable<#A>, love.forte.simbot.common.collectable/SynchronouslyIterateCollectable<#A> { // love.forte.simbot.common.collectable/SequenceCollectable|null[0]
+    abstract fun asSequence(): kotlin.sequences/Sequence<#A> // love.forte.simbot.common.collectable/SequenceCollectable.asSequence|asSequence(){}[0]
+    open fun asFlow(): kotlinx.coroutines.flow/Flow<#A> // love.forte.simbot.common.collectable/SequenceCollectable.asFlow|asFlow(){}[0]
+    open fun iterator(): kotlin.collections/Iterator<#A> // love.forte.simbot.common.collectable/SequenceCollectable.iterator|iterator(){}[0]
+}
+
+abstract interface <#A: out kotlin/Any?> love.forte.simbot.common.collectable/SynchronouslyIterateCollectable : kotlin.collections/Iterable<#A>, love.forte.simbot.common.collectable/Collectable<#A> { // love.forte.simbot.common.collectable/SynchronouslyIterateCollectable|null[0]
+    abstract fun forEach(love.forte.simbot.common.function/Action<#A>) // love.forte.simbot.common.collectable/SynchronouslyIterateCollectable.forEach|forEach(love.forte.simbot.common.function.Action<1:0>){}[0]
+    abstract fun toList(): kotlin.collections/List<#A> // love.forte.simbot.common.collectable/SynchronouslyIterateCollectable.toList|toList(){}[0]
+    open fun collectAsync(kotlinx.coroutines/CoroutineScope, love.forte.simbot.common.function/Action<#A>): love.forte.simbot.common.async/Async<kotlin/Unit> // love.forte.simbot.common.collectable/SynchronouslyIterateCollectable.collectAsync|collectAsync(kotlinx.coroutines.CoroutineScope;love.forte.simbot.common.function.Action<1:0>){}[0]
+    open suspend fun collect(love.forte.simbot.common.function/Action<#A>) // love.forte.simbot.common.collectable/SynchronouslyIterateCollectable.collect|collect(love.forte.simbot.common.function.Action<1:0>){}[0]
+}
+
+abstract interface <#A: out love.forte.simbot.common.function/MergeableFactory.Key, #B: out kotlin/Any, #C: kotlin/Any, #D: kotlin/Any> love.forte.simbot.common.function/MergeableFactory { // love.forte.simbot.common.function/MergeableFactory|null[0]
+    abstract val key // love.forte.simbot.common.function/MergeableFactory.key|{}key[0]
+        abstract fun <get-key>(): #A // love.forte.simbot.common.function/MergeableFactory.key.<get-key>|<get-key>(){}[0]
+
+    abstract fun create(#D, love.forte.simbot.common.function/ConfigurerFunction<#C>): #B // love.forte.simbot.common.function/MergeableFactory.create|create(1:3;love.forte.simbot.common.function.ConfigurerFunction<1:2>){}[0]
+    open fun create(#D): #B // love.forte.simbot.common.function/MergeableFactory.create|create(1:3){}[0]
+
+    abstract interface Key // love.forte.simbot.common.function/MergeableFactory.Key|null[0]
+}
+
+abstract interface love.forte.simbot.common.attribute/AttributeMap { // love.forte.simbot.common.attribute/AttributeMap|null[0]
+    abstract val entries // love.forte.simbot.common.attribute/AttributeMap.entries|{}entries[0]
+        abstract fun <get-entries>(): kotlin.collections/Set<kotlin.collections/Map.Entry<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any>> // love.forte.simbot.common.attribute/AttributeMap.entries.<get-entries>|<get-entries>(){}[0]
+
+    abstract fun <#A1: kotlin/Any> get(love.forte.simbot.common.attribute/Attribute<#A1>): #A1? // love.forte.simbot.common.attribute/AttributeMap.get|get(love.forte.simbot.common.attribute.Attribute<0:0>){0§<kotlin.Any>}[0]
+    abstract fun contains(love.forte.simbot.common.attribute/Attribute<*>): kotlin/Boolean // love.forte.simbot.common.attribute/AttributeMap.contains|contains(love.forte.simbot.common.attribute.Attribute<*>){}[0]
+    abstract fun safeGet(love.forte.simbot.common.attribute/Attribute<*>): kotlin/Any? // love.forte.simbot.common.attribute/AttributeMap.safeGet|safeGet(love.forte.simbot.common.attribute.Attribute<*>){}[0]
+    abstract fun size(): kotlin/Int // love.forte.simbot.common.attribute/AttributeMap.size|size(){}[0]
+
+    final object Companion { // love.forte.simbot.common.attribute/AttributeMap.Companion|null[0]
+        final fun create(kotlin.collections/Map<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any> = ...): love.forte.simbot.common.attribute/AttributeMap // love.forte.simbot.common.attribute/AttributeMap.Companion.create|create(kotlin.collections.Map<love.forte.simbot.common.attribute.Attribute<*>,kotlin.Any>){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.common.attribute/AttributeMapContainer { // love.forte.simbot.common.attribute/AttributeMapContainer|null[0]
+    abstract val attributeMap // love.forte.simbot.common.attribute/AttributeMapContainer.attributeMap|{}attributeMap[0]
+        abstract fun <get-attributeMap>(): love.forte.simbot.common.attribute/AttributeMap // love.forte.simbot.common.attribute/AttributeMapContainer.attributeMap.<get-attributeMap>|<get-attributeMap>(){}[0]
+}
+
+abstract interface love.forte.simbot.common.attribute/MutableAttributeMap : love.forte.simbot.common.attribute/AttributeMap { // love.forte.simbot.common.attribute/MutableAttributeMap|null[0]
+    abstract val entries // love.forte.simbot.common.attribute/MutableAttributeMap.entries|{}entries[0]
+        abstract fun <get-entries>(): kotlin.collections/MutableSet<kotlin.collections/MutableMap.MutableEntry<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any>> // love.forte.simbot.common.attribute/MutableAttributeMap.entries.<get-entries>|<get-entries>(){}[0]
+
+    abstract fun <#A1: kotlin/Any> computeIfAbsent(love.forte.simbot.common.attribute/Attribute<#A1>, kotlin/Function1<love.forte.simbot.common.attribute/Attribute<#A1>, #A1>): #A1 // love.forte.simbot.common.attribute/MutableAttributeMap.computeIfAbsent|computeIfAbsent(love.forte.simbot.common.attribute.Attribute<0:0>;kotlin.Function1<love.forte.simbot.common.attribute.Attribute<0:0>,0:0>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> computeIfPresent(love.forte.simbot.common.attribute/Attribute<#A1>, kotlin/Function2<love.forte.simbot.common.attribute/Attribute<#A1>, #A1, #A1?>): #A1? // love.forte.simbot.common.attribute/MutableAttributeMap.computeIfPresent|computeIfPresent(love.forte.simbot.common.attribute.Attribute<0:0>;kotlin.Function2<love.forte.simbot.common.attribute.Attribute<0:0>,0:0,0:0?>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> merge(love.forte.simbot.common.attribute/Attribute<#A1>, #A1, kotlin/Function2<#A1, #A1, #A1>): #A1 // love.forte.simbot.common.attribute/MutableAttributeMap.merge|merge(love.forte.simbot.common.attribute.Attribute<0:0>;0:0;kotlin.Function2<0:0,0:0,0:0>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> put(love.forte.simbot.common.attribute/Attribute<#A1>, #A1): #A1? // love.forte.simbot.common.attribute/MutableAttributeMap.put|put(love.forte.simbot.common.attribute.Attribute<0:0>;0:0){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> remove(love.forte.simbot.common.attribute/Attribute<#A1>): #A1? // love.forte.simbot.common.attribute/MutableAttributeMap.remove|remove(love.forte.simbot.common.attribute.Attribute<0:0>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> safeComputeIfAbsent(love.forte.simbot.common.attribute/Attribute<#A1>, kotlin/Function1<love.forte.simbot.common.attribute/Attribute<#A1>, #A1>): kotlin/Any // love.forte.simbot.common.attribute/MutableAttributeMap.safeComputeIfAbsent|safeComputeIfAbsent(love.forte.simbot.common.attribute.Attribute<0:0>;kotlin.Function1<love.forte.simbot.common.attribute.Attribute<0:0>,0:0>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> safeComputeIfPresent(love.forte.simbot.common.attribute/Attribute<#A1>, kotlin/Function2<love.forte.simbot.common.attribute/Attribute<#A1>, kotlin/Any, #A1?>): kotlin/Any? // love.forte.simbot.common.attribute/MutableAttributeMap.safeComputeIfPresent|safeComputeIfPresent(love.forte.simbot.common.attribute.Attribute<0:0>;kotlin.Function2<love.forte.simbot.common.attribute.Attribute<0:0>,kotlin.Any,0:0?>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> safeMerge(love.forte.simbot.common.attribute/Attribute<#A1>, #A1, kotlin/Function2<kotlin/Any, #A1, #A1>): kotlin/Any // love.forte.simbot.common.attribute/MutableAttributeMap.safeMerge|safeMerge(love.forte.simbot.common.attribute.Attribute<0:0>;0:0;kotlin.Function2<kotlin.Any,0:0,0:0>){0§<kotlin.Any>}[0]
+    abstract fun <#A1: kotlin/Any> safePut(love.forte.simbot.common.attribute/Attribute<#A1>, #A1): kotlin/Any? // love.forte.simbot.common.attribute/MutableAttributeMap.safePut|safePut(love.forte.simbot.common.attribute.Attribute<0:0>;0:0){0§<kotlin.Any>}[0]
+    abstract fun safeRemove(love.forte.simbot.common.attribute/Attribute<*>): kotlin/Any? // love.forte.simbot.common.attribute/MutableAttributeMap.safeRemove|safeRemove(love.forte.simbot.common.attribute.Attribute<*>){}[0]
+
+    final object Companion { // love.forte.simbot.common.attribute/MutableAttributeMap.Companion|null[0]
+        final fun create(kotlin.collections/MutableMap<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any> = ...): love.forte.simbot.common.attribute/MutableAttributeMap // love.forte.simbot.common.attribute/MutableAttributeMap.Companion.create|create(kotlin.collections.MutableMap<love.forte.simbot.common.attribute.Attribute<*>,kotlin.Any>){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.common.id/IDContainer { // love.forte.simbot.common.id/IDContainer|null[0]
+    abstract val id // love.forte.simbot.common.id/IDContainer.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.common.id/IDContainer.id.<get-id>|<get-id>(){}[0]
+}
+
+abstract interface love.forte.simbot.common.time/Timestamp : kotlin/Comparable<love.forte.simbot.common.time/Timestamp> { // love.forte.simbot.common.time/Timestamp|null[0]
+    abstract val milliseconds // love.forte.simbot.common.time/Timestamp.milliseconds|{}milliseconds[0]
+        abstract fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/Timestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
+
+    open fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/Timestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
+    open fun timeAs(love.forte.simbot.common.time/TimeUnit): kotlin/Long // love.forte.simbot.common.time/Timestamp.timeAs|timeAs(love.forte.simbot.common.time.TimeUnit){}[0]
+
+    final object Companion { // love.forte.simbot.common.time/Timestamp.Companion|null[0]
+        final fun ofMilliseconds(kotlin/Long): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.ofMilliseconds|ofMilliseconds(kotlin.Long){}[0]
+    }
+}
+
+final class <#A: kotlin/Any> love.forte.simbot.common.attribute/Attribute { // love.forte.simbot.common.attribute/Attribute|null[0]
+    final val name // love.forte.simbot.common.attribute/Attribute.name|{}name[0]
+        final fun <get-name>(): kotlin/String // love.forte.simbot.common.attribute/Attribute.name.<get-name>|<get-name>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.attribute/Attribute.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.attribute/Attribute.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.attribute/Attribute.toString|toString(){}[0]
+
+    final class <#A1: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.common.attribute/Attribute<#A1>> { // love.forte.simbot.common.attribute/Attribute.$serializer|null[0]
+        constructor <init>(kotlinx.serialization/KSerializer<#A1>) // love.forte.simbot.common.attribute/Attribute.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
+
+        final val descriptor // love.forte.simbot.common.attribute/Attribute.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.attribute/Attribute.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+        final val typeSerial0 // love.forte.simbot.common.attribute/Attribute.$serializer.typeSerial0|{}typeSerial0[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.common.attribute/Attribute.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.attribute/Attribute<#A1> // love.forte.simbot.common.attribute/Attribute.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.attribute/Attribute<#A1>) // love.forte.simbot.common.attribute/Attribute.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.attribute.Attribute<1:0>){}[0]
+        final fun typeParametersSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.common.attribute/Attribute.$serializer.typeParametersSerializers|typeParametersSerializers(){}[0]
+    }
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.common.attribute/Attribute.Companion|null[0]
+        final val $cachedDescriptor // love.forte.simbot.common.attribute/Attribute.Companion.$cachedDescriptor|{}$cachedDescriptor[0]
+            final fun <get-$cachedDescriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.attribute/Attribute.Companion.$cachedDescriptor.<get-$cachedDescriptor>|<get-$cachedDescriptor>(){}[0]
+
+        final fun <#A2: kotlin/Any> of(kotlin/String): love.forte.simbot.common.attribute/Attribute<#A2> // love.forte.simbot.common.attribute/Attribute.Companion.of|of(kotlin.String){0§<kotlin.Any>}[0]
+        final fun <#A2: kotlin/Any?> serializer(kotlinx.serialization/KSerializer<#A2>): kotlinx.serialization/KSerializer<love.forte.simbot.common.attribute/Attribute<#A2>> // love.forte.simbot.common.attribute/Attribute.Companion.serializer|serializer(kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.common.attribute/Attribute.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+final class <#A: kotlin/Any> love.forte.simbot.common.weak/NonWeakRefImpl : love.forte.simbot.common.weak/WeakRef<#A> { // love.forte.simbot.common.weak/NonWeakRefImpl|null[0]
+    constructor <init>(#A?) // love.forte.simbot.common.weak/NonWeakRefImpl.<init>|<init>(1:0?){}[0]
+
+    final var value // love.forte.simbot.common.weak/NonWeakRefImpl.value|{}value[0]
+        final fun <get-value>(): #A? // love.forte.simbot.common.weak/NonWeakRefImpl.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(#A?) // love.forte.simbot.common.weak/NonWeakRefImpl.value.<set-value>|<set-value>(1:0?){}[0]
+
+    final fun clear() // love.forte.simbot.common.weak/NonWeakRefImpl.clear|clear(){}[0]
+}
+
+final class <#A: out kotlin/Any?> love.forte.simbot.common.async/Async { // love.forte.simbot.common.async/Async|null[0]
+    constructor <init>(kotlinx.coroutines/Deferred<#A>) // love.forte.simbot.common.async/Async.<init>|<init>(kotlinx.coroutines.Deferred<1:0>){}[0]
+
+    final val deferred // love.forte.simbot.common.async/Async.deferred|{}deferred[0]
+        final fun <get-deferred>(): kotlinx.coroutines/Deferred<#A> // love.forte.simbot.common.async/Async.deferred.<get-deferred>|<get-deferred>(){}[0]
+    final val isActive // love.forte.simbot.common.async/Async.isActive|{}isActive[0]
+        final fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.common.async/Async.isActive.<get-isActive>|<get-isActive>(){}[0]
+    final val isCancelled // love.forte.simbot.common.async/Async.isCancelled|{}isCancelled[0]
+        final fun <get-isCancelled>(): kotlin/Boolean // love.forte.simbot.common.async/Async.isCancelled.<get-isCancelled>|<get-isCancelled>(){}[0]
+    final val isCompleted // love.forte.simbot.common.async/Async.isCompleted|{}isCompleted[0]
+        final fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.common.async/Async.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
+
+    final fun cancel() // love.forte.simbot.common.async/Async.cancel|cancel(){}[0]
+    final fun cancelBy(kotlin.coroutines.cancellation/CancellationException?) // love.forte.simbot.common.async/Async.cancelBy|cancelBy(kotlin.coroutines.cancellation.CancellationException?){}[0]
+    final fun handle(love.forte.simbot.common.function/Action<kotlin/Throwable?>): kotlinx.coroutines/DisposableHandle // love.forte.simbot.common.async/Async.handle|handle(love.forte.simbot.common.function.Action<kotlin.Throwable?>){}[0]
+    final fun onCancellation(love.forte.simbot.common.function/Action<kotlin.coroutines.cancellation/CancellationException>): kotlinx.coroutines/DisposableHandle // love.forte.simbot.common.async/Async.onCancellation|onCancellation(love.forte.simbot.common.function.Action<kotlin.coroutines.cancellation.CancellationException>){}[0]
+    final fun onCompletion(love.forte.simbot.common.function/Action<#A>): kotlinx.coroutines/DisposableHandle // love.forte.simbot.common.async/Async.onCompletion|onCompletion(love.forte.simbot.common.function.Action<1:0>){}[0]
+    final fun onError(love.forte.simbot.common.function/Action<kotlin/Throwable>): kotlinx.coroutines/DisposableHandle // love.forte.simbot.common.async/Async.onError|onError(love.forte.simbot.common.function.Action<kotlin.Throwable>){}[0]
+
+    // Targets: [js]
+    final fun asPromise(): kotlin.js/Promise<#A> // love.forte.simbot.common.async/Async.asPromise|asPromise(){}[0]
+
+    // Targets: [wasmJs]
+    final fun asPromise(): kotlin.js/Promise<kotlin.js/JsAny?> // love.forte.simbot.common.async/Async.asPromise|asPromise(){}[0]
+}
+
+final class love.forte.simbot.common.coroutines/LinkedParentJobCancellationException : kotlin.coroutines.cancellation/CancellationException { // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException|null[0]
+    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
+
+    final val cause // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException.cause|{}cause[0]
+        final fun <get-cause>(): kotlin/Throwable? // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException.cause.<get-cause>|<get-cause>(){}[0]
+    final val message // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // love.forte.simbot.common.coroutines/LinkedParentJobCancellationException.message.<get-message>|<get-message>(){}[0]
+}
+
+final class love.forte.simbot.common.id/IntID : love.forte.simbot.common.id/SignedNumericID { // love.forte.simbot.common.id/IntID|null[0]
+    final val value // love.forte.simbot.common.id/IntID.value|{}value[0]
+        final fun <get-value>(): kotlin/Int // love.forte.simbot.common.id/IntID.value.<get-value>|<get-value>(){}[0]
+
+    final fun copy(): love.forte.simbot.common.id/IntID // love.forte.simbot.common.id/IntID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/IntID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/IntID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/IntID.hashCode|hashCode(){}[0]
+    final fun toByte(): kotlin/Byte // love.forte.simbot.common.id/IntID.toByte|toByte(){}[0]
+    final fun toDouble(): kotlin/Double // love.forte.simbot.common.id/IntID.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // love.forte.simbot.common.id/IntID.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // love.forte.simbot.common.id/IntID.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // love.forte.simbot.common.id/IntID.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // love.forte.simbot.common.id/IntID.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/IntID.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/IntID.Companion|null[0]
+        final val ID // love.forte.simbot.common.id/IntID.Companion.ID|@kotlin.Int{}ID[0]
+            final fun (kotlin/Int).<get-ID>(): love.forte.simbot.common.id/IntID // love.forte.simbot.common.id/IntID.Companion.ID.<get-ID>|<get-ID>@kotlin.Int(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/IntID> // love.forte.simbot.common.id/IntID.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.common.id/LongID : love.forte.simbot.common.id/SignedNumericID { // love.forte.simbot.common.id/LongID|null[0]
+    final val value // love.forte.simbot.common.id/LongID.value|{}value[0]
+        final fun <get-value>(): kotlin/Long // love.forte.simbot.common.id/LongID.value.<get-value>|<get-value>(){}[0]
+
+    final fun copy(): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/LongID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/LongID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/LongID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/LongID.hashCode|hashCode(){}[0]
+    final fun toByte(): kotlin/Byte // love.forte.simbot.common.id/LongID.toByte|toByte(){}[0]
+    final fun toDouble(): kotlin/Double // love.forte.simbot.common.id/LongID.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // love.forte.simbot.common.id/LongID.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // love.forte.simbot.common.id/LongID.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // love.forte.simbot.common.id/LongID.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // love.forte.simbot.common.id/LongID.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/LongID.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/LongID.Companion|null[0]
+        final val ID // love.forte.simbot.common.id/LongID.Companion.ID|@kotlin.Long{}ID[0]
+            final fun (kotlin/Long).<get-ID>(): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/LongID.Companion.ID.<get-ID>|<get-ID>@kotlin.Long(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/LongID> // love.forte.simbot.common.id/LongID.Companion.serializer|serializer(){}[0]
+    }
+
+    final object Serializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/LongID> { // love.forte.simbot.common.id/LongID.Serializer|null[0]
+        final val descriptor // love.forte.simbot.common.id/LongID.Serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.id/LongID.Serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/LongID.Serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.id/LongID) // love.forte.simbot.common.id/LongID.Serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.id.LongID){}[0]
+    }
+}
+
+final class love.forte.simbot.common.id/StringID : love.forte.simbot.common.id/ID { // love.forte.simbot.common.id/StringID|null[0]
+    final val value // love.forte.simbot.common.id/StringID.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.common.id/StringID.value.<get-value>|<get-value>(){}[0]
+
+    final fun compareTo(love.forte.simbot.common.id/ID): kotlin/Int // love.forte.simbot.common.id/StringID.compareTo|compareTo(love.forte.simbot.common.id.ID){}[0]
+    final fun copy(): love.forte.simbot.common.id/StringID // love.forte.simbot.common.id/StringID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/StringID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/StringID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/StringID.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/StringID.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/StringID.Companion|null[0]
+        final val ID // love.forte.simbot.common.id/StringID.Companion.ID|@kotlin.CharSequence{}ID[0]
+            final fun (kotlin/CharSequence).<get-ID>(): love.forte.simbot.common.id/StringID // love.forte.simbot.common.id/StringID.Companion.ID.<get-ID>|<get-ID>@kotlin.CharSequence(){}[0]
+        final val ID // love.forte.simbot.common.id/StringID.Companion.ID|@kotlin.String{}ID[0]
+            final fun (kotlin/String).<get-ID>(): love.forte.simbot.common.id/StringID // love.forte.simbot.common.id/StringID.Companion.ID.<get-ID>|<get-ID>@kotlin.String(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/StringID> // love.forte.simbot.common.id/StringID.Companion.serializer|serializer(){}[0]
+    }
+
+    final object Serializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/StringID> { // love.forte.simbot.common.id/StringID.Serializer|null[0]
+        final val descriptor // love.forte.simbot.common.id/StringID.Serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.id/StringID.Serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.id/StringID // love.forte.simbot.common.id/StringID.Serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.id/StringID) // love.forte.simbot.common.id/StringID.Serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.id.StringID){}[0]
+    }
+}
+
+final class love.forte.simbot.common.id/UIntID : love.forte.simbot.common.id/UnsignedNumericID { // love.forte.simbot.common.id/UIntID|null[0]
+    final val value // love.forte.simbot.common.id/UIntID.value|{}value[0]
+        final fun <get-value>(): kotlin/UInt // love.forte.simbot.common.id/UIntID.value.<get-value>|<get-value>(){}[0]
+
+    final fun copy(): love.forte.simbot.common.id/UIntID // love.forte.simbot.common.id/UIntID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/UIntID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/UIntID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/UIntID.hashCode|hashCode(){}[0]
+    final fun toByte(): kotlin/Byte // love.forte.simbot.common.id/UIntID.toByte|toByte(){}[0]
+    final fun toDouble(): kotlin/Double // love.forte.simbot.common.id/UIntID.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // love.forte.simbot.common.id/UIntID.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // love.forte.simbot.common.id/UIntID.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // love.forte.simbot.common.id/UIntID.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // love.forte.simbot.common.id/UIntID.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/UIntID.toString|toString(){}[0]
+    final fun toUInt(): kotlin/UInt // love.forte.simbot.common.id/UIntID.toUInt|toUInt(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/UIntID.Companion|null[0]
+        final val ID // love.forte.simbot.common.id/UIntID.Companion.ID|@kotlin.UInt{}ID[0]
+            final fun (kotlin/UInt).<get-ID>(): love.forte.simbot.common.id/UIntID // love.forte.simbot.common.id/UIntID.Companion.ID.<get-ID>|<get-ID>@kotlin.UInt(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UIntID> // love.forte.simbot.common.id/UIntID.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.common.id/ULongID : love.forte.simbot.common.id/UnsignedNumericID { // love.forte.simbot.common.id/ULongID|null[0]
+    final val value // love.forte.simbot.common.id/ULongID.value|{}value[0]
+        final fun <get-value>(): kotlin/ULong // love.forte.simbot.common.id/ULongID.value.<get-value>|<get-value>(){}[0]
+
+    final fun copy(): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/ULongID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/ULongID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/ULongID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/ULongID.hashCode|hashCode(){}[0]
+    final fun toByte(): kotlin/Byte // love.forte.simbot.common.id/ULongID.toByte|toByte(){}[0]
+    final fun toDouble(): kotlin/Double // love.forte.simbot.common.id/ULongID.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // love.forte.simbot.common.id/ULongID.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // love.forte.simbot.common.id/ULongID.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // love.forte.simbot.common.id/ULongID.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // love.forte.simbot.common.id/ULongID.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/ULongID.toString|toString(){}[0]
+    final fun toULong(): kotlin/ULong // love.forte.simbot.common.id/ULongID.toULong|toULong(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/ULongID.Companion|null[0]
+        final val ID // love.forte.simbot.common.id/ULongID.Companion.ID|@kotlin.ULong{}ID[0]
+            final fun (kotlin/ULong).<get-ID>(): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/ULongID.Companion.ID.<get-ID>|<get-ID>@kotlin.ULong(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/ULongID> // love.forte.simbot.common.id/ULongID.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.common.id/UUID : love.forte.simbot.common.id/ID { // love.forte.simbot.common.id/UUID|null[0]
+    final val leastSignificantBits // love.forte.simbot.common.id/UUID.leastSignificantBits|{}leastSignificantBits[0]
+        final fun <get-leastSignificantBits>(): kotlin/Long // love.forte.simbot.common.id/UUID.leastSignificantBits.<get-leastSignificantBits>|<get-leastSignificantBits>(){}[0]
+    final val mostSignificantBits // love.forte.simbot.common.id/UUID.mostSignificantBits|{}mostSignificantBits[0]
+        final fun <get-mostSignificantBits>(): kotlin/Long // love.forte.simbot.common.id/UUID.mostSignificantBits.<get-mostSignificantBits>|<get-mostSignificantBits>(){}[0]
+
+    final fun compareTo(love.forte.simbot.common.id/ID): kotlin/Int // love.forte.simbot.common.id/UUID.compareTo|compareTo(love.forte.simbot.common.id.ID){}[0]
+    final fun copy(): love.forte.simbot.common.id/ID // love.forte.simbot.common.id/UUID.copy|copy(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/UUID.equals|equals(kotlin.Any?){}[0]
+    final fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/UUID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.id/UUID.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.id/UUID.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/UUID.Companion|null[0]
+        final val UUID // love.forte.simbot.common.id/UUID.Companion.UUID|@kotlin.String{}UUID[0]
+            final fun (kotlin/String).<get-UUID>(): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.Companion.UUID.<get-UUID>|<get-UUID>@kotlin.String(){}[0]
+
+        final fun from(kotlin/Long, kotlin/Long): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.Companion.from|from(kotlin.Long;kotlin.Long){}[0]
+        final fun fromData(kotlin/ByteArray): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.Companion.fromData|fromData(kotlin.ByteArray){}[0]
+        final fun random(kotlin.random/Random = ...): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.Companion.random|random(kotlin.random.Random){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UUID> // love.forte.simbot.common.id/UUID.Companion.serializer|serializer(){}[0]
+    }
+
+    final object Serializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UUID> { // love.forte.simbot.common.id/UUID.Serializer|null[0]
+        final val descriptor // love.forte.simbot.common.id/UUID.Serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.id/UUID.Serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.Serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.id/UUID) // love.forte.simbot.common.id/UUID.Serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.id.UUID){}[0]
+    }
+
+    final object StructureSerializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UUID> { // love.forte.simbot.common.id/UUID.StructureSerializer|null[0]
+        final val descriptor // love.forte.simbot.common.id/UUID.StructureSerializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.id/UUID.StructureSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/UUID.StructureSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.id/UUID) // love.forte.simbot.common.id/UUID.StructureSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.id.UUID){}[0]
+    }
+}
+
+final class love.forte.simbot.common.time/MillisecondTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/MillisecondTimestamp|null[0]
+    constructor <init>(kotlin/Long) // love.forte.simbot.common.time/MillisecondTimestamp.<init>|<init>(kotlin.Long){}[0]
+
+    final val milliseconds // love.forte.simbot.common.time/MillisecondTimestamp.milliseconds|{}milliseconds[0]
+        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/MillisecondTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/MillisecondTimestamp.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/MillisecondTimestamp.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.time/MillisecondTimestamp.toString|toString(){}[0]
+}
+
+open class <#A: kotlin/Any, #B: kotlin/Any, #C: love.forte.simbot.common.function/MergeableFactory.Key> love.forte.simbot.common.function/MergeableFactoriesConfigurator { // love.forte.simbot.common.function/MergeableFactoriesConfigurator|null[0]
+    constructor <init>(kotlin.collections/Map<#C, love.forte.simbot.common.function/ConfigurerFunction<kotlin/Any>>, kotlin.collections/Map<#C, kotlin/Function1<#A, #B>>) // love.forte.simbot.common.function/MergeableFactoriesConfigurator.<init>|<init>(kotlin.collections.Map<1:2,love.forte.simbot.common.function.ConfigurerFunction<kotlin.Any>>;kotlin.collections.Map<1:2,kotlin.Function1<1:0,1:1>>){}[0]
+
+    final fun <#A1: #B, #B1: kotlin/Any> add(love.forte.simbot.common.function/MergeableFactory<#C, #A1, #B1, #A>, love.forte.simbot.common.function/ConfigurerFunction<#B1>) // love.forte.simbot.common.function/MergeableFactoriesConfigurator.add|add(love.forte.simbot.common.function.MergeableFactory<1:2,0:0,0:1,1:0>;love.forte.simbot.common.function.ConfigurerFunction<0:1>){0§<1:1>;1§<kotlin.Any>}[0]
+    final fun <#A1: #C, #B1: #B, #C1: kotlin/Any> create(#A, love.forte.simbot.common.function/MergeableFactory<#A1, #B1, #C1, #A>): #B1 // love.forte.simbot.common.function/MergeableFactoriesConfigurator.create|create(1:0;love.forte.simbot.common.function.MergeableFactory<0:0,0:1,0:2,1:0>){0§<1:2>;1§<1:1>;2§<kotlin.Any>}[0]
+    final fun <#A1: #C, #B1: #B, #C1: kotlin/Any> createOrNull(love.forte.simbot.common.function/MergeableFactory<#A1, #B1, #C1, #A>, #A): #B1? // love.forte.simbot.common.function/MergeableFactoriesConfigurator.createOrNull|createOrNull(love.forte.simbot.common.function.MergeableFactory<0:0,0:1,0:2,1:0>;1:0){0§<1:2>;1§<1:1>;2§<kotlin.Any>}[0]
+    final fun createAll(#A): kotlin.collections/List<#B> // love.forte.simbot.common.function/MergeableFactoriesConfigurator.createAll|createAll(1:0){}[0]
+
+    abstract fun interface <#A1: in kotlin/Any?, #B1: in kotlin/Any?> Configurer { // love.forte.simbot.common.function/MergeableFactoriesConfigurator.Configurer|null[0]
+        abstract fun (#A1).invoke(#B1) // love.forte.simbot.common.function/MergeableFactoriesConfigurator.Configurer.invoke|invoke@1:0(1:1){}[0]
+    }
+}
+
+sealed class love.forte.simbot.common.id/ID : kotlin/Comparable<love.forte.simbot.common.id/ID> { // love.forte.simbot.common.id/ID|null[0]
+    abstract fun copy(): love.forte.simbot.common.id/ID // love.forte.simbot.common.id/ID.copy|copy(){}[0]
+    abstract fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/ID.equals|equals(kotlin.Any?){}[0]
+    abstract fun equalsExact(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.id/ID.equalsExact|equalsExact(kotlin.Any?){}[0]
+    abstract fun hashCode(): kotlin/Int // love.forte.simbot.common.id/ID.hashCode|hashCode(){}[0]
+    abstract fun toString(): kotlin/String // love.forte.simbot.common.id/ID.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.common.id/ID.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/ID> // love.forte.simbot.common.id/ID.Companion.serializer|serializer(){}[0]
+    }
+}
+
+sealed class love.forte.simbot.common.id/NumericalID : love.forte.simbot.common.id/ID { // love.forte.simbot.common.id/NumericalID|null[0]
+    abstract fun compareNumber(love.forte.simbot.common.id/NumericalID): kotlin/Int // love.forte.simbot.common.id/NumericalID.compareNumber|compareNumber(love.forte.simbot.common.id.NumericalID){}[0]
+    abstract fun toByte(): kotlin/Byte // love.forte.simbot.common.id/NumericalID.toByte|toByte(){}[0]
+    abstract fun toDouble(): kotlin/Double // love.forte.simbot.common.id/NumericalID.toDouble|toDouble(){}[0]
+    abstract fun toFloat(): kotlin/Float // love.forte.simbot.common.id/NumericalID.toFloat|toFloat(){}[0]
+    abstract fun toInt(): kotlin/Int // love.forte.simbot.common.id/NumericalID.toInt|toInt(){}[0]
+    abstract fun toLong(): kotlin/Long // love.forte.simbot.common.id/NumericalID.toLong|toLong(){}[0]
+    abstract fun toShort(): kotlin/Short // love.forte.simbot.common.id/NumericalID.toShort|toShort(){}[0]
+    final fun compareTo(love.forte.simbot.common.id/ID): kotlin/Int // love.forte.simbot.common.id/NumericalID.compareTo|compareTo(love.forte.simbot.common.id.ID){}[0]
+    open fun toUInt(): kotlin/UInt // love.forte.simbot.common.id/NumericalID.toUInt|toUInt(){}[0]
+    open fun toULong(): kotlin/ULong // love.forte.simbot.common.id/NumericalID.toULong|toULong(){}[0]
+
+    final object Companion // love.forte.simbot.common.id/NumericalID.Companion|null[0]
+}
+
+sealed class love.forte.simbot.common.id/SignedNumericID : love.forte.simbot.common.id/NumericalID // love.forte.simbot.common.id/SignedNumericID|null[0]
+
+sealed class love.forte.simbot.common.id/UnsignedNumericID : love.forte.simbot.common.id/NumericalID // love.forte.simbot.common.id/UnsignedNumericID|null[0]
+
+final object love.forte.simbot.common.id/AsStringIDSerializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/ID> { // love.forte.simbot.common.id/AsStringIDSerializer|null[0]
+    final val descriptor // love.forte.simbot.common.id/AsStringIDSerializer.descriptor|{}descriptor[0]
+        final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.id/AsStringIDSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+    final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.common.id/StringID // love.forte.simbot.common.id/AsStringIDSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+    final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.common.id/ID) // love.forte.simbot.common.id/AsStringIDSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.common.id.ID){}[0]
+}
+
+final object love.forte.simbot.common.serialization/Base64BytesSerializer : kotlinx.serialization/KSerializer<kotlin/ByteArray> { // love.forte.simbot.common.serialization/Base64BytesSerializer|null[0]
+    final val descriptor // love.forte.simbot.common.serialization/Base64BytesSerializer.descriptor|{}descriptor[0]
+        final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.common.serialization/Base64BytesSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+    final fun deserialize(kotlinx.serialization.encoding/Decoder): kotlin/ByteArray // love.forte.simbot.common.serialization/Base64BytesSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+    final fun serialize(kotlinx.serialization.encoding/Encoder, kotlin/ByteArray) // love.forte.simbot.common.serialization/Base64BytesSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;kotlin.ByteArray){}[0]
+}
+
+final object love.forte.simbot.common.services/Services { // love.forte.simbot.common.services/Services|null[0]
+    final fun <#A1: kotlin/Any> addProvider(kotlin.reflect/KClass<#A1>, kotlin/Function0<#A1>) // love.forte.simbot.common.services/Services.addProvider|addProvider(kotlin.reflect.KClass<0:0>;kotlin.Function0<0:0>){0§<kotlin.Any>}[0]
+    final fun <#A1: kotlin/Any> loadProviders(kotlin.reflect/KClass<#A1>): kotlin.sequences/Sequence<kotlin/Function0<#A1>> // love.forte.simbot.common.services/Services.loadProviders|loadProviders(kotlin.reflect.KClass<0:0>){0§<kotlin.Any>}[0]
+    final fun clearProviders(kotlin.reflect/KClass<*>) // love.forte.simbot.common.services/Services.clearProviders|clearProviders(kotlin.reflect.KClass<*>){}[0]
+    final inline fun <#A1: reified kotlin/Any> addProvider(crossinline kotlin/Function0<#A1>) // love.forte.simbot.common.services/Services.addProvider|addProvider(kotlin.Function0<0:0>){0§<kotlin.Any>}[0]
+    final inline fun <#A1: reified kotlin/Any> clearProviders() // love.forte.simbot.common.services/Services.clearProviders|clearProviders(){0§<kotlin.Any>}[0]
+    final inline fun <#A1: reified kotlin/Any> loadProviders(): kotlin.sequences/Sequence<kotlin/Function0<#A1>> // love.forte.simbot.common.services/Services.loadProviders|loadProviders(){0§<kotlin.Any>}[0]
+}
+
+final object love.forte.simbot.common/PriorityConstant { // love.forte.simbot.common/PriorityConstant|null[0]
+    final const val DEFAULT // love.forte.simbot.common/PriorityConstant.DEFAULT|{}DEFAULT[0]
+        final fun <get-DEFAULT>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DEFAULT.<get-DEFAULT>|<get-DEFAULT>(){}[0]
+    final const val DE_PRIORITIZE_1 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_1|{}DE_PRIORITIZE_1[0]
+        final fun <get-DE_PRIORITIZE_1>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_1.<get-DE_PRIORITIZE_1>|<get-DE_PRIORITIZE_1>(){}[0]
+    final const val DE_PRIORITIZE_2 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_2|{}DE_PRIORITIZE_2[0]
+        final fun <get-DE_PRIORITIZE_2>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_2.<get-DE_PRIORITIZE_2>|<get-DE_PRIORITIZE_2>(){}[0]
+    final const val DE_PRIORITIZE_3 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_3|{}DE_PRIORITIZE_3[0]
+        final fun <get-DE_PRIORITIZE_3>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_3.<get-DE_PRIORITIZE_3>|<get-DE_PRIORITIZE_3>(){}[0]
+    final const val DE_PRIORITIZE_4 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_4|{}DE_PRIORITIZE_4[0]
+        final fun <get-DE_PRIORITIZE_4>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_4.<get-DE_PRIORITIZE_4>|<get-DE_PRIORITIZE_4>(){}[0]
+    final const val DE_PRIORITIZE_5 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_5|{}DE_PRIORITIZE_5[0]
+        final fun <get-DE_PRIORITIZE_5>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_5.<get-DE_PRIORITIZE_5>|<get-DE_PRIORITIZE_5>(){}[0]
+    final const val DE_PRIORITIZE_6 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_6|{}DE_PRIORITIZE_6[0]
+        final fun <get-DE_PRIORITIZE_6>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_6.<get-DE_PRIORITIZE_6>|<get-DE_PRIORITIZE_6>(){}[0]
+    final const val DE_PRIORITIZE_7 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_7|{}DE_PRIORITIZE_7[0]
+        final fun <get-DE_PRIORITIZE_7>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_7.<get-DE_PRIORITIZE_7>|<get-DE_PRIORITIZE_7>(){}[0]
+    final const val DE_PRIORITIZE_8 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_8|{}DE_PRIORITIZE_8[0]
+        final fun <get-DE_PRIORITIZE_8>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_8.<get-DE_PRIORITIZE_8>|<get-DE_PRIORITIZE_8>(){}[0]
+    final const val DE_PRIORITIZE_9 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_9|{}DE_PRIORITIZE_9[0]
+        final fun <get-DE_PRIORITIZE_9>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_9.<get-DE_PRIORITIZE_9>|<get-DE_PRIORITIZE_9>(){}[0]
+    final const val PRIORITIZE_1 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_1|{}PRIORITIZE_1[0]
+        final fun <get-PRIORITIZE_1>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_1.<get-PRIORITIZE_1>|<get-PRIORITIZE_1>(){}[0]
+    final const val PRIORITIZE_2 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_2|{}PRIORITIZE_2[0]
+        final fun <get-PRIORITIZE_2>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_2.<get-PRIORITIZE_2>|<get-PRIORITIZE_2>(){}[0]
+    final const val PRIORITIZE_3 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_3|{}PRIORITIZE_3[0]
+        final fun <get-PRIORITIZE_3>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_3.<get-PRIORITIZE_3>|<get-PRIORITIZE_3>(){}[0]
+    final const val PRIORITIZE_4 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_4|{}PRIORITIZE_4[0]
+        final fun <get-PRIORITIZE_4>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_4.<get-PRIORITIZE_4>|<get-PRIORITIZE_4>(){}[0]
+    final const val PRIORITIZE_5 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_5|{}PRIORITIZE_5[0]
+        final fun <get-PRIORITIZE_5>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_5.<get-PRIORITIZE_5>|<get-PRIORITIZE_5>(){}[0]
+    final const val PRIORITIZE_6 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_6|{}PRIORITIZE_6[0]
+        final fun <get-PRIORITIZE_6>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_6.<get-PRIORITIZE_6>|<get-PRIORITIZE_6>(){}[0]
+    final const val PRIORITIZE_7 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_7|{}PRIORITIZE_7[0]
+        final fun <get-PRIORITIZE_7>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_7.<get-PRIORITIZE_7>|<get-PRIORITIZE_7>(){}[0]
+    final const val PRIORITIZE_8 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_8|{}PRIORITIZE_8[0]
+        final fun <get-PRIORITIZE_8>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_8.<get-PRIORITIZE_8>|<get-PRIORITIZE_8>(){}[0]
+    final const val PRIORITIZE_9 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_9|{}PRIORITIZE_9[0]
+        final fun <get-PRIORITIZE_9>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_9.<get-PRIORITIZE_9>|<get-PRIORITIZE_9>(){}[0]
+}
+
+final val love.forte.simbot.common.async/onAwait // love.forte.simbot.common.async/onAwait|@love.forte.simbot.common.async.Async<0:0>{0§<kotlin.Any?>}onAwait[0]
+    final fun <#A1: kotlin/Any?> (love.forte.simbot.common.async/Async<#A1>).<get-onAwait>(): kotlinx.coroutines.selects/SelectClause1<#A1> // love.forte.simbot.common.async/onAwait.<get-onAwait>|<get-onAwait>@love.forte.simbot.common.async.Async<0:0>(){0§<kotlin.Any?>}[0]
+final val love.forte.simbot.common.async/onJoin // love.forte.simbot.common.async/onJoin|@love.forte.simbot.common.async.Async<*>{}onJoin[0]
+    final fun (love.forte.simbot.common.async/Async<*>).<get-onJoin>(): kotlinx.coroutines.selects/SelectClause0 // love.forte.simbot.common.async/onJoin.<get-onJoin>|<get-onJoin>@love.forte.simbot.common.async.Async<*>(){}[0]
+final val love.forte.simbot.common.coroutines/IOOrDefault // love.forte.simbot.common.coroutines/IOOrDefault|@kotlinx.coroutines.Dispatchers{}IOOrDefault[0]
+    final inline fun (kotlinx.coroutines/Dispatchers).<get-IOOrDefault>(): kotlinx.coroutines/CoroutineDispatcher // love.forte.simbot.common.coroutines/IOOrDefault.<get-IOOrDefault>|<get-IOOrDefault>@kotlinx.coroutines.Dispatchers(){}[0]
+final val love.forte.simbot.common.id/ID // love.forte.simbot.common.id/ID|@kotlin.uuid.Uuid{}ID[0]
+    final fun (kotlin.uuid/Uuid).<get-ID>(): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/ID.<get-ID>|<get-ID>@kotlin.uuid.Uuid(){}[0]
+final val love.forte.simbot.common.id/literal // love.forte.simbot.common.id/literal|@love.forte.simbot.common.id.ID{}literal[0]
+    final inline fun (love.forte.simbot.common.id/ID).<get-literal>(): kotlin/String // love.forte.simbot.common.id/literal.<get-literal>|<get-literal>@love.forte.simbot.common.id.ID(){}[0]
+
+final fun (kotlin.coroutines/CoroutineContext).love.forte.simbot.common.coroutines/mergeWith(kotlin.coroutines/CoroutineContext): kotlin.coroutines/CoroutineContext // love.forte.simbot.common.coroutines/mergeWith|mergeWith@kotlin.coroutines.CoroutineContext(kotlin.coroutines.CoroutineContext){}[0]
+final fun (kotlin/ByteArray).love.forte.simbot.common.text/toHex(): kotlin/String // love.forte.simbot.common.text/toHex|toHex@kotlin.ByteArray(){}[0]
+final fun (kotlin/String).love.forte.simbot.common.id/toLong(kotlin/Int, kotlin/Int, kotlin/Int): kotlin/Long // love.forte.simbot.common.id/toLong|toLong@kotlin.String(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+final fun (kotlin/Throwable).love.forte.simbot.common.exception/initExceptionCause(kotlin/Throwable) // love.forte.simbot.common.exception/initExceptionCause|initExceptionCause@kotlin.Throwable(kotlin.Throwable){}[0]
+final fun (love.forte.simbot.common.id/UUID).love.forte.simbot.common.id/toKotlin(): kotlin.uuid/Uuid // love.forte.simbot.common.id/toKotlin|toKotlin@love.forte.simbot.common.id.UUID(){}[0]
+final fun <#A: kotlin/Any> (love.forte.simbot.common.attribute/MutableAttributeMap).love.forte.simbot.common.attribute/set(love.forte.simbot.common.attribute/Attribute<#A>, #A) // love.forte.simbot.common.attribute/set|set@love.forte.simbot.common.attribute.MutableAttributeMap(love.forte.simbot.common.attribute.Attribute<0:0>;0:0){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any> (love.forte.simbot.common.weak/WeakRef<#A>).love.forte.simbot.common.weak/getValue(kotlin/Any?, kotlin.reflect/KProperty<*>): #A? // love.forte.simbot.common.weak/getValue|getValue@love.forte.simbot.common.weak.WeakRef<0:0>(kotlin.Any?;kotlin.reflect.KProperty<*>){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any> love.forte.simbot.common.weak/weakRef(#A): love.forte.simbot.common.weak/WeakRef<#A> // love.forte.simbot.common.weak/weakRef|weakRef(0:0){0§<kotlin.Any>}[0]
+final fun <#A: kotlin/Any?> (#A).love.forte.simbot.common.function/invokeBy(love.forte.simbot.common.function/ConfigurerFunction<#A>?): #A // love.forte.simbot.common.function/invokeBy|invokeBy@0:0(love.forte.simbot.common.function.ConfigurerFunction<0:0>?){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlin.collections/Iterable<#A>).love.forte.simbot.common.collectable/asCollectable(): love.forte.simbot.common.collectable/IterableCollectable<#A> // love.forte.simbot.common.collectable/asCollectable|asCollectable@kotlin.collections.Iterable<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlin.sequences/Sequence<#A>).love.forte.simbot.common.collectable/asCollectable(): love.forte.simbot.common.collectable/SequenceCollectable<#A> // love.forte.simbot.common.collectable/asCollectable|asCollectable@kotlin.sequences.Sequence<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<#A>).love.forte.simbot.common.collectable/asCollectable(): love.forte.simbot.common.collectable/Collectable<#A> // love.forte.simbot.common.collectable/asCollectable|asCollectable@kotlinx.coroutines.flow.Flow<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (kotlinx.coroutines/Deferred<#A>).love.forte.simbot.common.async/asAsync(): love.forte.simbot.common.async/Async<#A> // love.forte.simbot.common.async/asAsync|asAsync@kotlinx.coroutines.Deferred<0:0>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (love.forte.simbot.common.async/Async<#A>).love.forte.simbot.common.async/cancelBy(kotlin/String? = ..., kotlin/Throwable?) // love.forte.simbot.common.async/cancelBy|cancelBy@love.forte.simbot.common.async.Async<0:0>(kotlin.String?;kotlin.Throwable?){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (love.forte.simbot.common.function/ConfigurerFunction<#A>).love.forte.simbot.common.function/invokeWith(#A) // love.forte.simbot.common.function/invokeWith|invokeWith@love.forte.simbot.common.function.ConfigurerFunction<0:0>(0:0){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (love.forte.simbot.common.function/ConfigurerFunction<#A>).love.forte.simbot.common.function/plus(love.forte.simbot.common.function/ConfigurerFunction<#A>): love.forte.simbot.common.function/ConfigurerFunction<#A> // love.forte.simbot.common.function/plus|plus@love.forte.simbot.common.function.ConfigurerFunction<0:0>(love.forte.simbot.common.function.ConfigurerFunction<0:0>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> love.forte.simbot.common.async/completedAsync(#A): love.forte.simbot.common.async/Async<#A> // love.forte.simbot.common.async/completedAsync|completedAsync(0:0){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> love.forte.simbot.common.collectable/emptyCollectable(): love.forte.simbot.common.collectable/Collectable<#A> // love.forte.simbot.common.collectable/emptyCollectable|emptyCollectable(){0§<kotlin.Any?>}[0]
+final fun love.forte.simbot.common.attribute/attributeMapOf(kotlin.collections/Map<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any> = ...): love.forte.simbot.common.attribute/AttributeMap // love.forte.simbot.common.attribute/attributeMapOf|attributeMapOf(kotlin.collections.Map<love.forte.simbot.common.attribute.Attribute<*>,kotlin.Any>){}[0]
+final fun love.forte.simbot.common.attribute/mutableAttributeMapOf(kotlin.collections/MutableMap<love.forte.simbot.common.attribute/Attribute<*>, kotlin/Any> = ...): love.forte.simbot.common.attribute/MutableAttributeMap // love.forte.simbot.common.attribute/mutableAttributeMapOf|mutableAttributeMapOf(kotlin.collections.MutableMap<love.forte.simbot.common.attribute.Attribute<*>,kotlin.Any>){}[0]
+final fun love.forte.simbot.common.id/checkRadix(kotlin/Int): kotlin/Int // love.forte.simbot.common.id/checkRadix|checkRadix(kotlin.Int){}[0]
+final fun love.forte.simbot.common.id/uLongIDOf(kotlin/ULong): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/uLongIDOf|uLongIDOf(kotlin.ULong){}[0]
+final fun love.forte.simbot.common.serialization/guessSerializer(kotlin/Any?, kotlinx.serialization.modules/SerializersModule): kotlinx.serialization/KSerializer<kotlin/Any> // love.forte.simbot.common.serialization/guessSerializer|guessSerializer(kotlin.Any?;kotlinx.serialization.modules.SerializersModule){}[0]
+final inline fun (kotlinx.coroutines/Job).love.forte.simbot.common.coroutines/linkTo(kotlinx.coroutines/Job, crossinline kotlin/Function1<kotlin/Throwable?, kotlin/Boolean> = ...): kotlinx.coroutines/DisposableHandle // love.forte.simbot.common.coroutines/linkTo|linkTo@kotlinx.coroutines.Job(kotlinx.coroutines.Job;kotlin.Function1<kotlin.Throwable?,kotlin.Boolean>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toInt(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/Int> = ...): kotlin/Int // love.forte.simbot.common.id/toInt|toInt@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.Int>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toIntID(kotlin/Function1<love.forte.simbot.common.id/ID, love.forte.simbot.common.id/IntID> = ...): love.forte.simbot.common.id/IntID // love.forte.simbot.common.id/toIntID|toIntID@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,love.forte.simbot.common.id.IntID>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toIntOrNull(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/Int?> = ...): kotlin/Int? // love.forte.simbot.common.id/toIntOrNull|toIntOrNull@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.Int?>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toLong(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/Long> = ...): kotlin/Long // love.forte.simbot.common.id/toLong|toLong@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.Long>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toLongID(kotlin/Function1<love.forte.simbot.common.id/ID, love.forte.simbot.common.id/LongID> = ...): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/toLongID|toLongID@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,love.forte.simbot.common.id.LongID>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toLongOrNull(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/Long?> = ...): kotlin/Long? // love.forte.simbot.common.id/toLongOrNull|toLongOrNull@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.Long?>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toUInt(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/UInt> = ...): kotlin/UInt // love.forte.simbot.common.id/toUInt|toUInt@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.UInt>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toUIntID(kotlin/Function1<love.forte.simbot.common.id/ID, love.forte.simbot.common.id/UIntID> = ...): love.forte.simbot.common.id/UIntID // love.forte.simbot.common.id/toUIntID|toUIntID@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,love.forte.simbot.common.id.UIntID>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toUIntOrNull(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/UInt?> = ...): kotlin/UInt? // love.forte.simbot.common.id/toUIntOrNull|toUIntOrNull@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.UInt?>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toULong(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/ULong> = ...): kotlin/ULong // love.forte.simbot.common.id/toULong|toULong@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.ULong>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toULongID(kotlin/Function1<love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ULongID> = ...): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/toULongID|toULongID@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,love.forte.simbot.common.id.ULongID>){}[0]
+final inline fun (love.forte.simbot.common.id/ID).love.forte.simbot.common.id/toULongOrNull(kotlin/Function1<love.forte.simbot.common.id/ID, kotlin/ULong?> = ...): kotlin/ULong? // love.forte.simbot.common.id/toULongOrNull|toULongOrNull@love.forte.simbot.common.id.ID(kotlin.Function1<love.forte.simbot.common.id.ID,kotlin.ULong?>){}[0]
+final inline fun <#A: kotlin/Any> (love.forte.simbot.common.services/Services).love.forte.simbot.common.services/addProvider(kotlin/Boolean, kotlin.reflect/KClass<#A>, crossinline kotlin/Function0<#A>) // love.forte.simbot.common.services/addProvider|addProvider@love.forte.simbot.common.services.Services(kotlin.Boolean;kotlin.reflect.KClass<0:0>;kotlin.Function0<0:0>){0§<kotlin.Any>}[0]
+final inline fun <#A: kotlin/Any> (love.forte.simbot.common.services/Services).love.forte.simbot.common.services/addProviderExceptJvm(kotlin.reflect/KClass<#A>, crossinline kotlin/Function0<#A>) // love.forte.simbot.common.services/addProviderExceptJvm|addProviderExceptJvm@love.forte.simbot.common.services.Services(kotlin.reflect.KClass<0:0>;kotlin.Function0<0:0>){0§<kotlin.Any>}[0]
+final inline fun <#A: kotlin/Any?> (kotlin/String).love.forte.simbot.common.id/toUUIDSigs(kotlin/Function2<kotlin/Long, kotlin/Long, #A>): #A // love.forte.simbot.common.id/toUUIDSigs|toUUIDSigs@kotlin.String(kotlin.Function2<kotlin.Long,kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> (kotlinx.coroutines/CoroutineScope).love.forte.simbot.common.async/toAsync(crossinline kotlin.coroutines/SuspendFunction0<#A>): love.forte.simbot.common.async/Async<#A> // love.forte.simbot.common.async/toAsync|toAsync@kotlinx.coroutines.CoroutineScope(kotlin.coroutines.SuspendFunction0<0:0>){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> love.forte.simbot.common.collectable/flowCollectable(crossinline kotlin.coroutines/SuspendFunction1<kotlinx.coroutines.flow/FlowCollector<#A>, kotlin/Unit>): love.forte.simbot.common.collectable/Collectable<#A> // love.forte.simbot.common.collectable/flowCollectable|flowCollectable(kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.flow.FlowCollector<0:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> love.forte.simbot.common.function/toConfigurerFunction(crossinline kotlin/Function1<#A, kotlin/Unit>): love.forte.simbot.common.function/ConfigurerFunction<#A> // love.forte.simbot.common.function/toConfigurerFunction|toConfigurerFunction(kotlin.Function1<0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+final inline fun <#A: reified kotlin/Any> love.forte.simbot.common.attribute/attribute(kotlin/String): love.forte.simbot.common.attribute/Attribute<#A> // love.forte.simbot.common.attribute/attribute|attribute(kotlin.String){0§<kotlin.Any>}[0]
+final suspend fun (love.forte.simbot.common.async/Async<*>).love.forte.simbot.common.async/join() // love.forte.simbot.common.async/join|join@love.forte.simbot.common.async.Async<*>(){}[0]
+final suspend fun <#A: kotlin/Any?> (love.forte.simbot.common.async/Async<#A>).love.forte.simbot.common.async/await(): #A // love.forte.simbot.common.async/await|await@love.forte.simbot.common.async.Async<0:0>(){0§<kotlin.Any?>}[0]
+
+// Targets: [native]
+final const val love.forte.simbot.common.services/isJvm // love.forte.simbot.common.services/isJvm|{}isJvm[0]
+    final fun <get-isJvm>(): kotlin/Boolean // love.forte.simbot.common.services/isJvm.<get-isJvm>|<get-isJvm>(){}[0]
+
+// Targets: [apple]
+final class love.forte.simbot.common.time/NSDateTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/NSDateTimestamp|null[0]
+    constructor <init>(platform.Foundation/NSDate) // love.forte.simbot.common.time/NSDateTimestamp.<init>|<init>(platform.Foundation.NSDate){}[0]
+
+    final val date // love.forte.simbot.common.time/NSDateTimestamp.date|{}date[0]
+        final fun <get-date>(): platform.Foundation/NSDate // love.forte.simbot.common.time/NSDateTimestamp.date.<get-date>|<get-date>(){}[0]
+    final val milliseconds // love.forte.simbot.common.time/NSDateTimestamp.milliseconds|{}milliseconds[0]
+        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/NSDateTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
+
+    final fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/NSDateTimestamp.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.time/NSDateTimestamp.toString|toString(){}[0]
+
+    final object Companion // love.forte.simbot.common.time/NSDateTimestamp.Companion|null[0]
+}
+
+// Targets: [js, wasmJs]
+final class love.forte.simbot.common.time/DateTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/DateTimestamp|null[0]
+    final val date // love.forte.simbot.common.time/DateTimestamp.date|{}date[0]
+        // Targets: [js]
+        final fun <get-date>(): kotlin.js/Date // love.forte.simbot.common.time/DateTimestamp.date.<get-date>|<get-date>(){}[0]
+
+        // Targets: [wasmJs]
+        final fun <get-date>(): kotlin.js/JsAny // love.forte.simbot.common.time/DateTimestamp.date.<get-date>|<get-date>(){}[0]
+    final val milliseconds // love.forte.simbot.common.time/DateTimestamp.milliseconds|{}milliseconds[0]
+        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/DateTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/DateTimestamp.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/DateTimestamp.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.common.time/DateTimestamp.toString|toString(){}[0]
+
+    // Targets: [js]
+    constructor <init>(kotlin.js/Date) // love.forte.simbot.common.time/DateTimestamp.<init>|<init>(kotlin.js.Date){}[0]
+
+    // Targets: [wasmJs]
+    constructor <init>(kotlin.js/JsAny) // love.forte.simbot.common.time/DateTimestamp.<init>|<init>(kotlin.js.JsAny){}[0]
+}
+
+// Targets: [js, wasmJs]
+final val love.forte.simbot.common.services/isJvm // love.forte.simbot.common.services/isJvm|{}isJvm[0]
+    final fun <get-isJvm>(): kotlin/Boolean // love.forte.simbot.common.services/isJvm.<get-isJvm>|<get-isJvm>(){}[0]

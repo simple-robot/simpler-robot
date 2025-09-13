@@ -74,7 +74,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Publish Release
-        run: gradle publishAndReleaseToMavenCentral -s --warning-mode all -x test --build-cache --no-configuration-cache
+        run: gradle publishToMavenCentral -s --warning-mode all -x test --build-cache --no-configuration-cache
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true

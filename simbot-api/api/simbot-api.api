@@ -607,7 +607,7 @@ public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$C
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Custom$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -646,7 +646,7 @@ public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$I
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$IO$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$IO$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$IO$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -697,7 +697,7 @@ public final class love/forte/simbot/bot/configuration/DispatcherConfiguration$V
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/bot/configuration/DispatcherConfiguration$Virtual$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -737,7 +737,7 @@ public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Http :
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Http$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Http$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/bot/configuration/ProxyConfiguration$Http$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -768,7 +768,7 @@ public final class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks 
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/bot/configuration/ProxyConfiguration$Socks$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/bot/configuration/ProxyConfiguration$Socks$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2303,7 +2303,7 @@ public final class love/forte/simbot/message/At : love/forte/simbot/message/Ment
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/At$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/At$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/At$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2353,7 +2353,7 @@ public final class love/forte/simbot/message/Emoji : love/forte/simbot/message/E
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/Emoji$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/Emoji$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/Emoji$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2383,7 +2383,7 @@ public final class love/forte/simbot/message/Face : love/forte/simbot/message/Em
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/Face$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/Face$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/Face$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2473,7 +2473,7 @@ public final class love/forte/simbot/message/MessageIdReference : love/forte/sim
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/MessageIdReference$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/MessageIdReference$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/MessageIdReference$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2618,7 +2618,7 @@ public final class love/forte/simbot/message/OfflineByteArrayImage : love/forte/
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/OfflineByteArrayImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/OfflineByteArrayImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/OfflineByteArrayImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2647,7 +2647,7 @@ public final class love/forte/simbot/message/OfflineFileImage : love/forte/simbo
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/OfflineFileImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/OfflineFileImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/OfflineFileImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2721,7 +2721,7 @@ public final class love/forte/simbot/message/OfflinePathImage : love/forte/simbo
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/OfflinePathImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/OfflinePathImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/OfflinePathImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2760,7 +2760,7 @@ public final class love/forte/simbot/message/OfflineURIImage : love/forte/simbot
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/OfflineURIImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/OfflineURIImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/OfflineURIImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2793,7 +2793,7 @@ public final class love/forte/simbot/message/RemoteIDImage : love/forte/simbot/m
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/RemoteIDImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/RemoteIDImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/RemoteIDImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2834,7 +2834,7 @@ public final class love/forte/simbot/message/SimpleOfflineResourceImage : love/f
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/SimpleOfflineResourceImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/SimpleOfflineResourceImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/SimpleOfflineResourceImage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2877,7 +2877,7 @@ public final class love/forte/simbot/message/Text : love/forte/simbot/message/Pl
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/message/Text$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/message/Text$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/message/Text$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

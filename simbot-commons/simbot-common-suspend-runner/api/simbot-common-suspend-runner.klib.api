@@ -1,0 +1,79 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.common:simbot-common-suspend-runner>
+open annotation class love.forte.simbot.suspendrunner/SuspendTrans : kotlin/Annotation { // love.forte.simbot.suspendrunner/SuspendTrans|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ...) // love.forte.simbot.suspendrunner/SuspendTrans.<init>|<init>(kotlin.String;kotlin.String;kotlin.Boolean;kotlin.String;kotlin.String;kotlin.Boolean;kotlin.String;kotlin.String;kotlin.Boolean){}[0]
+
+    final val asyncAsProperty // love.forte.simbot.suspendrunner/SuspendTrans.asyncAsProperty|{}asyncAsProperty[0]
+        final fun <get-asyncAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTrans.asyncAsProperty.<get-asyncAsProperty>|<get-asyncAsProperty>(){}[0]
+    final val asyncBaseName // love.forte.simbot.suspendrunner/SuspendTrans.asyncBaseName|{}asyncBaseName[0]
+        final fun <get-asyncBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.asyncBaseName.<get-asyncBaseName>|<get-asyncBaseName>(){}[0]
+    final val asyncSuffix // love.forte.simbot.suspendrunner/SuspendTrans.asyncSuffix|{}asyncSuffix[0]
+        final fun <get-asyncSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.asyncSuffix.<get-asyncSuffix>|<get-asyncSuffix>(){}[0]
+    final val blockingAsProperty // love.forte.simbot.suspendrunner/SuspendTrans.blockingAsProperty|{}blockingAsProperty[0]
+        final fun <get-blockingAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTrans.blockingAsProperty.<get-blockingAsProperty>|<get-blockingAsProperty>(){}[0]
+    final val blockingBaseName // love.forte.simbot.suspendrunner/SuspendTrans.blockingBaseName|{}blockingBaseName[0]
+        final fun <get-blockingBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.blockingBaseName.<get-blockingBaseName>|<get-blockingBaseName>(){}[0]
+    final val blockingSuffix // love.forte.simbot.suspendrunner/SuspendTrans.blockingSuffix|{}blockingSuffix[0]
+        final fun <get-blockingSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.blockingSuffix.<get-blockingSuffix>|<get-blockingSuffix>(){}[0]
+    final val reserveAsProperty // love.forte.simbot.suspendrunner/SuspendTrans.reserveAsProperty|{}reserveAsProperty[0]
+        final fun <get-reserveAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTrans.reserveAsProperty.<get-reserveAsProperty>|<get-reserveAsProperty>(){}[0]
+    final val reserveBaseName // love.forte.simbot.suspendrunner/SuspendTrans.reserveBaseName|{}reserveBaseName[0]
+        final fun <get-reserveBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.reserveBaseName.<get-reserveBaseName>|<get-reserveBaseName>(){}[0]
+    final val reserveSuffix // love.forte.simbot.suspendrunner/SuspendTrans.reserveSuffix|{}reserveSuffix[0]
+        final fun <get-reserveSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTrans.reserveSuffix.<get-reserveSuffix>|<get-reserveSuffix>(){}[0]
+}
+
+open annotation class love.forte.simbot.suspendrunner/SuspendTransProperty : kotlin/Annotation { // love.forte.simbot.suspendrunner/SuspendTransProperty|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ...) // love.forte.simbot.suspendrunner/SuspendTransProperty.<init>|<init>(kotlin.String;kotlin.String;kotlin.Boolean;kotlin.String;kotlin.String;kotlin.Boolean;kotlin.String;kotlin.String;kotlin.Boolean;kotlin.String;kotlin.String;kotlin.Boolean){}[0]
+
+    final val asyncAsProperty // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncAsProperty|{}asyncAsProperty[0]
+        final fun <get-asyncAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncAsProperty.<get-asyncAsProperty>|<get-asyncAsProperty>(){}[0]
+    final val asyncBaseName // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncBaseName|{}asyncBaseName[0]
+        final fun <get-asyncBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncBaseName.<get-asyncBaseName>|<get-asyncBaseName>(){}[0]
+    final val asyncSuffix // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncSuffix|{}asyncSuffix[0]
+        final fun <get-asyncSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.asyncSuffix.<get-asyncSuffix>|<get-asyncSuffix>(){}[0]
+    final val blockingAsProperty // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingAsProperty|{}blockingAsProperty[0]
+        final fun <get-blockingAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingAsProperty.<get-blockingAsProperty>|<get-blockingAsProperty>(){}[0]
+    final val blockingBaseName // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingBaseName|{}blockingBaseName[0]
+        final fun <get-blockingBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingBaseName.<get-blockingBaseName>|<get-blockingBaseName>(){}[0]
+    final val blockingSuffix // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingSuffix|{}blockingSuffix[0]
+        final fun <get-blockingSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.blockingSuffix.<get-blockingSuffix>|<get-blockingSuffix>(){}[0]
+    final val jsPromiseAsProperty // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseAsProperty|{}jsPromiseAsProperty[0]
+        final fun <get-jsPromiseAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseAsProperty.<get-jsPromiseAsProperty>|<get-jsPromiseAsProperty>(){}[0]
+    final val jsPromiseBaseName // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseBaseName|{}jsPromiseBaseName[0]
+        final fun <get-jsPromiseBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseBaseName.<get-jsPromiseBaseName>|<get-jsPromiseBaseName>(){}[0]
+    final val jsPromiseSuffix // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseSuffix|{}jsPromiseSuffix[0]
+        final fun <get-jsPromiseSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.jsPromiseSuffix.<get-jsPromiseSuffix>|<get-jsPromiseSuffix>(){}[0]
+    final val reserveAsProperty // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveAsProperty|{}reserveAsProperty[0]
+        final fun <get-reserveAsProperty>(): kotlin/Boolean // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveAsProperty.<get-reserveAsProperty>|<get-reserveAsProperty>(){}[0]
+    final val reserveBaseName // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveBaseName|{}reserveBaseName[0]
+        final fun <get-reserveBaseName>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveBaseName.<get-reserveBaseName>|<get-reserveBaseName>(){}[0]
+    final val reserveSuffix // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveSuffix|{}reserveSuffix[0]
+        final fun <get-reserveSuffix>(): kotlin/String // love.forte.simbot.suspendrunner/SuspendTransProperty.reserveSuffix.<get-reserveSuffix>|<get-reserveSuffix>(){}[0]
+}
+
+abstract interface <#A: kotlin/Any?, #B: kotlin/Any?> love.forte.simbot.suspendrunner/InvokeStrategy { // love.forte.simbot.suspendrunner/InvokeStrategy|null[0]
+    abstract fun <#A1: #A> invoke(kotlin.coroutines/SuspendFunction0<#A1>, kotlinx.coroutines/CoroutineScope? = ..., kotlin.coroutines/CoroutineContext? = ...): #B // love.forte.simbot.suspendrunner/InvokeStrategy.invoke|invoke(kotlin.coroutines.SuspendFunction0<0:0>;kotlinx.coroutines.CoroutineScope?;kotlin.coroutines.CoroutineContext?){0§<1:0>}[0]
+}
+
+abstract interface <#A: out kotlin/Any?> love.forte.simbot.suspendrunner.reserve/SuspendReserve { // love.forte.simbot.suspendrunner.reserve/SuspendReserve|null[0]
+    abstract fun <#A1: kotlin/Any?> transform(love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer<#A, #A1>): #A1 // love.forte.simbot.suspendrunner.reserve/SuspendReserve.transform|transform(love.forte.simbot.suspendrunner.reserve.SuspendReserve.Transformer<1:0,0:0>){0§<kotlin.Any?>}[0]
+
+    abstract interface <#A1: in kotlin/Any?, #B1: out kotlin/Any?> Transformer { // love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer|null[0]
+        abstract fun <#A2: #A1> invoke(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction0<#A2>): #B1 // love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer.invoke|invoke(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction0<0:0>){0§<1:0>}[0]
+    }
+}
+
+final fun <#A: kotlin/Any?> love.forte.simbot.suspendrunner.reserve/deferred(): love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer<#A, kotlinx.coroutines/Deferred<#A>> // love.forte.simbot.suspendrunner.reserve/deferred|deferred(){0§<kotlin.Any?>}[0]
+
+// Targets: [js]
+final fun <#A: kotlin/Any?> (love.forte.simbot.suspendrunner.reserve/SuspendReserve<#A>).love.forte.simbot.suspendrunner.reserve/promise(): kotlin.js/Promise<#A> // love.forte.simbot.suspendrunner.reserve/promise|promise@love.forte.simbot.suspendrunner.reserve.SuspendReserve<0:0>(){0§<kotlin.Any?>}[0]
+
+// Targets: [js]
+final fun <#A: kotlin/Any?> love.forte.simbot.suspendrunner.reserve/promise(): love.forte.simbot.suspendrunner.reserve/SuspendReserve.Transformer<#A, kotlin.js/Promise<#A>> // love.forte.simbot.suspendrunner.reserve/promise|promise(){0§<kotlin.Any?>}[0]

@@ -1,0 +1,135 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot:simbot-core>
+abstract interface love.forte.simbot.core.application/SimpleApplication : love.forte.simbot.application/Application { // love.forte.simbot.core.application/SimpleApplication|null[0]
+    abstract val configuration // love.forte.simbot.core.application/SimpleApplication.configuration|{}configuration[0]
+        abstract fun <get-configuration>(): love.forte.simbot.core.application/SimpleApplicationConfiguration // love.forte.simbot.core.application/SimpleApplication.configuration.<get-configuration>|<get-configuration>(){}[0]
+}
+
+abstract interface love.forte.simbot.core.application/SimpleApplicationConfiguration : love.forte.simbot.application/ApplicationConfiguration // love.forte.simbot.core.application/SimpleApplicationConfiguration|null[0]
+
+abstract interface love.forte.simbot.core.application/SimpleApplicationLauncher : love.forte.simbot.application/ApplicationLauncher<love.forte.simbot.core.application/SimpleApplication> // love.forte.simbot.core.application/SimpleApplicationLauncher|null[0]
+
+abstract interface love.forte.simbot.core.event/SimpleEventDispatchInterceptorRegistrationProperties : love.forte.simbot.event/EventDispatchInterceptorRegistrationProperties // love.forte.simbot.core.event/SimpleEventDispatchInterceptorRegistrationProperties|null[0]
+
+abstract interface love.forte.simbot.core.event/SimpleEventDispatcher : love.forte.simbot.event/EventDispatcher // love.forte.simbot.core.event/SimpleEventDispatcher|null[0]
+
+abstract interface love.forte.simbot.core.event/SimpleEventDispatcherConfiguration : love.forte.simbot.event/EventDispatcherConfiguration // love.forte.simbot.core.event/SimpleEventDispatcherConfiguration|null[0]
+
+abstract interface love.forte.simbot.core.event/SimpleEventInterceptorRegistrationProperties : love.forte.simbot.event/EventInterceptorRegistrationProperties // love.forte.simbot.core.event/SimpleEventInterceptorRegistrationProperties|null[0]
+
+abstract interface love.forte.simbot.core.event/SimpleEventListenerRegistrationProperties : love.forte.simbot.event/EventListenerRegistrationProperties // love.forte.simbot.core.event/SimpleEventListenerRegistrationProperties|null[0]
+
+final class love.forte.simbot.core.application/SimpleApplicationBuilder : love.forte.simbot.application/AbstractApplicationBuilder { // love.forte.simbot.core.application/SimpleApplicationBuilder|null[0]
+    constructor <init>() // love.forte.simbot.core.application/SimpleApplicationBuilder.<init>|<init>(){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker : kotlin/Comparable<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker>, love.forte.simbot.event/EventDispatchInterceptor { // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker|null[0]
+    constructor <init>(love.forte.simbot.event/EventDispatchInterceptor, kotlin/Int) // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker.<init>|<init>(love.forte.simbot.event.EventDispatchInterceptor;kotlin.Int){}[0]
+
+    final fun (love.forte.simbot.event/EventDispatchInterceptor.Context).intercept(): kotlinx.coroutines.flow/Flow<love.forte.simbot.event/EventResult> // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker.intercept|intercept@love.forte.simbot.event.EventDispatchInterceptor.Context(){}[0]
+    final fun compareTo(love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker.compareTo|compareTo(love.forte.simbot.core.event.impl.SimpleEventDispatchInterceptorInvoker){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorsInvoker { // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorsInvoker|null[0]
+    constructor <init>(kotlin.collections/Iterable<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker>) // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorsInvoker.<init>|<init>(kotlin.collections.Iterable<love.forte.simbot.core.event.impl.SimpleEventDispatchInterceptorInvoker>){}[0]
+
+    final fun invoke(love.forte.simbot.event/EventContext, kotlin/Function1<love.forte.simbot.event/EventContext, kotlinx.coroutines.flow/Flow<love.forte.simbot.event/EventResult>>): kotlinx.coroutines.flow/Flow<love.forte.simbot.event/EventResult> // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorsInvoker.invoke|invoke(love.forte.simbot.event.EventContext;kotlin.Function1<love.forte.simbot.event.EventContext,kotlinx.coroutines.flow.Flow<love.forte.simbot.event.EventResult>>){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl : love.forte.simbot.core.event/SimpleEventDispatcher { // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl|null[0]
+    constructor <init>(love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl) // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.<init>|<init>(love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl){}[0]
+    constructor <init>(love.forte.simbot.core.event/SimpleEventDispatcherConfiguration, love.forte.simbot.core.event.impl/SimpleEventInterceptors) // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.<init>|<init>(love.forte.simbot.core.event.SimpleEventDispatcherConfiguration;love.forte.simbot.core.event.impl.SimpleEventInterceptors){}[0]
+
+    final val listeners // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.listeners|{}listeners[0]
+        final fun <get-listeners>(): kotlin.sequences/Sequence<love.forte.simbot.event/EventListener> // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.listeners.<get-listeners>|<get-listeners>(){}[0]
+
+    final fun dispose(love.forte.simbot.event/EventListener) // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.dispose|dispose(love.forte.simbot.event.EventListener){}[0]
+    final fun push(love.forte.simbot.event/Event): kotlinx.coroutines.flow/Flow<love.forte.simbot.event/EventResult> // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.push|push(love.forte.simbot.event.Event){}[0]
+    final fun register(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventListenerRegistrationProperties>?, love.forte.simbot.event/EventListener): love.forte.simbot.event/EventListenerRegistrationHandle // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.register|register(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.event.EventListenerRegistrationProperties>?;love.forte.simbot.event.EventListener){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.core.event.impl/SimpleEventDispatcherImpl.toString|toString(){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker : kotlin/Comparable<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker>, love.forte.simbot.event/EventInterceptor { // love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker|null[0]
+    constructor <init>(love.forte.simbot.event/EventInterceptor, kotlin/Int) // love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker.<init>|<init>(love.forte.simbot.event.EventInterceptor;kotlin.Int){}[0]
+
+    final fun compareTo(love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker.compareTo|compareTo(love.forte.simbot.core.event.impl.SimpleEventInterceptorInvoker){}[0]
+    final suspend fun (love.forte.simbot.event/EventInterceptor.Context).intercept(): love.forte.simbot.event/EventResult // love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker.intercept|intercept@love.forte.simbot.event.EventInterceptor.Context(){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventInterceptors { // love.forte.simbot.core.event.impl/SimpleEventInterceptors|null[0]
+    constructor <init>(kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker>, kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker>) // love.forte.simbot.core.event.impl/SimpleEventInterceptors.<init>|<init>(kotlin.collections.List<love.forte.simbot.core.event.impl.SimpleEventInterceptorInvoker>;kotlin.collections.List<love.forte.simbot.core.event.impl.SimpleEventDispatchInterceptorInvoker>){}[0]
+
+    final val dispatchInterceptors // love.forte.simbot.core.event.impl/SimpleEventInterceptors.dispatchInterceptors|{}dispatchInterceptors[0]
+        final fun <get-dispatchInterceptors>(): kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker> // love.forte.simbot.core.event.impl/SimpleEventInterceptors.dispatchInterceptors.<get-dispatchInterceptors>|<get-dispatchInterceptors>(){}[0]
+    final val interceptors // love.forte.simbot.core.event.impl/SimpleEventInterceptors.interceptors|{}interceptors[0]
+        final fun <get-interceptors>(): kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker> // love.forte.simbot.core.event.impl/SimpleEventInterceptors.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
+
+    final fun component1(): kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker> // love.forte.simbot.core.event.impl/SimpleEventInterceptors.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker> // love.forte.simbot.core.event.impl/SimpleEventInterceptors.component2|component2(){}[0]
+    final fun copy(kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker> = ..., kotlin.collections/List<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker> = ...): love.forte.simbot.core.event.impl/SimpleEventInterceptors // love.forte.simbot.core.event.impl/SimpleEventInterceptors.copy|copy(kotlin.collections.List<love.forte.simbot.core.event.impl.SimpleEventInterceptorInvoker>;kotlin.collections.List<love.forte.simbot.core.event.impl.SimpleEventDispatchInterceptorInvoker>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.core.event.impl/SimpleEventInterceptors.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventInterceptors.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.core.event.impl/SimpleEventInterceptors.toString|toString(){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder { // love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder|null[0]
+    constructor <init>() // love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder.<init>|<init>(){}[0]
+
+    final fun addDispatchInterceptor(love.forte.simbot.event/EventDispatchInterceptor, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventDispatchInterceptorRegistrationProperties>? = ...) // love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder.addDispatchInterceptor|addDispatchInterceptor(love.forte.simbot.event.EventDispatchInterceptor;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.event.EventDispatchInterceptorRegistrationProperties>?){}[0]
+    final fun addInterceptor(love.forte.simbot.event/EventInterceptor, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventInterceptorRegistrationProperties>? = ...) // love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder.addInterceptor|addInterceptor(love.forte.simbot.event.EventInterceptor;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.event.EventInterceptorRegistrationProperties>?){}[0]
+    final fun build(): love.forte.simbot.core.event.impl/SimpleEventInterceptors // love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder.build|build(){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventInterceptorsInvoker { // love.forte.simbot.core.event.impl/SimpleEventInterceptorsInvoker|null[0]
+    constructor <init>(kotlin.collections/Iterable<love.forte.simbot.core.event.impl/SimpleEventInterceptorInvoker>) // love.forte.simbot.core.event.impl/SimpleEventInterceptorsInvoker.<init>|<init>(kotlin.collections.Iterable<love.forte.simbot.core.event.impl.SimpleEventInterceptorInvoker>){}[0]
+
+    final suspend fun invoke(love.forte.simbot.event/EventListenerContext, kotlin.coroutines/SuspendFunction1<love.forte.simbot.event/EventListenerContext, love.forte.simbot.event/EventResult>): love.forte.simbot.event/EventResult // love.forte.simbot.core.event.impl/SimpleEventInterceptorsInvoker.invoke|invoke(love.forte.simbot.event.EventListenerContext;kotlin.coroutines.SuspendFunction1<love.forte.simbot.event.EventListenerContext,love.forte.simbot.event.EventResult>){}[0]
+}
+
+final class love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl : love.forte.simbot.core.event/SimpleEventListenerRegistrationProperties { // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl|null[0]
+    constructor <init>(love.forte.simbot.core.event.impl/SimpleEventInterceptorsBuilder) // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl.<init>|<init>(love.forte.simbot.core.event.impl.SimpleEventInterceptorsBuilder){}[0]
+
+    final var priority // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl.priority|{}priority[0]
+        final fun <get-priority>(): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl.priority.<get-priority>|<get-priority>(){}[0]
+        final fun <set-priority>(kotlin/Int) // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl.priority.<set-priority>|<set-priority>(kotlin.Int){}[0]
+
+    final fun addInterceptor(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventInterceptorRegistrationProperties>?, love.forte.simbot.event/EventInterceptor) // love.forte.simbot.core.event.impl/SimpleEventListenerRegistrationPropertiesImpl.addInterceptor|addInterceptor(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.event.EventInterceptorRegistrationProperties>?;love.forte.simbot.event.EventInterceptor){}[0]
+}
+
+open class love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl : love.forte.simbot.core.event/SimpleEventDispatchInterceptorRegistrationProperties { // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl|null[0]
+    constructor <init>() // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl.<init>|<init>(){}[0]
+
+    open var priority // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl.priority|{}priority[0]
+        open fun <get-priority>(): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl.priority.<get-priority>|<get-priority>(){}[0]
+        open fun <set-priority>(kotlin/Int) // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorRegistrationPropertiesImpl.priority.<set-priority>|<set-priority>(kotlin.Int){}[0]
+}
+
+open class love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl : love.forte.simbot.core.event/SimpleEventDispatcherConfiguration, love.forte.simbot.event/AbstractEventDispatcherConfiguration { // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl|null[0]
+    constructor <init>() // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl.<init>|<init>(){}[0]
+
+    open val dispatchInterceptors // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl.dispatchInterceptors|{}dispatchInterceptors[0]
+        open fun <get-dispatchInterceptors>(): kotlin.collections/MutableList<kotlin/Pair<love.forte.simbot.event/EventDispatchInterceptor, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventDispatchInterceptorRegistrationProperties>?>> // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl.dispatchInterceptors.<get-dispatchInterceptors>|<get-dispatchInterceptors>(){}[0]
+    open val interceptors // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl.interceptors|{}interceptors[0]
+        open fun <get-interceptors>(): kotlin.collections/MutableList<kotlin/Pair<love.forte.simbot.event/EventInterceptor, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.event/EventInterceptorRegistrationProperties>?>> // love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
+}
+
+open class love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl : love.forte.simbot.core.event/SimpleEventInterceptorRegistrationProperties { // love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl|null[0]
+    constructor <init>() // love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl.<init>|<init>(){}[0]
+
+    open var priority // love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl.priority|{}priority[0]
+        open fun <get-priority>(): kotlin/Int // love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl.priority.<get-priority>|<get-priority>(){}[0]
+        open fun <set-priority>(kotlin/Int) // love.forte.simbot.core.event.impl/SimpleEventInterceptorRegistrationPropertiesImpl.priority.<set-priority>|<set-priority>(kotlin.Int){}[0]
+}
+
+final object love.forte.simbot.core.application/Simple : love.forte.simbot.application/ApplicationFactory<love.forte.simbot.core.application/SimpleApplication, love.forte.simbot.core.application/SimpleApplicationBuilder, love.forte.simbot.core.application/SimpleApplicationLauncher, love.forte.simbot.application/ApplicationEventRegistrar, love.forte.simbot.core.event/SimpleEventDispatcherConfiguration> { // love.forte.simbot.core.application/Simple|null[0]
+    final fun create(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.application/ApplicationFactoryConfigurer<love.forte.simbot.core.application/SimpleApplicationBuilder, love.forte.simbot.application/ApplicationEventRegistrar, love.forte.simbot.core.event/SimpleEventDispatcherConfiguration>>?): love.forte.simbot.core.application/SimpleApplicationLauncher // love.forte.simbot.core.application/Simple.create|create(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.application.ApplicationFactoryConfigurer<love.forte.simbot.core.application.SimpleApplicationBuilder,love.forte.simbot.application.ApplicationEventRegistrar,love.forte.simbot.core.event.SimpleEventDispatcherConfiguration>>?){}[0]
+}
+
+final fun (love.forte.simbot.core.event.impl/SimpleEventDispatcherConfigurationImpl).love.forte.simbot.core.event.impl/resolveInterceptors(): love.forte.simbot.core.event.impl/SimpleEventInterceptors // love.forte.simbot.core.event.impl/resolveInterceptors|resolveInterceptors@love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl(){}[0]
+final suspend inline fun love.forte.simbot.core.application/launchSimpleApplication(crossinline kotlin/Function1<love.forte.simbot.application/ApplicationFactoryConfigurer<love.forte.simbot.core.application/SimpleApplicationBuilder, love.forte.simbot.application/ApplicationEventRegistrar, love.forte.simbot.core.event/SimpleEventDispatcherConfiguration>, kotlin/Unit> = ...): love.forte.simbot.core.application/SimpleApplication // love.forte.simbot.core.application/launchSimpleApplication|launchSimpleApplication(kotlin.Function1<love.forte.simbot.application.ApplicationFactoryConfigurer<love.forte.simbot.core.application.SimpleApplicationBuilder,love.forte.simbot.application.ApplicationEventRegistrar,love.forte.simbot.core.event.SimpleEventDispatcherConfiguration>,kotlin.Unit>){}[0]

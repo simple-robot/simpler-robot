@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -41,12 +41,12 @@ import kotlin.coroutines.CoroutineContext
  *
  * @see blockInSession
  */
-public fun interface BlockInSession<T, R> : InSession<T, R> {
-    override suspend fun ContinuousSessionReceiver<T, R>.invoke() {
+public fun interface BlockInSession<C, T, R> : InSession<C, T, R> {
+    override suspend fun ContinuousSessionReceiver<C, T, R>.invoke() {
         runInterruptible(Dispatchers.IO) { block(this) }
     }
 
-    public fun block(receiver: ContinuousSessionReceiver<T, R>)
+    public fun block(receiver: ContinuousSessionReceiver<C, T, R>)
 }
 
 /**
@@ -57,7 +57,10 @@ public fun interface BlockInSession<T, R> : InSession<T, R> {
 @JvmName("block")
 @JvmOverloads
 @Api4J
-public fun <T, R> blockInSession(context: CoroutineContext? = null, function: BlockInSession<T, R>): InSession<T, R> {
+public fun <C, T, R> blockInSession(
+    context: CoroutineContext? = null,
+    function: BlockInSession<C, T, R>
+): InSession<C, T, R> {
     if (context == null) return function
 
     return InSession { runInterruptible(context) { function.block(this) } }
@@ -69,12 +72,12 @@ public fun <T, R> blockInSession(context: CoroutineContext? = null, function: Bl
  *
  * @see asyncInSession
  */
-public fun interface AsyncInSession<T, R> : InSession<T, R> {
-    override suspend fun ContinuousSessionReceiver<T, R>.invoke() {
+public fun interface AsyncInSession<C, T, R> : InSession<C, T, R> {
+    override suspend fun ContinuousSessionReceiver<C, T, R>.invoke() {
         async(this).await()
     }
 
-    public fun async(receiver: ContinuousSessionReceiver<T, R>): CompletionStage<Void?>
+    public fun async(receiver: ContinuousSessionReceiver<C, T, R>): CompletionStage<Void?>
 }
 
 /**
@@ -82,7 +85,7 @@ public fun interface AsyncInSession<T, R> : InSession<T, R> {
  */
 @JvmName("async")
 @Api4J
-public fun <T, R> asyncInSession(function: AsyncInSession<T, R>): InSession<T, R> = function
+public fun <C, T, R> asyncInSession(function: AsyncInSession<C, T, R>): InSession<C, T, R> = function
 
 /**
  * 以响应式风格 ([Mono]) 的API构造 [InSession] 实例。
@@ -95,12 +98,12 @@ public fun <T, R> asyncInSession(function: AsyncInSession<T, R>): InSession<T, R
  * @see Mono
  * @see monoInSession
  */
-public fun interface MonoInSession<T, R> : InSession<T, R> {
-    override suspend fun ContinuousSessionReceiver<T, R>.invoke() {
+public fun interface MonoInSession<C, T, R> : InSession<C, T, R> {
+    override suspend fun ContinuousSessionReceiver<C, T, R>.invoke() {
         mono(this).awaitSingleOrNull()
     }
 
-    public fun mono(receiver: ContinuousSessionReceiver<T, R>): Mono<Void?>
+    public fun mono(receiver: ContinuousSessionReceiver<C, T, R>): Mono<Void?>
 }
 
 /**
@@ -108,4 +111,4 @@ public fun interface MonoInSession<T, R> : InSession<T, R> {
  */
 @JvmName("mono")
 @Api4J
-public fun <T, R> monoInSession(function: MonoInSession<T, R>): InSession<T, R> = function
+public fun <C, T, R> monoInSession(function: MonoInSession<C, T, R>): InSession<C, T, R> = function
