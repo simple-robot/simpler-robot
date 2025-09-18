@@ -369,6 +369,7 @@ public final class love/forte/simbot/common/id/IntID : love/forte/simbot/common/
 	public fun equalsExact (Ljava/lang/Object;)Z
 	public final fun getValue ()I
 	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/IntID;
 	public fun toByte ()B
 	public fun toDouble ()D
 	public fun toFloat ()F
@@ -380,6 +381,7 @@ public final class love/forte/simbot/common/id/IntID : love/forte/simbot/common/
 }
 
 public final class love/forte/simbot/common/id/IntID$Companion {
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/IntID;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public final fun valueOf (I)Llove/forte/simbot/common/id/IntID;
 }
@@ -393,6 +395,7 @@ public final class love/forte/simbot/common/id/LongID : love/forte/simbot/common
 	public fun equalsExact (Ljava/lang/Object;)Z
 	public final fun getValue ()J
 	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/LongID;
 	public fun toByte ()B
 	public fun toDouble ()D
 	public fun toFloat ()F
@@ -404,6 +407,7 @@ public final class love/forte/simbot/common/id/LongID : love/forte/simbot/common
 }
 
 public final class love/forte/simbot/common/id/LongID$Companion {
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/LongID;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public final fun valueOf (J)Llove/forte/simbot/common/id/LongID;
 }
@@ -433,9 +437,15 @@ public abstract class love/forte/simbot/common/id/NumericalID : love/forte/simbo
 }
 
 public final class love/forte/simbot/common/id/NumericalID$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class love/forte/simbot/common/id/SignedNumericID : love/forte/simbot/common/id/NumericalID {
+	public static final field Companion Llove/forte/simbot/common/id/SignedNumericID$Companion;
+}
+
+public final class love/forte/simbot/common/id/SignedNumericID$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/common/id/StringID : love/forte/simbot/common/id/ID {
@@ -478,6 +488,7 @@ public final class love/forte/simbot/common/id/UIntID : love/forte/simbot/common
 	public fun equalsExact (Ljava/lang/Object;)Z
 	public final fun getValue ()I
 	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/UIntID;
 	public fun toByte ()B
 	public fun toDouble ()D
 	public fun toFloat ()F
@@ -490,6 +501,7 @@ public final class love/forte/simbot/common/id/UIntID : love/forte/simbot/common
 }
 
 public final class love/forte/simbot/common/id/UIntID$Companion {
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/UIntID;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public final fun valueOf (I)Llove/forte/simbot/common/id/UIntID;
 }
@@ -503,6 +515,7 @@ public final class love/forte/simbot/common/id/ULongID : love/forte/simbot/commo
 	public fun equalsExact (Ljava/lang/Object;)Z
 	public final fun getValue ()J
 	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/ULongID;
 	public fun toByte ()B
 	public fun toDouble ()D
 	public fun toFloat ()F
@@ -515,6 +528,7 @@ public final class love/forte/simbot/common/id/ULongID : love/forte/simbot/commo
 }
 
 public final class love/forte/simbot/common/id/ULongID$Companion {
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/common/id/ULongID;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public final fun valueOf (J)Llove/forte/simbot/common/id/ULongID;
 }
@@ -578,6 +592,11 @@ public final class love/forte/simbot/common/id/UUIDsKt {
 }
 
 public abstract class love/forte/simbot/common/id/UnsignedNumericID : love/forte/simbot/common/id/NumericalID {
+	public static final field Companion Llove/forte/simbot/common/id/UnsignedNumericID$Companion;
+}
+
+public final class love/forte/simbot/common/id/UnsignedNumericID$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/common/serialization/Base64BytesSerializer : kotlinx/serialization/KSerializer {

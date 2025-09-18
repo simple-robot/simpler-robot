@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -126,5 +126,113 @@ class IDTests {
             Json.decodeFromString(UUID.StructureSerializer, """{"leastSignificantBits":$lv}""")
         }
         assertIs<MissingFieldException>(err)
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun signedNumericIDEncodeTests() {
+        assertEquals(
+            expected = "1",
+            actual = Json.encodeToString(SignedNumericID.serializer(), 1.ID)
+        )
+        assertEquals(
+            expected = "${Long.MAX_VALUE}",
+            actual = Json.encodeToString(SignedNumericID.serializer(), Long.MAX_VALUE.ID)
+        )
+        assertEquals(
+            expected = "${Int.MAX_VALUE}",
+            actual = Json.encodeToString(SignedNumericID.serializer(), Int.MAX_VALUE.ID)
+        )
+        assertEquals(
+            expected = "-1",
+            actual = Json.encodeToString(SignedNumericID.serializer(), (-1).ID)
+        )
+        assertEquals(
+            expected = "${Long.MIN_VALUE}",
+            actual = Json.encodeToString(SignedNumericID.serializer(), Long.MIN_VALUE.ID)
+        )
+        assertEquals(
+            expected = "${Int.MIN_VALUE}",
+            actual = Json.encodeToString(SignedNumericID.serializer(), Int.MIN_VALUE.ID)
+        )
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun signedNumericIDDecodeTests() {
+        Json.decodeFromString(SignedNumericID.serializer(), "1").let {
+            assertIs<LongID>(it)
+            assertEquals(1L, it.value)
+        }
+        Json.decodeFromString(SignedNumericID.serializer(), "${Long.MAX_VALUE}").let {
+            assertIs<LongID>(it)
+            assertEquals(Long.MAX_VALUE, it.value)
+        }
+        Json.decodeFromString(SignedNumericID.serializer(), "${Int.MAX_VALUE}").let {
+            assertIs<LongID>(it)
+            assertEquals(Int.MAX_VALUE.toLong(), it.value)
+        }
+        Json.decodeFromString(SignedNumericID.serializer(), "-1").let {
+            assertIs<LongID>(it)
+            assertEquals(-1L, it.value)
+        }
+        Json.decodeFromString(SignedNumericID.serializer(), "${Long.MIN_VALUE}").let {
+            assertIs<LongID>(it)
+            assertEquals(Long.MIN_VALUE, it.value)
+        }
+        Json.decodeFromString(SignedNumericID.serializer(), "${Int.MIN_VALUE}").let {
+            assertIs<LongID>(it)
+            assertEquals(Int.MIN_VALUE.toLong(), it.value)
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun unsignedNumericIDEncodeTests() {
+        assertEquals(
+            expected = "1",
+            actual = Json.encodeToString(UnsignedNumericID.serializer(), 1u.ID)
+        )
+        assertEquals(
+            expected = "${ULong.MAX_VALUE}",
+            actual = Json.encodeToString(UnsignedNumericID.serializer(), ULong.MAX_VALUE.ID)
+        )
+        assertEquals(
+            expected = "${UInt.MAX_VALUE}",
+            actual = Json.encodeToString(UnsignedNumericID.serializer(), UInt.MAX_VALUE.ID)
+        )
+        assertEquals(
+            expected = "${ULong.MIN_VALUE}",
+            actual = Json.encodeToString(UnsignedNumericID.serializer(), ULong.MIN_VALUE.ID)
+        )
+        assertEquals(
+            expected = "${UInt.MIN_VALUE}",
+            actual = Json.encodeToString(UnsignedNumericID.serializer(), UInt.MIN_VALUE.ID)
+        )
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun unsignedNumericIDDecodeTests() {
+        Json.decodeFromString(UnsignedNumericID.serializer(), "1").let {
+            assertIs<ULongID>(it)
+            assertEquals(1uL, it.value)
+        }
+        Json.decodeFromString(UnsignedNumericID.serializer(), "${ULong.MAX_VALUE}").let {
+            assertIs<ULongID>(it)
+            assertEquals(ULong.MAX_VALUE, it.value)
+        }
+        Json.decodeFromString(UnsignedNumericID.serializer(), "${UInt.MAX_VALUE}").let {
+            assertIs<ULongID>(it)
+            assertEquals(UInt.MAX_VALUE.toULong(), it.value)
+        }
+        Json.decodeFromString(UnsignedNumericID.serializer(), "${ULong.MIN_VALUE}").let {
+            assertIs<ULongID>(it)
+            assertEquals(ULong.MIN_VALUE, it.value)
+        }
+        Json.decodeFromString(UnsignedNumericID.serializer(), "${UInt.MIN_VALUE}").let {
+            assertIs<ULongID>(it)
+            assertEquals(UInt.MIN_VALUE.toULong(), it.value)
+        }
     }
 }
