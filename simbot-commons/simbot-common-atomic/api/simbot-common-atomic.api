@@ -94,6 +94,12 @@ public final class love/forte/simbot/common/atomic/Atomics {
 	public static final fun plusAssign (Llove/forte/simbot/common/atomic/AtomicLong;J)V
 	public static final fun plusAssign-2TYgG_w (Llove/forte/simbot/common/atomic/AtomicULong;J)V
 	public static final fun plusAssign-Qn1smSk (Llove/forte/simbot/common/atomic/AtomicUInt;I)V
+	public static final fun toKotlinAtomicBoolean (Llove/forte/simbot/common/atomic/AtomicBoolean;)Ljava/util/concurrent/atomic/AtomicBoolean;
+	public static final fun toKotlinAtomicInt (Llove/forte/simbot/common/atomic/AtomicInt;)Ljava/util/concurrent/atomic/AtomicInteger;
+	public static final fun toKotlinAtomicInt (Llove/forte/simbot/common/atomic/AtomicUInt;)Ljava/util/concurrent/atomic/AtomicInteger;
+	public static final fun toKotlinAtomicLong (Llove/forte/simbot/common/atomic/AtomicLong;)Ljava/util/concurrent/atomic/AtomicLong;
+	public static final fun toKotlinAtomicLong (Llove/forte/simbot/common/atomic/AtomicULong;)Ljava/util/concurrent/atomic/AtomicLong;
+	public static final fun toKotlinAtomicReference (Llove/forte/simbot/common/atomic/AtomicRef;)Ljava/util/concurrent/atomic/AtomicReference;
 	public static final fun update (Llove/forte/simbot/common/atomic/AtomicInt;Lkotlin/jvm/functions/Function1;)I
 	public static final fun update (Llove/forte/simbot/common/atomic/AtomicLong;Lkotlin/jvm/functions/Function1;)J
 	public static final fun update (Llove/forte/simbot/common/atomic/AtomicRef;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
