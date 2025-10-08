@@ -10,7 +10,7 @@ ktor = "2.3.13"
 slf4j = "2.0.17"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "2.2.20-2.0.3"
+ksp = "2.2.20-2.0.4"
 # https://square.github.io/kotlinpoet/
 # TODO to codeGentle
 kotlinPoet = "2.1.0"
