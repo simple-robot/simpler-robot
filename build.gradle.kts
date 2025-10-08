@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 plugins {
     idea
     id("org.jetbrains.dokka")
-    id("com.github.gmazzo.buildconfig") version "5.6.7" apply false
+    id("com.github.gmazzo.buildconfig") version "5.7.0" apply false
     kotlin("multiplatform") apply false
     kotlin("jvm") apply false
     alias(libs.plugins.ksp) apply false
