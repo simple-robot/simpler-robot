@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2021-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -81,7 +81,11 @@ private sealed class KeywordBinder(val name: String, val paramType: KClass<*>?) 
                 context.plainText ?: return Result.failure(BindException("Current event's textContent is null."))
 
             for (keyword in keywordList) {
-                val param = keyword.regexValueMatcher.getParam(name, textContent)
+                val param = if (keyword.isStrict) {
+                    keyword.regexValueMatcher.getParam(name, textContent)
+                } else {
+                    keyword.regexValueMatcher.findParam(name, textContent)
+                }
                 if (param != null) {
                     return Result.success(convert(param))
                 }
@@ -97,7 +101,11 @@ private sealed class KeywordBinder(val name: String, val paramType: KClass<*>?) 
                 ?: return Result.success(null)
             val textContent = context.plainText ?: return Result.success(null)
             for (keyword in keywords) {
-                val param = keyword.regexValueMatcher.getParam(name, textContent)
+                val param = if (keyword.isStrict) {
+                    keyword.regexValueMatcher.getParam(name, textContent)
+                } else {
+                    keyword.regexValueMatcher.findParam(name, textContent)
+                }
                 if (param != null) return Result.success(convert(param))
             }
 

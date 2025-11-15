@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,6 @@
 package love.forte.simbot.quantcat.common.annotations
 
 import love.forte.simbot.common.PriorityConstant
-import love.forte.simbot.quantcat.common.annotations.Filter.Targets
 import love.forte.simbot.quantcat.common.filter.*
 
 /**
@@ -82,10 +81,14 @@ public annotation class Filter(
      * 针对匹配目标所使用的匹配规则。
      * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
      */
-    val matchType: MatchType = MatchType.REGEX_MATCHES
+    val matchType: MatchType = MatchType.REGEX_MATCHES,
 
-    // TODO by?
-
+    /**
+     * 如果 [matchType] 是与正则匹配相关的类型，则 [regexOptions] 会作为正则对象 [Regex] 的 [Regex.options] 提供。
+     *
+     * @since 4.15.0
+     */
+    val regexOptions: Array<RegexOption> = []
 ) {
 
     /**
@@ -234,6 +237,7 @@ public annotation class Filter(
     }
 }
 
+@OptIn(FilterPropertiesConstructor::class)
 public fun Filter.toProperties(): FilterProperties =
     FilterProperties(
         value = value,
@@ -242,8 +246,10 @@ public fun Filter.toProperties(): FilterProperties =
         targets = targets.map { it.toProperties() },
         ifNullPass = ifNullPass,
         matchType = matchType,
+        regexOptions = regexOptions.toSet()
     )
 
+@OptIn(FilterPropertiesConstructor::class)
 public fun Filter.Targets.toProperties(): FilterTargetsProperties =
     FilterTargetsProperties(
         components = components.toList(),

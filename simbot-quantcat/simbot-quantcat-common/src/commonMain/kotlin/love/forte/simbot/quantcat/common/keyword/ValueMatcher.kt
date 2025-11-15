@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ package love.forte.simbot.quantcat.common.keyword
  * 动态参数的规则为 `{{name[,regex]}}`, 或者原生的正则分组 `(?<name>regex)`
  *
  * @author forte
-</name> */
+ */
 public interface ValueMatcher {
     /**
      * 获取原始字符串
@@ -65,11 +65,31 @@ public interface ValueMatcher {
     /**
      * 从一段匹配的文本中提取出需要的参数。
      *
-     *
-     * 此文本需要符合正则表达式, 否则得到null。
+     * 此文本需要符合正则表达式, 否则会得到一个空的 [MatchParameters]。
      *
      * @param text 匹配文本
-     * @return 参数提取器。
+     * @return 参数提取器
      */
     public fun getParameters(text: String?): MatchParameters
+
+    /**
+     * 根据变量名称寻找一个动态参数。此文本需要至少存在部分符合正则表达式。
+     *
+     * 此接口函数为了确保兼容性默认实现同 [getParam], 实现者需要重写此方法。
+     *
+     * @since 4.15.0
+     */
+    public fun findParam(name: String, text: String): String? = getParam(name, text)
+
+    /**
+     * 从一段匹配的文本中提取出需要的参数。
+     *
+     * 此文本需要至少存在部分符合正则表达式, 否则会得到一个空的 [MatchParameters]。
+     *
+     * @param text 匹配文本
+     * @return 参数提取器
+     *
+     * @since 4.15.0
+     */
+    public fun findParameters(text: String?): MatchParameters = getParameters(text)
 }

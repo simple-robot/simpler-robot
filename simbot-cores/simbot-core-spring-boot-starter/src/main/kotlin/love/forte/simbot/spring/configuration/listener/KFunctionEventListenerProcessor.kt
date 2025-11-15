@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -450,7 +450,7 @@ private fun resolveBinderFactoryInstance(
 
     val instance = try {
         applicationContext.getBean(type.java)
-    } catch (ignore: NoSuchBeanDefinitionException) {
+    } catch (_: NoSuchBeanDefinitionException) {
         null
     }
 
@@ -532,11 +532,19 @@ private fun keywordMatcher(listenerAttributeMap: MutableAttributeMap, fp: Filter
     if (value.isEmpty()) return null
 
     val matchType = fp.matchType
-    val keyword = if (value.isEmpty()) EmptyKeyword else SimpleKeyword(value, matchType.isPlainText)
+    val options = fp.regexOptions
+    val keyword = if (value.isEmpty()) {
+        EmptyKeyword
+    } else {
+        SimpleKeyword(
+            text = value,
+            isPlainText = matchType.isPlainText,
+            regexOptions = options,
+            isStrict = matchType.isStrict
+        )
+    }
 
     listenerAttributeMap.computeIfAbsent(KeywordListAttribute) { CopyOnWriteArrayList() }.add(keyword)
-
-    listenerAttributeMap[KeywordListAttribute]
 
     val ifNullPass = fp.ifNullPass
 

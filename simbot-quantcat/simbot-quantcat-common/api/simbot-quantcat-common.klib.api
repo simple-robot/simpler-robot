@@ -41,7 +41,7 @@ open annotation class love.forte.simbot.quantcat.common.annotations/ContentTrim 
 }
 
 open annotation class love.forte.simbot.quantcat.common.annotations/Filter : kotlin/Annotation { // love.forte.simbot.quantcat.common.annotations/Filter|null[0]
-    constructor <init>(kotlin/String = ..., love.forte.simbot.quantcat.common.filter/FilterMode = ..., kotlin/Int = ..., kotlin/Array<love.forte.simbot.quantcat.common.annotations/Filter.Targets> = ..., kotlin/Boolean = ..., love.forte.simbot.quantcat.common.filter/MatchType = ...) // love.forte.simbot.quantcat.common.annotations/Filter.<init>|<init>(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.Array<love.forte.simbot.quantcat.common.annotations.Filter.Targets>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType){}[0]
+    constructor <init>(kotlin/String = ..., love.forte.simbot.quantcat.common.filter/FilterMode = ..., kotlin/Int = ..., kotlin/Array<love.forte.simbot.quantcat.common.annotations/Filter.Targets> = ..., kotlin/Boolean = ..., love.forte.simbot.quantcat.common.filter/MatchType = ..., kotlin/Array<kotlin.text/RegexOption> = ...) // love.forte.simbot.quantcat.common.annotations/Filter.<init>|<init>(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.Array<love.forte.simbot.quantcat.common.annotations.Filter.Targets>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType;kotlin.Array<kotlin.text.RegexOption>){}[0]
 
     final val ifNullPass // love.forte.simbot.quantcat.common.annotations/Filter.ifNullPass|{}ifNullPass[0]
         final fun <get-ifNullPass>(): kotlin/Boolean // love.forte.simbot.quantcat.common.annotations/Filter.ifNullPass.<get-ifNullPass>|<get-ifNullPass>(){}[0]
@@ -51,6 +51,8 @@ open annotation class love.forte.simbot.quantcat.common.annotations/Filter : kot
         final fun <get-mode>(): love.forte.simbot.quantcat.common.filter/FilterMode // love.forte.simbot.quantcat.common.annotations/Filter.mode.<get-mode>|<get-mode>(){}[0]
     final val priority // love.forte.simbot.quantcat.common.annotations/Filter.priority|{}priority[0]
         final fun <get-priority>(): kotlin/Int // love.forte.simbot.quantcat.common.annotations/Filter.priority.<get-priority>|<get-priority>(){}[0]
+    final val regexOptions // love.forte.simbot.quantcat.common.annotations/Filter.regexOptions|{}regexOptions[0]
+        final fun <get-regexOptions>(): kotlin/Array<kotlin.text/RegexOption> // love.forte.simbot.quantcat.common.annotations/Filter.regexOptions.<get-regexOptions>|<get-regexOptions>(){}[0]
     final val targets // love.forte.simbot.quantcat.common.annotations/Filter.targets|{}targets[0]
         final fun <get-targets>(): kotlin/Array<love.forte.simbot.quantcat.common.annotations/Filter.Targets> // love.forte.simbot.quantcat.common.annotations/Filter.targets.<get-targets>|<get-targets>(){}[0]
     final val value // love.forte.simbot.quantcat.common.annotations/Filter.value|{}value[0]
@@ -123,6 +125,10 @@ open annotation class love.forte.simbot.quantcat.common.annotations/MultiFilter 
         final fun <get-matchType>(): love.forte.simbot.quantcat.common.filter/MultiFilterMatchType // love.forte.simbot.quantcat.common.annotations/MultiFilter.matchType.<get-matchType>|<get-matchType>(){}[0]
 }
 
+open annotation class love.forte.simbot.quantcat.common.filter/FilterPropertiesConstructor : kotlin/Annotation { // love.forte.simbot.quantcat.common.filter/FilterPropertiesConstructor|null[0]
+    constructor <init>() // love.forte.simbot.quantcat.common.filter/FilterPropertiesConstructor.<init>|<init>(){}[0]
+}
+
 final enum class love.forte.simbot.quantcat.common.filter/FilterMode : kotlin/Enum<love.forte.simbot.quantcat.common.filter/FilterMode> { // love.forte.simbot.quantcat.common.filter/FilterMode|null[0]
     enum entry INTERCEPTOR // love.forte.simbot.quantcat.common.filter/FilterMode.INTERCEPTOR|null[0]
     enum entry IN_LISTENER // love.forte.simbot.quantcat.common.filter/FilterMode.IN_LISTENER|null[0]
@@ -147,6 +153,8 @@ final enum class love.forte.simbot.quantcat.common.filter/MatchType : kotlin/Enu
         final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.quantcat.common.filter/MatchType> // love.forte.simbot.quantcat.common.filter/MatchType.entries.<get-entries>|<get-entries>#static(){}[0]
     final val isPlainText // love.forte.simbot.quantcat.common.filter/MatchType.isPlainText|{}isPlainText[0]
         final fun <get-isPlainText>(): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/MatchType.isPlainText.<get-isPlainText>|<get-isPlainText>(){}[0]
+    final val isStrict // love.forte.simbot.quantcat.common.filter/MatchType.isStrict|{}isStrict[0]
+        final fun <get-isStrict>(): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/MatchType.isStrict.<get-isStrict>|<get-isStrict>(){}[0]
 
     final fun match(love.forte.simbot.quantcat.common.keyword/Keyword, kotlin/String): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/MatchType.match|match(love.forte.simbot.quantcat.common.keyword.Keyword;kotlin.String){}[0]
     final fun valueOf(kotlin/String): love.forte.simbot.quantcat.common.filter/MatchType // love.forte.simbot.quantcat.common.filter/MatchType.valueOf|valueOf#static(kotlin.String){}[0]
@@ -221,6 +229,8 @@ abstract interface love.forte.simbot.quantcat.common.keyword/Keyword { // love.f
         abstract fun <get-regexValueMatcher>(): love.forte.simbot.quantcat.common.keyword/ValueMatcher // love.forte.simbot.quantcat.common.keyword/Keyword.regexValueMatcher.<get-regexValueMatcher>|<get-regexValueMatcher>(){}[0]
     abstract val text // love.forte.simbot.quantcat.common.keyword/Keyword.text|{}text[0]
         abstract fun <get-text>(): kotlin/String // love.forte.simbot.quantcat.common.keyword/Keyword.text.<get-text>|<get-text>(){}[0]
+    open val isStrict // love.forte.simbot.quantcat.common.keyword/Keyword.isStrict|{}isStrict[0]
+        open fun <get-isStrict>(): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/Keyword.isStrict.<get-isStrict>|<get-isStrict>(){}[0]
 }
 
 abstract interface love.forte.simbot.quantcat.common.keyword/MatchParameters { // love.forte.simbot.quantcat.common.keyword/MatchParameters|null[0]
@@ -236,6 +246,8 @@ abstract interface love.forte.simbot.quantcat.common.keyword/ValueMatcher { // l
     abstract fun getParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/ValueMatcher.getParam|getParam(kotlin.String;kotlin.String){}[0]
     abstract fun getParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/ValueMatcher.getParameters|getParameters(kotlin.String?){}[0]
     abstract fun matches(kotlin/String): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/ValueMatcher.matches|matches(kotlin.String){}[0]
+    open fun findParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/ValueMatcher.findParam|findParam(kotlin.String;kotlin.String){}[0]
+    open fun findParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/ValueMatcher.findParameters|findParameters(kotlin.String?){}[0]
 }
 
 abstract class love.forte.simbot.quantcat.common.listener/FunctionalEventListener : love.forte.simbot.event/EventListener { // love.forte.simbot.quantcat.common.listener/FunctionalEventListener|null[0]
@@ -253,6 +265,7 @@ final class love.forte.simbot.quantcat.common.convert/ConvertException : kotlin/
 
 final class love.forte.simbot.quantcat.common.filter/FilterProperties { // love.forte.simbot.quantcat.common.filter/FilterProperties|null[0]
     constructor <init>(kotlin/String, love.forte.simbot.quantcat.common.filter/FilterMode, kotlin/Int, kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties>, kotlin/Boolean, love.forte.simbot.quantcat.common.filter/MatchType) // love.forte.simbot.quantcat.common.filter/FilterProperties.<init>|<init>(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.collections.List<love.forte.simbot.quantcat.common.filter.FilterTargetsProperties>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType){}[0]
+    constructor <init>(kotlin/String, love.forte.simbot.quantcat.common.filter/FilterMode, kotlin/Int, kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties>, kotlin/Boolean, love.forte.simbot.quantcat.common.filter/MatchType, kotlin.collections/Set<kotlin.text/RegexOption>) // love.forte.simbot.quantcat.common.filter/FilterProperties.<init>|<init>(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.collections.List<love.forte.simbot.quantcat.common.filter.FilterTargetsProperties>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType;kotlin.collections.Set<kotlin.text.RegexOption>){}[0]
 
     final val ifNullPass // love.forte.simbot.quantcat.common.filter/FilterProperties.ifNullPass|{}ifNullPass[0]
         final fun <get-ifNullPass>(): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/FilterProperties.ifNullPass.<get-ifNullPass>|<get-ifNullPass>(){}[0]
@@ -262,6 +275,8 @@ final class love.forte.simbot.quantcat.common.filter/FilterProperties { // love.
         final fun <get-mode>(): love.forte.simbot.quantcat.common.filter/FilterMode // love.forte.simbot.quantcat.common.filter/FilterProperties.mode.<get-mode>|<get-mode>(){}[0]
     final val priority // love.forte.simbot.quantcat.common.filter/FilterProperties.priority|{}priority[0]
         final fun <get-priority>(): kotlin/Int // love.forte.simbot.quantcat.common.filter/FilterProperties.priority.<get-priority>|<get-priority>(){}[0]
+    final val regexOptions // love.forte.simbot.quantcat.common.filter/FilterProperties.regexOptions|{}regexOptions[0]
+        final fun <get-regexOptions>(): kotlin.collections/Set<kotlin.text/RegexOption> // love.forte.simbot.quantcat.common.filter/FilterProperties.regexOptions.<get-regexOptions>|<get-regexOptions>(){}[0]
     final val targets // love.forte.simbot.quantcat.common.filter/FilterProperties.targets|{}targets[0]
         final fun <get-targets>(): kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties> // love.forte.simbot.quantcat.common.filter/FilterProperties.targets.<get-targets>|<get-targets>(){}[0]
     final val value // love.forte.simbot.quantcat.common.filter/FilterProperties.value|{}value[0]
@@ -273,7 +288,8 @@ final class love.forte.simbot.quantcat.common.filter/FilterProperties { // love.
     final fun component4(): kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties> // love.forte.simbot.quantcat.common.filter/FilterProperties.component4|component4(){}[0]
     final fun component5(): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/FilterProperties.component5|component5(){}[0]
     final fun component6(): love.forte.simbot.quantcat.common.filter/MatchType // love.forte.simbot.quantcat.common.filter/FilterProperties.component6|component6(){}[0]
-    final fun copy(kotlin/String = ..., love.forte.simbot.quantcat.common.filter/FilterMode = ..., kotlin/Int = ..., kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties> = ..., kotlin/Boolean = ..., love.forte.simbot.quantcat.common.filter/MatchType = ...): love.forte.simbot.quantcat.common.filter/FilterProperties // love.forte.simbot.quantcat.common.filter/FilterProperties.copy|copy(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.collections.List<love.forte.simbot.quantcat.common.filter.FilterTargetsProperties>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType){}[0]
+    final fun component7(): kotlin.collections/Set<kotlin.text/RegexOption> // love.forte.simbot.quantcat.common.filter/FilterProperties.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., love.forte.simbot.quantcat.common.filter/FilterMode = ..., kotlin/Int = ..., kotlin.collections/List<love.forte.simbot.quantcat.common.filter/FilterTargetsProperties> = ..., kotlin/Boolean = ..., love.forte.simbot.quantcat.common.filter/MatchType = ..., kotlin.collections/Set<kotlin.text/RegexOption> = ...): love.forte.simbot.quantcat.common.filter/FilterProperties // love.forte.simbot.quantcat.common.filter/FilterProperties.copy|copy(kotlin.String;love.forte.simbot.quantcat.common.filter.FilterMode;kotlin.Int;kotlin.collections.List<love.forte.simbot.quantcat.common.filter.FilterTargetsProperties>;kotlin.Boolean;love.forte.simbot.quantcat.common.filter.MatchType;kotlin.collections.Set<kotlin.text.RegexOption>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.quantcat.common.filter/FilterProperties.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // love.forte.simbot.quantcat.common.filter/FilterProperties.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.quantcat.common.filter/FilterProperties.toString|toString(){}[0]
@@ -340,20 +356,29 @@ final class love.forte.simbot.quantcat.common.filter/FilterValueProperties { // 
 
 final class love.forte.simbot.quantcat.common.keyword/RegexValueMatcher : love.forte.simbot.quantcat.common.keyword/ValueMatcher { // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher|null[0]
     constructor <init>(kotlin/String, kotlin/Boolean) // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.<init>|<init>(kotlin.String;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/String, kotlin/Boolean, kotlin.collections/Set<kotlin.text/RegexOption>) // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.collections.Set<kotlin.text.RegexOption>){}[0]
 
     final val original // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.original|{}original[0]
         final fun <get-original>(): kotlin/String // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.original.<get-original>|<get-original>(){}[0]
     final val regex // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.regex|{}regex[0]
         final fun <get-regex>(): kotlin.text/Regex // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.regex.<get-regex>|<get-regex>(){}[0]
 
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.equals|equals(kotlin.Any?){}[0]
+    final fun findParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.findParam|findParam(kotlin.String;kotlin.String){}[0]
+    final fun findParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.findParameters|findParameters(kotlin.String?){}[0]
     final fun getParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.getParam|getParam(kotlin.String;kotlin.String){}[0]
     final fun getParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.getParameters|getParameters(kotlin.String?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.hashCode|hashCode(){}[0]
     final fun matches(kotlin/String): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.matches|matches(kotlin.String){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.quantcat.common.keyword/RegexValueMatcher.toString|toString(){}[0]
 }
 
 final class love.forte.simbot.quantcat.common.keyword/SimpleKeyword : love.forte.simbot.quantcat.common.keyword/Keyword { // love.forte.simbot.quantcat.common.keyword/SimpleKeyword|null[0]
     constructor <init>(kotlin/String, kotlin/Boolean = ...) // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.<init>|<init>(kotlin.String;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/String, kotlin/Boolean, kotlin.collections/Set<kotlin.text/RegexOption>, kotlin/Boolean) // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.collections.Set<kotlin.text.RegexOption>;kotlin.Boolean){}[0]
 
+    final val isStrict // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.isStrict|{}isStrict[0]
+        final fun <get-isStrict>(): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.isStrict.<get-isStrict>|<get-isStrict>(){}[0]
     final val regex // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.regex|{}regex[0]
         final fun <get-regex>(): kotlin.text/Regex // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.regex.<get-regex>|<get-regex>(){}[0]
     final val regexValueMatcher // love.forte.simbot.quantcat.common.keyword/SimpleKeyword.regexValueMatcher|{}regexValueMatcher[0]
@@ -426,6 +451,8 @@ final object love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatch
     final val regex // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.regex|{}regex[0]
         final fun <get-regex>(): kotlin.text/Regex // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.regex.<get-regex>|<get-regex>(){}[0]
 
+    final fun findParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.findParam|findParam(kotlin.String;kotlin.String){}[0]
+    final fun findParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.findParameters|findParameters(kotlin.String?){}[0]
     final fun getParam(kotlin/String, kotlin/String): kotlin/String? // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.getParam|getParam(kotlin.String;kotlin.String){}[0]
     final fun getParameters(kotlin/String?): love.forte.simbot.quantcat.common.keyword/MatchParameters // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.getParameters|getParameters(kotlin.String?){}[0]
     final fun matches(kotlin/String): kotlin/Boolean // love.forte.simbot.quantcat.common.keyword/EmptyFilterParameterMatcher.matches|matches(kotlin.String){}[0]
