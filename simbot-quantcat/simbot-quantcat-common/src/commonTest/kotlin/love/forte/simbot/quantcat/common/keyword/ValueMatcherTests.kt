@@ -91,8 +91,12 @@ class ValueMatcherTests {
         """.trimIndent()
 
         // getParam should fail (doesn't match entire text)
-        val getResult = matcher.getParam("content", multilineText)
-        assertNull(getResult)
+        // TODO JS not work here.
+        //  see https://youtrack.jetbrains.com/issue/KT-82450
+        if (!isWebPlatform) {
+            val getResult = matcher.getParam("content", multilineText)
+            assertNull(getResult)
+        }
 
         // findParam should succeed (finds matching line)
         val findResult = matcher.findParam("content", multilineText)

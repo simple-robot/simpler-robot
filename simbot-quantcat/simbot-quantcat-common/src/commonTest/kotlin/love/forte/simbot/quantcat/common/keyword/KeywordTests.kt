@@ -27,6 +27,11 @@ import love.forte.simbot.quantcat.common.filter.MatchType.*
 import kotlin.test.*
 
 /**
+ * 有些测试（正则规格）在 JS 中通过不了。
+ */
+internal expect val isWebPlatform: Boolean
+
+/**
  *
  * @author ForteScarlet
  */
@@ -199,10 +204,14 @@ class KeywordTests {
             val content = regexValueMatcher.findParam("content", "line1\nstart: important\nline3")
             assertNotNull(content)
             assertEquals("important", content)
-            
+
             // getParam should fail for non-matching entire text
-            val strictResult = regexValueMatcher.getParam("content", "line1\nstart: important\nline3")
-            assertNull(strictResult)
+            // TODO JS not work here.
+            //  see https://youtrack.jetbrains.com/issue/KT-82450
+            if (!isWebPlatform) {
+                val strictResult = regexValueMatcher.getParam("content", "line1\nstart: important\nline3")
+                assertNull(strictResult)
+            }
         }
 
         // Test parameter extraction with multiple options (IGNORE_CASE + MULTILINE)
@@ -224,32 +233,32 @@ class KeywordTests {
             assertEquals("FORTE", name)
         }
     }
-    
+
     @Test
     fun strictVsNonStrictParamExtractionTest() {
         // Strict matching requires full text match
         with(SimpleKeyword("Hello, {{name,.+}}!", false, emptySet(), isStrict = true)) {
             assertTrue(isStrict)
-            
+
             // getParam should succeed with exact match
             val name1 = regexValueMatcher.getParam("name", "Hello, World!")
             assertNotNull(name1)
             assertEquals("World", name1)
-            
+
             // getParam should fail with partial match
             val name2 = regexValueMatcher.getParam("name", "prefix Hello, World! suffix")
             assertNull(name2)
         }
-        
+
         // Non-strict matching allows partial text match
         with(SimpleKeyword("Hello, {{name,.+}}!", false, emptySet(), isStrict = false)) {
             assertFalse(isStrict)
-            
+
             // findParam should succeed with partial match
             val name1 = regexValueMatcher.findParam("name", "prefix Hello, World! suffix")
             assertNotNull(name1)
             assertEquals("World", name1)
-            
+
             // findParam also works with exact match
             val name2 = regexValueMatcher.findParam("name", "Hello, World!")
             assertNotNull(name2)
@@ -271,14 +280,14 @@ class KeywordTests {
         assertTrue(keyword2.regex.matches("Hello, World"))
         assertFalse(keyword2.regex.matches("hello"))
     }
-    
+
     @Test
     fun matchTypeStrictFlagTest() {
         // Test strict match types
         assertTrue(TEXT_EQUALS.isStrict)
         assertTrue(TEXT_EQUALS_IGNORE_CASE.isStrict)
         assertTrue(REGEX_MATCHES.isStrict)
-        
+
         // Test non-strict match types
         assertFalse(TEXT_STARTS_WITH.isStrict)
         assertFalse(TEXT_ENDS_WITH.isStrict)
