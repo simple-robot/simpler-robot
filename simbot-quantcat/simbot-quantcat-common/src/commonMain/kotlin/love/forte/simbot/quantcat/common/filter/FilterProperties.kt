@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,27 +23,53 @@
 
 package love.forte.simbot.quantcat.common.filter
 
+/**
+ * Filter properties 相关的类型的构造器应当仅由内部调用，对外不保证兼容性。
+ * @since 4.15.0
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@RequiresOptIn(message = "Filter properties 相关的类型的构造器应当仅由内部调用，对外不保证兼容性。")
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.ANNOTATION_CLASS)
+@MustBeDocumented
+public annotation class FilterPropertiesConstructor
 
 /**
  * 参考注解 `@Filter` 中的属性说明。
  *
  * @author ForteScarlet
  */
-public data class FilterProperties(
+public data class FilterProperties @FilterPropertiesConstructor public constructor(
     public val value: String,
     public val mode: FilterMode,
     public val priority: Int,
     public val targets: List<FilterTargetsProperties>,
     public val ifNullPass: Boolean,
     public val matchType: MatchType,
-)
+    public val regexOptions: Set<RegexOption>
+) {
+    /**
+     * 构造。
+     *
+     * 与 4.15.0 之前的构造兼容。
+     * @since 4.15.0
+     */
+    @FilterPropertiesConstructor
+    public constructor(
+        value: String,
+        mode: FilterMode,
+        priority: Int,
+        targets: List<FilterTargetsProperties>,
+        ifNullPass: Boolean,
+        matchType: MatchType,
+    ) : this(value, mode, priority, targets, ifNullPass, matchType, emptySet())
+}
 
 /**
  * 参考注解 `@Filter.Targets` 中的属性说明。
  *
  * @author ForteScarlet
  */
-public data class FilterTargetsProperties(
+public data class FilterTargetsProperties @FilterPropertiesConstructor public constructor(
     val components: List<String>,
     val bots: List<String>,
     val actors: List<String>,

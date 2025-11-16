@@ -25,6 +25,7 @@ public abstract interface annotation class love/forte/simbot/quantcat/common/ann
 	public abstract fun matchType ()Llove/forte/simbot/quantcat/common/filter/MatchType;
 	public abstract fun mode ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
 	public abstract fun priority ()I
+	public abstract fun regexOptions ()[Lkotlin/text/RegexOption;
 	public abstract fun targets ()[Llove/forte/simbot/quantcat/common/annotations/Filter$Targets;
 	public abstract fun value ()Ljava/lang/String;
 }
@@ -233,23 +234,29 @@ public final class love/forte/simbot/quantcat/common/filter/FilterMode : java/la
 
 public final class love/forte/simbot/quantcat/common/filter/FilterProperties {
 	public fun <init> (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;)V
+	public fun <init> (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;Ljava/util/Set;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
 	public final fun component3 ()I
 	public final fun component4 ()Ljava/util/List;
 	public final fun component5 ()Z
 	public final fun component6 ()Llove/forte/simbot/quantcat/common/filter/MatchType;
-	public final fun copy (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
-	public static synthetic fun copy$default (Llove/forte/simbot/quantcat/common/filter/FilterProperties;Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;ILjava/lang/Object;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
+	public final fun component7 ()Ljava/util/Set;
+	public final fun copy (Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;Ljava/util/Set;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
+	public static synthetic fun copy$default (Llove/forte/simbot/quantcat/common/filter/FilterProperties;Ljava/lang/String;Llove/forte/simbot/quantcat/common/filter/FilterMode;ILjava/util/List;ZLlove/forte/simbot/quantcat/common/filter/MatchType;Ljava/util/Set;ILjava/lang/Object;)Llove/forte/simbot/quantcat/common/filter/FilterProperties;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getIfNullPass ()Z
 	public final fun getMatchType ()Llove/forte/simbot/quantcat/common/filter/MatchType;
 	public final fun getMode ()Llove/forte/simbot/quantcat/common/filter/FilterMode;
 	public final fun getPriority ()I
+	public final fun getRegexOptions ()Ljava/util/Set;
 	public final fun getTargets ()Ljava/util/List;
 	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface annotation class love/forte/simbot/quantcat/common/filter/FilterPropertiesConstructor : java/lang/annotation/Annotation {
 }
 
 public final class love/forte/simbot/quantcat/common/filter/FilterTargetsProperties {
@@ -307,6 +314,7 @@ public final class love/forte/simbot/quantcat/common/filter/MatchType : java/lan
 	public static final field TEXT_STARTS_WITH Llove/forte/simbot/quantcat/common/filter/MatchType;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun isPlainText ()Z
+	public final fun isStrict ()Z
 	public final fun match (Llove/forte/simbot/quantcat/common/keyword/Keyword;Ljava/lang/String;)Z
 	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/filter/MatchType;
 	public static fun values ()[Llove/forte/simbot/quantcat/common/filter/MatchType;
@@ -371,6 +379,8 @@ public abstract class love/forte/simbot/quantcat/common/interceptor/impl/Standar
 
 public final class love/forte/simbot/quantcat/common/keyword/EmptyFilterParameterMatcher : love/forte/simbot/quantcat/common/keyword/ValueMatcher {
 	public static final field INSTANCE Llove/forte/simbot/quantcat/common/keyword/EmptyFilterParameterMatcher;
+	public fun findParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun findParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
 	public fun getOriginal ()Ljava/lang/String;
 	public fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
@@ -394,6 +404,7 @@ public abstract interface class love/forte/simbot/quantcat/common/keyword/Keywor
 	public abstract fun getRegex ()Lkotlin/text/Regex;
 	public abstract fun getRegexValueMatcher ()Llove/forte/simbot/quantcat/common/keyword/ValueMatcher;
 	public abstract fun getText ()Ljava/lang/String;
+	public fun isStrict ()Z
 }
 
 public final class love/forte/simbot/quantcat/common/keyword/KeywordListAttributeKt {
@@ -410,22 +421,32 @@ public abstract interface class love/forte/simbot/quantcat/common/keyword/MatchP
 
 public final class love/forte/simbot/quantcat/common/keyword/RegexValueMatcher : love/forte/simbot/quantcat/common/keyword/ValueMatcher {
 	public fun <init> (Ljava/lang/String;Z)V
+	public fun <init> (Ljava/lang/String;ZLjava/util/Set;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun findParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun findParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
 	public fun getOriginal ()Ljava/lang/String;
 	public fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
 	public fun getRegex ()Lkotlin/text/Regex;
+	public fun hashCode ()I
 	public fun matches (Ljava/lang/String;)Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class love/forte/simbot/quantcat/common/keyword/SimpleKeyword : love/forte/simbot/quantcat/common/keyword/Keyword {
 	public fun <init> (Ljava/lang/String;Z)V
 	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;ZLjava/util/Set;Z)V
 	public fun getRegex ()Lkotlin/text/Regex;
 	public fun getRegexValueMatcher ()Llove/forte/simbot/quantcat/common/keyword/ValueMatcher;
 	public fun getText ()Ljava/lang/String;
+	public fun isStrict ()Z
 }
 
 public abstract interface class love/forte/simbot/quantcat/common/keyword/ValueMatcher {
+	public fun findParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun findParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
 	public abstract fun getOriginal ()Ljava/lang/String;
 	public abstract fun getParam (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun getParameters (Ljava/lang/String;)Llove/forte/simbot/quantcat/common/keyword/MatchParameters;
