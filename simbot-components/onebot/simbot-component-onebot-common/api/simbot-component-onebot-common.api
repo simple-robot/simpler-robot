@@ -1,0 +1,18 @@
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/ApiResultConstructor : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/ExperimentalOneBotAPI : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/InternalOneBotAPI : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/OneBotInternalImplementationsOnly : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/SourceEventConstructor : java/lang/annotation/Annotation {
+}
+
+public abstract interface class love/forte/simbot/component/onebot/common/component/OneBotComponent : love/forte/simbot/component/Component {
+}
+

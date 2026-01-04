@@ -35,3 +35,22 @@ fun AbiValidationVariantSpec.configAbiValidation() {
         "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI"
     )
 }
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configOneBotAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
+        "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI",
+        "love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor",
+        "love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor",
+
+        // CustomEventResolver
+        "love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi",
+
+        // CustomOneBotApi
+        "love.forte.simbot.component.onebot.v11.core.api.ExperimentalCustomOneBotApi",
+
+        // OneBotNonStandardApi
+        "love.forte.simbot.component.onebot.v11.core.api.nonstandard.OneBotNonStandardApi"
+    )
+}

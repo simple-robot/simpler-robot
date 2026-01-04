@@ -32,6 +32,12 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    id("com.gradle.develocity") version "4.3"
+}
+
+// https://docs.gradle.com/develocity/intellij-plugin/current/#troubleshooting
+develocity {
+    // configuration
 }
 
 // benchmarks
@@ -39,6 +45,8 @@ plugins {
 
 // internals
 include(":internal-processors:interface-uml-processor")
+include(":internal-processors:onebot-event-type-resolver-processor")
+include(":internal-processors:onebot-include-component-message-elements-processor")
 
 // gradle
 // include(":simbot-gradles:simbot-gradle-plugin")
@@ -75,6 +83,14 @@ include(":simbot-cores:simbot-core-spring-boot-starter-v2")
 
 // extensions
 include(":simbot-extensions:simbot-extension-continuous-session")
+
+// components
+// onebot
+include(":simbot-components:onebot:simbot-component-onebot-common")
+include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-common")
+include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-core")
+include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-event")
+include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-message")
 
 // local tests
 include(":tests:spring-boot-starter-test")
