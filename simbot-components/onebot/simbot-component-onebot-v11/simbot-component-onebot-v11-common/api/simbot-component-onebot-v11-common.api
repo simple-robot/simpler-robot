@@ -1,0 +1,26 @@
+public final class love/forte/simbot/component/onebot/v11/common/api/StatusResult {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/common/api/StatusResult$Companion;
+	public final fun component1 ()Ljava/lang/Boolean;
+	public final fun component2 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGood ()Z
+	public final fun getOnline ()Ljava/lang/Boolean;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/common/api/StatusResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/common/api/StatusResult$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/common/api/StatusResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
