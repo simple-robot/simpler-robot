@@ -47,8 +47,8 @@ fun isSnapshot(): Boolean = _isSnapshot
 @Suppress("MemberVisibilityCanBePrivate")
 sealed class P(override val group: String) : ProjectDetail() {
     companion object {
-        const val VERSION = "4.15.0"
-        const val NEXT_VERSION = "4.15.0"
+        const val VERSION = "5.0.0-Preview1"
+        const val NEXT_VERSION = "5.0.0-Preview1"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 
@@ -60,6 +60,7 @@ sealed class P(override val group: String) : ProjectDetail() {
         const val GROUP_EXTENSION = "love.forte.simbot.extension"
         const val GROUP_BENCHMARK = "love.forte.simbot.benchmark"
         const val GROUP_PROCESSOR = "love.forte.simbot.processor"
+        const val GROUP_COMPONENT = "love.forte.simbot.component"
 
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
@@ -82,6 +83,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     object SimbotQuantcat : P(GROUP_QUANTCAT)
     object SimbotExtension : P(GROUP_EXTENSION)
     object SimbotBenchmark : P(GROUP_BENCHMARK)
+    object SimbotComponent : P(GROUP_COMPONENT)
 
     final override val version: String = if (isSnapshot()) {
         NEXT_SNAPSHOT_VERSION

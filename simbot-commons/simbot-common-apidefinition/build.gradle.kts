@@ -60,7 +60,7 @@ kotlin {
         }
         jvmTest {
             dependencies {
-                api(libs.slf4j.api)
+                implementation(libs.slf4j.api)
             }
         }
     }
