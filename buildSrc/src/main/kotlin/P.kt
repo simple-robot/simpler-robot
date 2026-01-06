@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2025. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -48,7 +48,7 @@ fun isSnapshot(): Boolean = _isSnapshot
 sealed class P(override val group: String) : ProjectDetail() {
     companion object {
         const val VERSION = "4.15.0"
-        const val NEXT_VERSION = "4.15.0"
+        const val NEXT_VERSION = "4.15.1"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 
