@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -26,9 +26,15 @@
 
 package love.forte.simbot.common.id
 
-import kotlinx.serialization.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.MissingFieldException
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.*
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
@@ -622,6 +628,11 @@ public class UUID private constructor(
  * 如果想要作为ID的数字已经超过64位无符号 ([ULongID]) 锁能表示的最大数字，
  * 那么建议使用其他类型来表示，例如字符串ID [StringID] 或 UUID ([UUID]，也可以算是一个128位数字的ID)
  *
+ * ## 序列化
+ *
+ * 自 4.14.1 开始，[NumericalID] 支持序列化。
+ * 它默认使用可表示[有符号数字ID](SignedNumericID)的**最大**容量类型为序列化和反序列化目标，也就是 [Long]。
+ * 因此它反序列化的类型始终为 [LongID]。
  *
  * @see SignedNumericID
  * @see UnsignedNumericID
@@ -630,6 +641,7 @@ public class UUID private constructor(
  * @see LongID
  * @see ULongID
  */
+@Serializable(with = NumericalID.DefaultSerializer::class)
 public sealed class NumericalID : ID() {
 
     /**
@@ -684,6 +696,22 @@ public sealed class NumericalID : ID() {
 
     protected abstract fun compareNumber(target: NumericalID): Int
 
+    /**
+     * @since 4.14.1
+     */
+    internal object DefaultSerializer : KSerializer<NumericalID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("NumericalID", PrimitiveKind.LONG)
+
+        override fun deserialize(decoder: Decoder): NumericalID {
+            val l = decoder.decodeLong()
+            return l.ID
+        }
+
+        override fun serialize(encoder: Encoder, value: NumericalID) {
+            encoder.encodeLong(value.toLong())
+        }
+    }
+
     public companion object {
         internal const val INT_MAX_ON_UINT: UInt = 2147483647u // Int.MAX_VALUE.toUInt()
         internal const val INT_MAX_ON_ULONG: ULong = 2147483647u // Int.MAX_VALUE
@@ -700,11 +728,35 @@ public sealed class NumericalID : ID() {
  * 如果想要作为ID的数字已经超过64位有符号 ([LongID]) 所能表示的最大数字，
  * 那么建议使用其他类型来表示，例如 [ULongID] 或 [StringID]
  *
+ * ## 序列化
+ *
+ * 自 4.14.1 开始，[SignedNumericID] 支持序列化。
+ * 它默认使用可表示数字的**最大**容量类型为序列化和反序列化目标，也就是 [Long]。
+ * 因此它反序列化的类型始终为 [LongID]。
  *
  * @see IntID
  * @see LongID
  */
-public sealed class SignedNumericID : NumericalID()
+@Serializable(with = SignedNumericID.DefaultSerializer::class)
+public sealed class SignedNumericID : NumericalID() {
+    /**
+     * @since 4.14.1
+     */
+    internal object DefaultSerializer : KSerializer<SignedNumericID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SignedNumericID", PrimitiveKind.LONG)
+
+        override fun deserialize(decoder: Decoder): SignedNumericID {
+            val l = decoder.decodeLong()
+            return l.ID
+        }
+
+        override fun serialize(encoder: Encoder, value: SignedNumericID) {
+            encoder.encodeLong(value.toLong())
+        }
+    }
+
+    public companion object
+}
 
 /**
  * 通过一个**无符号**数字作为ID值的 [NumericalID] 实现。
@@ -718,10 +770,35 @@ public sealed class SignedNumericID : NumericalID()
  * 在 Java 中对无符号数字的操作需要有些注意的地方。
  * 具体描述请参考 [ID] 的文档注释中的相关说明。
  *
+ * ## 序列化
+ *
+ * 自 4.14.1 开始，[UnsignedNumericID] 支持序列化。
+ * 它默认使用可表示数字的**最大**容量类型为序列化和反序列化目标，也就是 [ULong]。
+ * 因此它反序列化的类型始终为 [ULongID]。
+ *
  * @see UIntID
  * @see ULongID
  */
-public sealed class UnsignedNumericID : NumericalID()
+@Serializable(with = UnsignedNumericID.DefaultSerializer::class)
+public sealed class UnsignedNumericID : NumericalID() {
+    /**
+     * @since 4.14.1
+     */
+    internal object DefaultSerializer : KSerializer<UnsignedNumericID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UnsignedNumericID", PrimitiveKind.LONG)
+
+        override fun deserialize(decoder: Decoder): UnsignedNumericID {
+            val ul = decoder.decodeSerializableValue(ULong.serializer())
+            return ul.ID
+        }
+
+        override fun serialize(encoder: Encoder, value: UnsignedNumericID) {
+            encoder.encodeSerializableValue(ULong.serializer(), value.toULong())
+        }
+    }
+
+    public companion object
+}
 
 
 /**
@@ -765,7 +842,16 @@ public class IntID private constructor(public val value: Int) : SignedNumericID(
         public val Int.ID: IntID
             get() = IntID(this)
 
-
+        /**
+         * 将一个可以表示为 [Int] 的 [String] 转化为 [Int]。
+         *
+         * @throws NumberFormatException 如果 [value] 无法被转化为 [Int]
+         * @since 4.14.1
+         *
+         * @see String.toInt
+         */
+        @JvmStatic
+        public fun parse(value: String): IntID = IntID(value.toInt())
     }
 
     /**
@@ -827,6 +913,16 @@ public class UIntID private constructor(@get:JvmName("getValue") public val valu
         public val UInt.ID: UIntID
             get() = UIntID(this)
 
+        /**
+         * 将一个可以表示为 [UInt] 的 [String] 转化为 [UIntID]。
+         *
+         * @throws NumberFormatException 如果 [value] 无法被转化为 [UInt]
+         * @since 4.14.1
+         *
+         * @see String.toUInt
+         */
+        @JvmStatic
+        public fun parse(value: String): UIntID = UIntID(value.toUInt())
     }
 
     /**
@@ -882,6 +978,16 @@ public class LongID private constructor(public val value: Long) : SignedNumericI
         public val Long.ID: LongID
             get() = LongID(this)
 
+        /**
+         * 将一个可以表示为 [Long] 的 [String] 转化为 [Long]。
+         *
+         * @throws NumberFormatException 如果 [value] 无法被转化为 [Long]
+         * @since 4.14.1
+         *
+         * @see String.toLong
+         */
+        @JvmStatic
+        public fun parse(value: String): LongID = LongID(value.toLong())
     }
 
     /**
@@ -941,6 +1047,17 @@ public class ULongID private constructor(@get:JvmName("getValue") public val val
         @get:JvmName("valueOf")
         public val ULong.ID: ULongID
             get() = ULongID(this)
+
+
+        /**
+         * 将一个可以表示为 [ULong] 的 [String] 转化为 [ULongID]。
+         *
+         * @see String.toULong
+         * @throws NumberFormatException 如果 [value] 无法被转化为 [ULong]
+         * @since 4.14.1
+         */
+        @JvmStatic
+        public fun parse(value: String): ULongID = ULongID(value.toULong())
     }
 
     internal object Serializer : KSerializer<ULongID> {

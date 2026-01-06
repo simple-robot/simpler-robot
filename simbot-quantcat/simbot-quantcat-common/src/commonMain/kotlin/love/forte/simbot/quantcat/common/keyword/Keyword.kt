@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -60,4 +60,18 @@ public interface Keyword {
      * 基于正则 [regex] 的匹配与参数提取器。
      */
     public val regexValueMatcher: ValueMatcher
+
+    /**
+     * 此关键词匹配是否预期为严格匹配。
+     * 完全匹配（例如 equals, matches）则被视为严格匹配，
+     * 模糊匹配（例如 contains, find）则被视为非严格匹配。
+     *
+     * 是否是严格匹配，会影响到参数绑定器中选择使用 `getParam` 还是 `findParam`。
+     *
+     * 默认情况、无效情况等特殊情况均视为严格匹配。
+     *
+     * @since 4.15.0
+     */
+    public val isStrict: Boolean
+        get() = true
 }

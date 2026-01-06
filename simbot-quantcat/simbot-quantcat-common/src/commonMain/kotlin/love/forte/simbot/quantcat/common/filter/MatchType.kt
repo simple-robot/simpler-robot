@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -34,14 +34,29 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
-public enum class MatchType(private val matcher: KeywordMatcher, public val isPlainText: Boolean) {
+public enum class MatchType(
+    private val matcher: KeywordMatcher,
+    public val isPlainText: Boolean,
+    /**
+     * 是否为一种严格匹配模式。
+     *
+     * @since 4.15.0
+     *
+     * @see Keyword.isStrict
+     */
+    public val isStrict: Boolean = false
+) {
 
     /**
      * 全等匹配
      *
      * @see String.equals
      */
-    TEXT_EQUALS({ keyword, value -> keyword.text == value }, true),
+    TEXT_EQUALS(
+        matcher = { keyword, value -> keyword.text == value },
+        isPlainText = true,
+        isStrict = true
+    ),
 
     /**
      * 忽略大小写的全等匹配
@@ -49,35 +64,55 @@ public enum class MatchType(private val matcher: KeywordMatcher, public val isPl
      * @see String.equals
      *
      */
-    TEXT_EQUALS_IGNORE_CASE({ keyword, value -> value.equals(keyword.text, ignoreCase = true) }, true),
+    TEXT_EQUALS_IGNORE_CASE(
+        matcher = { keyword, value -> value.equals(keyword.text, ignoreCase = true) },
+        isPlainText = true,
+        isStrict = true,
+    ),
 
     /**
      * 首部匹配
      *
      * @see String.startsWith
      */
-    TEXT_STARTS_WITH({ keyword, value -> value.startsWith(keyword.text) }, true),
+    TEXT_STARTS_WITH(
+        matcher = { keyword, value -> value.startsWith(keyword.text) },
+        isPlainText = true,
+        isStrict = false
+    ),
 
     /**
      * 尾部匹配.
      *
      * @see String.endsWith
      */
-    TEXT_ENDS_WITH({ keyword, value -> value.endsWith(keyword.text) }, true),
+    TEXT_ENDS_WITH(
+        matcher = { keyword, value -> value.endsWith(keyword.text) },
+        isPlainText = true,
+        isStrict = false
+    ),
 
     /**
      * 包含匹配.
      *
      * @see String.contains
      */
-    TEXT_CONTAINS({ keyword, value -> keyword.text in value }, true),
+    TEXT_CONTAINS(
+        matcher = { keyword, value -> keyword.text in value },
+        isPlainText = true,
+        isStrict = false
+    ),
 
     /**
      * 正则完全匹配. `regex.matches(...)`
      *
      * @see Regex.matches
      */
-    REGEX_MATCHES({ keyword, value -> keyword.regex.matches(value) }, false),
+    REGEX_MATCHES(
+        matcher = { keyword, value -> keyword.regex.matches(value) },
+        isPlainText = false,
+        isStrict = true
+    ),
 
     /**
      * 正则包含匹配. `regex.containsMatchIn(...)`
@@ -85,7 +120,11 @@ public enum class MatchType(private val matcher: KeywordMatcher, public val isPl
      * @see Regex.containsMatchIn
      *
      */
-    REGEX_CONTAINS({ keyword, value -> keyword.regex.containsMatchIn(value) }, false);
+    REGEX_CONTAINS(
+        matcher = { keyword, value -> keyword.regex.containsMatchIn(value) },
+        isPlainText = false,
+        isStrict = false
+    );
 
     /**
      * 提供一个匹配关键词 [keyword] 和匹配目标 [value], 对其进行匹配并返回匹配结果。
@@ -95,7 +134,6 @@ public enum class MatchType(private val matcher: KeywordMatcher, public val isPl
     public fun match(keyword: Keyword, value: String): Boolean = matcher.test(keyword, value)
 
 }
-
 
 
 /**

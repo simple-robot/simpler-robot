@@ -255,6 +255,7 @@ final class love.forte.simbot.common.id/IntID : love.forte.simbot.common.id/Sign
         final val ID // love.forte.simbot.common.id/IntID.Companion.ID|@kotlin.Int{}ID[0]
             final fun (kotlin/Int).<get-ID>(): love.forte.simbot.common.id/IntID // love.forte.simbot.common.id/IntID.Companion.ID.<get-ID>|<get-ID>@kotlin.Int(){}[0]
 
+        final fun parse(kotlin/String): love.forte.simbot.common.id/IntID // love.forte.simbot.common.id/IntID.Companion.parse|parse(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/IntID> // love.forte.simbot.common.id/IntID.Companion.serializer|serializer(){}[0]
     }
 }
@@ -279,6 +280,7 @@ final class love.forte.simbot.common.id/LongID : love.forte.simbot.common.id/Sig
         final val ID // love.forte.simbot.common.id/LongID.Companion.ID|@kotlin.Long{}ID[0]
             final fun (kotlin/Long).<get-ID>(): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/LongID.Companion.ID.<get-ID>|<get-ID>@kotlin.Long(){}[0]
 
+        final fun parse(kotlin/String): love.forte.simbot.common.id/LongID // love.forte.simbot.common.id/LongID.Companion.parse|parse(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/LongID> // love.forte.simbot.common.id/LongID.Companion.serializer|serializer(){}[0]
     }
 
@@ -341,6 +343,7 @@ final class love.forte.simbot.common.id/UIntID : love.forte.simbot.common.id/Uns
         final val ID // love.forte.simbot.common.id/UIntID.Companion.ID|@kotlin.UInt{}ID[0]
             final fun (kotlin/UInt).<get-ID>(): love.forte.simbot.common.id/UIntID // love.forte.simbot.common.id/UIntID.Companion.ID.<get-ID>|<get-ID>@kotlin.UInt(){}[0]
 
+        final fun parse(kotlin/String): love.forte.simbot.common.id/UIntID // love.forte.simbot.common.id/UIntID.Companion.parse|parse(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UIntID> // love.forte.simbot.common.id/UIntID.Companion.serializer|serializer(){}[0]
     }
 }
@@ -366,6 +369,7 @@ final class love.forte.simbot.common.id/ULongID : love.forte.simbot.common.id/Un
         final val ID // love.forte.simbot.common.id/ULongID.Companion.ID|@kotlin.ULong{}ID[0]
             final fun (kotlin/ULong).<get-ID>(): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/ULongID.Companion.ID.<get-ID>|<get-ID>@kotlin.ULong(){}[0]
 
+        final fun parse(kotlin/String): love.forte.simbot.common.id/ULongID // love.forte.simbot.common.id/ULongID.Companion.parse|parse(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/ULongID> // love.forte.simbot.common.id/ULongID.Companion.serializer|serializer(){}[0]
     }
 }
@@ -458,12 +462,22 @@ sealed class love.forte.simbot.common.id/NumericalID : love.forte.simbot.common.
     open fun toUInt(): kotlin/UInt // love.forte.simbot.common.id/NumericalID.toUInt|toUInt(){}[0]
     open fun toULong(): kotlin/ULong // love.forte.simbot.common.id/NumericalID.toULong|toULong(){}[0]
 
-    final object Companion // love.forte.simbot.common.id/NumericalID.Companion|null[0]
+    final object Companion { // love.forte.simbot.common.id/NumericalID.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/NumericalID> // love.forte.simbot.common.id/NumericalID.Companion.serializer|serializer(){}[0]
+    }
 }
 
-sealed class love.forte.simbot.common.id/SignedNumericID : love.forte.simbot.common.id/NumericalID // love.forte.simbot.common.id/SignedNumericID|null[0]
+sealed class love.forte.simbot.common.id/SignedNumericID : love.forte.simbot.common.id/NumericalID { // love.forte.simbot.common.id/SignedNumericID|null[0]
+    final object Companion { // love.forte.simbot.common.id/SignedNumericID.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/SignedNumericID> // love.forte.simbot.common.id/SignedNumericID.Companion.serializer|serializer(){}[0]
+    }
+}
 
-sealed class love.forte.simbot.common.id/UnsignedNumericID : love.forte.simbot.common.id/NumericalID // love.forte.simbot.common.id/UnsignedNumericID|null[0]
+sealed class love.forte.simbot.common.id/UnsignedNumericID : love.forte.simbot.common.id/NumericalID { // love.forte.simbot.common.id/UnsignedNumericID|null[0]
+    final object Companion { // love.forte.simbot.common.id/UnsignedNumericID.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.common.id/UnsignedNumericID> // love.forte.simbot.common.id/UnsignedNumericID.Companion.serializer|serializer(){}[0]
+    }
+}
 
 final object love.forte.simbot.common.id/AsStringIDSerializer : kotlinx.serialization/KSerializer<love.forte.simbot.common.id/ID> { // love.forte.simbot.common.id/AsStringIDSerializer|null[0]
     final val descriptor // love.forte.simbot.common.id/AsStringIDSerializer.descriptor|{}descriptor[0]

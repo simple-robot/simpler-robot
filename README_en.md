@@ -11,7 +11,7 @@
     - Simple Robot -
 </h2>
 <small>
-    ~ simbot v4 ~      
+        ~ simbot v4 ~      
 </small>
 <br>
     <span>
@@ -21,9 +21,9 @@
     <span>
         <a href="https://gitee.com/simple-robot/simpler-robot" target="_blank">Gitee</a>
     </span> <br />
-    <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small>
+    <small> &gt; Thanks to the members of the <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> development team for creating the simbot logo &lt; </small>
     <br>
-    <small> &gt; 走过路过，不要忘记点亮一颗⭐喔~ &lt; </small> 
+    <small> &gt; Passing by? Don't forget to light up a ⭐~ &lt; </small> 
     <br>
    <a href="https://github.com/simple-robot/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/simple-robot/simpler-robot" /></a>
 <a href="https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/" target="_blank">
@@ -32,16 +32,15 @@
   <img alt="doc" src="https://img.shields.io/badge/doc-simbot-brightgreen" /></a>
 <a href="https://qodana.cloud/projects/p9mmM/reports/79Xen" target="_blank">
   <img alt="Qodana" src="https://github.com/simple-robot/simpler-robot/actions/workflows/qodana_code_quality.yml/badge.svg" /></a>
+  <a href="https://deepwiki.com/simple-robot/simpler-robot"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/simple-robot/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/simple-robot/simpler-robot" />
    <img alt="watchers" src="https://img.shields.io/github/watchers/simple-robot/simpler-robot" />
    <img alt="repo-size" src="https://img.shields.io/github/repo-size/simple-robot/simpler-robot" />
    <img alt="code-size" src="https://img.shields.io/github/languages/code-size/simple-robot/simpler-robot" />
-   
+
    <img alt="issues" src="https://img.shields.io/github/issues-closed/simple-robot/simpler-robot?color=green" />
-   <img alt="last-commit" src="https://img.shields.io/github/last-commit/simple-robot/simpler-robot" />
-   <img alt="search-hit" src="https://img.shields.io/github/search/simple-robot/simpler-robot/simbot" />
    <img alt="top-language" src="https://img.shields.io/github/languages/top/simple-robot/simpler-robot" />
 <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/simple-robot/simpler-robot" /></a>
 
@@ -49,82 +48,132 @@
 
 </div>
 
-[中文](README.md) | English
+[中文](README.md)
 
-## Summary
+## Introduction
 
-**`Simple Robot`** v4 is a multi-platform Bot-style high-
-performance asynchronous event scheduling framework based on 
-**KMP** (hereafter referred to as simbot).
-It provides a unified asynchronous API and easy-to-use style design, 
-which can help you write bot-style event scheduling applications 
-more quickly and efficiently.
+**`Simple Robot`** is a high-performance asynchronous event scheduling framework in the **Bot style** that is built
+on [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+and [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) (hereinafter referred to as simbot),
+delivering efficient asynchrony and Java-friendly APIs.
 
-Currently, it is mainly used to interface with various types of 
-bot application platforms/frameworks and provides part of 
-the component library implementation.
+simbot provides a unified asynchronous API and an intuitive design style to help you create **Bot-style** event-driven
+applications quickly and efficiently. It is mainly used to integrate with a wide variety of bot application
+platforms/frameworks, and it already offers several component library implementations.
 
-**`simbot4`** Developed via [Kotlin](https://kotlinlang.org/) language,
-Based on [KMP](https://kotlinlang.org/docs/multiplatform.html) for 
-multi-platform support, and compatible with Java (**jdk11+**) and 
-other JVM platform languages.
+simbot's **platform capabilities** are component-driven. Install different component libraries to gain support for
+different features.
 
-And provides a lot of Java-friendly API and Spring Boot starter, 
-to help you quickly develop .
+For example, using KOOK and QQ Guild in simbot:
 
-This repository is the repository for simbot v3 and v4, containing 
-the definition of the simbot standard API, the implementation of 
-the simbot core libraries, and the implementation of the Spring Boot starter 
-and other core and basic content.
+```Kotlin
+suspend fun main() {
+    launchSimpleApplication { config() }
+        .joinWith { module() }
+}
 
-> [!tip]
-> Visit the [GitHub Organisation Home](https://github.com/simple-robot/) 
-> to learn more about the components, documentation, community and more!
+fun ApplicationFactoryConfigurer<*, *, *>.config() {
+    // Install the KOOK and QQ Guild component libraries
+    useKook()
+    useQQGuild()
+}
 
-## 文档
+/**
+ * Configure and apply the built `Application`
+ */
+suspend fun Application.module() {
+    registerBots()
+    registerListeners()
+}
 
-simbot4 reference documentation: [simbot.forte.love][doc-homepage]
+/**
+ * Register the required bots
+ */
+suspend fun Application.registerBots() {
+    // Register a KOOK bot so KOOK-related events can be handled afterwards
+    kookBots {
+        register(...) { ... }.start()
+    }
 
-> [!note]
-> Also includes document address guides for previous versions
+    // Register a QQ Guild bot so QQ Guild-related events can be handled afterwards
+    qqGuildBots {
+        register(...) { ... }.start()
+    }
+}
 
-Documentation Bootstrap & API Doc: [docs.simbot.forte.love](https://docs.simbot.forte.love)
+fun Application.registerListeners() {
+    listeners {
+        // Register an event handler
+        // ChatChannelMessageEvent is a generic type defined by the simbot API representing all sub-channel message events
+        // This includes QQ Guild public channel message events and KOOK channel message events
+        listen<ChatChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
 
-## V3
+            // Return the event handling result
+            EventResult.empty()
+        }
 
-Branch to [v3-dev](https://github.com/simple-robot/simpler-robot/tree/v3-dev) 
-to see the development branch of simbot3.
+        // Register another event handler
+        // Explicitly listen for QQ Guild public channel message events
+        // Using process eliminates the need to return a value
+        process<QGAtMessageCreateEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
 
-## 协助我们
-Lighting up a **✨star🌟** for us is the greatest motivation and support we can give to keep going!
+        // Register one more event handler
+        // Explicitly listen for KOOK channel message events
+        // Using process eliminates the need to return a value
+        process<KookChannelMessageEvent> {
+            println("context: $this")
+            println("context.event: $event")
+        }
+    }
+}
+```
 
-- Go to [CONTRIBUTING](docs/CONTRIBUTING.md) for more information!
-- You can contribute to the project code via [**Pull Request**][pr].
-- You can make a suggestion or give feedback on an issue via [**Issues**][issues].
-- You can communicate with other people or the simbot development team via [**Discussions**][discussions].
-- If you create a cool open source project through this project, 
-  you are welcome to leave your open source project information through [**Issues**][issues], [**Discussions**][discussions] and so on.
-  etc. Leave your open source project information and show your cool project in the work display area.
+## Documentation & Guides
 
-## Contact us
-- To give feedback on an issue, make a suggestion, or ask a question, please go to [**ISSUES**][issues].
-- To talk to the development team, to talk to other developers, go to [**DISCUSSIONS**][discussions].
-- More **Community Information** can be found in the [GitHub Organisation Home](https://github.com/simple-robot/).
+- [Organization Homepage](https://github.com/simple-robot/) Learn more about components, documentation, community, and
+  more!
+- [Communities](https://simbot.forte.love/communities.html) Community information is also provided in the documentation.
+- [Application Manual][doc-homepage]
+- [Documentation Portal & API reference](https://docs.simbot.forte.love)
+
+## Support Us
+
+Lighting up a **✨star🌟** for us is the greatest motivation and support for keeping the project going!
+
+- Read the [**Contribution Guide**](docs/CONTRIBUTING_CN.md) to learn how you can contribute!
+- Join the conversation with others or the simbot development team via the [**Discussions**][discussions].
+- If you have created an awesome open-source project based on simbot, feel free to share it via [ISSUES][issues]
+  or [Discussions][discussions] so we can showcase your cool project in the gallery.
+
+## Contact Us
+
+- To report issues, make suggestions, or ask questions, please use [**ISSUES**][issues].
+- To communicate with the development team or other developers, head to [**Discussions**][discussions].
+- Visit the [GitHub Organization Homepage](https://github.com/simple-robot/) for more **community information**.
 
 [pr]: https://github.com/simple-robot/simpler-robot/pulls
+
 [issues]: https://github.com/simple-robot/simpler-robot/issues
+
 [discussions]: https://github.com/orgs/simple-robot/discussions
 
-
-## Special thanks
+## Special Thanks
 
 <a href="https://www.jetbrains.com/?from=simpler-robot">
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" width="200" alt="jetbrains" />
 </a>
 
+Thanks to [JetBrains][jetbrains] for providing the team with free licenses. We also encourage everyone to
+support [JetBrains][jetbrains], its products, and genuine software.
+
 [jetbrains]: https://www.jetbrains.com/?from=simpler-robot
 
-## Star!
+## Stars!
 
 [![Star History Chart](https://api.star-history.com/svg?repos=simple-robot/simpler-robot&type=Date)](https://star-history.com/#simple-robot/simpler-robot&Date)
 
@@ -132,7 +181,7 @@ Lighting up a **✨star🌟** for us is the greatest motivation and support we c
 
 ## License
 
-Simple Robot is open source under the [LGPLv3](https://www.gnu.org/licenses/#LGPL) license.
+Simple Robot is open-sourced under the [LGPLv3](https://www.gnu.org/licenses/#LGPL) license.
 
 ```
 This program is free software: you can redistribute it and/or modify

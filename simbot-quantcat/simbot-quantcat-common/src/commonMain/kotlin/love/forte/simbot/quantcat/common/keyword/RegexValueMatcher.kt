@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2025. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -26,15 +26,34 @@ package love.forte.simbot.quantcat.common.keyword
 /**
  * 正则参数提取器。
  */
-public class RegexValueMatcher(private val originalValue: String, private val isPlainText: Boolean) : ValueMatcher {
+public class RegexValueMatcher(
+    private val originalValue: String,
+    private val isPlainText: Boolean,
+    private val regexOptions: Set<RegexOption>
+) : ValueMatcher {
 
+    /**
+     * 构造。
+     *
+     * 用于兼容 4.15.0 之前的版本。
+     *
+     * @since 4.15.0
+     */
+    public constructor(
+        originalValue: String,
+        isPlainText: Boolean,
+    ) : this(originalValue, isPlainText, emptySet())
 
     public override val regex: Regex by lazy(LazyThreadSafetyMode.PUBLICATION) {
         if (isPlainText) {
+            if (regexOptions.isNotEmpty()) {
+                error("Plain text match type for [$originalValue] cannot support regex options, but $regexOptions")
+            }
+
             Regex.fromLiteral(originalValue)
         } else {
             val regexValue = originalValue.toDynamicParametersRegexValue()
-            Regex(regexValue)
+            Regex(regexValue, regexOptions)
         }
     }
 
@@ -72,6 +91,36 @@ public class RegexValueMatcher(private val originalValue: String, private val is
         return text?.let { t -> regex.matchEntire(t)?.let { result -> MatcherParameters(result) } }
             ?: EmptyFilterParameters
     }
+
+    override fun findParam(name: String, text: String): String? {
+        return findParameters(text)[name]
+    }
+
+    override fun findParameters(text: String?): MatchParameters {
+        return text?.let { t -> regex.find(t)?.let { result -> MatcherParameters(result) } }
+            ?: EmptyFilterParameters
+    }
+
+    override fun toString(): String {
+        return "RegexValueMatcher(originalValue='$originalValue', isPlainText=$isPlainText, regexOptions=$regexOptions)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RegexValueMatcher) return false
+
+        if (originalValue != other.originalValue) return false
+        if (regex != other.regex) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = originalValue.hashCode()
+        result = 31 * result + regex.hashCode()
+        return result
+    }
+
 }
 
 /**
@@ -88,7 +137,7 @@ private class MatcherParameters(matcher: MatchResult) : MatchParameters {
     override fun get(key: String): String? {
         val group = try {
             groups[key] ?: return null
-        } catch (ignore: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             return null
         }
 

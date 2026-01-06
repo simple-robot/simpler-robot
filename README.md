@@ -52,7 +52,7 @@
 
 ## 简介
 
-**`Simple Robot`** (v4) 是一个基于[Kotlin协程](https://github.com/Kotlin/kotlinx.coroutines)
+**`Simple Robot`** 是一个基于[Kotlin协程](https://github.com/Kotlin/kotlinx.coroutines)
 的[Kotlin多平台](https://kotlinlang.org/docs/multiplatform.html)
 **Bot风格**高性能异步事件调度框架（下文简称simbot），
 异步高效、Java友好~

@@ -41,7 +41,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run V4 All Tests
-        run: gradle assemble build allTests -s --warning-mode all
+        run: gradle assemble build checkLegacyAbi allTests -s --warning-mode all
         env:
           ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
 
