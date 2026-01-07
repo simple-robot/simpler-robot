@@ -1,0 +1,1273 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-onebot-v11-message>
+abstract interface love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment|null[0]
+    abstract val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment.data|{}data[0]
+        abstract fun <get-data>(): kotlin/Any? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment.data.<get-data>|<get-data>(){}[0]
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver|null[0]
+    abstract fun toElement(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver.toElement|toElement(){}[0]
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.message/Base64Encoder { // love.forte.simbot.component.onebot.v11.message/Base64Encoder|null[0]
+    abstract fun <#A1: kotlin.text/Appendable> encodeToAppendable(kotlin/ByteArray, #A1): #A1 // love.forte.simbot.component.onebot.v11.message/Base64Encoder.encodeToAppendable|encodeToAppendable(kotlin.ByteArray;0:0){0§<kotlin.text.Appendable>}[0]
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion|null[0]
+        final val Default // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.Default|{}Default[0]
+            final fun <get-Default>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.Default.<get-Default>|<get-Default>(){}[0]
+        final val Mime // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.Mime|{}Mime[0]
+            final fun <get-Mime>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.Mime.<get-Mime>|<get-Mime>(){}[0]
+        final val UrlSafe // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.UrlSafe|{}UrlSafe[0]
+            final fun <get-UrlSafe>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder // love.forte.simbot.component.onebot.v11.message/Base64Encoder.Companion.UrlSafe.<get-UrlSafe>|<get-UrlSafe>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.message/OneBotMessageContent : love.forte.simbot.message/MessageContent { // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent|null[0]
+    abstract val id // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.id.<get-id>|<get-id>(){}[0]
+    abstract val messages // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.messages|{}messages[0]
+        abstract fun <get-messages>(): love.forte.simbot.message/Messages // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.messages.<get-messages>|<get-messages>(){}[0]
+    abstract val plainText // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.plainText|{}plainText[0]
+        abstract fun <get-plainText>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.plainText.<get-plainText>|<get-plainText>(){}[0]
+    abstract val sourceSegments // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.sourceSegments|{}sourceSegments[0]
+        abstract fun <get-sourceSegments>(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.sourceSegments.<get-sourceSegments>|<get-sourceSegments>(){}[0]
+
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    abstract suspend fun referenceMessage(): love.forte.simbot.component.onebot.v11.message/OneBotMessageContent? // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.referenceMessage|referenceMessage(){}[0]
+    open suspend fun reference(): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply? // love.forte.simbot.component.onebot.v11.message/OneBotMessageContent.reference|reference(){}[0]
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.message/OneBotMessageElement : love.forte.simbot.message/Message.Element // love.forte.simbot.component.onebot.v11.message/OneBotMessageElement|null[0]
+
+abstract interface love.forte.simbot.component.onebot.v11.message/OneBotMessageReceipt : love.forte.simbot.message/MessageReceipt { // love.forte.simbot.component.onebot.v11.message/OneBotMessageReceipt|null[0]
+    abstract val messageId // love.forte.simbot.component.onebot.v11.message/OneBotMessageReceipt.messageId|{}messageId[0]
+        abstract fun <get-messageId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message/OneBotMessageReceipt.messageId.<get-messageId>|<get-messageId>(){}[0]
+
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.onebot.v11.message/OneBotMessageReceipt.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+}
+
+abstract class love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement : love.forte.simbot.component.onebot.v11.message/OneBotMessageElement { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement.<init>|<init>(){}[0]
+
+    abstract val segment // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement.segment|{}segment[0]
+        abstract fun <get-segment>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement.segment.<get-segment>|<get-segment>(){}[0]
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement { // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement|null[0]
+    constructor <init>(love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment) // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.<init>|<init>(love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment){}[0]
+
+    final val segment // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.segment|{}segment[0]
+        final fun <get-segment>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.segment.<get-segment>|<get-segment>(){}[0]
+
+    final fun component1(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.component1|component1(){}[0]
+    final fun copy(love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment = ...): love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.copy|copy(love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement> { // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement) // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.DefaultOneBotMessageSegmentElement){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement> // love.forte.simbot.component.onebot.v11.message.segment/DefaultOneBotMessageSegmentElement.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.data.<get-data>|<get-data>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data|null[0]
+        constructor <init>(kotlin/Boolean? = ...) // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.<init>|<init>(kotlin.Boolean?){}[0]
+
+        final val ignore // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.ignore|{}ignore[0]
+            final fun <get-ignore>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.ignore.<get-ignore>|<get-ignore>(){}[0]
+
+        final fun component1(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.component1|component1(){}[0]
+        final fun copy(kotlin/Boolean? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.copy|copy(kotlin.Boolean?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotAnonymous.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous) // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotAnonymous){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/Boolean? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Factory.create|create(kotlin.Boolean?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAnonymous.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotAt : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.data.<get-data>|<get-data>(){}[0]
+    final val isAll // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.isAll|{}isAll[0]
+        final fun <get-isAll>(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.isAll.<get-isAll>|<get-isAll>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data|null[0]
+        final val qq // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.qq|{}qq[0]
+            final fun <get-qq>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.qq.<get-qq>|<get-qq>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.component1|component1(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotAt.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAt> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotAt) // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotAt){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory|null[0]
+        final const val ALL_QQ // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.ALL_QQ|{}ALL_QQ[0]
+            final fun <get-ALL_QQ>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.ALL_QQ.<get-ALL_QQ>|<get-ALL_QQ>(){}[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.create|create(kotlin.String){}[0]
+        final fun create(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.create|create(love.forte.simbot.common.id.ID){}[0]
+        final fun createAtAll(): love.forte.simbot.component.onebot.v11.message.segment/OneBotAt // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.createAtAll|createAtAll(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotAt> // love.forte.simbot.component.onebot.v11.message.segment/OneBotAt.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotContact : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact|null[0]
+    final val contactId // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.contactId|{}contactId[0]
+        final fun <get-contactId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.contactId.<get-contactId>|<get-contactId>(){}[0]
+    final val contactType // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.contactType|{}contactType[0]
+        final fun <get-contactType>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.contactType.<get-contactType>|<get-contactType>(){}[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.data.<get-data>|<get-data>(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data|null[0]
+        constructor <init>(kotlin/String, love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.<init>|<init>(kotlin.String;love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.id.<get-id>|<get-id>(){}[0]
+        final val type // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.type|{}type[0]
+            final fun <get-type>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.type.<get-type>|<get-type>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.component1|component1(){}[0]
+        final fun component2(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.component2|component2(){}[0]
+        final fun copy(kotlin/String = ..., love.forte.simbot.common.id/ID = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.copy|copy(kotlin.String;love.forte.simbot.common.id.ID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotContact.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotContact> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotContact // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotContact) // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotContact){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String, love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotContact // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Factory.create|create(kotlin.String;love.forte.simbot.common.id.ID){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotContact> // love.forte.simbot.component.onebot.v11.message.segment/OneBotContact.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotFace : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.id.<get-id>|<get-id>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.id.<get-id>|<get-id>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.common.id/ID = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.copy|copy(love.forte.simbot.common.id.ID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotFace.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotFace> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotFace // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotFace) // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotFace){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotFace // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Factory.create|create(love.forte.simbot.common.id.ID){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotFace> // love.forte.simbot.component.onebot.v11.message.segment/OneBotFace.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotForward : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.id.<get-id>|<get-id>(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.id.<get-id>|<get-id>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.common.id/ID = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.copy|copy(love.forte.simbot.common.id.ID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotForward.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForward> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotForward // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotForward) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotForward){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotForward // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Factory.create|create(love.forte.simbot.common.id.ID){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForward> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForward.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.data.<get-data>|<get-data>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID? = ..., love.forte.simbot.common.id/ID? = ..., kotlin/String? = ..., kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>? = ...) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.<init>|<init>(love.forte.simbot.common.id.ID?;love.forte.simbot.common.id.ID?;kotlin.String?;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>?){}[0]
+
+        final val content // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.content|{}content[0]
+            final fun <get-content>(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.content.<get-content>|<get-content>(){}[0]
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.id.<get-id>|<get-id>(){}[0]
+        final val nickname // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.nickname|{}nickname[0]
+            final fun <get-nickname>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.nickname.<get-nickname>|<get-nickname>(){}[0]
+        final val userId // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.userId|{}userId[0]
+            final fun <get-userId>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.userId.<get-userId>|<get-userId>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.component1|component1(){}[0]
+        final fun component2(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.component3|component3(){}[0]
+        final fun component4(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>? // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.component4|component4(){}[0]
+        final fun copy(love.forte.simbot.common.id/ID? = ..., love.forte.simbot.common.id/ID? = ..., kotlin/String? = ..., kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.copy|copy(love.forte.simbot.common.id.ID?;love.forte.simbot.common.id.ID?;kotlin.String?;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.Companion|null[0]
+            final val $childSerializers // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode) // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotForwardNode){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory.create|create(love.forte.simbot.common.id.ID){}[0]
+        final fun create(love.forte.simbot.common.id/ID, kotlin/String, kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>): love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory.create|create(love.forte.simbot.common.id.ID;kotlin.String;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode> // love.forte.simbot.component.onebot.v11.message.segment/OneBotForwardNode.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotImage : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.data.<get-data>|<get-data>(){}[0]
+    final val resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.resource|{}resource[0]
+        final fun <get-resource>(): love.forte.simbot.resource/Resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.resource.<get-resource>|<get-resource>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.hashCode|hashCode(){}[0]
+    final fun toElement(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.toElement|toElement(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.toString|toString(){}[0]
+
+    final class AdditionalParams { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams|null[0]
+        constructor <init>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.<init>|<init>(){}[0]
+
+        final var base64Encoder // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.base64Encoder|{}base64Encoder[0]
+            final fun <get-base64Encoder>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.base64Encoder.<get-base64Encoder>|<get-base64Encoder>(){}[0]
+            final fun <set-base64Encoder>(love.forte.simbot.component.onebot.v11.message/Base64Encoder?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.base64Encoder.<set-base64Encoder>|<set-base64Encoder>(love.forte.simbot.component.onebot.v11.message.Base64Encoder?){}[0]
+        final var cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.cache.<get-cache>|<get-cache>(){}[0]
+            final fun <set-cache>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.cache.<set-cache>|<set-cache>(kotlin.Boolean?){}[0]
+        final var localFileToBase64 // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.localFileToBase64|{}localFileToBase64[0]
+            final fun <get-localFileToBase64>(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.localFileToBase64.<get-localFileToBase64>|<get-localFileToBase64>(){}[0]
+            final fun <set-localFileToBase64>(kotlin/Boolean) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.localFileToBase64.<set-localFileToBase64>|<set-localFileToBase64>(kotlin.Boolean){}[0]
+        final var proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.proxy.<get-proxy>|<get-proxy>(){}[0]
+            final fun <set-proxy>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.proxy.<set-proxy>|<set-proxy>(kotlin.Boolean?){}[0]
+        final var timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.timeout.<get-timeout>|<get-timeout>(){}[0]
+            final fun <set-timeout>(kotlin/Int?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.timeout.<set-timeout>|<set-timeout>(kotlin.Int?){}[0]
+        final var type // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.type|{}type[0]
+            final fun <get-type>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.type.<get-type>|<get-type>(){}[0]
+            final fun <set-type>(kotlin/String?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams.type.<set-type>|<set-type>(kotlin.String?){}[0]
+    }
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data|null[0]
+        final val cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.cache.<get-cache>|<get-cache>(){}[0]
+        final val file // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.file|{}file[0]
+            final fun <get-file>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.file.<get-file>|<get-file>(){}[0]
+        final val proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.proxy.<get-proxy>|<get-proxy>(){}[0]
+        final val timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final val type // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.type|{}type[0]
+            final fun <get-type>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.type.<get-type>|<get-type>(){}[0]
+        final val url // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.url|{}url[0]
+            final fun <get-url>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component4|component4(){}[0]
+        final fun component5(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component5|component5(){}[0]
+        final fun component6(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.component6|component6(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Element : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement, love.forte.simbot.message/Image, love.forte.simbot.message/UrlAwareImage { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element|null[0]
+        constructor <init>(love.forte.simbot.component.onebot.v11.message.segment/OneBotImage) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.<init>|<init>(love.forte.simbot.component.onebot.v11.message.segment.OneBotImage){}[0]
+
+        final val resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.resource|{}resource[0]
+            final fun <get-resource>(): love.forte.simbot.resource/Resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.resource.<get-resource>|<get-resource>(){}[0]
+        final val segment // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.segment|{}segment[0]
+            final fun <get-segment>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.segment.<get-segment>|<get-segment>(){}[0]
+
+        final fun component1(): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.component.onebot.v11.message.segment/OneBotImage = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.copy|copy(love.forte.simbot.component.onebot.v11.message.segment.OneBotImage){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.toString|toString(){}[0]
+        final suspend fun url(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.url|url(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.Element){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Element.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotImage) // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotImage){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.create|create(kotlin.String){}[0]
+        final fun create(love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Data, love.forte.simbot.resource/Resource? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.create|create(love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.Data;love.forte.simbot.resource.Resource?){}[0]
+        final fun create(love.forte.simbot.resource/Resource, love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.create|create(love.forte.simbot.resource.Resource;love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.AdditionalParams?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage> // love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotJson : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.data.<get-data>|<get-data>(){}[0]
+    final val xml // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.xml|{}xml[0]
+        final fun <get-xml>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.xml.<get-xml>|<get-xml>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data|null[0]
+        constructor <init>(kotlin/String) // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.<init>|<init>(kotlin.String){}[0]
+
+        final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.data|{}data[0]
+            final fun <get-data>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.data.<get-data>|<get-data>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotJson.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotJson> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotJson // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotJson) // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotJson){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotJson // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Factory.create|create(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotJson> // love.forte.simbot.component.onebot.v11.message.segment/OneBotJson.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.data.<get-data>|<get-data>(){}[0]
+    final val lat // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.lat|{}lat[0]
+        final fun <get-lat>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.lat.<get-lat>|<get-lat>(){}[0]
+    final val lon // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.lon|{}lon[0]
+        final fun <get-lon>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.lon.<get-lon>|<get-lon>(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data|null[0]
+        constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ...) // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+        final val content // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.content|{}content[0]
+            final fun <get-content>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.content.<get-content>|<get-content>(){}[0]
+        final val lat // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.lat|{}lat[0]
+            final fun <get-lat>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.lat.<get-lat>|<get-lat>(){}[0]
+        final val lon // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.lon|{}lon[0]
+            final fun <get-lon>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.lon.<get-lon>|<get-lon>(){}[0]
+        final val title // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.title|{}title[0]
+            final fun <get-title>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.title.<get-title>|<get-title>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.component4|component4(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotLocation.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation) // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotLocation){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Factory.create|create(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation> // love.forte.simbot.component.onebot.v11.message.segment/OneBotLocation.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.data.<get-data>|<get-data>(){}[0]
+    final val musicType // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.musicType|{}musicType[0]
+        final fun <get-musicType>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.musicType.<get-musicType>|<get-musicType>(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data|null[0]
+        constructor <init>(kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...) // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.<init>|<init>(kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+
+        final val audio // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.audio|{}audio[0]
+            final fun <get-audio>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.audio.<get-audio>|<get-audio>(){}[0]
+        final val content // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.content|{}content[0]
+            final fun <get-content>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.content.<get-content>|<get-content>(){}[0]
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.id|{}id[0]
+            final fun <get-id>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.id.<get-id>|<get-id>(){}[0]
+        final val image // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.image|{}image[0]
+            final fun <get-image>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.image.<get-image>|<get-image>(){}[0]
+        final val title // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.title|{}title[0]
+            final fun <get-title>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.title.<get-title>|<get-title>(){}[0]
+        final val type // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.type|{}type[0]
+            final fun <get-type>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.type.<get-type>|<get-type>(){}[0]
+        final val url // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.url|{}url[0]
+            final fun <get-url>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component4|component4(){}[0]
+        final fun component5(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component5|component5(){}[0]
+        final fun component6(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component6|component6(){}[0]
+        final fun component7(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.component7|component7(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.copy|copy(kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotMusic.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic) // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotMusic){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory|null[0]
+        final const val CUSTOM_DATA_TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.CUSTOM_DATA_TYPE|{}CUSTOM_DATA_TYPE[0]
+            final fun <get-CUSTOM_DATA_TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.CUSTOM_DATA_TYPE.<get-CUSTOM_DATA_TYPE>|<get-CUSTOM_DATA_TYPE>(){}[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String, kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.create|create(kotlin.String;kotlin.String){}[0]
+        final fun create(kotlin/String, kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.create|create(kotlin.String;kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic> // love.forte.simbot.component.onebot.v11.message.segment/OneBotMusic.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.id.<get-id>|<get-id>(){}[0]
+    final val name // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.name.<get-name>|<get-name>(){}[0]
+    final val type // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.type|{}type[0]
+        final fun <get-type>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.type.<get-type>|<get-type>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data|null[0]
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.id|{}id[0]
+            final fun <get-id>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.id.<get-id>|<get-id>(){}[0]
+        final val name // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.name|{}name[0]
+            final fun <get-name>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.name.<get-name>|<get-name>(){}[0]
+        final val type // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.type|{}type[0]
+            final fun <get-type>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.type.<get-type>|<get-type>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.component3|component3(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotPoke.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke) // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotPoke){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String, love.forte.simbot.common.id/ID, kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory.create|create(kotlin.String;love.forte.simbot.common.id.ID;kotlin.String?){}[0]
+        final fun create(love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Data): love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory.create|create(love.forte.simbot.component.onebot.v11.message.segment.OneBotPoke.Data){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke> // love.forte.simbot.component.onebot.v11.message.segment/OneBotPoke.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.data.<get-data>|<get-data>(){}[0]
+    final val resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.resource|{}resource[0]
+        final fun <get-resource>(): love.forte.simbot.resource/Resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.resource.<get-resource>|<get-resource>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.toString|toString(){}[0]
+
+    final class AdditionalParams { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams|null[0]
+        constructor <init>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.<init>|<init>(){}[0]
+
+        final var base64Encoder // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.base64Encoder|{}base64Encoder[0]
+            final fun <get-base64Encoder>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.base64Encoder.<get-base64Encoder>|<get-base64Encoder>(){}[0]
+            final fun <set-base64Encoder>(love.forte.simbot.component.onebot.v11.message/Base64Encoder?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.base64Encoder.<set-base64Encoder>|<set-base64Encoder>(love.forte.simbot.component.onebot.v11.message.Base64Encoder?){}[0]
+        final var cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.cache.<get-cache>|<get-cache>(){}[0]
+            final fun <set-cache>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.cache.<set-cache>|<set-cache>(kotlin.Boolean?){}[0]
+        final var localFileToBase64 // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.localFileToBase64|{}localFileToBase64[0]
+            final fun <get-localFileToBase64>(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.localFileToBase64.<get-localFileToBase64>|<get-localFileToBase64>(){}[0]
+            final fun <set-localFileToBase64>(kotlin/Boolean) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.localFileToBase64.<set-localFileToBase64>|<set-localFileToBase64>(kotlin.Boolean){}[0]
+        final var magic // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.magic|{}magic[0]
+            final fun <get-magic>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.magic.<get-magic>|<get-magic>(){}[0]
+            final fun <set-magic>(kotlin/String?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.magic.<set-magic>|<set-magic>(kotlin.String?){}[0]
+        final var proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.proxy.<get-proxy>|<get-proxy>(){}[0]
+            final fun <set-proxy>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.proxy.<set-proxy>|<set-proxy>(kotlin.Boolean?){}[0]
+        final var timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.timeout.<get-timeout>|<get-timeout>(){}[0]
+            final fun <set-timeout>(kotlin/Int?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams.timeout.<set-timeout>|<set-timeout>(kotlin.Int?){}[0]
+    }
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data|null[0]
+        final val cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.cache.<get-cache>|<get-cache>(){}[0]
+        final val file // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.file|{}file[0]
+            final fun <get-file>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.file.<get-file>|<get-file>(){}[0]
+        final val magic // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.magic|{}magic[0]
+            final fun <get-magic>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.magic.<get-magic>|<get-magic>(){}[0]
+        final val proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.proxy.<get-proxy>|<get-proxy>(){}[0]
+        final val timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final val url // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.url|{}url[0]
+            final fun <get-url>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component4|component4(){}[0]
+        final fun component5(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component5|component5(){}[0]
+        final fun component6(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.component6|component6(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord) // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.create|create(kotlin.String){}[0]
+        final fun create(love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Data, love.forte.simbot.resource/Resource? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.create|create(love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord.Data;love.forte.simbot.resource.Resource?){}[0]
+        final fun create(love.forte.simbot.resource/Resource, love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.AdditionalParams? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.create|create(love.forte.simbot.resource.Resource;love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord.AdditionalParams?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRecord.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotReply : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment, love.forte.simbot.message/MessageReference { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.id.<get-id>|<get-id>(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.id.<get-id>|<get-id>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.common.id/ID = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.copy|copy(love.forte.simbot.common.id.ID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotReply.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotReply> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotReply) // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotReply){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.message.segment/OneBotReply // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Factory.create|create(love.forte.simbot.common.id.ID){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotReply> // love.forte.simbot.component.onebot.v11.message.segment/OneBotReply.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotShare : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.data.<get-data>|<get-data>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data|null[0]
+        constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ...) // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+        final val content // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.content|{}content[0]
+            final fun <get-content>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.content.<get-content>|<get-content>(){}[0]
+        final val image // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.image|{}image[0]
+            final fun <get-image>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.image.<get-image>|<get-image>(){}[0]
+        final val title // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.title|{}title[0]
+            final fun <get-title>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.title.<get-title>|<get-title>(){}[0]
+        final val url // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.url|{}url[0]
+            final fun <get-url>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.component4|component4(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotShare.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotShare> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotShare) // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotShare){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory.create|create(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+        final fun create(love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Data): love.forte.simbot.component.onebot.v11.message.segment/OneBotShare // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory.create|create(love.forte.simbot.component.onebot.v11.message.segment.OneBotShare.Data){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotShare> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShare.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotText : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.data.<get-data>|<get-data>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.hashCode|hashCode(){}[0]
+    final fun toElement(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.toElement|toElement(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data|null[0]
+        final val text // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.text|{}text[0]
+            final fun <get-text>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.text.<get-text>|<get-text>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.component1|component1(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotText.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Element : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement, love.forte.simbot.message/PlainText { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element|null[0]
+        constructor <init>(love.forte.simbot.component.onebot.v11.message.segment/OneBotText) // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.<init>|<init>(love.forte.simbot.component.onebot.v11.message.segment.OneBotText){}[0]
+
+        final val segment // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.segment|{}segment[0]
+            final fun <get-segment>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotText // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.segment.<get-segment>|<get-segment>(){}[0]
+        final val text // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.text|{}text[0]
+            final fun <get-text>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.text.<get-text>|<get-text>(){}[0]
+
+        final fun component1(): love.forte.simbot.component.onebot.v11.message.segment/OneBotText // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.component.onebot.v11.message.segment/OneBotText = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.copy|copy(love.forte.simbot.component.onebot.v11.message.segment.OneBotText){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element) // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotText.Element){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Element.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotText // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotText) // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotText){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotText // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Factory.create|create(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotText> // love.forte.simbot.component.onebot.v11.message.segment/OneBotText.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.data.<get-data>|<get-data>(){}[0]
+    final val resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.resource|{}resource[0]
+        final fun <get-resource>(): love.forte.simbot.resource/Resource // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.resource.<get-resource>|<get-resource>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.toString|toString(){}[0]
+
+    final class AdditionalParams { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams|null[0]
+        constructor <init>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.<init>|<init>(){}[0]
+
+        final var base64Encoder // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.base64Encoder|{}base64Encoder[0]
+            final fun <get-base64Encoder>(): love.forte.simbot.component.onebot.v11.message/Base64Encoder? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.base64Encoder.<get-base64Encoder>|<get-base64Encoder>(){}[0]
+            final fun <set-base64Encoder>(love.forte.simbot.component.onebot.v11.message/Base64Encoder?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.base64Encoder.<set-base64Encoder>|<set-base64Encoder>(love.forte.simbot.component.onebot.v11.message.Base64Encoder?){}[0]
+        final var cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.cache.<get-cache>|<get-cache>(){}[0]
+            final fun <set-cache>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.cache.<set-cache>|<set-cache>(kotlin.Boolean?){}[0]
+        final var localFileToBase64 // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.localFileToBase64|{}localFileToBase64[0]
+            final fun <get-localFileToBase64>(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.localFileToBase64.<get-localFileToBase64>|<get-localFileToBase64>(){}[0]
+            final fun <set-localFileToBase64>(kotlin/Boolean) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.localFileToBase64.<set-localFileToBase64>|<set-localFileToBase64>(kotlin.Boolean){}[0]
+        final var proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.proxy.<get-proxy>|<get-proxy>(){}[0]
+            final fun <set-proxy>(kotlin/Boolean?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.proxy.<set-proxy>|<set-proxy>(kotlin.Boolean?){}[0]
+        final var timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.timeout.<get-timeout>|<get-timeout>(){}[0]
+            final fun <set-timeout>(kotlin/Int?) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams.timeout.<set-timeout>|<set-timeout>(kotlin.Int?){}[0]
+    }
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data|null[0]
+        final val cache // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.cache|{}cache[0]
+            final fun <get-cache>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.cache.<get-cache>|<get-cache>(){}[0]
+        final val file // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.file|{}file[0]
+            final fun <get-file>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.file.<get-file>|<get-file>(){}[0]
+        final val proxy // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.proxy|{}proxy[0]
+            final fun <get-proxy>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.proxy.<get-proxy>|<get-proxy>(){}[0]
+        final val timeout // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.timeout|{}timeout[0]
+            final fun <get-timeout>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final val url // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.url|{}url[0]
+            final fun <get-url>(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.component2|component2(){}[0]
+        final fun component3(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.component3|component3(){}[0]
+        final fun component4(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.component4|component4(){}[0]
+        final fun component5(): kotlin/Int? // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.component5|component5(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo) // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.create|create(kotlin.String){}[0]
+        final fun create(love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Data, love.forte.simbot.resource/Resource? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.create|create(love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo.Data;love.forte.simbot.resource.Resource?){}[0]
+        final fun create(love.forte.simbot.resource/Resource, love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.AdditionalParams? = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.create|create(love.forte.simbot.resource.Resource;love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo.AdditionalParams?){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo> // love.forte.simbot.component.onebot.v11.message.segment/OneBotVideo.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.message.segment/OneBotXml : love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml|null[0]
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.data.<get-data>|<get-data>(){}[0]
+    final val xml // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.xml|{}xml[0]
+        final fun <get-xml>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.xml.<get-xml>|<get-xml>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.toString|toString(){}[0]
+
+    final class Data { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data|null[0]
+        constructor <init>(kotlin/String) // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.<init>|<init>(kotlin.String){}[0]
+
+        final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.data|{}data[0]
+            final fun <get-data>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.data.<get-data>|<get-data>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data) // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotXml.Data){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data> // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotXml> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.message.segment/OneBotXml // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.message.segment/OneBotXml) // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.message.segment.OneBotXml){}[0]
+    }
+
+    final object Factory { // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Factory|null[0]
+        final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Factory.TYPE|{}TYPE[0]
+            final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Factory.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+        final fun create(kotlin/String): love.forte.simbot.component.onebot.v11.message.segment/OneBotXml // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Factory.create|create(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotXml> // love.forte.simbot.component.onebot.v11.message.segment/OneBotXml.Factory.serializer|serializer(){}[0]
+    }
+}
+
+final object love.forte.simbot.component.onebot.v11.message.segment/OneBotDice : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElementResolver { // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice|null[0]
+    final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.TYPE|{}TYPE[0]
+        final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.data|{}data[0]
+        final fun <get-data>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.data.<get-data>|<get-data>(){}[0]
+
+    final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotDice> // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toElement(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.toElement|toElement(){}[0]
+
+    final object Element : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement { // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element|null[0]
+        final val segment // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.segment|{}segment[0]
+            final fun <get-segment>(): love.forte.simbot.component.onebot.v11.message.segment/OneBotDice // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.segment.<get-segment>|<get-segment>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.hashCode|hashCode(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element> // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotDice.Element.toString|toString(){}[0]
+    }
+}
+
+final object love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer : kotlinx.serialization/KSerializer<kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>> { // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer|null[0]
+    final val descriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer.descriptor|{}descriptor[0]
+        final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+    final fun deserialize(kotlinx.serialization.encoding/Decoder): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+    final fun serialize(kotlinx.serialization.encoding/Encoder, kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment>) // love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>){}[0]
+}
+
+final object love.forte.simbot.component.onebot.v11.message.segment/OneBotRps : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps|null[0]
+    final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.TYPE|{}TYPE[0]
+        final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.data|{}data[0]
+        final fun <get-data>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.data.<get-data>|<get-data>(){}[0]
+
+    final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotRps> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.onebot.v11.message.segment/OneBotRps.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+}
+
+final object love.forte.simbot.component.onebot.v11.message.segment/OneBotShake : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment { // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake|null[0]
+    final const val TYPE // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.TYPE|{}TYPE[0]
+        final fun <get-TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.TYPE.<get-TYPE>|<get-TYPE>(){}[0]
+
+    final val data // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.data|{}data[0]
+        final fun <get-data>() // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.data.<get-data>|<get-data>(){}[0]
+
+    final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.message.segment/OneBotShake> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.onebot.v11.message.segment/OneBotShake.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+}
+
+final object love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer : kotlinx.serialization/KSerializer<kotlin.collections/List<love.forte.simbot.component.onebot.v11.message/OneBotMessageElement>> { // love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer|null[0]
+    final val descriptor // love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer.descriptor|{}descriptor[0]
+        final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+    final fun deserialize(kotlinx.serialization.encoding/Decoder): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message/OneBotMessageElement> // love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+    final fun serialize(kotlinx.serialization.encoding/Encoder, kotlin.collections/List<love.forte.simbot.component.onebot.v11.message/OneBotMessageElement>) // love.forte.simbot.component.onebot.v11.message/OneBotMessageElementSerializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.OneBotMessageElement>){}[0]
+}
+
+final fun (love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment).love.forte.simbot.component.onebot.v11.message.segment/toElement(): love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegmentElement // love.forte.simbot.component.onebot.v11.message.segment/toElement|toElement@love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment(){}[0]
+final fun (love.forte.simbot.message/MessagesBuilder).love.forte.simbot.component.onebot.v11.message.segment/add(love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment): love.forte.simbot.message/MessagesBuilder // love.forte.simbot.component.onebot.v11.message.segment/add|add@love.forte.simbot.message.MessagesBuilder(love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment){}[0]
+final inline fun (love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.Factory).love.forte.simbot.component.onebot.v11.message.segment/create(love.forte.simbot.resource/Resource, kotlin/Function1<love.forte.simbot.component.onebot.v11.message.segment/OneBotImage.AdditionalParams, kotlin/Unit>): love.forte.simbot.component.onebot.v11.message.segment/OneBotImage // love.forte.simbot.component.onebot.v11.message.segment/create|create@love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.Factory(love.forte.simbot.resource.Resource;kotlin.Function1<love.forte.simbot.component.onebot.v11.message.segment.OneBotImage.AdditionalParams,kotlin.Unit>){}[0]
+final inline fun <#A: reified love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> (love.forte.simbot.message/Message.Element).love.forte.simbot.component.onebot.v11.message.segment/isOneBotSegment(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.message.segment/isOneBotSegment|isOneBotSegment@love.forte.simbot.message.Message.Element(){0§<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>}[0]
+final inline fun <#A: reified love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> (love.forte.simbot.message/Message.Element).love.forte.simbot.component.onebot.v11.message.segment/oneBotSegment(): #A // love.forte.simbot.component.onebot.v11.message.segment/oneBotSegment|oneBotSegment@love.forte.simbot.message.Message.Element(){0§<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>}[0]
+final inline fun <#A: reified love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> (love.forte.simbot.message/Message.Element).love.forte.simbot.component.onebot.v11.message.segment/oneBotSegmentOrNull(): #A? // love.forte.simbot.component.onebot.v11.message.segment/oneBotSegmentOrNull|oneBotSegmentOrNull@love.forte.simbot.message.Message.Element(){0§<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>}[0]

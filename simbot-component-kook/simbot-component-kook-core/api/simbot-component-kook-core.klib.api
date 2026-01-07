@@ -1,0 +1,1401 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-kook-core>
+open annotation class love.forte.simbot.component.kook.blacklist/ExperimentalBlacklistApi : kotlin/Annotation { // love.forte.simbot.component.kook.blacklist/ExperimentalBlacklistApi|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.blacklist/ExperimentalBlacklistApi.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.kook.message/KookSendOnlyMessage : kotlin/Annotation { // love.forte.simbot.component.kook.message/KookSendOnlyMessage|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.message/KookSendOnlyMessage.<init>|<init>(){}[0]
+}
+
+abstract fun interface love.forte.simbot.component.kook.bot/KookBotManagerFactoryConfigurerProvider : love.forte.simbot.plugin/PluginFactoryConfigurerProvider<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration> // love.forte.simbot.component.kook.bot/KookBotManagerFactoryConfigurerProvider|null[0]
+
+abstract interface love.forte.simbot.component.kook.bot/KookBot : kotlinx.coroutines/CoroutineScope, love.forte.simbot.bot/Bot { // love.forte.simbot.component.kook.bot/KookBot|null[0]
+    abstract val component // love.forte.simbot.component.kook.bot/KookBot.component|{}component[0]
+        abstract fun <get-component>(): love.forte.simbot.component.kook/KookComponent // love.forte.simbot.component.kook.bot/KookBot.component.<get-component>|<get-component>(){}[0]
+    abstract val contactRelation // love.forte.simbot.component.kook.bot/KookBot.contactRelation|{}contactRelation[0]
+        abstract fun <get-contactRelation>(): love.forte.simbot.component.kook.bot/KookContactRelation // love.forte.simbot.component.kook.bot/KookBot.contactRelation.<get-contactRelation>|<get-contactRelation>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook.bot/KookBot.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook.bot/KookBot.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val guildRelation // love.forte.simbot.component.kook.bot/KookBot.guildRelation|{}guildRelation[0]
+        abstract fun <get-guildRelation>(): love.forte.simbot.component.kook.bot/KookGuildRelation // love.forte.simbot.component.kook.bot/KookBot.guildRelation.<get-guildRelation>|<get-guildRelation>(){}[0]
+    abstract val logger // love.forte.simbot.component.kook.bot/KookBot.logger|{}logger[0]
+        abstract fun <get-logger>(): love.forte.simbot.logger/Logger // love.forte.simbot.component.kook.bot/KookBot.logger.<get-logger>|<get-logger>(){}[0]
+    abstract val sourceBot // love.forte.simbot.component.kook.bot/KookBot.sourceBot|{}sourceBot[0]
+        abstract fun <get-sourceBot>(): love.forte.simbot.kook.stdlib/Bot // love.forte.simbot.component.kook.bot/KookBot.sourceBot.<get-sourceBot>|<get-sourceBot>(){}[0]
+    open val avatar // love.forte.simbot.component.kook.bot/KookBot.avatar|{}avatar[0]
+        open fun <get-avatar>(): kotlin/String // love.forte.simbot.component.kook.bot/KookBot.avatar.<get-avatar>|<get-avatar>(){}[0]
+    open val groupRelation // love.forte.simbot.component.kook.bot/KookBot.groupRelation|{}groupRelation[0]
+        open fun <get-groupRelation>(): love.forte.simbot.bot/GroupRelation? // love.forte.simbot.component.kook.bot/KookBot.groupRelation.<get-groupRelation>|<get-groupRelation>(){}[0]
+    open val id // love.forte.simbot.component.kook.bot/KookBot.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.bot/KookBot.id.<get-id>|<get-id>(){}[0]
+    open val isActive // love.forte.simbot.component.kook.bot/KookBot.isActive|{}isActive[0]
+        open fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBot.isActive.<get-isActive>|<get-isActive>(){}[0]
+    open val isStarted // love.forte.simbot.component.kook.bot/KookBot.isStarted|{}isStarted[0]
+        open fun <get-isStarted>(): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBot.isStarted.<get-isStarted>|<get-isStarted>(){}[0]
+    open val name // love.forte.simbot.component.kook.bot/KookBot.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook.bot/KookBot.name.<get-name>|<get-name>(){}[0]
+
+    abstract fun isMe(love.forte.simbot.common.id/ID): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBot.isMe|isMe(love.forte.simbot.common.id.ID){}[0]
+    open fun cancel(kotlin/Throwable?) // love.forte.simbot.component.kook.bot/KookBot.cancel|cancel(kotlin.Throwable?){}[0]
+    open suspend fun join() // love.forte.simbot.component.kook.bot/KookBot.join|join(){}[0]
+    open suspend fun messageFromId(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook.message/KookMessageContent // love.forte.simbot.component.kook.bot/KookBot.messageFromId|messageFromId(love.forte.simbot.common.id.ID){}[0]
+    open suspend fun messageFromReference(love.forte.simbot.message/MessageReference): love.forte.simbot.component.kook.message/KookMessageContent // love.forte.simbot.component.kook.bot/KookBot.messageFromReference|messageFromReference(love.forte.simbot.message.MessageReference){}[0]
+    open suspend fun uploadAsset(love.forte.simbot.kook.api.asset/CreateAssetApi, love.forte.simbot.kook.messages/MessageType): love.forte.simbot.component.kook.message/KookAsset // love.forte.simbot.component.kook.bot/KookBot.uploadAsset|uploadAsset(love.forte.simbot.kook.api.asset.CreateAssetApi;love.forte.simbot.kook.messages.MessageType){}[0]
+    open suspend fun uploadAssetImage(love.forte.simbot.kook.api.asset/CreateAssetApi): love.forte.simbot.component.kook.message/KookAssetImage // love.forte.simbot.component.kook.bot/KookBot.uploadAssetImage|uploadAssetImage(love.forte.simbot.kook.api.asset.CreateAssetApi){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook.bot/KookBotRegistrar { // love.forte.simbot.component.kook.bot/KookBotRegistrar|null[0]
+    abstract fun register(love.forte.simbot.kook.stdlib/Ticket, kotlin/Function1<love.forte.simbot.component.kook.bot/KookBotConfiguration, kotlin/Unit> = ...): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotRegistrar.register|register(love.forte.simbot.kook.stdlib.Ticket;kotlin.Function1<love.forte.simbot.component.kook.bot.KookBotConfiguration,kotlin.Unit>){}[0]
+    abstract fun register(love.forte.simbot.kook.stdlib/Ticket, love.forte.simbot.component.kook.bot/KookBotConfiguration): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotRegistrar.register|register(love.forte.simbot.kook.stdlib.Ticket;love.forte.simbot.component.kook.bot.KookBotConfiguration){}[0]
+    open fun registerWs(kotlin/String, kotlin/String, kotlin/Function1<love.forte.simbot.component.kook.bot/KookBotConfiguration, kotlin/Unit> = ...): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotRegistrar.registerWs|registerWs(kotlin.String;kotlin.String;kotlin.Function1<love.forte.simbot.component.kook.bot.KookBotConfiguration,kotlin.Unit>){}[0]
+    open fun registerWs(kotlin/String, kotlin/String, love.forte.simbot.component.kook.bot/KookBotConfiguration): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotRegistrar.registerWs|registerWs(kotlin.String;kotlin.String;love.forte.simbot.component.kook.bot.KookBotConfiguration){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook.bot/KookContactRelation : love.forte.simbot.bot/ContactRelation { // love.forte.simbot.component.kook.bot/KookContactRelation|null[0]
+    open val contacts // love.forte.simbot.component.kook.bot/KookContactRelation.contacts|{}contacts[0]
+        open fun <get-contacts>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookUserChat> // love.forte.simbot.component.kook.bot/KookContactRelation.contacts.<get-contacts>|<get-contacts>(){}[0]
+
+    abstract fun getContacts(kotlin/Int?): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookUserChat> // love.forte.simbot.component.kook.bot/KookContactRelation.getContacts|getContacts(kotlin.Int?){}[0]
+    abstract suspend fun contact(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookUserChat // love.forte.simbot.component.kook.bot/KookContactRelation.contact|contact(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun contactCount(): kotlin/Int // love.forte.simbot.component.kook.bot/KookContactRelation.contactCount|contactCount(){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook.bot/KookGuildRelation : love.forte.simbot.bot/GuildRelation { // love.forte.simbot.component.kook.bot/KookGuildRelation|null[0]
+    abstract val guilds // love.forte.simbot.component.kook.bot/KookGuildRelation.guilds|{}guilds[0]
+        abstract fun <get-guilds>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookGuild> // love.forte.simbot.component.kook.bot/KookGuildRelation.guilds.<get-guilds>|<get-guilds>(){}[0]
+
+    abstract suspend fun guild(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookGuild? // love.forte.simbot.component.kook.bot/KookGuildRelation.guild|guild(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun guildCount(): kotlin/Int // love.forte.simbot.component.kook.bot/KookGuildRelation.guildCount|guildCount(){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook.message/KookMessageContent : love.forte.simbot.ability/DeleteSupport, love.forte.simbot.message/MessageContent { // love.forte.simbot.component.kook.message/KookMessageContent|null[0]
+    abstract val id // love.forte.simbot.component.kook.message/KookMessageContent.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookMessageContent.id.<get-id>|<get-id>(){}[0]
+    abstract val messages // love.forte.simbot.component.kook.message/KookMessageContent.messages|{}messages[0]
+        abstract fun <get-messages>(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/KookMessageContent.messages.<get-messages>|<get-messages>(){}[0]
+    abstract val rawContent // love.forte.simbot.component.kook.message/KookMessageContent.rawContent|{}rawContent[0]
+        abstract fun <get-rawContent>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessageContent.rawContent.<get-rawContent>|<get-rawContent>(){}[0]
+
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookMessageContent.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    abstract suspend fun reference(): love.forte.simbot.component.kook.message/KookQuote? // love.forte.simbot.component.kook.message/KookMessageContent.reference|reference(){}[0]
+    abstract suspend fun referenceMessage(): love.forte.simbot.component.kook.message/KookMessageContent? // love.forte.simbot.component.kook.message/KookMessageContent.referenceMessage|referenceMessage(){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook.message/KookMessageElement : love.forte.simbot.message/Message.Element // love.forte.simbot.component.kook.message/KookMessageElement|null[0]
+
+abstract interface love.forte.simbot.component.kook.message/KookMessageReceipt : love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.kook.message/KookMessageReceipt|null[0]
+
+abstract interface love.forte.simbot.component.kook.role/KookRoleOperator // love.forte.simbot.component.kook.role/KookRoleOperator|null[0]
+
+abstract interface love.forte.simbot.component.kook/KookCategory : love.forte.simbot.definition/Category { // love.forte.simbot.component.kook/KookCategory|null[0]
+    abstract val source // love.forte.simbot.component.kook/KookCategory.source|{}source[0]
+        abstract fun <get-source>(): love.forte.simbot.kook.objects/Channel // love.forte.simbot.component.kook/KookCategory.source.<get-source>|<get-source>(){}[0]
+    open val id // love.forte.simbot.component.kook/KookCategory.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookCategory.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun toChannel(): love.forte.simbot.component.kook/KookCategoryChannel // love.forte.simbot.component.kook/KookCategory.toChannel|toChannel(){}[0]
+    open suspend fun name(): kotlin/String // love.forte.simbot.component.kook/KookCategory.name|name(){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookCategoryChannel : love.forte.simbot.component.kook/KookChannel { // love.forte.simbot.component.kook/KookCategoryChannel|null[0]
+    abstract val category // love.forte.simbot.component.kook/KookCategoryChannel.category|{}category[0]
+        abstract fun <get-category>(): love.forte.simbot.component.kook/KookCategory // love.forte.simbot.component.kook/KookCategoryChannel.category.<get-category>|<get-category>(){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookChannel : love.forte.simbot.ability/DeleteSupport, love.forte.simbot.definition/Channel { // love.forte.simbot.component.kook/KookChannel|null[0]
+    abstract val bot // love.forte.simbot.component.kook/KookChannel.bot|{}bot[0]
+        abstract fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook/KookChannel.bot.<get-bot>|<get-bot>(){}[0]
+    abstract val category // love.forte.simbot.component.kook/KookChannel.category|{}category[0]
+        abstract fun <get-category>(): love.forte.simbot.component.kook/KookCategory? // love.forte.simbot.component.kook/KookChannel.category.<get-category>|<get-category>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook/KookChannel.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook/KookChannel.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val source // love.forte.simbot.component.kook/KookChannel.source|{}source[0]
+        abstract fun <get-source>(): love.forte.simbot.kook.objects/Channel // love.forte.simbot.component.kook/KookChannel.source.<get-source>|<get-source>(){}[0]
+    open val guildId // love.forte.simbot.component.kook/KookChannel.guildId|{}guildId[0]
+        open fun <get-guildId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookChannel.guildId.<get-guildId>|<get-guildId>(){}[0]
+    open val hasPassword // love.forte.simbot.component.kook/KookChannel.hasPassword|{}hasPassword[0]
+        open fun <get-hasPassword>(): kotlin/Boolean // love.forte.simbot.component.kook/KookChannel.hasPassword.<get-hasPassword>|<get-hasPassword>(){}[0]
+    open val id // love.forte.simbot.component.kook/KookChannel.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookChannel.id.<get-id>|<get-id>(){}[0]
+    open val level // love.forte.simbot.component.kook/KookChannel.level|{}level[0]
+        open fun <get-level>(): kotlin/Int // love.forte.simbot.component.kook/KookChannel.level.<get-level>|<get-level>(){}[0]
+    open val name // love.forte.simbot.component.kook/KookChannel.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook/KookChannel.name.<get-name>|<get-name>(){}[0]
+    open val parentId // love.forte.simbot.component.kook/KookChannel.parentId|{}parentId[0]
+        open fun <get-parentId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookChannel.parentId.<get-parentId>|<get-parentId>(){}[0]
+    open val permissionSync // love.forte.simbot.component.kook/KookChannel.permissionSync|{}permissionSync[0]
+        open fun <get-permissionSync>(): kotlin/Int // love.forte.simbot.component.kook/KookChannel.permissionSync.<get-permissionSync>|<get-permissionSync>(){}[0]
+    open val slowMode // love.forte.simbot.component.kook/KookChannel.slowMode|{}slowMode[0]
+        open fun <get-slowMode>(): kotlin/Int // love.forte.simbot.component.kook/KookChannel.slowMode.<get-slowMode>|<get-slowMode>(){}[0]
+    open val topic // love.forte.simbot.component.kook/KookChannel.topic|{}topic[0]
+        open fun <get-topic>(): kotlin/String // love.forte.simbot.component.kook/KookChannel.topic.<get-topic>|<get-topic>(){}[0]
+    open val userId // love.forte.simbot.component.kook/KookChannel.userId|{}userId[0]
+        open fun <get-userId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookChannel.userId.<get-userId>|<get-userId>(){}[0]
+
+    abstract fun updater(): love.forte.simbot.component.kook/KookChannelUpdater // love.forte.simbot.component.kook/KookChannel.updater|updater(){}[0]
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook/KookChannel.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookChannelUpdater { // love.forte.simbot.component.kook/KookChannelUpdater|null[0]
+    abstract val channel // love.forte.simbot.component.kook/KookChannelUpdater.channel|{}channel[0]
+        abstract fun <get-channel>(): love.forte.simbot.component.kook/KookChannel // love.forte.simbot.component.kook/KookChannelUpdater.channel.<get-channel>|<get-channel>(){}[0]
+
+    abstract var builder // love.forte.simbot.component.kook/KookChannelUpdater.builder|{}builder[0]
+        abstract fun <get-builder>(): love.forte.simbot.kook.api.channel/UpdateChannelApi.Builder // love.forte.simbot.component.kook/KookChannelUpdater.builder.<get-builder>|<get-builder>(){}[0]
+        abstract fun <set-builder>(love.forte.simbot.kook.api.channel/UpdateChannelApi.Builder) // love.forte.simbot.component.kook/KookChannelUpdater.builder.<set-builder>|<set-builder>(love.forte.simbot.kook.api.channel.UpdateChannelApi.Builder){}[0]
+
+    abstract suspend fun execute(): love.forte.simbot.component.kook/KookChannel // love.forte.simbot.component.kook/KookChannelUpdater.execute|execute(){}[0]
+    open fun applyBuilder(kotlin/Function1<love.forte.simbot.kook.api.channel/UpdateChannelApi.Builder, love.forte.simbot.kook.api.channel/UpdateChannelApi.Builder>): love.forte.simbot.component.kook/KookChannelUpdater // love.forte.simbot.component.kook/KookChannelUpdater.applyBuilder|applyBuilder(kotlin.Function1<love.forte.simbot.kook.api.channel.UpdateChannelApi.Builder,love.forte.simbot.kook.api.channel.UpdateChannelApi.Builder>){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookChatCapableChannel : kotlinx.coroutines/CoroutineScope, love.forte.simbot.component.kook/KookChannel, love.forte.simbot.definition/ChatChannel { // love.forte.simbot.component.kook/KookChatCapableChannel|null[0]
+    abstract val category // love.forte.simbot.component.kook/KookChatCapableChannel.category|{}category[0]
+        abstract fun <get-category>(): love.forte.simbot.component.kook/KookCategory? // love.forte.simbot.component.kook/KookChatCapableChannel.category.<get-category>|<get-category>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook/KookChatCapableChannel.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook/KookChatCapableChannel.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    open val name // love.forte.simbot.component.kook/KookChatCapableChannel.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook/KookChatCapableChannel.name.<get-name>|<get-name>(){}[0]
+
+    abstract suspend fun send(love.forte.simbot.kook.api.message/SendChannelMessageApi): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(love.forte.simbot.kook.api.message.SendChannelMessageApi){}[0]
+    abstract suspend fun send(love.forte.simbot.message/Message, love.forte.simbot.common.id/ID? = ..., love.forte.simbot.common.id/ID? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(love.forte.simbot.message.Message;love.forte.simbot.common.id.ID?;love.forte.simbot.common.id.ID?){}[0]
+    abstract suspend fun send(love.forte.simbot.message/MessageContent, love.forte.simbot.common.id/ID? = ..., love.forte.simbot.common.id/ID? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(love.forte.simbot.message.MessageContent;love.forte.simbot.common.id.ID?;love.forte.simbot.common.id.ID?){}[0]
+    open suspend fun send(kotlin/Int, kotlin/String, love.forte.simbot.common.id/ID?, kotlin/String?, love.forte.simbot.common.id/ID?): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(kotlin.Int;kotlin.String;love.forte.simbot.common.id.ID?;kotlin.String?;love.forte.simbot.common.id.ID?){}[0]
+    open suspend fun send(kotlin/String): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(kotlin.String){}[0]
+    open suspend fun send(kotlin/String, love.forte.simbot.common.id/ID? = ..., love.forte.simbot.common.id/ID? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(kotlin.String;love.forte.simbot.common.id.ID?;love.forte.simbot.common.id.ID?){}[0]
+    open suspend fun send(love.forte.simbot.message/Message): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(love.forte.simbot.message.Message){}[0]
+    open suspend fun send(love.forte.simbot.message/MessageContent): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookChatCapableChannel.send|send(love.forte.simbot.message.MessageContent){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookChatChannel : love.forte.simbot.component.kook/KookChatCapableChannel // love.forte.simbot.component.kook/KookChatChannel|null[0]
+
+abstract interface love.forte.simbot.component.kook/KookComponentUsageBuilder { // love.forte.simbot.component.kook/KookComponentUsageBuilder|null[0]
+    abstract fun botManager(kotlin/Function1<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration, kotlin/Unit>) // love.forte.simbot.component.kook/KookComponentUsageBuilder.botManager|botManager(kotlin.Function1<love.forte.simbot.component.kook.bot.KookBotManagerConfiguration,kotlin.Unit>){}[0]
+    abstract fun component(kotlin/Function1<love.forte.simbot.component.kook/KookComponentConfiguration, kotlin/Unit>) // love.forte.simbot.component.kook/KookComponentUsageBuilder.component|component(kotlin.Function1<love.forte.simbot.component.kook.KookComponentConfiguration,kotlin.Unit>){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookGuild : kotlinx.coroutines/CoroutineScope, love.forte.simbot.component.kook.role/KookRoleOperator, love.forte.simbot.definition/Guild { // love.forte.simbot.component.kook/KookGuild|null[0]
+    abstract val channels // love.forte.simbot.component.kook/KookGuild.channels|{}channels[0]
+        abstract fun <get-channels>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookChannel> // love.forte.simbot.component.kook/KookGuild.channels.<get-channels>|<get-channels>(){}[0]
+    abstract val chatChannels // love.forte.simbot.component.kook/KookGuild.chatChannels|{}chatChannels[0]
+        abstract fun <get-chatChannels>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookChatChannel> // love.forte.simbot.component.kook/KookGuild.chatChannels.<get-chatChannels>|<get-chatChannels>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook/KookGuild.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook/KookGuild.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val members // love.forte.simbot.component.kook/KookGuild.members|{}members[0]
+        abstract fun <get-members>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookMember> // love.forte.simbot.component.kook/KookGuild.members.<get-members>|<get-members>(){}[0]
+    abstract val ownerId // love.forte.simbot.component.kook/KookGuild.ownerId|{}ownerId[0]
+        abstract fun <get-ownerId>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.kook/KookGuild.ownerId.<get-ownerId>|<get-ownerId>(){}[0]
+    abstract val source // love.forte.simbot.component.kook/KookGuild.source|{}source[0]
+        abstract fun <get-source>(): love.forte.simbot.kook.objects/Guild // love.forte.simbot.component.kook/KookGuild.source.<get-source>|<get-source>(){}[0]
+    abstract val voiceChannels // love.forte.simbot.component.kook/KookGuild.voiceChannels|{}voiceChannels[0]
+        abstract fun <get-voiceChannels>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookVoiceChannel> // love.forte.simbot.component.kook/KookGuild.voiceChannels.<get-voiceChannels>|<get-voiceChannels>(){}[0]
+    open val icon // love.forte.simbot.component.kook/KookGuild.icon|{}icon[0]
+        open fun <get-icon>(): kotlin/String // love.forte.simbot.component.kook/KookGuild.icon.<get-icon>|<get-icon>(){}[0]
+    open val id // love.forte.simbot.component.kook/KookGuild.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookGuild.id.<get-id>|<get-id>(){}[0]
+    open val name // love.forte.simbot.component.kook/KookGuild.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook/KookGuild.name.<get-name>|<get-name>(){}[0]
+    open val topic // love.forte.simbot.component.kook/KookGuild.topic|{}topic[0]
+        open fun <get-topic>(): kotlin/String // love.forte.simbot.component.kook/KookGuild.topic.<get-topic>|<get-topic>(){}[0]
+
+    abstract suspend fun botAsMember(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook/KookGuild.botAsMember|botAsMember(){}[0]
+    abstract suspend fun channel(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookChannel? // love.forte.simbot.component.kook/KookGuild.channel|channel(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun chatChannel(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookChatChannel? // love.forte.simbot.component.kook/KookGuild.chatChannel|chatChannel(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun member(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookMember? // love.forte.simbot.component.kook/KookGuild.member|member(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun owner(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook/KookGuild.owner|owner(){}[0]
+    abstract suspend fun voiceChannel(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook/KookVoiceChannel? // love.forte.simbot.component.kook/KookGuild.voiceChannel|voiceChannel(love.forte.simbot.common.id.ID){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookMember : kotlinx.coroutines/CoroutineScope, love.forte.simbot.ability/DeleteSupport, love.forte.simbot.definition/Member { // love.forte.simbot.component.kook/KookMember|null[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook/KookMember.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook/KookMember.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val guildId // love.forte.simbot.component.kook/KookMember.guildId|{}guildId[0]
+        abstract fun <get-guildId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookMember.guildId.<get-guildId>|<get-guildId>(){}[0]
+    abstract val source // love.forte.simbot.component.kook/KookMember.source|{}source[0]
+        abstract fun <get-source>(): love.forte.simbot.kook.objects/User // love.forte.simbot.component.kook/KookMember.source.<get-source>|<get-source>(){}[0]
+    open val avatar // love.forte.simbot.component.kook/KookMember.avatar|{}avatar[0]
+        open fun <get-avatar>(): kotlin/String // love.forte.simbot.component.kook/KookMember.avatar.<get-avatar>|<get-avatar>(){}[0]
+    open val id // love.forte.simbot.component.kook/KookMember.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookMember.id.<get-id>|<get-id>(){}[0]
+    open val identifyNum // love.forte.simbot.component.kook/KookMember.identifyNum|{}identifyNum[0]
+        open fun <get-identifyNum>(): kotlin/String // love.forte.simbot.component.kook/KookMember.identifyNum.<get-identifyNum>|<get-identifyNum>(){}[0]
+    open val name // love.forte.simbot.component.kook/KookMember.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook/KookMember.name.<get-name>|<get-name>(){}[0]
+    open val nick // love.forte.simbot.component.kook/KookMember.nick|{}nick[0]
+        open fun <get-nick>(): kotlin/String? // love.forte.simbot.component.kook/KookMember.nick.<get-nick>|<get-nick>(){}[0]
+
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook/KookMember.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    abstract suspend fun mute(kotlin/Int): kotlin/Boolean // love.forte.simbot.component.kook/KookMember.mute|mute(kotlin.Int){}[0]
+    abstract suspend fun send(kotlin/String): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookMember.send|send(kotlin.String){}[0]
+    abstract suspend fun send(love.forte.simbot.message/Message): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookMember.send|send(love.forte.simbot.message.Message){}[0]
+    abstract suspend fun send(love.forte.simbot.message/MessageContent): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookMember.send|send(love.forte.simbot.message.MessageContent){}[0]
+    abstract suspend fun unmute(kotlin/Int): kotlin/Boolean // love.forte.simbot.component.kook/KookMember.unmute|unmute(kotlin.Int){}[0]
+    open suspend fun mute(love.forte.simbot.kook.api.guild/MuteType): kotlin/Boolean // love.forte.simbot.component.kook/KookMember.mute|mute(love.forte.simbot.kook.api.guild.MuteType){}[0]
+    open suspend fun unmute(): kotlin/Boolean // love.forte.simbot.component.kook/KookMember.unmute|unmute(){}[0]
+    open suspend fun unmute(love.forte.simbot.kook.api.guild/MuteType): kotlin/Boolean // love.forte.simbot.component.kook/KookMember.unmute|unmute(love.forte.simbot.kook.api.guild.MuteType){}[0]
+
+    final object Companion { // love.forte.simbot.component.kook/KookMember.Companion|null[0]
+        final const val DEFAULT_MUTE_TYPE // love.forte.simbot.component.kook/KookMember.Companion.DEFAULT_MUTE_TYPE|{}DEFAULT_MUTE_TYPE[0]
+            final fun <get-DEFAULT_MUTE_TYPE>(): kotlin/Int // love.forte.simbot.component.kook/KookMember.Companion.DEFAULT_MUTE_TYPE.<get-DEFAULT_MUTE_TYPE>|<get-DEFAULT_MUTE_TYPE>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.kook/KookUserChat : love.forte.simbot.ability/DeleteSupport, love.forte.simbot.definition/Contact { // love.forte.simbot.component.kook/KookUserChat|null[0]
+    abstract val source // love.forte.simbot.component.kook/KookUserChat.source|{}source[0]
+        abstract fun <get-source>(): love.forte.simbot.kook.api.userchat/UserChatView // love.forte.simbot.component.kook/KookUserChat.source.<get-source>|<get-source>(){}[0]
+    open val avatar // love.forte.simbot.component.kook/KookUserChat.avatar|{}avatar[0]
+        open fun <get-avatar>(): kotlin/String // love.forte.simbot.component.kook/KookUserChat.avatar.<get-avatar>|<get-avatar>(){}[0]
+    open val chatCode // love.forte.simbot.component.kook/KookUserChat.chatCode|{}chatCode[0]
+        open fun <get-chatCode>(): kotlin/String // love.forte.simbot.component.kook/KookUserChat.chatCode.<get-chatCode>|<get-chatCode>(){}[0]
+    open val id // love.forte.simbot.component.kook/KookUserChat.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook/KookUserChat.id.<get-id>|<get-id>(){}[0]
+    open val name // love.forte.simbot.component.kook/KookUserChat.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.kook/KookUserChat.name.<get-name>|<get-name>(){}[0]
+
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook/KookUserChat.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    abstract suspend fun send(kotlin/String): love.forte.simbot.component.kook.message/KookMessageCreatedReceipt // love.forte.simbot.component.kook/KookUserChat.send|send(kotlin.String){}[0]
+    abstract suspend fun send(love.forte.simbot.message/Message): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookUserChat.send|send(love.forte.simbot.message.Message){}[0]
+    abstract suspend fun send(love.forte.simbot.message/MessageContent): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook/KookUserChat.send|send(love.forte.simbot.message.MessageContent){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookVoiceChannel : love.forte.simbot.component.kook/KookChatChannel { // love.forte.simbot.component.kook/KookVoiceChannel|null[0]
+    abstract val members // love.forte.simbot.component.kook/KookVoiceChannel.members|{}members[0]
+        abstract fun <get-members>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookVoiceMember> // love.forte.simbot.component.kook/KookVoiceChannel.members.<get-members>|<get-members>(){}[0]
+
+    abstract suspend fun kickoutMember(love.forte.simbot.common.id/ID) // love.forte.simbot.component.kook/KookVoiceChannel.kickoutMember|kickoutMember(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun moveMember(love.forte.simbot.common.id/ID, kotlin.collections/Iterable<love.forte.simbot.common.id/ID>) // love.forte.simbot.component.kook/KookVoiceChannel.moveMember|moveMember(love.forte.simbot.common.id.ID;kotlin.collections.Iterable<love.forte.simbot.common.id.ID>){}[0]
+    open suspend fun moveMember(love.forte.simbot.common.id/ID, kotlin/Array<out love.forte.simbot.common.id/ID>...) // love.forte.simbot.component.kook/KookVoiceChannel.moveMember|moveMember(love.forte.simbot.common.id.ID;kotlin.Array<out|love.forte.simbot.common.id.ID>...){}[0]
+}
+
+abstract interface love.forte.simbot.component.kook/KookVoiceMember : love.forte.simbot.component.kook/KookMember { // love.forte.simbot.component.kook/KookVoiceMember|null[0]
+    abstract suspend fun kickout() // love.forte.simbot.component.kook/KookVoiceMember.kickout|kickout(){}[0]
+    abstract suspend fun move(love.forte.simbot.common.id/ID) // love.forte.simbot.component.kook/KookVoiceMember.move|move(love.forte.simbot.common.id.ID){}[0]
+}
+
+abstract class <#A: out love.forte.simbot.kook.event/EventExtra, #B: out love.forte.simbot.kook.event/Event<#A>> love.forte.simbot.component.kook.event/KookBotEvent : love.forte.simbot.component.kook.event/KookEvent, love.forte.simbot.event/BotEvent { // love.forte.simbot.component.kook.event/KookBotEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotEvent.<init>|<init>(){}[0]
+
+    abstract val bot // love.forte.simbot.component.kook.event/KookBotEvent.bot|{}bot[0]
+        abstract fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.event/KookBotEvent.bot.<get-bot>|<get-bot>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookBotEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): #B // love.forte.simbot.component.kook.event/KookBotEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    abstract val sourceEventRaw // love.forte.simbot.component.kook.event/KookBotEvent.sourceEventRaw|{}sourceEventRaw[0]
+        abstract fun <get-sourceEventRaw>(): kotlin/String // love.forte.simbot.component.kook.event/KookBotEvent.sourceEventRaw.<get-sourceEventRaw>|<get-sourceEventRaw>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.event/KookBotEvent.toString|toString(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.bot/KookBotManager : love.forte.simbot.bot/JobBasedBotManager, love.forte.simbot.component.kook.bot/KookBotRegistrar { // love.forte.simbot.component.kook.bot/KookBotManager|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.bot/KookBotManager.<init>|<init>(){}[0]
+
+    abstract val component // love.forte.simbot.component.kook.bot/KookBotManager.component|{}component[0]
+        abstract fun <get-component>(): love.forte.simbot.component/Component // love.forte.simbot.component.kook.bot/KookBotManager.component.<get-component>|<get-component>(){}[0]
+    abstract val configuration // love.forte.simbot.component.kook.bot/KookBotManager.configuration|{}configuration[0]
+        abstract fun <get-configuration>(): love.forte.simbot.component.kook.bot/KookBotManagerConfiguration // love.forte.simbot.component.kook.bot/KookBotManager.configuration.<get-configuration>|<get-configuration>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.component.kook.bot/KookBotManager.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook.bot/KookBotManager.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+
+    open fun configurable(love.forte.simbot.bot/SerializableBotConfiguration): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotManager.configurable|configurable(love.forte.simbot.bot.SerializableBotConfiguration){}[0]
+    open fun register(love.forte.simbot.bot/SerializableBotConfiguration): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotManager.register|register(love.forte.simbot.bot.SerializableBotConfiguration){}[0]
+    open fun register(love.forte.simbot.kook.stdlib/Ticket, kotlin/Function1<love.forte.simbot.component.kook.bot/KookBotConfiguration, kotlin/Unit>): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.bot/KookBotManager.register|register(love.forte.simbot.kook.stdlib.Ticket;kotlin.Function1<love.forte.simbot.component.kook.bot.KookBotConfiguration,kotlin.Unit>){}[0]
+
+    final object Factory : love.forte.simbot.plugin/PluginFactory<love.forte.simbot.component.kook.bot/KookBotManager, love.forte.simbot.component.kook.bot/KookBotManagerConfiguration> { // love.forte.simbot.component.kook.bot/KookBotManager.Factory|null[0]
+        final val key // love.forte.simbot.component.kook.bot/KookBotManager.Factory.key|{}key[0]
+            final fun <get-key>(): love.forte.simbot.plugin/PluginFactory.Key // love.forte.simbot.component.kook.bot/KookBotManager.Factory.key.<get-key>|<get-key>(){}[0]
+
+        final fun create(love.forte.simbot.plugin/PluginConfigureContext, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration>): love.forte.simbot.component.kook.bot/KookBotManager // love.forte.simbot.component.kook.bot/KookBotManager.Factory.create|create(love.forte.simbot.plugin.PluginConfigureContext;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.component.kook.bot.KookBotManagerConfiguration>){}[0]
+    }
+}
+
+abstract class love.forte.simbot.component.kook.event/KookAddedCategoryEvent : love.forte.simbot.component.kook.event/KookCategoryChangedEvent { // love.forte.simbot.component.kook.event/KookAddedCategoryEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.<init>|<init>(){}[0]
+
+    abstract val operator // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.operator|{}operator[0]
+        abstract fun <get-operator>(): love.forte.simbot.component.kook/KookMember? // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.operator.<get-operator>|<get-operator>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/AddedChannelEventExtra> // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.objects/SimpleChannel // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookCategoryChannel // love.forte.simbot.component.kook.event/KookAddedCategoryEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookAddedChannelEvent : love.forte.simbot.component.kook.event/KookChannelChangedEvent, love.forte.simbot.event/ChannelEvent { // love.forte.simbot.component.kook.event/KookAddedChannelEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookAddedChannelEvent.<init>|<init>(){}[0]
+
+    abstract val operator // love.forte.simbot.component.kook.event/KookAddedChannelEvent.operator|{}operator[0]
+        abstract fun <get-operator>(): love.forte.simbot.component.kook/KookMember? // love.forte.simbot.component.kook.event/KookAddedChannelEvent.operator.<get-operator>|<get-operator>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookAddedChannelEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/AddedChannelEventExtra> // love.forte.simbot.component.kook.event/KookAddedChannelEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookAddedChannelEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.objects/SimpleChannel // love.forte.simbot.component.kook.event/KookAddedChannelEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookAddedChannelEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookAddedChannelEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotMemberChangedEvent : love.forte.simbot.component.kook.event/KookMemberChangedEvent, love.forte.simbot.event/GuildEvent { // love.forte.simbot.component.kook.event/KookBotMemberChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotMemberChangedEvent.<init>|<init>(){}[0]
+
+    abstract val sourceBody // love.forte.simbot.component.kook.event/KookBotMemberChangedEvent.sourceBody|{}sourceBody[0]
+        abstract fun <get-sourceBody>(): love.forte.simbot.kook.event/BotSelfGuildEventBody // love.forte.simbot.component.kook.event/KookBotMemberChangedEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookBotMemberChangedEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotRegisteredEvent : love.forte.simbot.component.kook.event/KookEvent, love.forte.simbot.event/BotRegisteredEvent { // love.forte.simbot.component.kook.event/KookBotRegisteredEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.<init>|<init>(){}[0]
+
+    abstract val bot // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.bot|{}bot[0]
+        abstract fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.bot.<get-bot>|<get-bot>(){}[0]
+    open val id // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.id.<get-id>|<get-id>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.time.<get-time>|<get-time>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.event/KookBotRegisteredEvent.toString|toString(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotSelfChannelMessageEvent : love.forte.simbot.component.kook.event/KookMessageEvent.Channel, love.forte.simbot.event/ChannelEvent { // love.forte.simbot.component.kook.event/KookBotSelfChannelMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotSelfChannelMessageEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun author(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookBotSelfChannelMessageEvent.author|author(){}[0]
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookBotSelfChannelMessageEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent : love.forte.simbot.component.kook.event/KookBotMemberChangedEvent, love.forte.simbot.event/GuildEvent { // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/SelfExitedGuildEventExtra> // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/BotSelfGuildEventBody // love.forte.simbot.component.kook.event/KookBotSelfExitedGuildEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent : love.forte.simbot.component.kook.event/KookBotMemberChangedEvent { // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/SelfJoinedGuildEventExtra> // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/BotSelfGuildEventBody // love.forte.simbot.component.kook.event/KookBotSelfJoinedGuildEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotSelfMessageEvent : love.forte.simbot.component.kook.event/KookMessageEvent.Person, love.forte.simbot.event/ContactEvent { // love.forte.simbot.component.kook.event/KookBotSelfMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotSelfMessageEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookUserChat // love.forte.simbot.component.kook.event/KookBotSelfMessageEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookBotStartedEvent : love.forte.simbot.component.kook.event/KookEvent, love.forte.simbot.event/BotStartedEvent { // love.forte.simbot.component.kook.event/KookBotStartedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookBotStartedEvent.<init>|<init>(){}[0]
+
+    abstract val bot // love.forte.simbot.component.kook.event/KookBotStartedEvent.bot|{}bot[0]
+        abstract fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.event/KookBotStartedEvent.bot.<get-bot>|<get-bot>(){}[0]
+    open val id // love.forte.simbot.component.kook.event/KookBotStartedEvent.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookBotStartedEvent.id.<get-id>|<get-id>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookBotStartedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookBotStartedEvent.time.<get-time>|<get-time>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.event/KookBotStartedEvent.toString|toString(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookCategoryChangedEvent : love.forte.simbot.component.kook.event/KookSystemEvent, love.forte.simbot.event/ChangeEvent, love.forte.simbot.event/OrganizationSourceEvent { // love.forte.simbot.component.kook.event/KookCategoryChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookCategoryChangedEvent.<init>|<init>(){}[0]
+
+    open val time // love.forte.simbot.component.kook.event/KookCategoryChangedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookCategoryChangedEvent.time.<get-time>|<get-time>(){}[0]
+
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookCategoryChangedEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookChannelChangedEvent : love.forte.simbot.component.kook.event/KookSystemEvent, love.forte.simbot.event/ChangeEvent, love.forte.simbot.event/OrganizationSourceEvent { // love.forte.simbot.component.kook.event/KookChannelChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookChannelChangedEvent.<init>|<init>(){}[0]
+
+    open val time // love.forte.simbot.component.kook.event/KookChannelChangedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookChannelChangedEvent.time.<get-time>|<get-time>(){}[0]
+
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookChannelChangedEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookChannelMessageEvent : love.forte.simbot.component.kook.event/KookMessageEvent.Channel, love.forte.simbot.event/ChatChannelMessageEvent { // love.forte.simbot.component.kook.event/KookChannelMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookChannelMessageEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun author(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookChannelMessageEvent.author|author(){}[0]
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookChannelMessageEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookChannelMessageEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookContactMessageEvent : love.forte.simbot.component.kook.event/KookMessageEvent.Person, love.forte.simbot.event/ContactMessageEvent { // love.forte.simbot.component.kook.event/KookContactMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookContactMessageEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookUserChat // love.forte.simbot.component.kook.event/KookContactMessageEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookDeletedCategoryEvent : love.forte.simbot.component.kook.event/KookCategoryChangedEvent, love.forte.simbot.event/ChannelEvent { // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/DeletedChannelEventExtra> // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/DeletedChannelEventBody // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookCategoryChannel // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookDeletedCategoryEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookDeletedChannelEvent : love.forte.simbot.component.kook.event/KookChannelChangedEvent, love.forte.simbot.event/ChannelEvent { // love.forte.simbot.component.kook.event/KookDeletedChannelEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/DeletedChannelEventExtra> // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/DeletedChannelEventBody // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookDeletedChannelEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent : love.forte.simbot.component.kook.event/KookDeletedMessageEvent { // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/DeletedMessageEventExtra> // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val deletedMsgId // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.deletedMsgId|{}deletedMsgId[0]
+        open fun <get-deletedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.deletedMsgId.<get-deletedMsgId>|<get-deletedMsgId>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/DeletedMessageEventExtra.Body // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookDeletedChannelMessageEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookDeletedMessageEvent : love.forte.simbot.component.kook.event/KookSystemEvent { // love.forte.simbot.component.kook.event/KookDeletedMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.<init>|<init>(){}[0]
+
+    abstract val deletedMsgId // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.deletedMsgId|{}deletedMsgId[0]
+        abstract fun <get-deletedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.deletedMsgId.<get-deletedMsgId>|<get-deletedMsgId>(){}[0]
+    abstract val sourceBody // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.sourceBody|{}sourceBody[0]
+        abstract fun <get-sourceBody>(): kotlin/Any? // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/SystemExtra> // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    abstract val time // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.time|{}time[0]
+        abstract fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookDeletedMessageEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent : love.forte.simbot.component.kook.event/KookDeletedMessageEvent { // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/DeletedPrivateMessageEventExtra> // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    final val authorId // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.authorId|{}authorId[0]
+        final fun <get-authorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.authorId.<get-authorId>|<get-authorId>(){}[0]
+    final val chatCode // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.chatCode|{}chatCode[0]
+        final fun <get-chatCode>(): kotlin/String // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.chatCode.<get-chatCode>|<get-chatCode>(){}[0]
+    final val targetId // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.targetId|{}targetId[0]
+        final fun <get-targetId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.targetId.<get-targetId>|<get-targetId>(){}[0]
+    open val deletedMsgId // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.deletedMsgId|{}deletedMsgId[0]
+        open fun <get-deletedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.deletedMsgId.<get-deletedMsgId>|<get-deletedMsgId>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/DeletedPrivateMessageEventExtra.Body // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookDeletedPrivateMessageEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookEvent : love.forte.simbot.event/Event { // love.forte.simbot.component.kook.event/KookEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookEvent.<init>|<init>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.event/KookEvent.toString|toString(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberChangedEvent : love.forte.simbot.component.kook.event/KookSystemEvent, love.forte.simbot.event/ChangeEvent { // love.forte.simbot.component.kook.event/KookMemberChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberChangedEvent.<init>|<init>(){}[0]
+
+    open val time // love.forte.simbot.component.kook.event/KookMemberChangedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookMemberChangedEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent : love.forte.simbot.component.kook.event/KookMemberChangedEvent, love.forte.simbot.event/OrganizationSourceEvent { // love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun channel(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent.channel|channel(){}[0]
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent : love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent { // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/ExitedChannelEventExtra> // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/ExitedChannelEventBody // love.forte.simbot.component.kook.event/KookMemberExitedChannelEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent : love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent, love.forte.simbot.event/GuildMemberDecreaseEvent { // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/ExitedGuildEventExtra> // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/ExitedGuildEventBody // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.content|content(){}[0]
+    abstract suspend fun member(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookMemberExitedGuildEvent.member|member(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent : love.forte.simbot.component.kook.event/KookMemberChangedEvent { // love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent.<init>|<init>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent : love.forte.simbot.component.kook.event/KookMemberChannelChangedEvent { // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/JoinedChannelEventExtra> // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/JoinedChannelEventBody // love.forte.simbot.component.kook.event/KookMemberJoinedChannelEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent : love.forte.simbot.component.kook.event/KookMemberGuildChangedEvent, love.forte.simbot.event/GuildMemberIncreaseEvent { // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/JoinedGuildEventExtra> // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/JoinedGuildEventBody // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.content|content(){}[0]
+    abstract suspend fun member(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookMemberJoinedGuildEvent.member|member(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberOfflineEvent : love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent { // love.forte.simbot.component.kook.event/KookMemberOfflineEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/GuildMemberOfflineEventExtra> // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val isOnline // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.isOnline|{}isOnline[0]
+        open fun <get-isOnline>(): kotlin/Boolean // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.isOnline.<get-isOnline>|<get-isOnline>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/GuildMemberOnlineStatusChangedEventBody // love.forte.simbot.component.kook.event/KookMemberOfflineEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberOnlineEvent : love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent { // love.forte.simbot.component.kook.event/KookMemberOnlineEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/GuildMemberOnlineEventExtra> // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val isOnline // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.isOnline|{}isOnline[0]
+        open fun <get-isOnline>(): kotlin/Boolean // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.isOnline.<get-isOnline>|<get-isOnline>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/GuildMemberOnlineStatusChangedEventBody // love.forte.simbot.component.kook.event/KookMemberOnlineEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMemberUpdatedEvent : love.forte.simbot.component.kook.event/KookMemberChangedEvent, love.forte.simbot.event/MemberChangeEvent, love.forte.simbot.event/OrganizationSourceEvent { // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.<init>|<init>(){}[0]
+
+    abstract val beforeSource // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.beforeSource|{}beforeSource[0]
+        abstract fun <get-beforeSource>(): love.forte.simbot.kook.objects/User // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.beforeSource.<get-beforeSource>|<get-beforeSource>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UpdatedGuildMemberEventExtra> // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/UpdatedGuildMemberEventBody // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookMember // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.content|content(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMemberUpdatedEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMessageBtnClickEvent : love.forte.simbot.component.kook.event/KookSystemEvent { // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/MessageBtnClickEventExtra> // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    final val userId // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.userId.<get-userId>|<get-userId>(){}[0]
+    final val value // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.value.<get-value>|<get-value>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/MessageBtnClickEventBody // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookMessageBtnClickEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookMessagePinEvent : love.forte.simbot.component.kook.event/KookChannelChangedEvent, love.forte.simbot.event/ChangeEvent, love.forte.simbot.event/ChannelEvent { // love.forte.simbot.component.kook.event/KookMessagePinEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMessagePinEvent.<init>|<init>(){}[0]
+
+    abstract val channelId // love.forte.simbot.component.kook.event/KookMessagePinEvent.channelId|{}channelId[0]
+        abstract fun <get-channelId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookMessagePinEvent.channelId.<get-channelId>|<get-channelId>(){}[0]
+    abstract val msgId // love.forte.simbot.component.kook.event/KookMessagePinEvent.msgId|{}msgId[0]
+        abstract fun <get-msgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookMessagePinEvent.msgId.<get-msgId>|<get-msgId>(){}[0]
+    abstract val operator // love.forte.simbot.component.kook.event/KookMessagePinEvent.operator|{}operator[0]
+        abstract fun <get-operator>(): love.forte.simbot.component.kook/KookMember? // love.forte.simbot.component.kook.event/KookMessagePinEvent.operator.<get-operator>|<get-operator>(){}[0]
+    abstract val operatorId // love.forte.simbot.component.kook.event/KookMessagePinEvent.operatorId|{}operatorId[0]
+        abstract fun <get-operatorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookMessagePinEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookMessagePinEvent.content|content(){}[0]
+    abstract suspend fun queryMsg(): love.forte.simbot.message/MessageContent // love.forte.simbot.component.kook.event/KookMessagePinEvent.queryMsg|queryMsg(){}[0]
+    abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMessagePinEvent.source|source(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookPinnedMessageEvent : love.forte.simbot.component.kook.event/KookMessagePinEvent { // love.forte.simbot.component.kook.event/KookPinnedMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/PinnedMessageEventExtra> // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val channelId // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.channelId|{}channelId[0]
+        open fun <get-channelId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.channelId.<get-channelId>|<get-channelId>(){}[0]
+    open val msgId // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.msgId|{}msgId[0]
+        open fun <get-msgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.msgId.<get-msgId>|<get-msgId>(){}[0]
+    open val operatorId // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.operatorId|{}operatorId[0]
+        open fun <get-operatorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/PingEventExtraBody // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookSystemEvent : love.forte.simbot.component.kook.event/KookBotEvent<love.forte.simbot.kook.event/SystemExtra, love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/SystemExtra>> { // love.forte.simbot.component.kook.event/KookSystemEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookSystemEvent.<init>|<init>(){}[0]
+
+    abstract val sourceBody // love.forte.simbot.component.kook.event/KookSystemEvent.sourceBody|{}sourceBody[0]
+        abstract fun <get-sourceBody>(): kotlin/Any? // love.forte.simbot.component.kook.event/KookSystemEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val id // love.forte.simbot.component.kook.event/KookSystemEvent.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookSystemEvent.id.<get-id>|<get-id>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.event/KookSystemEvent.toString|toString(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent : love.forte.simbot.component.kook.event/KookMessagePinEvent { // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UnpinnedMessageEventExtra> // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val channelId // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.channelId|{}channelId[0]
+        open fun <get-channelId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.channelId.<get-channelId>|<get-channelId>(){}[0]
+    open val msgId // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.msgId|{}msgId[0]
+        open fun <get-msgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.msgId.<get-msgId>|<get-msgId>(){}[0]
+    open val operatorId // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.operatorId|{}operatorId[0]
+        open fun <get-operatorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/PingEventExtraBody // love.forte.simbot.component.kook.event/KookUnpinnedMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent : love.forte.simbot.component.kook.event/KookCategoryChangedEvent { // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UpdatedChannelEventExtra> // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.objects/SimpleChannel // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookCategoryChannel // love.forte.simbot.component.kook.event/KookUpdatedCategoryEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUpdatedChannelEvent : love.forte.simbot.component.kook.event/KookChannelChangedEvent { // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UpdatedChannelEventExtra> // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.objects/SimpleChannel // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+
+    abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookUpdatedChannelEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent : love.forte.simbot.component.kook.event/KookUpdatedMessageEvent { // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UpdatedMessageEventExtra> // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/UpdatedMessageEventExtra.Body // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.time.<get-time>|<get-time>(){}[0]
+    open val updatedContent // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedContent|{}updatedContent[0]
+        open fun <get-updatedContent>(): kotlin/String // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedContent.<get-updatedContent>|<get-updatedContent>(){}[0]
+    open val updatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedMessageContent|{}updatedMessageContent[0]
+        open fun <get-updatedMessageContent>(): love.forte.simbot.component.kook.message/KookUpdatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedMessageContent.<get-updatedMessageContent>|<get-updatedMessageContent>(){}[0]
+    open val updatedMsgId // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedMsgId|{}updatedMsgId[0]
+        open fun <get-updatedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUpdatedChannelMessageEvent.updatedMsgId.<get-updatedMsgId>|<get-updatedMsgId>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUpdatedMessageEvent : love.forte.simbot.component.kook.event/KookSystemEvent { // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceBody // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.sourceBody|{}sourceBody[0]
+        abstract fun <get-sourceBody>(): kotlin/Any? // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/SystemExtra> // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    abstract val time // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.time|{}time[0]
+        abstract fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.time.<get-time>|<get-time>(){}[0]
+    abstract val updatedContent // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedContent|{}updatedContent[0]
+        abstract fun <get-updatedContent>(): kotlin/String // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedContent.<get-updatedContent>|<get-updatedContent>(){}[0]
+    abstract val updatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedMessageContent|{}updatedMessageContent[0]
+        abstract fun <get-updatedMessageContent>(): love.forte.simbot.component.kook.message/KookUpdatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedMessageContent.<get-updatedMessageContent>|<get-updatedMessageContent>(){}[0]
+    abstract val updatedMsgId // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedMsgId|{}updatedMsgId[0]
+        abstract fun <get-updatedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUpdatedMessageEvent.updatedMsgId.<get-updatedMsgId>|<get-updatedMsgId>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent : love.forte.simbot.component.kook.event/KookUpdatedMessageEvent { // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UpdatedPrivateMessageEventExtra> // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    final val authorId // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.authorId|{}authorId[0]
+        final fun <get-authorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.authorId.<get-authorId>|<get-authorId>(){}[0]
+    final val chatCode // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.chatCode|{}chatCode[0]
+        final fun <get-chatCode>(): kotlin/String // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.chatCode.<get-chatCode>|<get-chatCode>(){}[0]
+    final val targetId // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.targetId|{}targetId[0]
+        final fun <get-targetId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.targetId.<get-targetId>|<get-targetId>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/UpdatedPrivateMessageEventExtra.Body // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.time.<get-time>|<get-time>(){}[0]
+    open val updatedContent // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedContent|{}updatedContent[0]
+        open fun <get-updatedContent>(): kotlin/String // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedContent.<get-updatedContent>|<get-updatedContent>(){}[0]
+    open val updatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedMessageContent|{}updatedMessageContent[0]
+        open fun <get-updatedMessageContent>(): love.forte.simbot.component.kook.message/KookUpdatedMessageContent // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedMessageContent.<get-updatedMessageContent>|<get-updatedMessageContent>(){}[0]
+    open val updatedMsgId // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedMsgId|{}updatedMsgId[0]
+        open fun <get-updatedMsgId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUpdatedPrivateMessageEvent.updatedMsgId.<get-updatedMsgId>|<get-updatedMsgId>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.event/KookUserUpdatedEvent : love.forte.simbot.component.kook.event/KookSystemEvent, love.forte.simbot.event/ChangeEvent { // love.forte.simbot.component.kook.event/KookUserUpdatedEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.<init>|<init>(){}[0]
+
+    abstract val sourceEvent // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.sourceEvent|{}sourceEvent[0]
+        abstract fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/UserUpdatedEventExtra> // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    open val sourceBody // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.sourceBody|{}sourceBody[0]
+        open fun <get-sourceBody>(): love.forte.simbot.kook.event/UserUpdatedEventBody // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.time.<get-time>|<get-time>(){}[0]
+
+    open suspend fun content(): love.forte.simbot.kook.event/UserUpdatedEventBody // love.forte.simbot.component.kook.event/KookUserUpdatedEvent.content|content(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.message/BaseKookReceiveMessageContent : love.forte.simbot.component.kook.message/KookMessageContent { // love.forte.simbot.component.kook.message/BaseKookReceiveMessageContent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.message/BaseKookReceiveMessageContent.<init>|<init>(){}[0]
+}
+
+abstract class love.forte.simbot.component.kook.message/SingleKookMessageReceipt : love.forte.simbot.component.kook.message/KookMessageReceipt, love.forte.simbot.message/SingleMessageReceipt { // love.forte.simbot.component.kook.message/SingleKookMessageReceipt|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.message/SingleKookMessageReceipt.<init>|<init>(){}[0]
+
+    abstract val isDirect // love.forte.simbot.component.kook.message/SingleKookMessageReceipt.isDirect|{}isDirect[0]
+        abstract fun <get-isDirect>(): kotlin/Boolean // love.forte.simbot.component.kook.message/SingleKookMessageReceipt.isDirect.<get-isDirect>|<get-isDirect>(){}[0]
+    abstract val result // love.forte.simbot.component.kook.message/SingleKookMessageReceipt.result|{}result[0]
+        abstract fun <get-result>(): kotlin/Any? // love.forte.simbot.component.kook.message/SingleKookMessageReceipt.result.<get-result>|<get-result>(){}[0]
+}
+
+final class love.forte.simbot.component.kook.bot/KookBotConfiguration { // love.forte.simbot.component.kook.bot/KookBotConfiguration|null[0]
+    constructor <init>(love.forte.simbot.kook.stdlib/BotConfiguration) // love.forte.simbot.component.kook.bot/KookBotConfiguration.<init>|<init>(love.forte.simbot.kook.stdlib.BotConfiguration){}[0]
+
+    final var botConfiguration // love.forte.simbot.component.kook.bot/KookBotConfiguration.botConfiguration|{}botConfiguration[0]
+        final fun <get-botConfiguration>(): love.forte.simbot.kook.stdlib/BotConfiguration // love.forte.simbot.component.kook.bot/KookBotConfiguration.botConfiguration.<get-botConfiguration>|<get-botConfiguration>(){}[0]
+        final fun <set-botConfiguration>(love.forte.simbot.kook.stdlib/BotConfiguration) // love.forte.simbot.component.kook.bot/KookBotConfiguration.botConfiguration.<set-botConfiguration>|<set-botConfiguration>(love.forte.simbot.kook.stdlib.BotConfiguration){}[0]
+    final var syncPeriods // love.forte.simbot.component.kook.bot/KookBotConfiguration.syncPeriods|{}syncPeriods[0]
+        final fun <get-syncPeriods>(): love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods // love.forte.simbot.component.kook.bot/KookBotConfiguration.syncPeriods.<get-syncPeriods>|<get-syncPeriods>(){}[0]
+        final fun <set-syncPeriods>(love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods) // love.forte.simbot.component.kook.bot/KookBotConfiguration.syncPeriods.<set-syncPeriods>|<set-syncPeriods>(love.forte.simbot.component.kook.bot.KookBotConfiguration.SyncPeriods){}[0]
+
+    final class GuildSyncPeriod { // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod|null[0]
+        constructor <init>(kotlin/Long = ..., kotlin/Long = ...) // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.<init>|<init>(kotlin.Long;kotlin.Long){}[0]
+
+        final val batchDelay // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.batchDelay|{}batchDelay[0]
+            final fun <get-batchDelay>(): kotlin/Long // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.batchDelay.<get-batchDelay>|<get-batchDelay>(){}[0]
+        final val syncPeriod // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.syncPeriod|{}syncPeriod[0]
+            final fun <get-syncPeriod>(): kotlin/Long // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.syncPeriod.<get-syncPeriod>|<get-syncPeriod>(){}[0]
+
+        final fun component1(): kotlin/Long // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.component1|component1(){}[0]
+        final fun component2(): kotlin/Long // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.component2|component2(){}[0]
+        final fun copy(kotlin/Long = ..., kotlin/Long = ...): love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.copy|copy(kotlin.Long;kotlin.Long){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod> { // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod) // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.bot.KookBotConfiguration.GuildSyncPeriod){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod> // love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class SyncPeriods { // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods|null[0]
+        constructor <init>(love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod = ...) // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.<init>|<init>(love.forte.simbot.component.kook.bot.KookBotConfiguration.GuildSyncPeriod){}[0]
+
+        final val guild // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.guild|{}guild[0]
+            final fun <get-guild>(): love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.guild.<get-guild>|<get-guild>(){}[0]
+
+        final fun component1(): love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.component.kook.bot/KookBotConfiguration.GuildSyncPeriod = ...): love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.copy|copy(love.forte.simbot.component.kook.bot.KookBotConfiguration.GuildSyncPeriod){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods> { // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods) // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.bot.KookBotConfiguration.SyncPeriods){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods> // love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object Companion // love.forte.simbot.component.kook.bot/KookBotConfiguration.Companion|null[0]
+}
+
+final class love.forte.simbot.component.kook.bot/KookBotManagerConfiguration { // love.forte.simbot.component.kook.bot/KookBotManagerConfiguration|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.bot/KookBotManagerConfiguration.<init>|<init>(){}[0]
+
+    final var coroutineContext // love.forte.simbot.component.kook.bot/KookBotManagerConfiguration.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.component.kook.bot/KookBotManagerConfiguration.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+        final fun <set-coroutineContext>(kotlin.coroutines/CoroutineContext) // love.forte.simbot.component.kook.bot/KookBotManagerConfiguration.coroutineContext.<set-coroutineContext>|<set-coroutineContext>(kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class love.forte.simbot.component.kook.bot/KookBotManagerFactoryProvider : love.forte.simbot.plugin/PluginFactoryProvider<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration> { // love.forte.simbot.component.kook.bot/KookBotManagerFactoryProvider|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.bot/KookBotManagerFactoryProvider.<init>|<init>(){}[0]
+
+    final fun loadConfigures(): kotlin.sequences/Sequence<love.forte.simbot.plugin/PluginFactoryConfigurerProvider<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration>> // love.forte.simbot.component.kook.bot/KookBotManagerFactoryProvider.loadConfigures|loadConfigures(){}[0]
+    final fun provide(): love.forte.simbot.plugin/PluginFactory<*, love.forte.simbot.component.kook.bot/KookBotManagerConfiguration> // love.forte.simbot.component.kook.bot/KookBotManagerFactoryProvider.provide|provide(){}[0]
+}
+
+final class love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration : love.forte.simbot.bot/SerializableBotConfiguration { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration|null[0]
+    constructor <init>(love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket, love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config? = ...) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.<init>|<init>(love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Ticket;love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Config?){}[0]
+
+    final val config // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.config|{}config[0]
+        final fun <get-config>(): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.config.<get-config>|<get-config>(){}[0]
+    final val ticket // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.ticket|{}ticket[0]
+        final fun <get-ticket>(): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.ticket.<get-ticket>|<get-ticket>(){}[0]
+
+    final fun component1(): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.component2|component2(){}[0]
+    final fun copy(love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket = ..., love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config? = ...): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.copy|copy(love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Ticket;love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Config?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.toString|toString(){}[0]
+
+    final class Config { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config|null[0]
+        constructor <init>(kotlin/Boolean? = ..., love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration? = ..., kotlin/Long? = ..., kotlin/Boolean? = ...) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.<init>|<init>(kotlin.Boolean?;love.forte.simbot.component.kook.bot.KookBotConfiguration.SyncPeriods?;love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?;love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?;love.forte.simbot.kook.stdlib.BotConfiguration.TimeoutConfiguration?;kotlin.Long?;kotlin.Boolean?){}[0]
+
+        final val clientEngineConfig // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.clientEngineConfig|{}clientEngineConfig[0]
+            final fun <get-clientEngineConfig>(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.clientEngineConfig.<get-clientEngineConfig>|<get-clientEngineConfig>(){}[0]
+        final val isCompress // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.isCompress|{}isCompress[0]
+            final fun <get-isCompress>(): kotlin/Boolean? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.isCompress.<get-isCompress>|<get-isCompress>(){}[0]
+        final val isNormalEventProcessAsync // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.isNormalEventProcessAsync|{}isNormalEventProcessAsync[0]
+            final fun <get-isNormalEventProcessAsync>(): kotlin/Boolean? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.isNormalEventProcessAsync.<get-isNormalEventProcessAsync>|<get-isNormalEventProcessAsync>(){}[0]
+        final val syncPeriods // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.syncPeriods|{}syncPeriods[0]
+            final fun <get-syncPeriods>(): love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.syncPeriods.<get-syncPeriods>|<get-syncPeriods>(){}[0]
+        final val timeout // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.timeout|{}timeout[0]
+            final fun <get-timeout>(): love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final val wsConnectTimeout // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.wsConnectTimeout|{}wsConnectTimeout[0]
+            final fun <get-wsConnectTimeout>(): kotlin/Long? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.wsConnectTimeout.<get-wsConnectTimeout>|<get-wsConnectTimeout>(){}[0]
+        final val wsEngineConfig // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.wsEngineConfig|{}wsEngineConfig[0]
+            final fun <get-wsEngineConfig>(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.wsEngineConfig.<get-wsEngineConfig>|<get-wsEngineConfig>(){}[0]
+
+        final fun component1(): kotlin/Boolean? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component1|component1(){}[0]
+        final fun component2(): love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component2|component2(){}[0]
+        final fun component3(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component3|component3(){}[0]
+        final fun component4(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component4|component4(){}[0]
+        final fun component5(): love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component5|component5(){}[0]
+        final fun component6(): kotlin/Long? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component6|component6(){}[0]
+        final fun component7(): kotlin/Boolean? // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.component7|component7(){}[0]
+        final fun copy(kotlin/Boolean? = ..., love.forte.simbot.component.kook.bot/KookBotConfiguration.SyncPeriods? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? = ..., love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration? = ..., kotlin/Long? = ..., kotlin/Boolean? = ...): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.copy|copy(kotlin.Boolean?;love.forte.simbot.component.kook.bot.KookBotConfiguration.SyncPeriods?;love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?;love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?;love.forte.simbot.kook.stdlib.BotConfiguration.TimeoutConfiguration?;kotlin.Long?;kotlin.Boolean?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config> { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Config){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Config.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Ticket : love.forte.simbot.kook.stdlib/Ticket { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket|null[0]
+        constructor <init>(kotlin/String, kotlin/String, kotlin/String = ...) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.<init>|<init>(kotlin.String;kotlin.String;kotlin.String){}[0]
+
+        final val clientId // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.clientId|{}clientId[0]
+            final fun <get-clientId>(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final val token // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.token|{}token[0]
+            final fun <get-token>(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.token.<get-token>|<get-token>(){}[0]
+        final val tokenTypePrefix // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.tokenTypePrefix|{}tokenTypePrefix[0]
+            final fun <get-tokenTypePrefix>(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.tokenTypePrefix.<get-tokenTypePrefix>|<get-tokenTypePrefix>(){}[0]
+        final val type // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.type|{}type[0]
+            final fun <get-type>(): love.forte.simbot.kook/TokenType // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.type.<get-type>|<get-type>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.component2|component2(){}[0]
+        final fun component3(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.copy|copy(kotlin.String;kotlin.String;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket> { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration.Ticket){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Ticket.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration> { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration) // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.bot.KookBotVerifyInfoConfiguration){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration> // love.forte.simbot.component.kook.bot/KookBotVerifyInfoConfiguration.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.event/UnsupportedKookEvent : love.forte.simbot.component.kook.event/KookBotEvent<love.forte.simbot.kook.event/EventExtra, love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/EventExtra>> { // love.forte.simbot.component.kook.event/UnsupportedKookEvent|null[0]
+    constructor <init>(love.forte.simbot.component.kook.bot/KookBot, love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/EventExtra>, kotlin/String) // love.forte.simbot.component.kook.event/UnsupportedKookEvent.<init>|<init>(love.forte.simbot.component.kook.bot.KookBot;love.forte.simbot.kook.event.Event<love.forte.simbot.kook.event.EventExtra>;kotlin.String){}[0]
+
+    final val bot // love.forte.simbot.component.kook.event/UnsupportedKookEvent.bot|{}bot[0]
+        final fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.event/UnsupportedKookEvent.bot.<get-bot>|<get-bot>(){}[0]
+    final val id // love.forte.simbot.component.kook.event/UnsupportedKookEvent.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/UnsupportedKookEvent.id.<get-id>|<get-id>(){}[0]
+    final val sourceEvent // love.forte.simbot.component.kook.event/UnsupportedKookEvent.sourceEvent|{}sourceEvent[0]
+        final fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/EventExtra> // love.forte.simbot.component.kook.event/UnsupportedKookEvent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+    final val sourceEventRaw // love.forte.simbot.component.kook.event/UnsupportedKookEvent.sourceEventRaw|{}sourceEventRaw[0]
+        final fun <get-sourceEventRaw>(): kotlin/String // love.forte.simbot.component.kook.event/UnsupportedKookEvent.sourceEventRaw.<get-sourceEventRaw>|<get-sourceEventRaw>(){}[0]
+    final val time // love.forte.simbot.component.kook.event/UnsupportedKookEvent.time|{}time[0]
+        final fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/UnsupportedKookEvent.time.<get-time>|<get-time>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.event/UnsupportedKookEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.event/UnsupportedKookEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.event/UnsupportedKookEvent.toString|toString(){}[0]
+}
+
+final class love.forte.simbot.component.kook.message/KookApiMessage : love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookApiMessage|null[0]
+    constructor <init>(love.forte.simbot.kook.api/KookApi<*>) // love.forte.simbot.component.kook.message/KookApiMessage.<init>|<init>(love.forte.simbot.kook.api.KookApi<*>){}[0]
+
+    final val api // love.forte.simbot.component.kook.message/KookApiMessage.api|{}api[0]
+        final fun <get-api>(): love.forte.simbot.kook.api/KookApi<*> // love.forte.simbot.component.kook.message/KookApiMessage.api.<get-api>|<get-api>(){}[0]
+
+    final fun component1(): love.forte.simbot.kook.api/KookApi<*> // love.forte.simbot.component.kook.message/KookApiMessage.component1|component1(){}[0]
+    final fun copy(love.forte.simbot.kook.api/KookApi<*> = ...): love.forte.simbot.component.kook.message/KookApiMessage // love.forte.simbot.component.kook.message/KookApiMessage.copy|copy(love.forte.simbot.kook.api.KookApi<*>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookApiMessage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookApiMessage.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookApiMessage.toString|toString(){}[0]
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookApiMessage.Companion|null[0]
+        final fun (love.forte.simbot.kook.api/KookApi<*>).toRequest(): love.forte.simbot.component.kook.message/KookApiMessage // love.forte.simbot.component.kook.message/KookApiMessage.Companion.toRequest|toRequest@love.forte.simbot.kook.api.KookApi<*>(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookApiRequestedReceipt : love.forte.simbot.component.kook.message/SingleKookMessageReceipt { // love.forte.simbot.component.kook.message/KookApiRequestedReceipt|null[0]
+    constructor <init>(kotlin/Any?, kotlin/Boolean) // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.<init>|<init>(kotlin.Any?;kotlin.Boolean){}[0]
+
+    final val id // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.id.<get-id>|<get-id>(){}[0]
+    final val isDirect // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.isDirect|{}isDirect[0]
+        final fun <get-isDirect>(): kotlin/Boolean // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.isDirect.<get-isDirect>|<get-isDirect>(){}[0]
+    final val result // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.result|{}result[0]
+        final fun <get-result>(): kotlin/Any? // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.result.<get-result>|<get-result>(){}[0]
+
+    final suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookApiRequestedReceipt.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+}
+
+final class love.forte.simbot.component.kook.message/KookAsset : love.forte.simbot.component.kook.message/KookAssetMessage { // love.forte.simbot.component.kook.message/KookAsset|null[0]
+    constructor <init>(love.forte.simbot.kook.api.asset/Asset, kotlin/Int) // love.forte.simbot.component.kook.message/KookAsset.<init>|<init>(love.forte.simbot.kook.api.asset.Asset;kotlin.Int){}[0]
+    constructor <init>(love.forte.simbot.kook.api.asset/Asset, love.forte.simbot.kook.messages/MessageType) // love.forte.simbot.component.kook.message/KookAsset.<init>|<init>(love.forte.simbot.kook.api.asset.Asset;love.forte.simbot.kook.messages.MessageType){}[0]
+
+    final val asset // love.forte.simbot.component.kook.message/KookAsset.asset|{}asset[0]
+        final fun <get-asset>(): love.forte.simbot.kook.api.asset/Asset // love.forte.simbot.component.kook.message/KookAsset.asset.<get-asset>|<get-asset>(){}[0]
+    final val type // love.forte.simbot.component.kook.message/KookAsset.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.component.kook.message/KookAsset.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): love.forte.simbot.kook.api.asset/Asset // love.forte.simbot.component.kook.message/KookAsset.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // love.forte.simbot.component.kook.message/KookAsset.component2|component2(){}[0]
+    final fun copy(love.forte.simbot.kook.api.asset/Asset = ..., kotlin/Int = ...): love.forte.simbot.component.kook.message/KookAsset // love.forte.simbot.component.kook.message/KookAsset.copy|copy(love.forte.simbot.kook.api.asset.Asset;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookAsset.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookAsset.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAsset.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.message/KookAsset> { // love.forte.simbot.component.kook.message/KookAsset.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.kook.message/KookAsset.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.message/KookAsset.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.message/KookAsset.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.message/KookAsset // love.forte.simbot.component.kook.message/KookAsset.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.message/KookAsset) // love.forte.simbot.component.kook.message/KookAsset.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.message.KookAsset){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookAsset.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAsset> // love.forte.simbot.component.kook.message/KookAsset.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookAssetImage : love.forte.simbot.component.kook.message/KookAssetMessage, love.forte.simbot.message/RemoteUrlAwareImage { // love.forte.simbot.component.kook.message/KookAssetImage|null[0]
+    constructor <init>(love.forte.simbot.kook.api.asset/Asset) // love.forte.simbot.component.kook.message/KookAssetImage.<init>|<init>(love.forte.simbot.kook.api.asset.Asset){}[0]
+
+    final val asset // love.forte.simbot.component.kook.message/KookAssetImage.asset|{}asset[0]
+        final fun <get-asset>(): love.forte.simbot.kook.api.asset/Asset // love.forte.simbot.component.kook.message/KookAssetImage.asset.<get-asset>|<get-asset>(){}[0]
+    final val assetUrl // love.forte.simbot.component.kook.message/KookAssetImage.assetUrl|{}assetUrl[0]
+        final fun <get-assetUrl>(): kotlin/String // love.forte.simbot.component.kook.message/KookAssetImage.assetUrl.<get-assetUrl>|<get-assetUrl>(){}[0]
+    final val id // love.forte.simbot.component.kook.message/KookAssetImage.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookAssetImage.id.<get-id>|<get-id>(){}[0]
+    final val type // love.forte.simbot.component.kook.message/KookAssetImage.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.component.kook.message/KookAssetImage.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): love.forte.simbot.kook.api.asset/Asset // love.forte.simbot.component.kook.message/KookAssetImage.component1|component1(){}[0]
+    final fun copy(love.forte.simbot.kook.api.asset/Asset = ...): love.forte.simbot.component.kook.message/KookAssetImage // love.forte.simbot.component.kook.message/KookAssetImage.copy|copy(love.forte.simbot.kook.api.asset.Asset){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookAssetImage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookAssetImage.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAssetImage.toString|toString(){}[0]
+    final suspend fun url(): kotlin/String // love.forte.simbot.component.kook.message/KookAssetImage.url|url(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.message/KookAssetImage> { // love.forte.simbot.component.kook.message/KookAssetImage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.kook.message/KookAssetImage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.message/KookAssetImage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.message/KookAssetImage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.message/KookAssetImage // love.forte.simbot.component.kook.message/KookAssetImage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.message/KookAssetImage) // love.forte.simbot.component.kook.message/KookAssetImage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.message.KookAssetImage){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookAssetImage.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAssetImage> // love.forte.simbot.component.kook.message/KookAssetImage.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookAttachment : love.forte.simbot.component.kook.message/KookAttachmentMessage { // love.forte.simbot.component.kook.message/KookAttachment|null[0]
+    final val attachment // love.forte.simbot.component.kook.message/KookAttachment.attachment|{}attachment[0]
+        final fun <get-attachment>(): love.forte.simbot.kook.objects/Attachments // love.forte.simbot.component.kook.message/KookAttachment.attachment.<get-attachment>|<get-attachment>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookAttachment.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookAttachment.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAttachment.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.message/KookAttachment> { // love.forte.simbot.component.kook.message/KookAttachment.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.kook.message/KookAttachment.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.message/KookAttachment.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.message/KookAttachment.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.message/KookAttachment // love.forte.simbot.component.kook.message/KookAttachment.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.message/KookAttachment) // love.forte.simbot.component.kook.message/KookAttachment.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.message.KookAttachment){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookAttachment.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAttachment> // love.forte.simbot.component.kook.message/KookAttachment.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent : love.forte.simbot.component.kook.message/KookMessageContent { // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent|null[0]
+    final val id // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.id.<get-id>|<get-id>(){}[0]
+    final val messages // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.messages|{}messages[0]
+        final fun <get-messages>(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.messages.<get-messages>|<get-messages>(){}[0]
+    final val plainText // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.plainText|{}plainText[0]
+        final fun <get-plainText>(): kotlin/String // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.plainText.<get-plainText>|<get-plainText>(){}[0]
+    final val rawContent // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.rawContent|{}rawContent[0]
+        final fun <get-rawContent>(): kotlin/String // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.rawContent.<get-rawContent>|<get-rawContent>(){}[0]
+    final val sourceDetails // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.sourceDetails|{}sourceDetails[0]
+        final fun <get-sourceDetails>(): love.forte.simbot.kook.messages/ChannelMessageDetails // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.sourceDetails.<get-sourceDetails>|<get-sourceDetails>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.toString|toString(){}[0]
+    final suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    final suspend fun reference(): love.forte.simbot.component.kook.message/KookQuote? // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.reference|reference(){}[0]
+    final suspend fun referenceMessage(): love.forte.simbot.component.kook.message/KookMessageContent? // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.referenceMessage|referenceMessage(){}[0]
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.Companion|null[0]
+        final fun (love.forte.simbot.kook.messages/ChannelMessageDetails).toContent(love.forte.simbot.component.kook.bot/KookBot): love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.Companion.toContent|toContent@love.forte.simbot.kook.messages.ChannelMessageDetails(love.forte.simbot.component.kook.bot.KookBot){}[0]
+        final fun (love.forte.simbot.kook.messages/ChannelMessageDetails).toMessages(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/KookChannelMessageDetailsContent.Companion.toMessages|toMessages@love.forte.simbot.kook.messages.ChannelMessageDetails(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookMessageCreatedReceipt : love.forte.simbot.component.kook.message/SingleKookMessageReceipt { // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt|null[0]
+    constructor <init>(love.forte.simbot.kook.api.message/SendMessageResult, kotlin/Boolean, love.forte.simbot.component.kook.bot/KookBot) // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.<init>|<init>(love.forte.simbot.kook.api.message.SendMessageResult;kotlin.Boolean;love.forte.simbot.component.kook.bot.KookBot){}[0]
+
+    final val id // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.id.<get-id>|<get-id>(){}[0]
+    final val isDirect // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.isDirect|{}isDirect[0]
+        final fun <get-isDirect>(): kotlin/Boolean // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.isDirect.<get-isDirect>|<get-isDirect>(){}[0]
+    final val nonce // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.nonce|{}nonce[0]
+        final fun <get-nonce>(): kotlin/String? // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.nonce.<get-nonce>|<get-nonce>(){}[0]
+    final val result // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.result|{}result[0]
+        final fun <get-result>(): love.forte.simbot.kook.api.message/SendMessageResult // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.result.<get-result>|<get-result>(){}[0]
+    final val timestamp // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.timestamp|{}timestamp[0]
+        final fun <get-timestamp>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
+
+    final suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+
+    final object Companion // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.Companion|null[0]
+}
+
+final class love.forte.simbot.component.kook.message/KookQuote : love.forte.simbot.message/MessageReference { // love.forte.simbot.component.kook.message/KookQuote|null[0]
+    final val id // love.forte.simbot.component.kook.message/KookQuote.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookQuote.id.<get-id>|<get-id>(){}[0]
+    final val quote // love.forte.simbot.component.kook.message/KookQuote.quote|{}quote[0]
+        final fun <get-quote>(): love.forte.simbot.kook.objects/Quote // love.forte.simbot.component.kook.message/KookQuote.quote.<get-quote>|<get-quote>(){}[0]
+
+    final fun component1(): love.forte.simbot.kook.objects/Quote // love.forte.simbot.component.kook.message/KookQuote.component1|component1(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookQuote.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookQuote.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookQuote.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.kook.message/KookQuote> { // love.forte.simbot.component.kook.message/KookQuote.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.kook.message/KookQuote.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.kook.message/KookQuote.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.kook.message/KookQuote.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.kook.message/KookQuote // love.forte.simbot.component.kook.message/KookQuote.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.kook.message/KookQuote) // love.forte.simbot.component.kook.message/KookQuote.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.kook.message.KookQuote){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.kook.message/KookQuote.Companion|null[0]
+        final fun (love.forte.simbot.kook.objects/Quote).asMessage(): love.forte.simbot.component.kook.message/KookQuote // love.forte.simbot.component.kook.message/KookQuote.Companion.asMessage|asMessage@love.forte.simbot.kook.objects.Quote(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookQuote> // love.forte.simbot.component.kook.message/KookQuote.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook.message/KookReceiveMessageContent : love.forte.simbot.component.kook.message/BaseKookReceiveMessageContent { // love.forte.simbot.component.kook.message/KookReceiveMessageContent|null[0]
+    final val id // love.forte.simbot.component.kook.message/KookReceiveMessageContent.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookReceiveMessageContent.id.<get-id>|<get-id>(){}[0]
+    final val messages // love.forte.simbot.component.kook.message/KookReceiveMessageContent.messages|{}messages[0]
+        final fun <get-messages>(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/KookReceiveMessageContent.messages.<get-messages>|<get-messages>(){}[0]
+    final val plainText // love.forte.simbot.component.kook.message/KookReceiveMessageContent.plainText|{}plainText[0]
+        final fun <get-plainText>(): kotlin/String // love.forte.simbot.component.kook.message/KookReceiveMessageContent.plainText.<get-plainText>|<get-plainText>(){}[0]
+    final val rawContent // love.forte.simbot.component.kook.message/KookReceiveMessageContent.rawContent|{}rawContent[0]
+        final fun <get-rawContent>(): kotlin/String // love.forte.simbot.component.kook.message/KookReceiveMessageContent.rawContent.<get-rawContent>|<get-rawContent>(){}[0]
+    final val sourceEvent // love.forte.simbot.component.kook.message/KookReceiveMessageContent.sourceEvent|{}sourceEvent[0]
+        final fun <get-sourceEvent>(): love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/TextExtra> // love.forte.simbot.component.kook.message/KookReceiveMessageContent.sourceEvent.<get-sourceEvent>|<get-sourceEvent>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookReceiveMessageContent.toString|toString(){}[0]
+    final suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookReceiveMessageContent.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    final suspend fun reference(): love.forte.simbot.component.kook.message/KookQuote? // love.forte.simbot.component.kook.message/KookReceiveMessageContent.reference|reference(){}[0]
+    final suspend fun referenceMessage(): love.forte.simbot.component.kook.message/KookMessageContent? // love.forte.simbot.component.kook.message/KookReceiveMessageContent.referenceMessage|referenceMessage(){}[0]
+}
+
+final class love.forte.simbot.component.kook.message/KookUpdatedMessageContent : love.forte.simbot.component.kook.message/BaseKookReceiveMessageContent { // love.forte.simbot.component.kook.message/KookUpdatedMessageContent|null[0]
+    final val id // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.id.<get-id>|<get-id>(){}[0]
+    final val messages // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.messages|{}messages[0]
+        final fun <get-messages>(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.messages.<get-messages>|<get-messages>(){}[0]
+    final val plainText // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.plainText|{}plainText[0]
+        final fun <get-plainText>(): kotlin/String // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.plainText.<get-plainText>|<get-plainText>(){}[0]
+    final val rawContent // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.rawContent|{}rawContent[0]
+        final fun <get-rawContent>(): kotlin/String // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.rawContent.<get-rawContent>|<get-rawContent>(){}[0]
+
+    final suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    final suspend fun reference(): love.forte.simbot.component.kook.message/KookQuote? // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.reference|reference(){}[0]
+    final suspend fun referenceMessage(): love.forte.simbot.component.kook.message/KookMessageContent? // love.forte.simbot.component.kook.message/KookUpdatedMessageContent.referenceMessage|referenceMessage(){}[0]
+}
+
+final class love.forte.simbot.component.kook/KookComponent : love.forte.simbot.component/Component { // love.forte.simbot.component.kook/KookComponent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook/KookComponent.<init>|<init>(){}[0]
+
+    final val id // love.forte.simbot.component.kook/KookComponent.id|{}id[0]
+        final fun <get-id>(): kotlin/String // love.forte.simbot.component.kook/KookComponent.id.<get-id>|<get-id>(){}[0]
+    final val serializersModule // love.forte.simbot.component.kook/KookComponent.serializersModule|{}serializersModule[0]
+        final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // love.forte.simbot.component.kook/KookComponent.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook/KookComponent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook/KookComponent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook/KookComponent.toString|toString(){}[0]
+
+    final object Factory : love.forte.simbot.component/ComponentFactory<love.forte.simbot.component.kook/KookComponent, love.forte.simbot.component.kook/KookComponentConfiguration> { // love.forte.simbot.component.kook/KookComponent.Factory|null[0]
+        final const val ID_VALUE // love.forte.simbot.component.kook/KookComponent.Factory.ID_VALUE|{}ID_VALUE[0]
+            final fun <get-ID_VALUE>(): kotlin/String // love.forte.simbot.component.kook/KookComponent.Factory.ID_VALUE.<get-ID_VALUE>|<get-ID_VALUE>(){}[0]
+
+        final val key // love.forte.simbot.component.kook/KookComponent.Factory.key|{}key[0]
+            final fun <get-key>(): love.forte.simbot.component/ComponentFactory.Key // love.forte.simbot.component.kook/KookComponent.Factory.key.<get-key>|<get-key>(){}[0]
+        final val messageSerializersModule // love.forte.simbot.component.kook/KookComponent.Factory.messageSerializersModule|{}messageSerializersModule[0]
+            final fun <get-messageSerializersModule>(): kotlinx.serialization.modules/SerializersModule // love.forte.simbot.component.kook/KookComponent.Factory.messageSerializersModule.<get-messageSerializersModule>|<get-messageSerializersModule>(){}[0]
+
+        final fun create(love.forte.simbot.component/ComponentConfigureContext, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.component.kook/KookComponentConfiguration>): love.forte.simbot.component.kook/KookComponent // love.forte.simbot.component.kook/KookComponent.Factory.create|create(love.forte.simbot.component.ComponentConfigureContext;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.component.kook.KookComponentConfiguration>){}[0]
+    }
+}
+
+final class love.forte.simbot.component.kook/KookComponentConfiguration // love.forte.simbot.component.kook/KookComponentConfiguration|null[0]
+
+final class love.forte.simbot.component.kook/KookComponentFactoryProvider : love.forte.simbot.component/ComponentFactoryProvider<love.forte.simbot.component.kook/KookComponentConfiguration> { // love.forte.simbot.component.kook/KookComponentFactoryProvider|null[0]
+    constructor <init>() // love.forte.simbot.component.kook/KookComponentFactoryProvider.<init>|<init>(){}[0]
+
+    final fun provide(): love.forte.simbot.component/ComponentFactory<*, love.forte.simbot.component.kook/KookComponentConfiguration> // love.forte.simbot.component.kook/KookComponentFactoryProvider.provide|provide(){}[0]
+}
+
+final class love.forte.simbot.component.kook/KookGuildNotExistsException : kotlin/NoSuchElementException { // love.forte.simbot.component.kook/KookGuildNotExistsException|null[0]
+    constructor <init>() // love.forte.simbot.component.kook/KookGuildNotExistsException.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.component.kook/KookGuildNotExistsException.<init>|<init>(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.component.kook/KookMemberNotExistsException : kotlin/NoSuchElementException { // love.forte.simbot.component.kook/KookMemberNotExistsException|null[0]
+    constructor <init>() // love.forte.simbot.component.kook/KookMemberNotExistsException.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.component.kook/KookMemberNotExistsException.<init>|<init>(kotlin.String?){}[0]
+}
+
+sealed class love.forte.simbot.component.kook.event/KookMessageEvent : love.forte.simbot.component.kook.event/KookBotEvent<love.forte.simbot.kook.event/TextExtra, love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/TextExtra>>, love.forte.simbot.event/MessageEvent { // love.forte.simbot.component.kook.event/KookMessageEvent|null[0]
+    abstract val messageContent // love.forte.simbot.component.kook.event/KookMessageEvent.messageContent|{}messageContent[0]
+        abstract fun <get-messageContent>(): love.forte.simbot.component.kook.message/KookReceiveMessageContent // love.forte.simbot.component.kook.event/KookMessageEvent.messageContent.<get-messageContent>|<get-messageContent>(){}[0]
+    open val id // love.forte.simbot.component.kook.event/KookMessageEvent.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookMessageEvent.id.<get-id>|<get-id>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookMessageEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookMessageEvent.time.<get-time>|<get-time>(){}[0]
+
+    abstract suspend fun reply(kotlin/String): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook.event/KookMessageEvent.reply|reply(kotlin.String){}[0]
+    abstract suspend fun reply(love.forte.simbot.message/Message): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook.event/KookMessageEvent.reply|reply(love.forte.simbot.message.Message){}[0]
+    abstract suspend fun reply(love.forte.simbot.message/MessageContent): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook.event/KookMessageEvent.reply|reply(love.forte.simbot.message.MessageContent){}[0]
+
+    abstract class Channel : love.forte.simbot.component.kook.event/KookMessageEvent, love.forte.simbot.event/ChannelEvent, love.forte.simbot.event/MessageEvent { // love.forte.simbot.component.kook.event/KookMessageEvent.Channel|null[0]
+        constructor <init>() // love.forte.simbot.component.kook.event/KookMessageEvent.Channel.<init>|<init>(){}[0]
+
+        abstract suspend fun content(): love.forte.simbot.component.kook/KookChatChannel // love.forte.simbot.component.kook.event/KookMessageEvent.Channel.content|content(){}[0]
+        abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMessageEvent.Channel.source|source(){}[0]
+    }
+
+    abstract class Person : love.forte.simbot.component.kook.event/KookMessageEvent, love.forte.simbot.event/MessageEvent { // love.forte.simbot.component.kook.event/KookMessageEvent.Person|null[0]
+        constructor <init>() // love.forte.simbot.component.kook.event/KookMessageEvent.Person.<init>|<init>(){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent : love.forte.simbot.component.kook.event/KookSystemEvent, love.forte.simbot.event/ChangeEvent { // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent|null[0]
+    abstract val guilds // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.guilds|{}guilds[0]
+        abstract fun <get-guilds>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.kook/KookGuild> // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.guilds.<get-guilds>|<get-guilds>(){}[0]
+    abstract val isOnline // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.isOnline|{}isOnline[0]
+        abstract fun <get-isOnline>(): kotlin/Boolean // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.isOnline.<get-isOnline>|<get-isOnline>(){}[0]
+    abstract val sourceBody // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.sourceBody|{}sourceBody[0]
+        abstract fun <get-sourceBody>(): love.forte.simbot.kook.event/GuildMemberOnlineStatusChangedEventBody // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.sourceBody.<get-sourceBody>|<get-sourceBody>(){}[0]
+    final val guildIds // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.guildIds|{}guildIds[0]
+        final fun <get-guildIds>(): kotlin.collections/List<love.forte.simbot.common.id/ID> // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.guildIds.<get-guildIds>|<get-guildIds>(){}[0]
+    final val userId // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.userId.<get-userId>|<get-userId>(){}[0]
+    open val time // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.time.<get-time>|<get-time>(){}[0]
+
+    open suspend fun content(): kotlin/Boolean // love.forte.simbot.component.kook.event/KookUserOnlineStatusChangedEvent.content|content(){}[0]
+}
+
+sealed class love.forte.simbot.component.kook.message/KookAssetMessage : love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookAssetMessage|null[0]
+    abstract val asset // love.forte.simbot.component.kook.message/KookAssetMessage.asset|{}asset[0]
+        abstract fun <get-asset>(): love.forte.simbot.kook.api.asset/Asset // love.forte.simbot.component.kook.message/KookAssetMessage.asset.<get-asset>|<get-asset>(){}[0]
+    abstract val type // love.forte.simbot.component.kook.message/KookAssetMessage.type|{}type[0]
+        abstract fun <get-type>(): kotlin/Int // love.forte.simbot.component.kook.message/KookAssetMessage.type.<get-type>|<get-type>(){}[0]
+
+    open fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAssetMessage.toString|toString(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.component.kook.message/KookAssetMessage.Companion|null[0]
+        final fun (love.forte.simbot.kook.api.asset/Asset).asImage(): love.forte.simbot.component.kook.message/KookAssetImage // love.forte.simbot.component.kook.message/KookAssetMessage.Companion.asImage|asImage@love.forte.simbot.kook.api.asset.Asset(){}[0]
+        final fun (love.forte.simbot.kook.api.asset/Asset).asMessage(kotlin/Int): love.forte.simbot.component.kook.message/KookAsset // love.forte.simbot.component.kook.message/KookAssetMessage.Companion.asMessage|asMessage@love.forte.simbot.kook.api.asset.Asset(kotlin.Int){}[0]
+        final fun (love.forte.simbot.kook.api.asset/Asset).asMessage(love.forte.simbot.kook.messages/MessageType): love.forte.simbot.component.kook.message/KookAsset // love.forte.simbot.component.kook.message/KookAssetMessage.Companion.asMessage|asMessage@love.forte.simbot.kook.api.asset.Asset(love.forte.simbot.kook.messages.MessageType){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAssetMessage> // love.forte.simbot.component.kook.message/KookAssetMessage.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.kook.message/KookAssetMessage.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.kook.message/KookAttachmentMessage : love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookAttachmentMessage|null[0]
+    abstract val attachment // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachment|{}attachment[0]
+        abstract fun <get-attachment>(): love.forte.simbot.kook.objects/Attachments // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachment.<get-attachment>|<get-attachment>(){}[0]
+    final val attachmentName // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentName|{}attachmentName[0]
+        final fun <get-attachmentName>(): kotlin/String // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentName.<get-attachmentName>|<get-attachmentName>(){}[0]
+    final val attachmentSize // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentSize|{}attachmentSize[0]
+        final fun <get-attachmentSize>(): kotlin/Long // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentSize.<get-attachmentSize>|<get-attachmentSize>(){}[0]
+    final val attachmentType // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentType|{}attachmentType[0]
+        final fun <get-attachmentType>(): kotlin/String // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentType.<get-attachmentType>|<get-attachmentType>(){}[0]
+    final val attachmentUrl // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentUrl|{}attachmentUrl[0]
+        final fun <get-attachmentUrl>(): kotlin/String // love.forte.simbot.component.kook.message/KookAttachmentMessage.attachmentUrl.<get-attachmentUrl>|<get-attachmentUrl>(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.component.kook.message/KookAttachmentMessage.Companion|null[0]
+        final fun (love.forte.simbot.kook.objects/Attachments).asMessage(): love.forte.simbot.component.kook.message/KookAttachmentMessage // love.forte.simbot.component.kook.message/KookAttachmentMessage.Companion.asMessage|asMessage@love.forte.simbot.kook.objects.Attachments(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAttachmentMessage> // love.forte.simbot.component.kook.message/KookAttachmentMessage.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.kook.message/KookAttachmentMessage.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.kook.message/KookTempTarget : love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookTempTarget|null[0]
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.component.kook.message/KookTempTarget.Companion|null[0]
+        final fun byId(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook.message/KookTempTarget // love.forte.simbot.component.kook.message/KookTempTarget.Companion.byId|byId(love.forte.simbot.common.id.ID){}[0]
+        final fun current(): love.forte.simbot.component.kook.message/KookTempTarget // love.forte.simbot.component.kook.message/KookTempTarget.Companion.current|current(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookTempTarget> // love.forte.simbot.component.kook.message/KookTempTarget.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.kook.message/KookTempTarget.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+final object love.forte.simbot.component.kook.message/KookAtAllHere : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookAtAllHere|null[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookAtAllHere.equals|equals(kotlin.Any?){}[0]
+    final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAtAllHere> // love.forte.simbot.component.kook.message/KookAtAllHere.serializer|serializer(){}[0]
+    final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.kook.message/KookAtAllHere.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAtAllHere.toString|toString(){}[0]
+}
+
+final object love.forte.simbot.component.kook.message/KookMessages { // love.forte.simbot.component.kook.message/KookMessages|null[0]
+    final const val AT_TYPE_CHANNEL // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_CHANNEL|{}AT_TYPE_CHANNEL[0]
+        final fun <get-AT_TYPE_CHANNEL>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_CHANNEL.<get-AT_TYPE_CHANNEL>|<get-AT_TYPE_CHANNEL>(){}[0]
+    final const val AT_TYPE_ROLE // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_ROLE|{}AT_TYPE_ROLE[0]
+        final fun <get-AT_TYPE_ROLE>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_ROLE.<get-AT_TYPE_ROLE>|<get-AT_TYPE_ROLE>(){}[0]
+    final const val AT_TYPE_USER // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_USER|{}AT_TYPE_USER[0]
+        final fun <get-AT_TYPE_USER>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessages.AT_TYPE_USER.<get-AT_TYPE_USER>|<get-AT_TYPE_USER>(){}[0]
+
+    final fun atChannel(love.forte.simbot.common.id/ID): love.forte.simbot.message/At // love.forte.simbot.component.kook.message/KookMessages.atChannel|atChannel(love.forte.simbot.common.id.ID){}[0]
+    final fun atRole(love.forte.simbot.common.id/ID): love.forte.simbot.message/At // love.forte.simbot.component.kook.message/KookMessages.atRole|atRole(love.forte.simbot.common.id.ID){}[0]
+    final fun atUser(love.forte.simbot.common.id/ID): love.forte.simbot.message/At // love.forte.simbot.component.kook.message/KookMessages.atUser|atUser(love.forte.simbot.common.id.ID){}[0]
+}
+
+final val love.forte.simbot.component.kook/kookBotManagers // love.forte.simbot.component.kook/kookBotManagers|@love.forte.simbot.application.Application{}kookBotManagers[0]
+    final inline fun (love.forte.simbot.application/Application).<get-kookBotManagers>(): kotlin.collections/List<love.forte.simbot.component.kook.bot/KookBotManager> // love.forte.simbot.component.kook/kookBotManagers.<get-kookBotManagers>|<get-kookBotManagers>@love.forte.simbot.application.Application(){}[0]
+final val love.forte.simbot.component.kook/slowModeDuration // love.forte.simbot.component.kook/slowModeDuration|@love.forte.simbot.component.kook.KookChannel{}slowModeDuration[0]
+    final fun (love.forte.simbot.component.kook/KookChannel).<get-slowModeDuration>(): kotlin.time/Duration // love.forte.simbot.component.kook/slowModeDuration.<get-slowModeDuration>|<get-slowModeDuration>@love.forte.simbot.component.kook.KookChannel(){}[0]
+
+final fun (love.forte.simbot.application/ApplicationFactoryConfigurer<*, *, *>).love.forte.simbot.component.kook/useKook(kotlin/Function1<love.forte.simbot.component.kook/KookComponentUsageBuilder, kotlin/Unit> = ...) // love.forte.simbot.component.kook/useKook|useKook@love.forte.simbot.application.ApplicationFactoryConfigurer<*,*,*>(kotlin.Function1<love.forte.simbot.component.kook.KookComponentUsageBuilder,kotlin.Unit>){}[0]
+final fun (love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/TextExtra>).love.forte.simbot.component.kook.message/toContent(kotlin/Boolean, love.forte.simbot.component.kook.bot/KookBot): love.forte.simbot.component.kook.message/KookReceiveMessageContent // love.forte.simbot.component.kook.message/toContent|toContent@love.forte.simbot.kook.event.Event<love.forte.simbot.kook.event.TextExtra>(kotlin.Boolean;love.forte.simbot.component.kook.bot.KookBot){}[0]
+final fun (love.forte.simbot.kook.event/Event<love.forte.simbot.kook.event/TextExtra>).love.forte.simbot.component.kook.message/toMessages(): love.forte.simbot.message/Messages // love.forte.simbot.component.kook.message/toMessages|toMessages@love.forte.simbot.kook.event.Event<love.forte.simbot.kook.event.TextExtra>(){}[0]
+final fun love.forte.simbot.component.kook/kookGuildNotExistsException(kotlin/String): love.forte.simbot.component.kook/KookGuildNotExistsException // love.forte.simbot.component.kook/kookGuildNotExistsException|kookGuildNotExistsException(kotlin.String){}[0]
+final fun love.forte.simbot.component.kook/kookMemberNotExistsException(kotlin/String): love.forte.simbot.component.kook/KookMemberNotExistsException // love.forte.simbot.component.kook/kookMemberNotExistsException|kookMemberNotExistsException(kotlin.String){}[0]
+final inline fun (kotlin.collections/Iterable<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/filterIsKookBotManagers(): kotlin.collections/List<love.forte.simbot.component.kook.bot/KookBotManager> // love.forte.simbot.component.kook/filterIsKookBotManagers|filterIsKookBotManagers@kotlin.collections.Iterable<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.collections/Iterable<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/firstKookBotManager(): love.forte.simbot.component.kook.bot/KookBotManager // love.forte.simbot.component.kook/firstKookBotManager|firstKookBotManager@kotlin.collections.Iterable<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.collections/Iterable<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/firstKookBotManagerOrNull(): love.forte.simbot.component.kook.bot/KookBotManager? // love.forte.simbot.component.kook/firstKookBotManagerOrNull|firstKookBotManagerOrNull@kotlin.collections.Iterable<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.sequences/Sequence<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/filterIsKookBotManagers(): kotlin.sequences/Sequence<love.forte.simbot.component.kook.bot/KookBotManager> // love.forte.simbot.component.kook/filterIsKookBotManagers|filterIsKookBotManagers@kotlin.sequences.Sequence<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.sequences/Sequence<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/firstKookBotManager(): love.forte.simbot.component.kook.bot/KookBotManager // love.forte.simbot.component.kook/firstKookBotManager|firstKookBotManager@kotlin.sequences.Sequence<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.sequences/Sequence<love.forte.simbot.plugin/Plugin>).love.forte.simbot.component.kook/firstKookBotManagerOrNull(): love.forte.simbot.component.kook.bot/KookBotManager? // love.forte.simbot.component.kook/firstKookBotManagerOrNull|firstKookBotManagerOrNull@kotlin.sequences.Sequence<love.forte.simbot.plugin.Plugin>(){}[0]
+final inline fun (kotlin.text/Regex).love.forte.simbot.component.kook.util/walk(kotlin/String, kotlin/Function3<kotlin/String, kotlin/Int, kotlin/Int, kotlin/Unit>, kotlin/Function1<kotlin.text/MatchResult, kotlin/Unit>): kotlin/Boolean // love.forte.simbot.component.kook.util/walk|walk@kotlin.text.Regex(kotlin.String;kotlin.Function3<kotlin.String,kotlin.Int,kotlin.Int,kotlin.Unit>;kotlin.Function1<kotlin.text.MatchResult,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.application/Application).love.forte.simbot.component.kook/kookBots(kotlin/Function2<love.forte.simbot.component.kook.bot/KookBotManager, love.forte.simbot.bot/BotManagers, kotlin/Unit>) // love.forte.simbot.component.kook/kookBots|kookBots@love.forte.simbot.application.Application(kotlin.Function2<love.forte.simbot.component.kook.bot.KookBotManager,love.forte.simbot.bot.BotManagers,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.application/Application).love.forte.simbot.component.kook/kookBotsIfSupport(kotlin/Function2<love.forte.simbot.component.kook.bot/KookBotManager, love.forte.simbot.bot/BotManagers, kotlin/Unit>) // love.forte.simbot.component.kook/kookBotsIfSupport|kookBotsIfSupport@love.forte.simbot.application.Application(kotlin.Function2<love.forte.simbot.component.kook.bot.KookBotManager,love.forte.simbot.bot.BotManagers,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.application/ApplicationFactoryConfigurer<*, *, *>).love.forte.simbot.component.kook/useKookBotManager(crossinline kotlin/Function1<love.forte.simbot.component.kook.bot/KookBotManagerConfiguration, kotlin/Unit> = ...) // love.forte.simbot.component.kook/useKookBotManager|useKookBotManager@love.forte.simbot.application.ApplicationFactoryConfigurer<*,*,*>(kotlin.Function1<love.forte.simbot.component.kook.bot.KookBotManagerConfiguration,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.application/ApplicationFactoryConfigurer<*, *, *>).love.forte.simbot.component.kook/useKookComponent(crossinline kotlin/Function1<love.forte.simbot.component.kook/KookComponentConfiguration, kotlin/Unit> = ...) // love.forte.simbot.component.kook/useKookComponent|useKookComponent@love.forte.simbot.application.ApplicationFactoryConfigurer<*,*,*>(kotlin.Function1<love.forte.simbot.component.kook.KookComponentConfiguration,kotlin.Unit>){}[0]
+final suspend fun (love.forte.simbot.component.kook.bot/KookBot).love.forte.simbot.component.kook.util/request(love.forte.simbot.kook.api/KookApi<*>): io.ktor.client.statement/HttpResponse // love.forte.simbot.component.kook.util/request|request@love.forte.simbot.component.kook.bot.KookBot(love.forte.simbot.kook.api.KookApi<*>){}[0]
+final suspend fun (love.forte.simbot.component.kook.bot/KookBot).love.forte.simbot.component.kook.util/requestResult(love.forte.simbot.kook.api/KookApi<*>): love.forte.simbot.kook.api/ApiResult // love.forte.simbot.component.kook.util/requestResult|requestResult@love.forte.simbot.component.kook.bot.KookBot(love.forte.simbot.kook.api.KookApi<*>){}[0]
+final suspend fun (love.forte.simbot.component.kook.bot/KookBot).love.forte.simbot.component.kook.util/requestText(love.forte.simbot.kook.api/KookApi<*>): kotlin/String // love.forte.simbot.component.kook.util/requestText|requestText@love.forte.simbot.component.kook.bot.KookBot(love.forte.simbot.kook.api.KookApi<*>){}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.component.kook.util/requestBy(love.forte.simbot.component.kook.bot/KookBot): io.ktor.client.statement/HttpResponse // love.forte.simbot.component.kook.util/requestBy|requestBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.component.kook.bot.KookBot){}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.component.kook.util/requestResultBy(love.forte.simbot.component.kook.bot/KookBot): love.forte.simbot.kook.api/ApiResult // love.forte.simbot.component.kook.util/requestResultBy|requestResultBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.component.kook.bot.KookBot){}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.component.kook.util/requestTextBy(love.forte.simbot.component.kook.bot/KookBot): kotlin/String // love.forte.simbot.component.kook.util/requestTextBy|requestTextBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.component.kook.bot.KookBot){}[0]
+final suspend fun (love.forte.simbot.message/Message).love.forte.simbot.component.kook.message/sendToChannel(love.forte.simbot.component.kook.bot/KookBot, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt? // love.forte.simbot.component.kook.message/sendToChannel|sendToChannel@love.forte.simbot.message.Message(love.forte.simbot.component.kook.bot.KookBot;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+final suspend fun (love.forte.simbot.message/Message).love.forte.simbot.component.kook.message/sendToDirectByChatCode(love.forte.simbot.component.kook.bot/KookBot, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt? // love.forte.simbot.component.kook.message/sendToDirectByChatCode|sendToDirectByChatCode@love.forte.simbot.message.Message(love.forte.simbot.component.kook.bot.KookBot;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+final suspend fun (love.forte.simbot.message/Message).love.forte.simbot.component.kook.message/sendToDirectByTargetId(love.forte.simbot.component.kook.bot/KookBot, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.component.kook.message/KookMessageReceipt? // love.forte.simbot.component.kook.message/sendToDirectByTargetId|sendToDirectByTargetId@love.forte.simbot.message.Message(love.forte.simbot.component.kook.bot.KookBot;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+final suspend fun <#A: kotlin/Any> (love.forte.simbot.component.kook.bot/KookBot).love.forte.simbot.component.kook.util/requestData(love.forte.simbot.kook.api/KookApi<#A>): #A // love.forte.simbot.component.kook.util/requestData|requestData@love.forte.simbot.component.kook.bot.KookBot(love.forte.simbot.kook.api.KookApi<0:0>){0§<kotlin.Any>}[0]
+final suspend fun <#A: kotlin/Any> (love.forte.simbot.kook.api/KookApi<#A>).love.forte.simbot.component.kook.util/requestDataBy(love.forte.simbot.component.kook.bot/KookBot): #A // love.forte.simbot.component.kook.util/requestDataBy|requestDataBy@love.forte.simbot.kook.api.KookApi<0:0>(love.forte.simbot.component.kook.bot.KookBot){0§<kotlin.Any>}[0]
+final suspend inline fun (love.forte.simbot.component.kook/KookChannel).love.forte.simbot.component.kook/update(kotlin/Function1<love.forte.simbot.kook.api.channel/UpdateChannelApi.Builder, kotlin/Unit>): love.forte.simbot.component.kook/KookChannel // love.forte.simbot.component.kook/update|update@love.forte.simbot.component.kook.KookChannel(kotlin.Function1<love.forte.simbot.kook.api.channel.UpdateChannelApi.Builder,kotlin.Unit>){}[0]

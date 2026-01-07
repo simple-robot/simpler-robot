@@ -86,7 +86,7 @@ public final class love/forte/simbot/kook/stdlib/BotConfiguration$EngineConfigur
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -122,7 +122,7 @@ public final class love/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfigu
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

@@ -1,0 +1,986 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-onebot-v11-event>
+abstract interface love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent : love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent|null[0]
+    abstract val font // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.font|{}font[0]
+        abstract fun <get-font>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.font.<get-font>|<get-font>(){}[0]
+    abstract val message // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.message|{}message[0]
+        abstract fun <get-message>(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.message.<get-message>|<get-message>(){}[0]
+    abstract val messageId // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.messageId|{}messageId[0]
+        abstract fun <get-messageId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.messageId.<get-messageId>|<get-messageId>(){}[0]
+    abstract val messageType // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.messageType|{}messageType[0]
+        abstract fun <get-messageType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
+    abstract val rawMessage // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.rawMessage|{}rawMessage[0]
+        abstract fun <get-rawMessage>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+    abstract val sender // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.sender|{}sender[0]
+        abstract fun <get-sender>(): love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.sender.<get-sender>|<get-sender>(){}[0]
+    abstract val subType // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.subType|{}subType[0]
+        abstract fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.subType.<get-subType>|<get-subType>(){}[0]
+    abstract val userId // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.userId|{}userId[0]
+        abstract fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    abstract interface Sender { // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender|null[0]
+        abstract val age // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.age|{}age[0]
+            abstract fun <get-age>(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.age.<get-age>|<get-age>(){}[0]
+        abstract val nickname // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.nickname|{}nickname[0]
+            abstract fun <get-nickname>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.nickname.<get-nickname>|<get-nickname>(){}[0]
+        abstract val sex // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.sex|{}sex[0]
+            abstract fun <get-sex>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.sex.<get-sex>|<get-sex>(){}[0]
+        abstract val userId // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.userId|{}userId[0]
+            abstract fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender.userId.<get-userId>|<get-userId>(){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Companion|null[0]
+        final const val POST_TYPE // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Companion.POST_TYPE|{}POST_TYPE[0]
+            final fun <get-POST_TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Companion.POST_TYPE.<get-POST_TYPE>|<get-POST_TYPE>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent : love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent|null[0]
+    abstract val metaEventType // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent.metaEventType|{}metaEventType[0]
+        abstract fun <get-metaEventType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent.metaEventType.<get-metaEventType>|<get-metaEventType>(){}[0]
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent.Companion|null[0]
+        final const val POST_TYPE // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent.Companion.POST_TYPE|{}POST_TYPE[0]
+            final fun <get-POST_TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent.Companion.POST_TYPE.<get-POST_TYPE>|<get-POST_TYPE>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent : love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent|null[0]
+    abstract val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent.noticeType|{}noticeType[0]
+        abstract fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent.Companion|null[0]
+        final const val POST_TYPE // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent.Companion.POST_TYPE|{}POST_TYPE[0]
+            final fun <get-POST_TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent.Companion.POST_TYPE.<get-POST_TYPE>|<get-POST_TYPE>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent : love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent|null[0]
+    abstract val requestType // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent.requestType|{}requestType[0]
+        abstract fun <get-requestType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent.requestType.<get-requestType>|<get-requestType>(){}[0]
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent.Companion|null[0]
+        final const val POST_TYPE // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent.Companion.POST_TYPE|{}POST_TYPE[0]
+            final fun <get-POST_TYPE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent.Companion.POST_TYPE.<get-POST_TYPE>|<get-POST_TYPE>(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event/RawEvent|null[0]
+    abstract val postType // love.forte.simbot.component.onebot.v11.event/RawEvent.postType|{}postType[0]
+        abstract fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event/RawEvent.postType.<get-postType>|<get-postType>(){}[0]
+    abstract val selfId // love.forte.simbot.component.onebot.v11.event/RawEvent.selfId|{}selfId[0]
+        abstract fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event/RawEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    abstract val time // love.forte.simbot.component.onebot.v11.event/RawEvent.time|{}time[0]
+        abstract fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event/RawEvent.time.<get-time>|<get-time>(){}[0]
+}
+
+final class love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent : love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent|null[0]
+    final val anonymous // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.anonymous|{}anonymous[0]
+        final fun <get-anonymous>(): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.anonymous.<get-anonymous>|<get-anonymous>(){}[0]
+    final val font // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.font|{}font[0]
+        final fun <get-font>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.font.<get-font>|<get-font>(){}[0]
+    final val groupId // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val message // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.message|{}message[0]
+        final fun <get-message>(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.message.<get-message>|<get-message>(){}[0]
+    final val messageId // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.messageId|{}messageId[0]
+        final fun <get-messageId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.messageId.<get-messageId>|<get-messageId>(){}[0]
+    final val messageType // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.messageType|{}messageType[0]
+        final fun <get-messageType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val rawMessage // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.rawMessage|{}rawMessage[0]
+        final fun <get-rawMessage>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val sender // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.sender|{}sender[0]
+        final fun <get-sender>(): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.sender.<get-sender>|<get-sender>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component1|component1(){}[0]
+    final fun component10(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component10|component10(){}[0]
+    final fun component11(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component11|component11(){}[0]
+    final fun component12(): kotlin/Int? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component12|component12(){}[0]
+    final fun component13(): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component13|component13(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component3|component3(){}[0]
+    final fun component4(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component5|component5(){}[0]
+    final fun component6(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component6|component6(){}[0]
+    final fun component7(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component8|component8(){}[0]
+    final fun component9(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.component9|component9(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., love.forte.simbot.common.id/ID = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous? = ..., kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/Int? = ..., love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender = ...): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.common.id.ID;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent.Anonymous?;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.Int?;love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent.Sender){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.toString|toString(){}[0]
+
+    final class Anonymous { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous|null[0]
+        final val flag // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.flag|{}flag[0]
+            final fun <get-flag>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.flag.<get-flag>|<get-flag>(){}[0]
+        final val id // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.id.<get-id>|<get-id>(){}[0]
+        final val name // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.name|{}name[0]
+            final fun <get-name>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.name.<get-name>|<get-name>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.component2|component2(){}[0]
+        final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.component3|component3(){}[0]
+        final fun copy(love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.copy|copy(love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous> { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous) // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent.Anonymous){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Anonymous.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Sender : love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender|null[0]
+        final val age // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.age|{}age[0]
+            final fun <get-age>(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.age.<get-age>|<get-age>(){}[0]
+        final val area // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.area|{}area[0]
+            final fun <get-area>(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.area.<get-area>|<get-area>(){}[0]
+        final val card // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.card|{}card[0]
+            final fun <get-card>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.card.<get-card>|<get-card>(){}[0]
+        final val level // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.level|{}level[0]
+            final fun <get-level>(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.level.<get-level>|<get-level>(){}[0]
+        final val nickname // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.nickname|{}nickname[0]
+            final fun <get-nickname>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.nickname.<get-nickname>|<get-nickname>(){}[0]
+        final val role // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.role|{}role[0]
+            final fun <get-role>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.role.<get-role>|<get-role>(){}[0]
+        final val sex // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.sex|{}sex[0]
+            final fun <get-sex>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.sex.<get-sex>|<get-sex>(){}[0]
+        final val title // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.title|{}title[0]
+            final fun <get-title>(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.title.<get-title>|<get-title>(){}[0]
+        final val userId // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.userId|{}userId[0]
+            final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.userId.<get-userId>|<get-userId>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component2|component2(){}[0]
+        final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component3|component3(){}[0]
+        final fun component4(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component4|component4(){}[0]
+        final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component5|component5(){}[0]
+        final fun component6(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component6|component6(){}[0]
+        final fun component7(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component7|component7(){}[0]
+        final fun component8(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component8|component8(){}[0]
+        final fun component9(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.component9|component9(){}[0]
+        final fun copy(love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Int = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String? = ...): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.copy|copy(love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.Int;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender> { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender) // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent.Sender){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Sender.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent> { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent) // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion|null[0]
+        final const val SUB_TYPE_ANONYMOUS // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_ANONYMOUS|{}SUB_TYPE_ANONYMOUS[0]
+            final fun <get-SUB_TYPE_ANONYMOUS>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_ANONYMOUS.<get-SUB_TYPE_ANONYMOUS>|<get-SUB_TYPE_ANONYMOUS>(){}[0]
+        final const val SUB_TYPE_NORMAL // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_NORMAL|{}SUB_TYPE_NORMAL[0]
+            final fun <get-SUB_TYPE_NORMAL>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_NORMAL.<get-SUB_TYPE_NORMAL>|<get-SUB_TYPE_NORMAL>(){}[0]
+        final const val SUB_TYPE_NOTICE // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_NOTICE|{}SUB_TYPE_NOTICE[0]
+            final fun <get-SUB_TYPE_NOTICE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.SUB_TYPE_NOTICE.<get-SUB_TYPE_NOTICE>|<get-SUB_TYPE_NOTICE>(){}[0]
+
+        final val $childSerializers // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent> // love.forte.simbot.component.onebot.v11.event.message/RawGroupMessageEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent : love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent|null[0]
+    final val font // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.font|{}font[0]
+        final fun <get-font>(): kotlin/Int? // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.font.<get-font>|<get-font>(){}[0]
+    final val message // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.message|{}message[0]
+        final fun <get-message>(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.message.<get-message>|<get-message>(){}[0]
+    final val messageId // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.messageId|{}messageId[0]
+        final fun <get-messageId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.messageId.<get-messageId>|<get-messageId>(){}[0]
+    final val messageType // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.messageType|{}messageType[0]
+        final fun <get-messageType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val rawMessage // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.rawMessage|{}rawMessage[0]
+        final fun <get-rawMessage>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val sender // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.sender|{}sender[0]
+        final fun <get-sender>(): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.sender.<get-sender>|<get-sender>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component1|component1(){}[0]
+    final fun component10(): kotlin/Int? // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component10|component10(){}[0]
+    final fun component11(): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component11|component11(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component3|component3(){}[0]
+    final fun component4(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component5|component5(){}[0]
+    final fun component6(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component6|component6(){}[0]
+    final fun component7(): kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component7|component7(){}[0]
+    final fun component8(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component8|component8(){}[0]
+    final fun component9(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.component9|component9(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., love.forte.simbot.common.id/ID = ..., kotlin/String = ..., kotlin/String = ..., kotlin.collections/List<love.forte.simbot.component.onebot.v11.message.segment/OneBotMessageSegment> = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/Int? = ..., love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender = ...): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.common.id.ID;kotlin.String;kotlin.String;kotlin.collections.List<love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment>;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.Int?;love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent.Sender){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.toString|toString(){}[0]
+
+    final class Sender : love.forte.simbot.component.onebot.v11.event.message/RawMessageEvent.Sender { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender|null[0]
+        final val age // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.age|{}age[0]
+            final fun <get-age>(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.age.<get-age>|<get-age>(){}[0]
+        final val nickname // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.nickname|{}nickname[0]
+            final fun <get-nickname>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.nickname.<get-nickname>|<get-nickname>(){}[0]
+        final val sex // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.sex|{}sex[0]
+            final fun <get-sex>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.sex.<get-sex>|<get-sex>(){}[0]
+        final val userId // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.userId|{}userId[0]
+            final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.userId.<get-userId>|<get-userId>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.component2|component2(){}[0]
+        final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.component3|component3(){}[0]
+        final fun component4(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.component4|component4(){}[0]
+        final fun copy(love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/Int = ...): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.copy|copy(love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender> { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender) // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent.Sender){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Sender.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent> { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent) // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion|null[0]
+        final const val SUB_TYPE_FRIEND // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.SUB_TYPE_FRIEND|{}SUB_TYPE_FRIEND[0]
+            final fun <get-SUB_TYPE_FRIEND>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.SUB_TYPE_FRIEND.<get-SUB_TYPE_FRIEND>|<get-SUB_TYPE_FRIEND>(){}[0]
+        final const val SUB_TYPE_GROUP // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.SUB_TYPE_GROUP|{}SUB_TYPE_GROUP[0]
+            final fun <get-SUB_TYPE_GROUP>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.SUB_TYPE_GROUP.<get-SUB_TYPE_GROUP>|<get-SUB_TYPE_GROUP>(){}[0]
+
+        final val $childSerializers // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent> // love.forte.simbot.component.onebot.v11.event.message/RawPrivateMessageEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent : love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent { // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent|null[0]
+    constructor <init>(kotlin/Long, kotlin/String, love.forte.simbot.common.id/LongID, kotlin/String, love.forte.simbot.component.onebot.v11.common.api/StatusResult, kotlin/Long = ...) // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.<init>|<init>(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.component.onebot.v11.common.api.StatusResult;kotlin.Long){}[0]
+
+    final val interval // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.interval|{}interval[0]
+        final fun <get-interval>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.interval.<get-interval>|<get-interval>(){}[0]
+    final val metaEventType // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.metaEventType|{}metaEventType[0]
+        final fun <get-metaEventType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.metaEventType.<get-metaEventType>|<get-metaEventType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val status // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.status|{}status[0]
+        final fun <get-status>(): love.forte.simbot.component.onebot.v11.common.api/StatusResult // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.status.<get-status>|<get-status>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.time.<get-time>|<get-time>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component1|component1(){}[0]
+    final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component2|component2(){}[0]
+    final fun component3(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.component.onebot.v11.common.api/StatusResult // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component5|component5(){}[0]
+    final fun component6(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.component6|component6(){}[0]
+    final fun copy(kotlin/Long = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., love.forte.simbot.component.onebot.v11.common.api/StatusResult = ..., kotlin/Long = ...): love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.copy|copy(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.component.onebot.v11.common.api.StatusResult;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent> { // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent) // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.meta.RawHeartbeatEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent> // love.forte.simbot.component.onebot.v11.event.meta/RawHeartbeatEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent : love.forte.simbot.component.onebot.v11.event.meta/RawMetaEvent { // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String) // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String){}[0]
+
+    final val metaEventType // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.metaEventType|{}metaEventType[0]
+        final fun <get-metaEventType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.metaEventType.<get-metaEventType>|<get-metaEventType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.time.<get-time>|<get-time>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.component5|component5(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent> { // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent) // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.meta.RawLifecycleEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent> // love.forte.simbot.component.onebot.v11.event.meta/RawLifecycleEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID){}[0]
+
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.component5|component5(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawFriendAddEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawFriendAddEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID){}[0]
+
+    final val messageId // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.messageId|{}messageId[0]
+        final fun <get-messageId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.messageId.<get-messageId>|<get-messageId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.component6|component6(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawFriendRecallEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawFriendRecallEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID){}[0]
+
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.component7|component7(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupAdminEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion|null[0]
+        final const val SUB_TYPE_SET // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion.SUB_TYPE_SET|{}SUB_TYPE_SET[0]
+            final fun <get-SUB_TYPE_SET>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion.SUB_TYPE_SET.<get-SUB_TYPE_SET>|<get-SUB_TYPE_SET>(){}[0]
+        final const val SUB_TYPE_UNSET // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion.SUB_TYPE_UNSET|{}SUB_TYPE_UNSET[0]
+            final fun <get-SUB_TYPE_UNSET>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion.SUB_TYPE_UNSET.<get-SUB_TYPE_UNSET>|<get-SUB_TYPE_UNSET>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupAdminEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID, kotlin/Long = ...) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID;kotlin.Long){}[0]
+
+    final val duration // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.duration|{}duration[0]
+        final fun <get-duration>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.duration.<get-duration>|<get-duration>(){}[0]
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val operatorId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.operatorId|{}operatorId[0]
+        final fun <get-operatorId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component8|component8(){}[0]
+    final fun component9(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.component9|component9(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID = ..., kotlin/Long = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupBanEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion|null[0]
+        final const val SUB_TYPE_BAN // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion.SUB_TYPE_BAN|{}SUB_TYPE_BAN[0]
+            final fun <get-SUB_TYPE_BAN>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion.SUB_TYPE_BAN.<get-SUB_TYPE_BAN>|<get-SUB_TYPE_BAN>(){}[0]
+        final const val SUB_TYPE_LIFT_BAN // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion.SUB_TYPE_LIFT_BAN|{}SUB_TYPE_LIFT_BAN[0]
+            final fun <get-SUB_TYPE_LIFT_BAN>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion.SUB_TYPE_LIFT_BAN.<get-SUB_TYPE_LIFT_BAN>|<get-SUB_TYPE_LIFT_BAN>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupBanEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val operatorId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.operatorId|{}operatorId[0]
+        final fun <get-operatorId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.component8|component8(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupDecreaseEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupDecreaseEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val operatorId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.operatorId|{}operatorId[0]
+        final fun <get-operatorId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.component8|component8(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupIncreaseEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupIncreaseEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID?, love.forte.simbot.common.id/LongID) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val messageId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.messageId|{}messageId[0]
+        final fun <get-messageId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.messageId.<get-messageId>|<get-messageId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val operatorId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.operatorId|{}operatorId[0]
+        final fun <get-operatorId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.operatorId.<get-operatorId>|<get-operatorId>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.component8|component8(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID? = ..., love.forte.simbot.common.id/LongID = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?;love.forte.simbot.common.id.LongID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupRecallEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupRecallEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID, love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent.FileInfo){}[0]
+
+    final val file // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.file|{}file[0]
+        final fun <get-file>(): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.file.<get-file>|<get-file>(){}[0]
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.component7|component7(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent.FileInfo){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.toString|toString(){}[0]
+
+    final class FileInfo { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID, kotlin/String, kotlin/Long = ..., kotlin/Long = ...) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.<init>|<init>(love.forte.simbot.common.id.ID;kotlin.String;kotlin.Long;kotlin.Long){}[0]
+
+        final val busid // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.busid|{}busid[0]
+            final fun <get-busid>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.busid.<get-busid>|<get-busid>(){}[0]
+        final val id // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.id.<get-id>|<get-id>(){}[0]
+        final val name // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.name|{}name[0]
+            final fun <get-name>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.name.<get-name>|<get-name>(){}[0]
+        final val size // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.size|{}size[0]
+            final fun <get-size>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.size.<get-size>|<get-size>(){}[0]
+
+        final fun component1(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.component2|component2(){}[0]
+        final fun component3(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.component3|component3(){}[0]
+        final fun component4(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.component4|component4(){}[0]
+        final fun copy(love.forte.simbot.common.id/ID = ..., kotlin/String = ..., kotlin/Long = ..., kotlin/Long = ...): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.copy|copy(love.forte.simbot.common.id.ID;kotlin.String;kotlin.Long;kotlin.Long){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer|null[0]
+            final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent.FileInfo){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.FileInfo.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawGroupUploadEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawGroupUploadEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent : love.forte.simbot.component.onebot.v11.event.notice/RawNoticeEvent { // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent|null[0]
+    constructor <init>(kotlin/Long, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID? = ..., kotlin/String? = ..., love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID? = ...) // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.<init>|<init>(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID?;kotlin.String?;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?){}[0]
+
+    final val groupId // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val honorType // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.honorType|{}honorType[0]
+        final fun <get-honorType>(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.honorType.<get-honorType>|<get-honorType>(){}[0]
+    final val noticeType // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.noticeType|{}noticeType[0]
+        final fun <get-noticeType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.noticeType.<get-noticeType>|<get-noticeType>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val targetId // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.targetId|{}targetId[0]
+        final fun <get-targetId>(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.targetId.<get-targetId>|<get-targetId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component6|component6(){}[0]
+    final fun component7(): kotlin/String? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component7|component7(){}[0]
+    final fun component8(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component8|component8(){}[0]
+    final fun component9(): love.forte.simbot.common.id/LongID? // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.component9|component9(){}[0]
+    final fun copy(kotlin/Long = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID? = ..., kotlin/String? = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID? = ...): love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.copy|copy(kotlin.Long;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID?;kotlin.String?;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent> { // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent) // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.notice.RawNotifyEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion|null[0]
+        final const val SUB_TYPE_HONOR // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_HONOR|{}SUB_TYPE_HONOR[0]
+            final fun <get-SUB_TYPE_HONOR>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_HONOR.<get-SUB_TYPE_HONOR>|<get-SUB_TYPE_HONOR>(){}[0]
+        final const val SUB_TYPE_LUCKY_KING // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_LUCKY_KING|{}SUB_TYPE_LUCKY_KING[0]
+            final fun <get-SUB_TYPE_LUCKY_KING>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_LUCKY_KING.<get-SUB_TYPE_LUCKY_KING>|<get-SUB_TYPE_LUCKY_KING>(){}[0]
+        final const val SUB_TYPE_POKE // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_POKE|{}SUB_TYPE_POKE[0]
+            final fun <get-SUB_TYPE_POKE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.SUB_TYPE_POKE.<get-SUB_TYPE_POKE>|<get-SUB_TYPE_POKE>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent> // love.forte.simbot.component.onebot.v11.event.notice/RawNotifyEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent : love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent { // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent|null[0]
+    constructor <init>(kotlin/Long, kotlin/String, love.forte.simbot.common.id/LongID, kotlin/String, love.forte.simbot.common.id/LongID, kotlin/String = ..., kotlin/String) // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.<init>|<init>(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String){}[0]
+
+    final val comment // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.comment|{}comment[0]
+        final fun <get-comment>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.comment.<get-comment>|<get-comment>(){}[0]
+    final val flag // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.flag|{}flag[0]
+        final fun <get-flag>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.flag.<get-flag>|<get-flag>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val requestType // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.requestType|{}requestType[0]
+        final fun <get-requestType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.requestType.<get-requestType>|<get-requestType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component1|component1(){}[0]
+    final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component2|component2(){}[0]
+    final fun component3(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component4|component4(){}[0]
+    final fun component5(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component5|component5(){}[0]
+    final fun component6(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component6|component6(){}[0]
+    final fun component7(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.component7|component7(){}[0]
+    final fun copy(kotlin/Long = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.copy|copy(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent> { // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent) // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.request.RawFriendRequestEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent> // love.forte.simbot.component.onebot.v11.event.request/RawFriendRequestEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent : love.forte.simbot.component.onebot.v11.event.request/RawRequestEvent { // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent|null[0]
+    constructor <init>(kotlin/Long, kotlin/String, love.forte.simbot.common.id/LongID, kotlin/String, kotlin/String, love.forte.simbot.common.id/LongID, love.forte.simbot.common.id/LongID, kotlin/String = ..., kotlin/String) // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.<init>|<init>(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String){}[0]
+
+    final val comment // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.comment|{}comment[0]
+        final fun <get-comment>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.comment.<get-comment>|<get-comment>(){}[0]
+    final val flag // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.flag|{}flag[0]
+        final fun <get-flag>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.flag.<get-flag>|<get-flag>(){}[0]
+    final val groupId // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.groupId|{}groupId[0]
+        final fun <get-groupId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.groupId.<get-groupId>|<get-groupId>(){}[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val requestType // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.requestType|{}requestType[0]
+        final fun <get-requestType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.requestType.<get-requestType>|<get-requestType>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val subType // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.subType|{}subType[0]
+        final fun <get-subType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.subType.<get-subType>|<get-subType>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.time.<get-time>|<get-time>(){}[0]
+    final val userId // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.userId|{}userId[0]
+        final fun <get-userId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/Long // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component1|component1(){}[0]
+    final fun component2(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component2|component2(){}[0]
+    final fun component3(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component3|component3(){}[0]
+    final fun component4(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component5|component5(){}[0]
+    final fun component6(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component6|component6(){}[0]
+    final fun component7(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component7|component7(){}[0]
+    final fun component8(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component8|component8(){}[0]
+    final fun component9(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.component9|component9(){}[0]
+    final fun copy(kotlin/Long = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ..., love.forte.simbot.common.id/LongID = ..., love.forte.simbot.common.id/LongID = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.copy|copy(kotlin.Long;kotlin.String;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String;love.forte.simbot.common.id.LongID;love.forte.simbot.common.id.LongID;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent> { // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent) // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion|null[0]
+        final const val SUB_TYPE_ADD // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion.SUB_TYPE_ADD|{}SUB_TYPE_ADD[0]
+            final fun <get-SUB_TYPE_ADD>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion.SUB_TYPE_ADD.<get-SUB_TYPE_ADD>|<get-SUB_TYPE_ADD>(){}[0]
+        final const val SUB_TYPE_INVITE // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion.SUB_TYPE_INVITE|{}SUB_TYPE_INVITE[0]
+            final fun <get-SUB_TYPE_INVITE>(): kotlin/String // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion.SUB_TYPE_INVITE.<get-SUB_TYPE_INVITE>|<get-SUB_TYPE_INVITE>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent> // love.forte.simbot.component.onebot.v11.event.request/RawGroupRequestEvent.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.component.onebot.v11.event/UnknownEvent : love.forte.simbot.component.onebot.v11.event/RawEvent { // love.forte.simbot.component.onebot.v11.event/UnknownEvent|null[0]
+    final val postType // love.forte.simbot.component.onebot.v11.event/UnknownEvent.postType|{}postType[0]
+        final fun <get-postType>(): kotlin/String // love.forte.simbot.component.onebot.v11.event/UnknownEvent.postType.<get-postType>|<get-postType>(){}[0]
+    final val raw // love.forte.simbot.component.onebot.v11.event/UnknownEvent.raw|{}raw[0]
+        final fun <get-raw>(): kotlin/String // love.forte.simbot.component.onebot.v11.event/UnknownEvent.raw.<get-raw>|<get-raw>(){}[0]
+    final val rawJson // love.forte.simbot.component.onebot.v11.event/UnknownEvent.rawJson|{}rawJson[0]
+        final fun <get-rawJson>(): kotlinx.serialization.json/JsonObject // love.forte.simbot.component.onebot.v11.event/UnknownEvent.rawJson.<get-rawJson>|<get-rawJson>(){}[0]
+    final val reason // love.forte.simbot.component.onebot.v11.event/UnknownEvent.reason|{}reason[0]
+        final fun <get-reason>(): kotlin/Throwable? // love.forte.simbot.component.onebot.v11.event/UnknownEvent.reason.<get-reason>|<get-reason>(){}[0]
+    final val selfId // love.forte.simbot.component.onebot.v11.event/UnknownEvent.selfId|{}selfId[0]
+        final fun <get-selfId>(): love.forte.simbot.common.id/LongID // love.forte.simbot.component.onebot.v11.event/UnknownEvent.selfId.<get-selfId>|<get-selfId>(){}[0]
+    final val time // love.forte.simbot.component.onebot.v11.event/UnknownEvent.time|{}time[0]
+        final fun <get-time>(): kotlin/Long // love.forte.simbot.component.onebot.v11.event/UnknownEvent.time.<get-time>|<get-time>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.event/UnknownEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.event/UnknownEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.event/UnknownEvent.toString|toString(){}[0]
+}
+
+open class love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException : kotlin/RuntimeException { // love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException.<init>|<init>(kotlin.String?){}[0]
+    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
+    constructor <init>(kotlin/Throwable?) // love.forte.simbot.component.onebot.v11.event/RawEventDeserializationException.<init>|<init>(kotlin.Throwable?){}[0]
+}

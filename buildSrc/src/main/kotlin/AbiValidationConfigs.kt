@@ -60,6 +60,7 @@ fun AbiValidationVariantSpec.configKookAbiValidation() {
     filters.excluded.annotatedWith.addAll(
         "love.forte.simbot.kook.ExperimentalKookApi",
         "love.forte.simbot.kook.InternalKookApi",
+        "love.forte.simbot.kook.api.template.ExperimentalTemplateApi",
         "love.forte.simbot.component.kook.blacklist.ExperimentalBlacklistApi"
     )
 }
