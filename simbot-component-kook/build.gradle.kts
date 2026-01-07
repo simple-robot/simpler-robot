@@ -37,6 +37,7 @@ subprojects {
 
     @OptIn(ExperimentalAbiValidation::class)
     afterEvaluate {
+        // Configures ABI validation for JVM or multiplatform projects
         when {
             plugins.hasPlugin("org.jetbrains.kotlin.jvm") -> {
                 extensions.configure<KotlinJvmProjectExtension>("kotlin") {
