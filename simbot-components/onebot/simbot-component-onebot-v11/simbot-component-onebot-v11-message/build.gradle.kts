@@ -22,7 +22,6 @@
  */
 
 import com.google.devtools.ksp.gradle.KspAATask
-import love.forte.gradle.common.kotlin.multiplatform.applyTier123
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 

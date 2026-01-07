@@ -22,9 +22,6 @@
  */
 
 import com.google.devtools.ksp.gradle.KspAATask
-import love.forte.gradle.common.kotlin.multiplatform.applyTier1
-import love.forte.gradle.common.kotlin.multiplatform.applyTier2
-import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
@@ -56,9 +53,7 @@ kotlin {
         configJs()
     }
 
-    applyTier1()
-    applyTier2()
-    applyTier3(supportKtorClient = true)
+    applyTier123(supportKtorClient = true)
 
     sourceSets {
         commonMain {

@@ -21,7 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.kotlin.multiplatform.applyTier123
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
