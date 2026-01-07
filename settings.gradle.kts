@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2025. ForteScarlet.
+ *     Copyright (c) 2021-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -47,6 +47,8 @@ develocity {
 include(":internal-processors:interface-uml-processor")
 include(":internal-processors:onebot-event-type-resolver-processor")
 include(":internal-processors:onebot-include-component-message-elements-processor")
+include(":internal-processors:kook-api-reader")
+include(":internal-processors:kook-message-element-processor")
 
 // gradle
 // include(":simbot-gradles:simbot-gradle-plugin")
@@ -91,6 +93,11 @@ include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-
 include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-core")
 include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-event")
 include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-message")
+
+// kook
+include(":simbot-components:kook:simbot-component-kook-api")
+include(":simbot-components:kook:simbot-component-kook-stdlib")
+include(":simbot-components:kook:simbot-component-kook-core")
 
 // local tests
 include(":tests:spring-boot-starter-test")

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -52,5 +52,14 @@ fun AbiValidationVariantSpec.configOneBotAbiValidation() {
 
         // OneBotNonStandardApi
         "love.forte.simbot.component.onebot.v11.core.api.nonstandard.OneBotNonStandardApi"
+    )
+}
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configKookAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.kook.ExperimentalKookApi",
+        "love.forte.simbot.kook.InternalKookApi",
+        "love.forte.simbot.component.kook.blacklist.ExperimentalBlacklistApi"
     )
 }
