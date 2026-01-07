@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -22,9 +22,6 @@
  */
 
 import com.google.devtools.ksp.gradle.KspAATask
-import love.forte.gradle.common.kotlin.multiplatform.applyTier1
-import love.forte.gradle.common.kotlin.multiplatform.applyTier2
-import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import love.forte.plugin.suspendtrans.gradle.SuspendTransPluginConstants
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.time.Instant
@@ -53,9 +50,7 @@ kotlin {
         configJs()
     }
 
-    applyTier1()
-    applyTier2()
-    applyTier3()
+    applyTier123()
 
     // wasm?
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)

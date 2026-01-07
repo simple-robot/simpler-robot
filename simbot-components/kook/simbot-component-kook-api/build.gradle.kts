@@ -21,9 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.kotlin.multiplatform.applyTier1
-import love.forte.gradle.common.kotlin.multiplatform.applyTier2
-import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
@@ -53,9 +50,7 @@ kotlin {
     }
 
 
-    applyTier1()
-    applyTier2()
-    applyTier3(supportKtorClient = true)
+    applyTier123(supportKtorClient = true)
 
     sourceSets {
         commonMain {
