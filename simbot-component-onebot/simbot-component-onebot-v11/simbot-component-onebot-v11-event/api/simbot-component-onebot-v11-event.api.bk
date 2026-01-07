@@ -1,0 +1,849 @@
+public abstract interface class love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public abstract fun getPostType ()Ljava/lang/String;
+	public abstract fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public abstract fun getTime ()J
+}
+
+public class love/forte/simbot/component/onebot/v11/event/RawEventDeserializationException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/UnknownEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPostType ()Ljava/lang/String;
+	public final fun getRaw ()Ljava/lang/String;
+	public final fun getRawJson ()Lkotlinx/serialization/json/JsonObject;
+	public final fun getReason ()Ljava/lang/Throwable;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent : love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Companion;
+	public static final field SUB_TYPE_ANONYMOUS Ljava/lang/String;
+	public static final field SUB_TYPE_NORMAL Ljava/lang/String;
+	public static final field SUB_TYPE_NOTICE Ljava/lang/String;
+	public final fun component1 ()J
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component12 ()Ljava/lang/Integer;
+	public final fun component13 ()Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Llove/forte/simbot/common/id/ID;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;Ljava/util/List;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/Integer;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;Ljava/util/List;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/Integer;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnonymous ()Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;
+	public fun getFont ()Ljava/lang/Integer;
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getMessage ()Ljava/util/List;
+	public fun getMessageId ()Llove/forte/simbot/common/id/ID;
+	public fun getMessageType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getRawMessage ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getSender ()Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;
+	public synthetic fun getSender ()Llove/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender;
+	public fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous$Companion;
+	public final fun component1 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFlag ()Ljava/lang/String;
+	public final fun getId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Anonymous$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender : love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender$Companion;
+	public final fun component1 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()I
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAge ()I
+	public final fun getArea ()Ljava/lang/String;
+	public final fun getCard ()Ljava/lang/String;
+	public final fun getLevel ()Ljava/lang/String;
+	public fun getNickname ()Ljava/lang/String;
+	public final fun getRole ()Ljava/lang/String;
+	public fun getSex ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawGroupMessageEvent$Sender$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Companion;
+	public static final field POST_TYPE Ljava/lang/String;
+	public abstract fun getFont ()Ljava/lang/Integer;
+	public abstract fun getMessage ()Ljava/util/List;
+	public abstract fun getMessageId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessageType ()Ljava/lang/String;
+	public abstract fun getRawMessage ()Ljava/lang/String;
+	public abstract fun getSender ()Llove/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender;
+	public abstract fun getSubType ()Ljava/lang/String;
+	public abstract fun getUserId ()Llove/forte/simbot/common/id/LongID;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Companion {
+	public static final field POST_TYPE Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender {
+	public abstract fun getAge ()I
+	public abstract fun getNickname ()Ljava/lang/String;
+	public abstract fun getSex ()Ljava/lang/String;
+	public abstract fun getUserId ()Llove/forte/simbot/common/id/LongID;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent : love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Companion;
+	public static final field SUB_TYPE_FRIEND Ljava/lang/String;
+	public static final field SUB_TYPE_GROUP Ljava/lang/String;
+	public final fun component1 ()J
+	public final fun component10 ()Ljava/lang/Integer;
+	public final fun component11 ()Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Llove/forte/simbot/common/id/ID;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/Integer;Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/Integer;Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFont ()Ljava/lang/Integer;
+	public fun getMessage ()Ljava/util/List;
+	public fun getMessageId ()Llove/forte/simbot/common/id/ID;
+	public fun getMessageType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getRawMessage ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public synthetic fun getSender ()Llove/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender;
+	public fun getSender ()Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;
+	public fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender : love/forte/simbot/component/onebot/v11/event/message/RawMessageEvent$Sender {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender$Companion;
+	public final fun component1 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()I
+	public final fun copy (Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;I)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAge ()I
+	public fun getNickname ()Ljava/lang/String;
+	public fun getSex ()Ljava/lang/String;
+	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/message/RawPrivateMessageEvent$Sender$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent : love/forte/simbot/component/onebot/v11/event/meta/RawMetaEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent$Companion;
+	public fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;J)V
+	public synthetic fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;
+	public final fun component6 ()J
+	public final fun copy (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;J)Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent;JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;JILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInterval ()J
+	public fun getMetaEventType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getStatus ()Llove/forte/simbot/component/onebot/v11/common/api/StatusResult;
+	public fun getTime ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/meta/RawHeartbeatEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent : love/forte/simbot/component/onebot/v11/event/meta/RawMetaEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMetaEventType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/meta/RawLifecycleEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/event/meta/RawMetaEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/meta/RawMetaEvent$Companion;
+	public static final field POST_TYPE Ljava/lang/String;
+	public abstract fun getMetaEventType ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/meta/RawMetaEvent$Companion {
+	public static final field POST_TYPE Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getNoticeType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawFriendAddEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessageId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent$Companion;
+	public static final field SUB_TYPE_SET Ljava/lang/String;
+	public static final field SUB_TYPE_UNSET Ljava/lang/String;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent$Companion;
+	public static final field SUB_TYPE_BAN Ljava/lang/String;
+	public static final field SUB_TYPE_LIFT_BAN Ljava/lang/String;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;J)V
+	public synthetic fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component8 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component9 ()J
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;J)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;JILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDuration ()J
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public final fun getOperatorId ()Llove/forte/simbot/common/id/LongID;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public synthetic fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component8 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public final fun getOperatorId ()Llove/forte/simbot/common/id/LongID;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public synthetic fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component8 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public final fun getOperatorId ()Llove/forte/simbot/common/id/LongID;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component8 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getMessageId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public final fun getOperatorId ()Llove/forte/simbot/common/id/LongID;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupRecallEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$Companion;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFile ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getNoticeType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo$Companion;
+	public fun <init> (Llove/forte/simbot/common/id/ID;Ljava/lang/String;JJ)V
+	public synthetic fun <init> (Llove/forte/simbot/common/id/ID;Ljava/lang/String;JJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/common/id/ID;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()J
+	public final fun component4 ()J
+	public final fun copy (Llove/forte/simbot/common/id/ID;Ljava/lang/String;JJ)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;Llove/forte/simbot/common/id/ID;Ljava/lang/String;JJILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBusid ()J
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSize ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent$Companion;
+	public static final field POST_TYPE Ljava/lang/String;
+	public abstract fun getNoticeType ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent$Companion {
+	public static final field POST_TYPE Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent : love/forte/simbot/component/onebot/v11/event/notice/RawNoticeEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent$Companion;
+	public static final field SUB_TYPE_HONOR Ljava/lang/String;
+	public static final field SUB_TYPE_LUCKY_KING Ljava/lang/String;
+	public static final field SUB_TYPE_POKE Ljava/lang/String;
+	public fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)V
+	public synthetic fun <init> (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component9 ()Llove/forte/simbot/common/id/LongID;
+	public final fun copy (JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;)Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent;JLlove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getHonorType ()Ljava/lang/String;
+	public fun getNoticeType ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public final fun getTargetId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/notice/RawNotifyEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent : love/forte/simbot/component/onebot/v11/event/request/RawRequestEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent$Companion;
+	public fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent;JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComment ()Ljava/lang/String;
+	public final fun getFlag ()Ljava/lang/String;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getRequestType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/request/RawFriendRequestEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent : love/forte/simbot/component/onebot/v11/event/request/RawRequestEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent$Companion;
+	public static final field SUB_TYPE_ADD Ljava/lang/String;
+	public static final field SUB_TYPE_INVITE Ljava/lang/String;
+	public fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component7 ()Llove/forte/simbot/common/id/LongID;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;JLjava/lang/String;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/id/LongID;Llove/forte/simbot/common/id/LongID;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComment ()Ljava/lang/String;
+	public final fun getFlag ()Ljava/lang/String;
+	public final fun getGroupId ()Llove/forte/simbot/common/id/LongID;
+	public fun getPostType ()Ljava/lang/String;
+	public fun getRequestType ()Ljava/lang/String;
+	public fun getSelfId ()Llove/forte/simbot/common/id/LongID;
+	public final fun getSubType ()Ljava/lang/String;
+	public fun getTime ()J
+	public final fun getUserId ()Llove/forte/simbot/common/id/LongID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class love/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/onebot/v11/event/request/RawRequestEvent : love/forte/simbot/component/onebot/v11/event/RawEvent {
+	public static final field Companion Llove/forte/simbot/component/onebot/v11/event/request/RawRequestEvent$Companion;
+	public static final field POST_TYPE Ljava/lang/String;
+	public abstract fun getRequestType ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/event/request/RawRequestEvent$Companion {
+	public static final field POST_TYPE Ljava/lang/String;
+}
+
