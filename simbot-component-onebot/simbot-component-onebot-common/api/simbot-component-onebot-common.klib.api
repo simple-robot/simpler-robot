@@ -1,0 +1,29 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-onebot-common>
+open annotation class love.forte.simbot.component.onebot.common.annotations/ApiResultConstructor : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/ApiResultConstructor|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/ApiResultConstructor.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.onebot.common.annotations/ExperimentalOneBotAPI : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/ExperimentalOneBotAPI|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/ExperimentalOneBotAPI.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.onebot.common.annotations/OneBotInternalImplementationsOnly : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/OneBotInternalImplementationsOnly|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/OneBotInternalImplementationsOnly.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.onebot.common.annotations/SourceEventConstructor : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/SourceEventConstructor|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/SourceEventConstructor.<init>|<init>(){}[0]
+}
+
+abstract interface love.forte.simbot.component.onebot.common.component/OneBotComponent : love.forte.simbot.component/Component // love.forte.simbot.component.onebot.common.component/OneBotComponent|null[0]

@@ -9,7 +9,7 @@ public final class love/forte/simbot/component/onebot/v11/common/api/StatusResul
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/common/api/StatusResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/common/api/StatusResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/common/api/StatusResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

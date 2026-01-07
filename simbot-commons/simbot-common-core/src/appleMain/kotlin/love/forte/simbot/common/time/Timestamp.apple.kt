@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,9 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
     @OptIn(UnsafeNumber::class)
     override fun compareTo(other: Timestamp): Int {
         if (other is NSDateTimestamp) {
-            @Suppress("RemoveRedundantCallsOfConversionMethods")
+            @Suppress("REDUNDANT_CALL_OF_CONVERSION_METHOD")
+            // 如果不转化，编译器报错：
+            // e: file:///Users/forte/IdeaProjects/simply-robot/simbot-commons/simbot-common-core/src/appleMain/kotlin/love/forte/simbot/common/time/Timestamp.apple.kt:57:20 Return type mismatch: expected 'Int', actual 'Long'.
             return date.compare(other.date).toInt()
         }
 

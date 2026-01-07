@@ -276,7 +276,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/CanSendImageR
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/CanSendImageResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/CanSendImageResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/CanSendImageResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -315,7 +315,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/CanSendRecord
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/CanSendRecordResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/CanSendRecordResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/CanSendRecordResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -394,7 +394,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetCookiesRes
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCookiesResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCookiesResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetCookiesResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -439,7 +439,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetCredential
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -478,7 +478,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenR
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -516,7 +516,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetForwardMsg
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetForwardMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetForwardMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetForwardMsgResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -559,7 +559,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetFriendList
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetFriendListResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetFriendListResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetFriendListResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -619,7 +619,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonor
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -653,7 +653,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonor
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$CurrentTalkative$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$CurrentTalkative$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$CurrentTalkative$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -687,7 +687,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonor
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$HonorInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$HonorInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$HonorInfo$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -736,7 +736,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupInfoR
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetGroupInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -820,7 +820,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupMembe
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -874,7 +874,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetImageResul
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetImageResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetImageResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetImageResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -915,7 +915,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetLoginInfoR
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -964,7 +964,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetMsgResult 
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetMsgResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1004,7 +1004,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetRecordResu
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetRecordResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetRecordResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetRecordResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1066,7 +1066,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetStrangerIn
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetStrangerInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetStrangerInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetStrangerInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1109,7 +1109,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/GetVersionInf
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/GetVersionInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/GetVersionInfoResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/GetVersionInfoResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1379,7 +1379,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/OneBotApiResu
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotApiResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotApiResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public fun <init> (Lkotlinx/serialization/KSerializer;)V
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1419,7 +1419,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/OneBotMessage
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$SegmentsValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$SegmentsValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$SegmentsValue$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1446,7 +1446,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/OneBotMessage
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$StringValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$StringValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$StringValue$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1544,7 +1544,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/SendMsgResult
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/SendMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/SendMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/SendMsgResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1807,7 +1807,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/S
 	public final fun create (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgApi;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2011,7 +2011,7 @@ public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotRequ
 	public static final fun requestResultByReserve (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2044,7 +2044,7 @@ public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSeri
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2082,7 +2082,7 @@ public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSeri
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Authorization$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Authorization$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Authorization$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2125,7 +2125,7 @@ public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSeri
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2138,11 +2138,6 @@ public synthetic class love/forte/simbot/component/onebot/v11/core/bot/OneBotBot
 
 public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class love/forte/simbot/component/onebot/v11/core/bot/internal/OneBotBotManagerImpl$inlined$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
-	public fun <init> (Lkotlin/jvm/functions/Function2;)V
-	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/component/OneBot11Component : love/forte/simbot/component/onebot/common/component/OneBotComponent {
