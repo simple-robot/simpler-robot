@@ -88,16 +88,16 @@ include(":simbot-extensions:simbot-extension-continuous-session")
 
 // components
 // onebot
-include(":simbot-components:onebot:simbot-component-onebot-common")
-include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-common")
-include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-core")
-include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-event")
-include(":simbot-components:onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-message")
+include(":simbot-component-onebot:simbot-component-onebot-common")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-common")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-core")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-event")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-message")
 
 // kook
-include(":simbot-components:kook:simbot-component-kook-api")
-include(":simbot-components:kook:simbot-component-kook-stdlib")
-include(":simbot-components:kook:simbot-component-kook-core")
+include(":simbot-component-kook:simbot-component-kook-api")
+include(":simbot-component-kook:simbot-component-kook-stdlib")
+include(":simbot-component-kook:simbot-component-kook-core")
 
 // local tests
 include(":tests:spring-boot-starter-test")
