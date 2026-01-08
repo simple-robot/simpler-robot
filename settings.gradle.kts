@@ -49,6 +49,9 @@ include(":internal-processors:onebot-event-type-resolver-processor")
 include(":internal-processors:onebot-include-component-message-elements-processor")
 include(":internal-processors:kook-api-reader")
 include(":internal-processors:kook-message-element-processor")
+include(":internal-processors:qq-api-reader")
+include(":internal-processors:qq-dispatch-serializer-processor")
+include(":internal-processors:qq-intents-processor")
 
 // gradle
 // include(":simbot-gradles:simbot-gradle-plugin")
@@ -98,6 +101,17 @@ include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-o
 include(":simbot-component-kook:simbot-component-kook-api")
 include(":simbot-component-kook:simbot-component-kook-stdlib")
 include(":simbot-component-kook:simbot-component-kook-core")
+
+// qq
+include(":simbot-component-qq:simbot-component-qq-guild-api")
+include(":simbot-component-qq:simbot-component-qq-guild-stdlib")
+include(":simbot-component-qq:simbot-component-qq-guild-core")
+include(":simbot-component-qq:simbot-component-qq-guild-internal-ed25519")
+
+// samples
+include(":samples:qq-webhook-server-ktor")
+include(":samples:qq-webhook-server-spring")
+include(":samples:qq-webhook-server-spring-webflux")
 
 // local tests
 include(":tests:spring-boot-starter-test")

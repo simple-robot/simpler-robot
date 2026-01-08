@@ -1,0 +1,3 @@
+public abstract interface annotation class love/forte/simbot/qguild/ed25519/annotations/InternalEd25519Api : java/lang/annotation/Annotation {
+}
+

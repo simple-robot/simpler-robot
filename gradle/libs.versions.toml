@@ -4,6 +4,7 @@ dokka = "2.0.0"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
 kotlinx-io = "0.7.0"
+kotlinx-datetime = "0.6.2"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 ktor = "2.3.13"
@@ -37,6 +38,12 @@ gradleNexusPublishPlugin = "2.0.0"
 # https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
 maven-publish-plugin = "0.34.0"
 
+# ed25519 crypto
+bouncycastle = "1.81"
+eddsa = "0.3.0"
+# https://github.com/ionspin/kotlin-multiplatform-libsodium
+libsodium-bindings = "0.9.2"
+
 [libraries]
 maven-publish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "maven-publish-plugin" }
 
@@ -56,6 +63,7 @@ kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-debug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 
 # kotlinx-serialization
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
@@ -64,6 +72,9 @@ kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "ko
 
 # kotlinx-io
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+
+# kotlinx-datetime
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 # slf4j
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
@@ -104,6 +115,7 @@ ktor-client-winhttp = { group = "io.ktor", name = "ktor-client-winhttp", version
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 ktor-server-ws = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
@@ -137,6 +149,11 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j2 = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+
+# ed25519 crypto
+bouncycastle-bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+i2p-crypto-eddsa = { module = "net.i2p.crypto:eddsa", version.ref = "eddsa" }
+libsodium-bindings = { module = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings", version.ref = "libsodium-bindings" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
