@@ -75,9 +75,13 @@ private const val EVENT_NAME_BASED_MARKER_PKG = "love.forte.simbot.qguild.intern
 internal class EventIntentsAggregationProcessor(
     val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor {
+
+    /**
+     * 名称到类型的映射信息，用于生成 `getByName` 和 `IntentsAppenderOp`。
+     * 不包含任何 KS 类型，仅使用 kotlinpoet 的 [ClassName]。
+     */
     data class NamesToType(
         val names: Set<String>,
-        // val declaration: KSClassDeclaration,
         val declarationClassName: ClassName,
         val firstUpper: String,
         val firstLower: String,
@@ -85,84 +89,100 @@ internal class EventIntentsAggregationProcessor(
         val snackLower: String,
     )
 
-    // TODO
-    private val nameToTypeList = mutableListOf<NamesToType>()
-
-    private var eventIntentsDeclarationOgFile: KSFile? = null
-
-    // private val processed = AtomicBoolean(false)
+    // 增量收集的数据
+    private val collectedNameToTypes = mutableListOf<NamesToType>()
+    private val collectedSourceFiles = mutableSetOf<KSFile>()
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        // if (!processed.compareAndSet(false, true)) {
-        //     return emptyList()
-        // }
-
         val eventIntentsDeclaration = resolver.getClassDeclarationByName(EventIntentsClassName.canonicalName)
-            ?: error("EventIntents declaration not found")
-
-        eventIntentsDeclarationOgFile = eventIntentsDeclaration.containingFile
+            ?: return emptyList() // 尚未找到，等待下一轮
 
         val allSubObjects = eventIntentsDeclaration
             .getSealedSubclasses()
             .toList()
 
-        environment.logger.info("Found sub object: $allSubObjects")
+        if (allSubObjects.isEmpty()) {
+            return emptyList()
+        }
+
+        environment.logger.info("Found sub objects: $allSubObjects")
+
+        // 增量收集源文件
+        eventIntentsDeclaration.containingFile?.also(collectedSourceFiles::add)
+        allSubObjects.forEach { it.containingFile?.also(collectedSourceFiles::add) }
+
+        // 增量收集名称到类型的映射信息，同时验证 INTENTS 常量存在
+        allSubObjects.forEach { declaration ->
+            // 验证 INTENTS 常量存在
+            val hasIntentsConst = declaration.getAllProperties().any { p ->
+                p.simpleName.asString() == INTENTS_CONST_NAME &&
+                    Modifier.CONST in p.modifiers
+            }
+            check(hasIntentsConst) {
+                "Declaration ${declaration.qualifiedName?.asString()} " +
+                    "must have a const property named $INTENTS_CONST_NAME"
+            }
+
+            collectedNameToTypes.add(extractNamesToType(declaration))
+        }
+
+        return emptyList()
+    }
+
+    /**
+     * 从 [KSClassDeclaration] 中提取 [NamesToType] 信息。
+     * 此方法将 KS 类型转换为 kotlinpoet 类型或基本类型。
+     */
+    private fun extractNamesToType(declaration: KSClassDeclaration): NamesToType {
+        val nameBasedAnnotation = declaration.annotations
+            .firstOrNull {
+                (it.annotationType.resolve().declaration as? KSClassDeclaration)?.let { annoDecl ->
+                    annoDecl.simpleName.asString() == EVENT_NAME_BASED_MARKER_NAME &&
+                        annoDecl.packageName.asString() == EVENT_NAME_BASED_MARKER_PKG
+                } == true
+            }
+
+        fun baseName(): String = declaration.simpleName.asString()
+
+        fun findFromAnnotation(name: String): String? =
+            nameBasedAnnotation?.arguments?.firstOrNull {
+                it.name?.asString() == name
+            }?.value as? String?
+
+        val firstUpper = findFromAnnotation("firstUpper")
+            ?.takeUnless { it.isBlank() }
+            ?: baseName()
+        val firstLower = findFromAnnotation("firstLower")
+            ?.takeUnless { it.isBlank() }
+            ?: baseName().replaceFirstChar(Char::lowercaseChar)
+        val snackUpper = findFromAnnotation("snackUpper")
+            ?.takeUnless { it.isBlank() }
+            ?: baseName().toSnack(true)
+        val snackLower = findFromAnnotation("snackLower")
+            ?.takeUnless { it.isBlank() }
+            ?: baseName().toSnack(false)
+
+        val names = setOf(firstUpper, firstLower, snackUpper, snackLower)
+
+        return NamesToType(
+            names = names,
+            declarationClassName = declaration.asStarProjectedType().toClassName(),
+            firstUpper = firstUpper,
+            firstLower = firstLower,
+            snackUpper = snackUpper,
+            snackLower = snackLower,
+        )
+    }
+
+    override fun finish() {
+        if (collectedNameToTypes.isEmpty()) return
 
         val aggregationBuilder = TypeSpec.objectBuilder(AGGREGATION_OBJ_NAME)
 
-        generateAll(aggregationBuilder, allSubObjects)
+        generateAll(aggregationBuilder, collectedNameToTypes)
+        generateGetByName(aggregationBuilder, collectedNameToTypes)
 
-        // name -> type
-        val nameToTypes = allSubObjects.map { declaration ->
-            val nameBasedAnnotation = declaration.annotations
-                .firstOrNull {
-                    (it.annotationType.resolve().declaration as? KSClassDeclaration)?.let { annoDecl ->
-                        annoDecl.simpleName.asString() == EVENT_NAME_BASED_MARKER_NAME &&
-                            annoDecl.packageName.asString() == EVENT_NAME_BASED_MARKER_PKG
-                    } == true
-                }
-
-            fun baseName(): String = declaration.simpleName.asString()
-
-            fun findFromAnnotation(name: String): String? =
-                nameBasedAnnotation?.arguments?.firstOrNull {
-                    it.name?.asString() == name
-                }?.value as? String?
-
-            val firstUpper = findFromAnnotation("firstUpper")
-                ?.takeUnless { it.isBlank() }
-                ?: baseName()
-            val firstLower = findFromAnnotation("firstLower")
-                ?.takeUnless { it.isBlank() }
-                ?: baseName().replaceFirstChar(Char::lowercaseChar)
-            val snackUpper = findFromAnnotation("snackUpper")
-                ?.takeUnless { it.isBlank() }
-                ?: baseName().toSnack(true)
-            val snackLower = findFromAnnotation("snackLower")
-                ?.takeUnless { it.isBlank() }
-                ?: baseName().toSnack(false)
-
-
-            val set = setOf(
-                firstUpper,
-                firstLower,
-                snackUpper,
-                snackLower,
-            )
-
-            NamesToType(
-                set,
-                declaration.asStarProjectedType().toClassName(),
-                firstUpper,
-                firstLower,
-                snackUpper,
-                snackLower
-            )
-        }
-
-        generateGetByName(aggregationBuilder, nameToTypes)
-
-        val intentsAppenderOpTypeSpec = generateIntentsAppenderOp(nameToTypes)
+        val intentsAppenderOpTypeSpec = generateIntentsAppenderOp(collectedNameToTypes)
 
         val fileBuilder = FileSpec.builder(OUTPUT_PACKAGE, AGGREGATION_FILE_NAME)
         fileBuilder.addType(aggregationBuilder.build())
@@ -178,55 +198,27 @@ internal class EventIntentsAggregationProcessor(
             environment.codeGenerator,
             Dependencies(
                 aggregating = false,
-                sources = buildList {
-                    eventIntentsDeclaration.containingFile?.also(::add)
-                    allSubObjects.forEach {
-                        it.containingFile?.also(::add)
-                    }
-                }.toTypedArray()
+                sources = collectedSourceFiles.toTypedArray()
             )
         )
-
-        return emptyList()
-    }
-
-    override fun finish() {
-        TODO()
     }
 
     /**
      * 生成常量 `ALL` 和函数 `allIntents`。
+     * 使用 [NamesToType.declarationClassName] 而非 KS 类型。
      */
-    private fun generateAll(builder: TypeSpec.Builder, list: List<KSClassDeclaration>) {
-        data class ConstPair(val classDeclaration: KSClassDeclaration, val constant: KSPropertyDeclaration)
+    private fun generateAll(builder: TypeSpec.Builder, list: List<NamesToType>) {
+        val classNames = list.map { it.declarationClassName }
 
-        val constValueCode = list.map {
-            val intentsConst = it.getAllProperties().first { p ->
-                p.simpleName.asString() == INTENTS_CONST_NAME &&
-                    Modifier.CONST in p.modifiers
-            }
-            ConstPair(it, intentsConst)
-        }
+        val constValueFormat = classNames.joinToString(" or ") { "%T.$INTENTS_CONST_NAME" }
+        val constValueFormatArgs = classNames.toTypedArray()
 
-        val constValueFormat = constValueCode.joinToString(" or ") {
-            "%T.$INTENTS_CONST_NAME"
-        }
-        val constValueFormatArgs = constValueCode.flatMap { (clz, _) ->
-            sequence<Any?> {
-                yield(clz.asStarProjectedType().toClassName())
-            }
-        }
-
-        val allConst = PropertySpec.builder(
-            "ALL",
-            Int::class,
-        ).apply {
-            addModifiers(KModifier.PUBLIC)
-            addModifiers(KModifier.CONST)
-            initializer(constValueFormat, *constValueFormatArgs.toTypedArray())
+        val allConst = PropertySpec.builder("ALL", Int::class).apply {
+            addModifiers(KModifier.PUBLIC, KModifier.CONST)
+            initializer(constValueFormat, *constValueFormatArgs)
             addKdoc("得到 [%T] 的所有子类型的 intents 的聚合结果, 包括:\n", EventIntentsClassName)
-            constValueCode.forEach { (clz, _) ->
-                addKdoc("- [%T] \n", clz.asStarProjectedType().toClassName())
+            classNames.forEach { className ->
+                addKdoc("- [%T] \n", className)
             }
             addKdoc("\n@see allIntents\n")
         }
@@ -234,25 +226,21 @@ internal class EventIntentsAggregationProcessor(
         val func = FunSpec.builder("allIntents").apply {
             jvmName("allIntents")
             jvmStatic()
-
             addCode("return %T(ALL)", IntentsClassName)
             addKdoc("得到 [%T] 的所有子类型的 intents 的聚合结果, 内容值同 [ALL]\n", EventIntentsClassName)
             addKdoc("@see ALL")
-
             returns(IntentsClassName)
         }
 
         // 生成返回所有 EventIntents 实例列表的函数
         val allIntentsFunc = FunSpec.builder("allEventIntents").apply {
             jvmStatic()
-
             addKdoc("获取到 [%T] 的所有子类型object的实例列表\n", EventIntentsClassName)
             addKdoc("@see %T", EventIntentsClassName)
-
             addCode("return listOf(")
-            list.forEachIndexed { index, declaration ->
-                addCode("%T", declaration.asStarProjectedType().toClassName())
-                if (index < list.lastIndex) {
+            classNames.forEachIndexed { index, className ->
+                addCode("%T", className)
+                if (index < classNames.lastIndex) {
                     addCode(", ")
                 }
             }
