@@ -1,0 +1,280 @@
+public abstract interface class love/forte/simbot/qguild/stdlib/Bot : kotlinx/coroutines/CoroutineScope {
+	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
+	public fun cancel ()V
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public synthetic fun emitEvent (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun emitEvent (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun emitEvent$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun emitEventAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun emitEventAsync (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun emitEventAsync$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun emitEventBlocking (Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/EmitResult;
+	public fun emitEventBlocking (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Llove/forte/simbot/qguild/stdlib/EmitResult;
+	public static synthetic fun emitEventBlocking$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/EmitResult;
+	public fun emitEventReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun emitEventReserve (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun emitEventReserve$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getAccessToken ()Ljava/lang/String;
+	public abstract fun getApiClient ()Lio/ktor/client/HttpClient;
+	public abstract fun getApiDecoder ()Lkotlinx/serialization/json/Json;
+	public abstract fun getApiServer ()Lio/ktor/http/Url;
+	public abstract fun getClient ()Llove/forte/simbot/qguild/stdlib/Bot$Client;
+	public abstract fun getConfiguration ()Llove/forte/simbot/qguild/stdlib/BotConfiguration;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getMe ()Llove/forte/simbot/qguild/model/User;
+	public fun getMeAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getShard ()Llove/forte/simbot/qguild/event/Shard;
+	public abstract fun getTicket ()Llove/forte/simbot/qguild/stdlib/Bot$Ticket;
+	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun joinBlocking ()V
+	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun me (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerPreProcessor (Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
+	public fun registerProcessor (Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
+	public abstract synthetic fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun start (Llove/forte/simbot/qguild/api/GatewayInfo;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun startAsync (Llove/forte/simbot/qguild/api/GatewayInfo;)Ljava/util/concurrent/CompletableFuture;
+	public fun startBlocking ()V
+	public fun startBlocking (Llove/forte/simbot/qguild/api/GatewayInfo;)V
+	public fun startReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun startReserve (Llove/forte/simbot/qguild/api/GatewayInfo;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun subscribe (Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
+	public abstract fun subscribe (Llove/forte/simbot/qguild/stdlib/SubscribeSequence;Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/Bot$Client {
+	public abstract fun getSeq ()J
+	public abstract fun isActive ()Z
+}
+
+public final class love/forte/simbot/qguild/stdlib/Bot$Ticket {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/Bot$Ticket;
+	public static synthetic fun copy$default (Llove/forte/simbot/qguild/stdlib/Bot$Ticket;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/Bot$Ticket;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAppId ()Ljava/lang/String;
+	public final fun getSecret ()Ljava/lang/String;
+	public final fun getToken ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public class love/forte/simbot/qguild/stdlib/BotAlreadyCancelledException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/BotConfiguration {
+	public abstract fun getApiClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
+	public abstract fun getApiClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
+	public abstract fun getApiDecoder ()Lkotlinx/serialization/json/Json;
+	public abstract fun getApiHttpConnectTimeoutMillis ()Ljava/lang/Long;
+	public abstract fun getApiHttpRequestTimeoutMillis ()Ljava/lang/Long;
+	public abstract fun getApiHttpSocketTimeoutMillis ()Ljava/lang/Long;
+	public abstract fun getClientProperties ()Ljava/util/Map;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getDisableWs ()Z
+	public abstract fun getExceptionHandler ()Llove/forte/simbot/qguild/stdlib/ExceptionProcessor;
+	public abstract synthetic fun getIntents-DNrqdk0 ()I
+	public fun getIntentsValue ()I
+	public abstract fun getServerUrl ()Lio/ktor/http/Url;
+	public abstract fun getShard ()Llove/forte/simbot/qguild/event/Shard;
+	public abstract fun getWsClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
+	public abstract fun getWsClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
+}
+
+public final class love/forte/simbot/qguild/stdlib/BotFactory {
+	public static final field INSTANCE Llove/forte/simbot/qguild/stdlib/BotFactory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static final fun create (Llove/forte/simbot/qguild/stdlib/Bot$Ticket;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static final fun create (Llove/forte/simbot/qguild/stdlib/Bot$Ticket;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static final fun create (Llove/forte/simbot/qguild/stdlib/Bot$Ticket;Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static synthetic fun create$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/Bot;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/stdlib/Bot$Ticket;Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/Bot;
+}
+
+public final class love/forte/simbot/qguild/stdlib/BotKt {
+	public static final fun emitEvent (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/qguild/stdlib/BotRequests {
+	public static final fun botToken (Llove/forte/simbot/qguild/stdlib/Bot;)Ljava/lang/String;
+	public static final fun qqBotToken (Llove/forte/simbot/qguild/stdlib/Bot;)Ljava/lang/String;
+	public static final synthetic fun request (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun requestAsync$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestBlocking (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Lio/ktor/client/statement/HttpResponse;
+	public static final synthetic fun requestBy (Llove/forte/simbot/qguild/api/QQGuildApi;Llove/forte/simbot/qguild/stdlib/Bot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final synthetic fun requestData (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestDataAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestDataAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun requestDataAsync$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestDataBlocking (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Ljava/lang/Object;
+	public static final synthetic fun requestDataBy (Llove/forte/simbot/qguild/api/QQGuildApi;Llove/forte/simbot/qguild/stdlib/Bot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestDataReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestDataReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun requestDataReserve$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun requestReserve$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final synthetic fun requestText (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestTextAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestTextAsync (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun requestTextAsync$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestTextBlocking (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Ljava/lang/String;
+	public static final synthetic fun requestTextBy (Llove/forte/simbot/qguild/api/QQGuildApi;Llove/forte/simbot/qguild/stdlib/Bot;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun requestTextBy$default (Llove/forte/simbot/qguild/api/QQGuildApi;Llove/forte/simbot/qguild/stdlib/Bot;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun requestTextReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestTextReserve (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun requestTextReserve$default (Llove/forte/simbot/qguild/stdlib/Bot;Llove/forte/simbot/qguild/api/QQGuildApi;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration : love/forte/simbot/qguild/event/IntentsAppender, love/forte/simbot/qguild/stdlib/BotConfiguration {
+	public static final field Companion Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration$Companion;
+	public fun <init> ()V
+	public final fun addIntents (I)Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;
+	public fun appendIntents-NLurJl8 (I)V
+	public fun getApiClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
+	public fun getApiClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
+	public fun getApiDecoder ()Lkotlinx/serialization/json/Json;
+	public fun getApiHttpConnectTimeoutMillis ()Ljava/lang/Long;
+	public fun getApiHttpRequestTimeoutMillis ()Ljava/lang/Long;
+	public fun getApiHttpSocketTimeoutMillis ()Ljava/lang/Long;
+	public fun getClientProperties ()Ljava/util/Map;
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getDisableWs ()Z
+	public fun getExceptionHandler ()Llove/forte/simbot/qguild/stdlib/ExceptionProcessor;
+	public synthetic fun getIntents-DNrqdk0 ()I
+	public fun getIntentsValue ()I
+	public fun getServerUrl ()Lio/ktor/http/Url;
+	public fun getShard ()Llove/forte/simbot/qguild/event/Shard;
+	public fun getWsClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
+	public fun getWsClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
+	public fun setApiClientEngine (Lio/ktor/client/engine/HttpClientEngine;)V
+	public fun setApiClientEngineFactory (Lio/ktor/client/engine/HttpClientEngineFactory;)V
+	public fun setApiDecoder (Lkotlinx/serialization/json/Json;)V
+	public fun setApiHttpConnectTimeoutMillis (Ljava/lang/Long;)V
+	public fun setApiHttpRequestTimeoutMillis (Ljava/lang/Long;)V
+	public fun setApiHttpSocketTimeoutMillis (Ljava/lang/Long;)V
+	public fun setClientProperties (Ljava/util/Map;)V
+	public fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public fun setDisableWs (Z)V
+	public fun setExceptionHandler (Llove/forte/simbot/qguild/stdlib/ExceptionProcessor;)V
+	public synthetic fun setIntents-NLurJl8 (I)V
+	public fun setIntentsValue (I)V
+	public fun setServerUrl (Lio/ktor/http/Url;)V
+	public fun setShard (Llove/forte/simbot/qguild/event/Shard;)V
+	public fun setWsClientEngine (Lio/ktor/client/engine/HttpClientEngine;)V
+	public fun setWsClientEngineFactory (Lio/ktor/client/engine/HttpClientEngineFactory;)V
+	public final fun useSandboxServerUrl ()V
+}
+
+public final class love/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration$Companion {
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/DisposableHandle {
+	public abstract fun dispose ()V
+}
+
+public final class love/forte/simbot/qguild/stdlib/Ed25519SignatureVerification {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/Ed25519SignatureVerification;
+	public static synthetic fun copy$default (Llove/forte/simbot/qguild/stdlib/Ed25519SignatureVerification;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/Ed25519SignatureVerification;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSignatureEd25519 ()Ljava/lang/String;
+	public final fun getSignatureTimestamp ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/qguild/stdlib/EmitEventOptions {
+	public fun <init> ()V
+	public final fun getEd25519SignatureVerification ()Llove/forte/simbot/qguild/stdlib/Ed25519SignatureVerification;
+	public final fun getIgnoreMissingOpcode ()Z
+	public final fun getIgnoreUnknownOpcode ()Z
+	public final fun setEd25519SignatureVerification (Llove/forte/simbot/qguild/stdlib/Ed25519SignatureVerification;)V
+	public final fun setIgnoreMissingOpcode (Z)V
+	public final fun setIgnoreUnknownOpcode (Z)V
+}
+
+public abstract class love/forte/simbot/qguild/stdlib/EmitResult {
+}
+
+public final class love/forte/simbot/qguild/stdlib/EmitResult$Dispatched : love/forte/simbot/qguild/stdlib/EmitResult {
+	public static final field INSTANCE Llove/forte/simbot/qguild/stdlib/EmitResult$Dispatched;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/qguild/stdlib/EmitResult$Nothing : love/forte/simbot/qguild/stdlib/EmitResult {
+	public static final field INSTANCE Llove/forte/simbot/qguild/stdlib/EmitResult$Nothing;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/qguild/stdlib/EmitResult$Verified : love/forte/simbot/qguild/stdlib/EmitResult {
+	public fun <init> (Llove/forte/simbot/qguild/event/Signal$CallbackVerify$Verified;)V
+	public final fun component1 ()Llove/forte/simbot/qguild/event/Signal$CallbackVerify$Verified;
+	public final fun copy (Llove/forte/simbot/qguild/event/Signal$CallbackVerify$Verified;)Llove/forte/simbot/qguild/stdlib/EmitResult$Verified;
+	public static synthetic fun copy$default (Llove/forte/simbot/qguild/stdlib/EmitResult$Verified;Llove/forte/simbot/qguild/event/Signal$CallbackVerify$Verified;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/EmitResult$Verified;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getVerified ()Llove/forte/simbot/qguild/event/Signal$CallbackVerify$Verified;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/EventProcessor {
+	public abstract synthetic fun invoke (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/qguild/stdlib/EventProcessors {
+	public static final fun async (Ljava/lang/Class;Llove/forte/simbot/qguild/stdlib/TypedJAsyncEventProcessor;)Llove/forte/simbot/qguild/stdlib/JAsyncEventProcessor;
+	public static final fun async (Llove/forte/simbot/qguild/stdlib/JAsyncEventProcessor;)Llove/forte/simbot/qguild/stdlib/JAsyncEventProcessor;
+	public static final fun block (Ljava/lang/Class;Llove/forte/simbot/qguild/stdlib/TypedJBlockEventProcessor;)Llove/forte/simbot/qguild/stdlib/JBlockEventProcessor;
+	public static final fun block (Llove/forte/simbot/qguild/stdlib/JBlockEventProcessor;)Llove/forte/simbot/qguild/stdlib/JBlockEventProcessor;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/ExceptionProcessor {
+	public abstract synthetic fun process (Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/JAsyncEventProcessor : love/forte/simbot/qguild/stdlib/EventProcessor {
+	public abstract fun async (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;)Ljava/util/concurrent/CompletionStage;
+	public synthetic fun invoke (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/JBlockEventProcessor : love/forte/simbot/qguild/stdlib/EventProcessor {
+	public abstract fun block (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;)V
+	public synthetic fun invoke (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/qguild/stdlib/SubscribeSequence : java/lang/Enum {
+	public static final field NORMAL Llove/forte/simbot/qguild/stdlib/SubscribeSequence;
+	public static final field PRE Llove/forte/simbot/qguild/stdlib/SubscribeSequence;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/SubscribeSequence;
+	public static fun values ()[Llove/forte/simbot/qguild/stdlib/SubscribeSequence;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/TypedJAsyncEventProcessor {
+	public abstract fun async (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;)Ljava/util/concurrent/CompletionStage;
+}
+
+public abstract interface class love/forte/simbot/qguild/stdlib/TypedJBlockEventProcessor {
+	public abstract fun block (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;)V
+}
+

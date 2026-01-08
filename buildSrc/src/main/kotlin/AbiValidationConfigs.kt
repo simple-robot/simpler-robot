@@ -64,3 +64,13 @@ fun AbiValidationVariantSpec.configKookAbiValidation() {
         "love.forte.simbot.component.kook.blacklist.ExperimentalBlacklistApi"
     )
 }
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configQQAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.qguild.QGInternalApi",
+        "love.forte.simbot.component.qguild.ExperimentalQGApi",
+        "love.forte.simbot.qguild.ExperimentalQGMediaApi",
+        "love.forte.simbot.qguild.ed25519.annotations.InternalEd25519Api"
+    )
+}
