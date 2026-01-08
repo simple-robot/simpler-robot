@@ -211,7 +211,7 @@ public final class love/forte/simbot/component/qguild/bot/config/CacheConfig {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/CacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/CacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/CacheConfig$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -264,7 +264,7 @@ public final class love/forte/simbot/component/qguild/bot/config/DynamicCacheCon
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/DynamicCacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/DynamicCacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/DynamicCacheConfig$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -299,7 +299,7 @@ public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$B
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Bits$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Bits$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Bits$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -331,7 +331,7 @@ public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$N
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Names$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Names$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Names$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -358,7 +358,7 @@ public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$R
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Raw$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Raw$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Raw$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -397,7 +397,7 @@ public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfig
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -440,7 +440,7 @@ public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfig
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -471,7 +471,7 @@ public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfig
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -504,7 +504,7 @@ public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfig
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -554,7 +554,7 @@ public final class love/forte/simbot/component/qguild/bot/config/ShardConfig$Sim
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/ShardConfig$Simple$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/ShardConfig$Simple$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/ShardConfig$Simple$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -601,7 +601,7 @@ public final class love/forte/simbot/component/qguild/bot/config/TicketConfigura
 	public fun toTicket ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Env$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Env$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/TicketConfiguration$Env$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -634,7 +634,7 @@ public final class love/forte/simbot/component/qguild/bot/config/TicketConfigura
 	public fun toTicket ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Plain$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Plain$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/TicketConfiguration$Plain$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -663,7 +663,7 @@ public final class love/forte/simbot/component/qguild/bot/config/TransmitCacheCo
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/bot/config/TransmitCacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/bot/config/TransmitCacheConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/TransmitCacheConfig$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1819,19 +1819,6 @@ public abstract interface class love/forte/simbot/component/qguild/guild/QGMembe
 	public fun unmuteReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
-public final class love/forte/simbot/component/qguild/internal/bot/QGBotImpl$inlined$sam$i$java_util_function_Function$0 : java/util/function/Function {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class love/forte/simbot/component/qguild/internal/message/QGMessageReceiptImplKt {
-	public static final fun asGroupReceipt (Ljava/lang/Iterable;)Llove/forte/simbot/component/qguild/message/QGAggregatedIdMessageReceipt;
-	public static final fun asReceipt (Llove/forte/simbot/qguild/api/message/group/GroupMessageSendResult;)Llove/forte/simbot/component/qguild/message/QGSingleIdMessageReceipt;
-	public static final fun asReceipt (Llove/forte/simbot/qguild/api/message/user/UserMessageSendResult;)Llove/forte/simbot/component/qguild/message/QGSingleIdMessageReceipt;
-	public static final fun asReceipt (Llove/forte/simbot/qguild/model/Message;)Llove/forte/simbot/component/qguild/message/QGSingleMessageReceipt;
-	public static final fun asUserReceipt (Ljava/lang/Iterable;)Llove/forte/simbot/component/qguild/message/QGAggregatedIdMessageReceipt;
-}
-
 public final class love/forte/simbot/component/qguild/message/ImageParser : love/forte/simbot/component/qguild/message/SendingMessageParser {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/ImageParser;
 	public static final fun disableBase64UploadWarn ()V
@@ -1893,7 +1880,7 @@ public final class love/forte/simbot/component/qguild/message/QGArk : love/forte
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGArk$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGArk$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGArk$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1928,7 +1915,7 @@ public final class love/forte/simbot/component/qguild/message/QGAtChannel : love
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGAtChannel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGAtChannel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGAtChannel$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1963,7 +1950,7 @@ public final class love/forte/simbot/component/qguild/message/QGAttachmentMessag
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGAttachmentMessage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGAttachmentMessage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGAttachmentMessage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2017,7 +2004,7 @@ public final class love/forte/simbot/component/qguild/message/QGContentText : lo
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGContentText$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGContentText$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGContentText$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2042,7 +2029,7 @@ public final class love/forte/simbot/component/qguild/message/QGEmbed : love/for
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGEmbed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGEmbed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGEmbed$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2081,7 +2068,7 @@ public final class love/forte/simbot/component/qguild/message/QGKeyboard : love/
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGKeyboard$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGKeyboard$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGKeyboard$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2117,7 +2104,7 @@ public final class love/forte/simbot/component/qguild/message/QGMarkdown : love/
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGMarkdown$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGMarkdown$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGMarkdown$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2160,7 +2147,7 @@ public final class love/forte/simbot/component/qguild/message/QGMedia : love/for
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGMedia$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGMedia$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGMedia$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2214,7 +2201,7 @@ public final class love/forte/simbot/component/qguild/message/QGReference : love
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGReference$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGReference$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGReference$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -2252,7 +2239,7 @@ public final class love/forte/simbot/component/qguild/message/QGReplyTo : love/f
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class love/forte/simbot/component/qguild/message/QGReplyTo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class love/forte/simbot/component/qguild/message/QGReplyTo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/QGReplyTo$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
