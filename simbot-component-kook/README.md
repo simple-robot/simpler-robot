@@ -1,4 +1,15 @@
-# KOOK 组件
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../.simbot/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="../.simbot/logo.svg">
+  <img alt="simbot logo" src="../.simbot/logo.svg" width="260" />
+</picture>
+<h2>
+    ~ Simple Robot ~ <br/> <small>KOOK Component</small>
+</h2>
+<hr />
+</div>
 
 这是
 [Simple Robot v4][simbot4]
