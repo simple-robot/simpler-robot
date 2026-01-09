@@ -29,7 +29,7 @@ plugins {
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
-    id("org.jetbrains.dokka")
+    // id("org.jetbrains.dokka")
 }
 
 configJavaCompileWithModule("simbot.test")
