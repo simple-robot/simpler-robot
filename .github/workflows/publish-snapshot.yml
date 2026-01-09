@@ -1,11 +1,10 @@
-name: Publish v4 Snapshot
+name: Publish Snapshot
 on: # push
   workflow_dispatch:
   push:
     branches:
-      - v4-dev
-      - v4-dev-snapshot**
-      - v4.*.**
+      - dev
+      - dev-snapshot**
     paths:
       - 'buildSrc'
       - '**src/**/kotlin/**.kt'
@@ -41,19 +40,19 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
@@ -63,33 +62,33 @@ jobs:
           ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: test-reports-${{ matrix.os }}
           path: '**/build/reports/tests'
           retention-days: 7
 
-  publish-v4-snapshot:
-    name: Publish v4 snapshot
+  publish-snapshot:
+    name: Publish snapshot
     needs: run-tests
     runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # setup Java
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
@@ -108,19 +107,19 @@ jobs:
 
   deploy-doc:
     name: Deploy snapshots API doc
-    needs: publish-v4-snapshot
+    needs: publish-snapshot
     runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
       - name: Check out repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
           fetch-depth: 0
 
       # setup Java
       - name: Setup java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
@@ -128,7 +127,7 @@ jobs:
 
       # setup Gradle
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
@@ -144,6 +143,6 @@ jobs:
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-api-docs
-          publish_branch: kdoc-deploy/snapshots/main-v4
+          publish_branch: kdoc-deploy/snapshots/main
           publish_dir: ./build/dokka/html
-          destination_dir: snapshots/main-v4
+          destination_dir: snapshots/main

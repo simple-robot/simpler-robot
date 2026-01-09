@@ -1,9 +1,9 @@
-name: Test V4 Branch
+name: Test Branch
 on:
   pull_request:
     branches:
-      - 'v4-dev'
-      - 'v4*-dev'
+      - 'dev'
+      - 'v*-dev'
 
 env:
   JAVA_VERSION: 21
@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-v4-test:
+  build-and-test:
     name: Build and test
     strategy:
       matrix:
@@ -40,7 +40,7 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Run V4 All Tests
+      - name: Run All Tests
         run: gradle assemble build checkLegacyAbi allTests -s --warning-mode all
         env:
           ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
