@@ -4,7 +4,8 @@ on:
   pull_request_target:
   push:
     branches:
-      - v4-dev
+      - dev
+      - 'v*-dev'
 
 env:
   JAVA_VERSION: 21
@@ -40,7 +41,7 @@ jobs:
 
       - name: 'Qodana Scan'
         # https://www.jetbrains.com/help/qodana/github.html#Usage
-        uses: JetBrains/qodana-action@v2024.2
+        uses: JetBrains/qodana-action@v2025.2
         with:
           upload-result: true
           github-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
