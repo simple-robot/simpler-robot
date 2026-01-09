@@ -11,7 +11,7 @@
     - Simple Robot -
 </h2>
 <small>
-        ~ simbot v4 ~      
+        ~ simbot ~      
 </small>
 <br>
     <span>
@@ -61,10 +61,14 @@ simbot provides a unified asynchronous API and an intuitive design style to help
 applications quickly and efficiently. It is mainly used to integrate with a wide variety of bot application
 platforms/frameworks, and it already offers several component library implementations.
 
+> [!info]
+> Since version 5.0, all components maintained and stabilized by our team have been merged into the current core
+> repository for unified maintenance.
+
 simbot's **platform capabilities** are component-driven. Install different component libraries to gain support for
 different features.
 
-For example, using KOOK and QQ Guild in simbot:
+For example, using KOOK and QQ components in simbot:
 
 ```Kotlin
 suspend fun main() {
@@ -73,7 +77,7 @@ suspend fun main() {
 }
 
 fun ApplicationFactoryConfigurer<*, *, *>.config() {
-    // Install the KOOK and QQ Guild component libraries
+    // Install the KOOK and QQ components
     useKook()
     useQQGuild()
 }

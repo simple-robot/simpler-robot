@@ -11,7 +11,7 @@
     - Simple Robot -
 </h2>
 <small>
-        ~ simbot v4 ~      
+        ~ simbot ~      
 </small>
 <br>
     <span>
@@ -60,9 +60,12 @@
 simbot提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写**Bot风格**的事件调度应用。
 主要应用于对接各种类型的Bot应用平台/框架，并提供部分组件库实现。
 
+> [!info]
+> 自 5.0 版本起，所有由我们团队维护且稳定的组件，均合并至当前核心仓库一同维护。
+
 simbot的**平台功能**由组件驱动，安装不同的组件库来获得不同的功能支持。
 
-举个例子，在simbot中使用KOOK和QQ频道：
+举个例子，在simbot中使用 KOOK 和 QQ 组件：
 
 ```Kotlin
 suspend fun main() {
@@ -71,7 +74,7 @@ suspend fun main() {
 }
 
 fun ApplicationFactoryConfigurer<*, *, *>.config() {
-    // 安装KOOK和QQ频道组件库
+    // 安装 KOOK 和 QQ 组件
     useKook()
     useQQGuild()
 }
