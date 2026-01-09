@@ -90,7 +90,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.reactor)
                 implementation(libs.kotlinx.coroutines.rx2)
                 implementation(libs.kotlinx.coroutines.rx3)
-                implementation("io.projectreactor:reactor-test:3.7.11")
+                implementation("io.projectreactor:reactor-test:3.8.1")
             }
         }
     }
