@@ -62,8 +62,8 @@ kotlin {
         }
 
         commonTest.dependencies {
-            api(project(":simbot-cores:simbot-core"))
-            api(kotlin("test"))
+            implementation(project(":simbot-cores:simbot-core"))
+            implementation(kotlin("test"))
         }
 
         jvmTest.dependencies {

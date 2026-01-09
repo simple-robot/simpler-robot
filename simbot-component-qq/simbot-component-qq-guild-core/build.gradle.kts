@@ -77,8 +77,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.mock)
-            api(project(":simbot-cores:simbot-core"))
-            api(project(":simbot-commons:simbot-common-core"))
+            implementation(project(":simbot-cores:simbot-core"))
+            implementation(project(":simbot-commons:simbot-common-core"))
         }
 
         jvmTest.dependencies {

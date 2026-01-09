@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -244,14 +244,21 @@ fun Project.configureSuspendTransform() {
 subprojects {
     afterEvaluate {
         val p = this
-        if (plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
-            dokka {
+        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+            p.dokka {
+                dokkaPublications.all {
+                    if (isSimbotLocal()) {
+                        logger.info("Is 'SIMBOT_LOCAL', offline")
+                        offlineMode = true
+                    }
+                }
                 configSourceSets(p)
                 pluginsConfiguration.html {
                     configHtmlCustoms(p)
                 }
             }
-            rootProject.dependencies.dokka(p)
+            val applied = rootProject.dependencies.dokka(p)
+            logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
         }
     }
 }

@@ -27,7 +27,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinWasmJsTargetDsl
 
 
 inline fun KotlinJsTargetDsl.configJs(
-    crossinline nodejs: KotlinJsNodeDsl.() -> Unit = {},
+    crossinline configNodejs: KotlinJsNodeDsl.() -> Unit = {},
     block: () -> Unit = {}
 ) {
     nodejs {
@@ -36,7 +36,7 @@ inline fun KotlinJsTargetDsl.configJs(
                 timeout = "30s"
             }
         }
-        nodejs()
+        configNodejs()
     }
 
     binaries.library()
@@ -44,16 +44,17 @@ inline fun KotlinJsTargetDsl.configJs(
 }
 
 inline fun KotlinWasmJsTargetDsl.configWasmJs(
-    crossinline nodejs: KotlinJsNodeDsl.() -> Unit = {},
+    crossinline configNodejs: KotlinJsNodeDsl.() -> Unit = {},
     block: () -> Unit = {}
 ) {
     nodejs {
         testTask {
-            useMocha {
-                timeout = "30s"
-            }
+            // TODO Mocha test framework for Wasm target is not supported. For KotlinWasmNode used
+            // useMocha {
+            //     timeout = "30s"
+            // }
         }
-        nodejs()
+        configNodejs()
     }
 
     binaries.library()
