@@ -22,7 +22,6 @@
  */
 
 import com.google.devtools.ksp.gradle.KspAATask
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("multiplatform")
@@ -121,8 +120,8 @@ tasks.sourcesJar.configure {
     dependsOn("kspCommonMainKotlinMetadata")
 }
 
-tasks.withType<DokkaTaskPartial>().configureEach {
+dokka {
     dokkaSourceSets.configureEach {
-        suppressGeneratedFiles.set(false)
+        suppressGeneratedFiles = false
     }
 }
