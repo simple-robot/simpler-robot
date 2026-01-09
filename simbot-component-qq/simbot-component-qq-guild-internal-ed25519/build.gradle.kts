@@ -36,7 +36,9 @@ kotlin {
     configKotlinJvm()
 
     js(IR) {
-        configJs()
+        configJs {
+            // useEsModules()
+        }
     }
 
     applyTier1()
@@ -76,6 +78,7 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.libsodium.bindings)
+            implementation(npm("libsodium-wrappers-sumo", "0.7.13"))
         }
 
         nativeMain.dependencies {

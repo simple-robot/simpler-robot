@@ -42,7 +42,7 @@ maven-publish-plugin = "0.34.0"
 bouncycastle = "1.81"
 eddsa = "0.3.0"
 # https://github.com/ionspin/kotlin-multiplatform-libsodium
-libsodium-bindings = "0.9.2"
+libsodium-bindings = "0.9.5"
 
 [libraries]
 maven-publish = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "maven-publish-plugin" }

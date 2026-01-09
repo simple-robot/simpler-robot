@@ -1,23 +1,29 @@
 /*
- * Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.ed25519
 
-import com.ionspin.kotlin.crypto.LibsodiumInitializer
+import com.ionspin.kotlin.crypto.getSodiumLoaded
 import com.ionspin.kotlin.crypto.signature.InvalidSignatureException
 import com.ionspin.kotlin.crypto.signature.Signature
 import love.forte.simbot.qguild.ed25519.annotations.InternalEd25519Api
@@ -76,9 +82,20 @@ public class LibsodiumEd25519PublicKey(private val key: UByteArray) : Ed25519Pub
 }
 
 internal suspend fun initialLibsodiumIfNecessary() {
-    if (!LibsodiumInitializer.isInitialized()) {
+    if (!getSodiumLoaded()) {
         ed25519sLogger.info("LibsodiumInitializer is not initialed yet, initializing...")
-        LibsodiumInitializer.initialize()
+        JsSodiumLoader.load()
         ed25519sLogger.info("LibsodiumInitializer initialized")
     }
+    // TODO
+    //  TypeError: _sodium_init is not a function
+    //  TypeError: _sodium_init is not a function
+    //      at <global>.<unknown>(C:\home\ionspin\Projects\Future\kotlin-multiplatform-libsodium\multiplatform-crypto-libsodium-bindings\src\jsMain\kotlin\com\ionspin\kotlin\crypto\JsSodiumLoader.kt:33)
+    //      at <global>.processTicksAndRejections(node:internal/process/task_queues:105)
+
+    // if (!LibsodiumInitializer.isInitialized()) {
+    //     ed25519sLogger.info("LibsodiumInitializer is not initialed yet, initializing...")
+    //     LibsodiumInitializer.initialize()
+    //     ed25519sLogger.info("LibsodiumInitializer initialized")
+    // }
 }
