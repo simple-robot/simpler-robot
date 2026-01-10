@@ -59,6 +59,7 @@ public sealed class Signal {
 
     public companion object {
         //region signal `s` constants
+
         /**
          * 信令[1] HELLO
          * - 方向：server->client

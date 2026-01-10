@@ -173,6 +173,3 @@ public fun <E : EventExtra> async(type: Class<E>, function: TypedJAsyncEventProc
         }
     }
 
-private fun b() {
-
-}

@@ -103,6 +103,7 @@ public object Kook {
 public enum class TokenType(public val prefix: String) {
     /** `TOKEN_TYPE = Bot` */
     BOT("Bot"),
+
     /** `TOKEN_TYPE = Bearer` */
     BEARER("Bearer");
 
@@ -116,7 +117,7 @@ public enum class TokenType(public val prefix: String) {
          * @throws NoSuchElementException 没有匹配的结果时
          */
         @JvmStatic
-        public fun byPrefix(prefix: String): TokenType = when(prefix) {
+        public fun byPrefix(prefix: String): TokenType = when (prefix) {
             BOT.prefix -> BOT
             BEARER.prefix -> BEARER
             else -> throw NoSuchElementException("prefix $prefix")

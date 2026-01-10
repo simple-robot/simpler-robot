@@ -35,7 +35,7 @@ package love.forte.simbot.component.kook.blacklist
 @MustBeDocumented
 @RequiresOptIn(
     message = "与频道服务器黑名单列表相关的试验性 API。" +
-            "这些 API 仍处于试验性阶段，可能会随时被更改、删除，不保证稳定性。",
+        "这些 API 仍处于试验性阶段，可能会随时被更改、删除，不保证稳定性。",
     level = RequiresOptIn.Level.WARNING
 )
 public annotation class ExperimentalBlacklistApi

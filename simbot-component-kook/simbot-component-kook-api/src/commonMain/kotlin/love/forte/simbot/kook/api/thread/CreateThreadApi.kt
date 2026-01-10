@@ -66,12 +66,12 @@ public class CreateThreadApi private constructor(public override val body: Body)
     ) {
         override fun toString(): String {
             return "CreateThreadApi.Body(" +
-                    "channelId='$channelId', " +
-                    "guildId='$guildId', " +
-                    "title='$title', " +
-                    "content='$content', " +
-                    "categoryId=$categoryId, " +
-                    "cover=$cover)"
+                "channelId='$channelId', " +
+                "guildId='$guildId', " +
+                "title='$title', " +
+                "content='$content', " +
+                "categoryId=$categoryId, " +
+                "cover=$cover)"
         }
 
         override fun equals(other: Any?): Boolean {

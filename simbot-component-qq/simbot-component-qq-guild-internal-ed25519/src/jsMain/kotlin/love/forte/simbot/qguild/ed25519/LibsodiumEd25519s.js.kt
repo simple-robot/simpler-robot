@@ -75,7 +75,7 @@ public class LibsodiumEd25519PublicKey(private val key: UByteArray) : Ed25519Pub
             )
 
             true
-        } catch (ise: InvalidSignatureException) {
+        } catch (_: InvalidSignatureException) {
             false
         }
     }

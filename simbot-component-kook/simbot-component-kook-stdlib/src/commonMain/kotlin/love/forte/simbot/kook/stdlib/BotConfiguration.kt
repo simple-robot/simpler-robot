@@ -55,6 +55,7 @@ public class BotConfiguration {
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
     // region request client
+
     /**
      * 配置bot内部要使用的client Engine。
      */
@@ -119,6 +120,7 @@ public class BotConfiguration {
     // endregion
 
     // region api request timeout
+
     /**
      * api请求的超时配置。
      * 如果为null则不会在 `httpClient` 中安装 [io.ktor.client.plugins.HttpTimeout]。

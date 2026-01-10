@@ -129,7 +129,8 @@ internal class KookBotImpl(
                     val guild = KookGuildImpl(this@KookBotImpl, guildInfo)
                     guilds[guildId] = guild
                     guildInfo.channels.forEach {
-                        channels[it.id] = it.toChatChannel(this@KookBotImpl) // KookChatChannelImpl(this@KookBotImpl, it)
+                        // KookChatChannelImpl(this@KookBotImpl, it)
+                        channels[it.id] = it.toChatChannel(this@KookBotImpl)
                     }
 
                     members.collect {
@@ -158,7 +159,9 @@ internal class KookBotImpl(
 
     internal fun internalGuild(guildId: String): KookGuildImpl? = internalCache.guilds[guildId]
     internal fun internalChatChannel(channelId: String): KookChatChannel? = internalCache.channels[channelId]
-    internal fun internalVoiceChannel(channelId: String): KookVoiceChannel? = internalChatChannel(channelId) as? KookVoiceChannel?
+    internal fun internalVoiceChannel(channelId: String): KookVoiceChannel? = internalChatChannel(
+        channelId
+    ) as? KookVoiceChannel?
     internal fun internalCategory(categoryId: String): KookCategoryChannelImpl? = internalCache.categories[categoryId]
     internal fun internalChatChannels(guildId: String): Sequence<KookChatChannel> =
         internalCache.channels.values.asSequence().filter { it.source.guildId == guildId }

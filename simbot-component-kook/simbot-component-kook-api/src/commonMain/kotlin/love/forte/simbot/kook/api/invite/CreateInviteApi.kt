@@ -209,6 +209,7 @@ public class CreateInviteApi private constructor(
         //endregion
 
         //region settingTimes
+
         /**
          * 设置的次数，默认-1。可选值：
          * - -1 => 无限制；

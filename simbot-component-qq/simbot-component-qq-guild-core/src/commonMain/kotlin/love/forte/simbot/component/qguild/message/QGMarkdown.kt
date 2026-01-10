@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -98,7 +104,7 @@ public data class QGMarkdown internal constructor(
             "Use createByCustomTemplateId(customTemplateId, Param(...))",
             replaceWith = ReplaceWith(
                 "createByCustomTemplateId(customTemplateId, " +
-                        "params?.let { Param(it.key, it.values) })",
+                    "params?.let { Param(it.key, it.values) })",
                 "love.forte.simbot.qguild.model.Message.Markdown.Param"
             )
         )
@@ -117,10 +123,12 @@ public data class QGMarkdown internal constructor(
         @JvmStatic
         @JvmOverloads
         public fun createByCustomTemplateId(customTemplateId: String, param: Param? = null): QGMarkdown =
-            byMarkdown(Message.Markdown.createByCustomTemplateId(
-                customTemplateId,
-                param?.let { listOf(it) }
-            ))
+            byMarkdown(
+                Message.Markdown.createByCustomTemplateId(
+                    customTemplateId,
+                    param?.let { listOf(it) }
+                )
+            )
 
         /**
          * 使用 `customTemplateId` 构建一个 [QGMarkdown]。
@@ -151,8 +159,8 @@ internal object MarkdownParser : SendingMessageParser {
     }
 
     private fun isTextOrMarkdown(type: Int): Boolean {
-        return type == GroupAndC2CSendBody.MSG_TYPE_TEXT
-                || type == GroupAndC2CSendBody.MSG_TYPE_MARKDOWN
+        return type == GroupAndC2CSendBody.MSG_TYPE_TEXT ||
+            type == GroupAndC2CSendBody.MSG_TYPE_MARKDOWN
     }
 
     override suspend fun invoke(

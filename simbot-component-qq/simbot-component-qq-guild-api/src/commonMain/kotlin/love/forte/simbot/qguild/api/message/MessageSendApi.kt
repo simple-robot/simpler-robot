@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 
@@ -132,6 +138,7 @@ import kotlin.jvm.JvmSynthetic
  */
 public class MessageSendApi private constructor(
     channelId: String,
+    @Suppress("ConstructorParameterNaming")
     private val _body: Body, // TencentMessageForSending || MultiPartFormDataContent
 ) : PostQQGuildApi<Message>() {
     public companion object Factory : SimplePostApiDescription(
@@ -302,7 +309,14 @@ public class MessageSendApi private constructor(
              * 判断 [Builder] 中的各属性是否都为空
              */
             public val isEmpty: Boolean
-                get() = content == null && embed == null && ark == null && messageReference == null && image == null && msgId == null && eventId == null && markdown == null
+                get() = content == null &&
+                    embed == null &&
+                    ark == null &&
+                    messageReference == null &&
+                    image == null &&
+                    msgId == null &&
+                    eventId == null &&
+                    markdown == null
 
             public fun appendContent(append: String) {
                 if (content == null) {
@@ -396,6 +410,7 @@ public inline fun MessageSendApi.Factory.create(channelId: String, builder: Buil
 internal expect fun checkFileImage(fileImage: Any)
 
 // // TencentMessageForSending || MultiPartFormDataContent
+
 /**
  *
  * @return [MessageSendApi.Body] or [MultiPartFormDataContent]
@@ -407,7 +422,8 @@ internal fun MessageSendApi.Body.toRealBody(json: Json): Any {
 
     val formParts = formData {
         MessageSendApi.Body.serializer().serialize(
-            FormDataDecoder(json.serializersModule, json, this), this@toRealBody
+            FormDataDecoder(json.serializersModule, json, this),
+            this@toRealBody
         )
 
         appendFileImage(fileImage)
@@ -592,51 +608,39 @@ internal class FormDataDecoder(
         formBuilder.append(name, value)
     }
 
-    override fun endStructure(descriptor: SerialDescriptor) {
-    }
+    override fun endStructure(descriptor: SerialDescriptor) = Unit
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
         return this
     }
 
 
-    override fun encodeBoolean(value: Boolean) {
-    }
+    override fun encodeBoolean(value: Boolean) = Unit
 
-    override fun encodeByte(value: Byte) {
-    }
+    override fun encodeByte(value: Byte) = Unit
 
-    override fun encodeChar(value: Char) {
-    }
+    override fun encodeChar(value: Char) = Unit
 
-    override fun encodeDouble(value: Double) {
-    }
+    override fun encodeDouble(value: Double) = Unit
 
-    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-    }
+    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) = Unit
 
-    override fun encodeFloat(value: Float) {
-    }
+    override fun encodeFloat(value: Float) = Unit
 
     override fun encodeInline(descriptor: SerialDescriptor): Encoder {
         return this
     }
 
-    override fun encodeInt(value: Int) {
-    }
+    override fun encodeInt(value: Int) = Unit
 
-    override fun encodeLong(value: Long) {
-    }
+    override fun encodeLong(value: Long) = Unit
 
     @ExperimentalSerializationApi
-    override fun encodeNull() {
-    }
+    override fun encodeNull() = Unit
 
-    override fun encodeShort(value: Short) {
-    }
+    override fun encodeShort(value: Short) = Unit
 
-    override fun encodeString(value: String) {
-    }
+    override fun encodeString(value: String) = Unit
 }
 
 /**

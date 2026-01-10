@@ -21,7 +21,8 @@
  *
  */
 
-@file:Suppress("unused") @file:JvmName("PermissionTypes")
+@file:Suppress("unused")
+@file:JvmName("PermissionTypes")
 
 package love.forte.simbot.kook.objects
 

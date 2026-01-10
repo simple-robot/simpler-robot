@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.api
@@ -20,14 +26,14 @@ package love.forte.simbot.qguild.api
 import io.ktor.http.*
 
 //
-///**
+// /**
 // * 用于多平台实现的最小目标。
 // *
 // * 在JVM平台和JS平台中分别提供对应的 blocking/async 兼容函数。
 // * 但是不应追加新的抽象函数。
 // */
-//@QGInternalApi
-//public actual abstract class PlatformQQGuildApi<out R> actual constructor() {
+// @QGInternalApi
+// public actual abstract class PlatformQQGuildApi<out R> actual constructor() {
 //
 //    /**
 //     * 使用此api发起一次请求，并得到预期中的结果。
@@ -89,7 +95,7 @@ import io.ktor.http.*
 //    public actual companion object {
 //        private val COROUTINE_NAME = CoroutineName("Api-Async-Scope")
 //    }
-//}
+// }
 
 /**
  * 日志对齐

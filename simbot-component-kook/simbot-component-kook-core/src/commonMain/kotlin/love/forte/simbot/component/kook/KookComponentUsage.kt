@@ -51,7 +51,10 @@ import love.forte.simbot.component.kook.bot.KookBotManagerConfiguration
  * @see KookComponent
  */
 @ApplicationFactoryConfigurerDSL
-public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookComponent(crossinline configurator: KookComponentConfiguration.() -> Unit = {}) {
+public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookComponent(
+    crossinline configurator: KookComponentConfiguration.() -> Unit = {
+    }
+) {
     install(KookComponent) { configurator() }
 }
 
@@ -81,7 +84,10 @@ public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookComponent(crossin
  */
 
 @ApplicationFactoryConfigurerDSL
-public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookBotManager(crossinline configurator: KookBotManagerConfiguration.() -> Unit = {}) {
+public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookBotManager(
+    crossinline configurator: KookBotManagerConfiguration.() -> Unit = {
+    }
+) {
     install(KookBotManager) { configurator() }
 }
 

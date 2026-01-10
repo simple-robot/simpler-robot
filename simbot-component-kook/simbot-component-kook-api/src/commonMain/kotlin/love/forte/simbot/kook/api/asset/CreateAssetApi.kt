@@ -70,9 +70,11 @@ public class CreateAssetApi private constructor(
             fileBytes: ByteArray,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileBytes, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileBytes, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -88,9 +90,11 @@ public class CreateAssetApi private constructor(
             fileProvider: InputProvider,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileProvider, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileProvider, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -108,9 +112,11 @@ public class CreateAssetApi private constructor(
             fileByteReadPacket: ByteReadPacket,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileByteReadPacket, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileByteReadPacket, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -126,9 +132,11 @@ public class CreateAssetApi private constructor(
             fileChannelProvider: ChannelProvider,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileChannelProvider, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileChannelProvider, fileHeaders(filename))
+                }
+            )
         }
 
         private fun fileHeaders(filename: String?): Headers = Headers.build {

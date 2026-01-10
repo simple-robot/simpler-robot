@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2021-2025. ForteScarlet.
+ *     Copyright (c) 2021-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.bot
@@ -105,7 +111,10 @@ internal class QGBotImpl(
     init {
         // check config with warning log
         if (configuration.cacheConfig?.dynamicCacheConfig?.enable == true) {
-            logger.warn("DynamicCacheConfig is not supported yet, but dynamicCacheConfig.enable == `true`. This will have no real effect.")
+            logger.warn(
+                "DynamicCacheConfig is not supported yet, " +
+                    "but dynamicCacheConfig.enable == `true`. This will have no real effect."
+            )
         }
     }
 
@@ -114,8 +123,9 @@ internal class QGBotImpl(
 
     override val userId: ID
         get() {
-            if (!::botSelf.isInitialized) {
-                throw IllegalStateException("Information of bot has not been initialized. Please execute the `start()` method at least once first")
+            check(::botSelf.isInitialized) {
+                "Information of bot has not been initialized. " +
+                    "Please execute the `start()` method at least once first"
             }
 
             return botSelf.id.ID
@@ -123,8 +133,9 @@ internal class QGBotImpl(
 
     override val name: String
         get() {
-            if (!::botSelf.isInitialized) {
-                throw IllegalStateException("Information of bot has not been initialized. Please execute the `start()` method at least once first")
+            check(::botSelf.isInitialized) {
+                "Information of bot has not been initialized. " +
+                    "Please execute the `start()` method at least once first"
             }
 
             return botSelf.username
@@ -534,7 +545,10 @@ internal fun CoroutineScope.newSupervisorCoroutineContext(): CoroutineContext =
 
 internal inline fun <reified T : QGChannel> QGChannel.castChannel(target: () -> ChannelType): T {
     return this as? T
-        ?: throw IllegalStateException("The type of channel(id=${source.id}, name=${source.name}) is not ${target()}, it is ${source.type}")
+        ?: error(
+            "The type of channel(id=${source.id}, name=${source.name}) " +
+                "is not ${target()}, it is ${source.type}"
+        )
 }
 
 internal expect fun Resource.httpUrlValue(): String?

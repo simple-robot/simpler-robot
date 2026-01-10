@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.bot
@@ -79,7 +85,9 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             is ChannelCreate -> {
                 if (event.data.type.isCategory) {
                     bot.logger.warn(
-                        "Received category create event [raw={}]. report this log to issues https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
+                        "Received category create event [raw={}]. " +
+                            "report this log to issues " +
+                            "https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
                         raw
                     )
                 }
@@ -94,7 +102,9 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             is ChannelUpdate -> {
                 if (event.data.type.isCategory) {
                     bot.logger.warn(
-                        "Received category update event [raw={}]. report this log to issues https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
+                        "Received category update event [raw={}]. " +
+                            "report this log to issues " +
+                            "https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
                         raw
                     )
                 }
@@ -107,7 +117,9 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             is ChannelDelete -> {
                 if (event.data.type.isCategory) {
                     bot.logger.warn(
-                        "Received category delete event [raw={}]. report this log to issues https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
+                        "Received category delete event [raw={}]. " +
+                            "report this log to issues " +
+                            "https://github.com/simple-robot/simbot-component-qq-guild/issues/new/choose",
                         raw
                     )
                 }
@@ -140,19 +152,19 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
                     QGMemberRemoveEventImpl(bot, raw, event.data, member)
                 }
             }
-            //endregion
+            // endregion
 
 
             // 消息
-            /// 频道
+            // 频道
             is AtMessageCreate -> {
                 pushEvent { QGAtMessageCreateEventImpl(bot, raw, event.data, event.id) }
             }
-            /// 频道单聊
+            // 频道单聊
             is DirectMessageCreate -> {
                 pushEvent { QGDirectMessageCreateEventImpl(bot, raw, event.data, event.id) }
             }
-            /// 群&单聊
+            // 群&单聊
             is GroupAtMessageCreate -> {
                 pushEvent { QGGroupAtMessageCreateEventImpl(bot, raw, event, event.id) }
             }

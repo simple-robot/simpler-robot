@@ -21,6 +21,8 @@
  *
  */
 
+@file:Suppress("ConstructorParameterNaming")
+
 package love.forte.simbot.component.kook.event.internal
 
 import kotlinx.coroutines.sync.Mutex

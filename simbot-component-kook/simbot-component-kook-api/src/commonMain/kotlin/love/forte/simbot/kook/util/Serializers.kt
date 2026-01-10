@@ -40,6 +40,7 @@ import kotlinx.serialization.json.*
  * since 4.1.7: 在 JSON 序列化下，对 Boolean 的转化会更宽松，支持同时解析 int/boolean/string 类型。
  */
 public object BooleanToIntSerializer : KSerializer<Boolean> {
+    @Suppress("ReturnCount")
     override fun deserialize(decoder: Decoder): Boolean {
         val jsonDecoder = decoder as? JsonDecoder
             ?: return decoder.decodeInt() != 0

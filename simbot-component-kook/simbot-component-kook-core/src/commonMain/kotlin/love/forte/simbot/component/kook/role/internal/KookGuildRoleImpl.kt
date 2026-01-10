@@ -79,7 +79,9 @@ internal class KookGuildRoleImpl(
         val guildId = guild.source.id
 
         GrantGuildRoleApi.create(
-            guildId, member.source.id, source.roleId
+            guildId,
+            member.source.id,
+            source.roleId
         ).requestDataBy(baseBot)
 
         return KookMemberRoleImpl(baseBot, member, guildId, this)
@@ -103,14 +105,19 @@ internal class KookGuildRoleImpl(
             if (standardOptions.isIgnoreOnNoSuchTarget) {
                 return
             }
-            throw NoSuchElementException("Role(id=${source.roleId}) in guild(id=${guild.source.id}): ${deleted.message}")
+            throw NoSuchElementException(
+                "Role(id=${source.roleId}) in guild(id=${guild.source.id}): ${deleted.message}"
+            )
         }
 
         if (standardOptions.isIgnoreOnFailure) {
             return
         }
 
-        throw DeleteFailureException("Delete Role(id=${source.roleId}) failed: ${deleted.message}", ApiResultException(deleted, deleted.message))
+        throw DeleteFailureException(
+            "Delete Role(id=${source.roleId}) failed: ${deleted.message}",
+            ApiResultException(deleted, deleted.message)
+        )
     }
 
     override fun updater(): KookGuildRoleUpdater = KookGuildRoleUpdaterImpl(baseBot, guild.source.id, this)

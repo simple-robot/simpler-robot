@@ -47,7 +47,9 @@ public inline fun buildCardMessage(action: CardMessageBuilder.() -> Unit): CardM
  * 用于构建 [CardMessage] 的构建器。
  */
 @CardMsgBuildDsl
-public class CardMessageBuilder @JvmOverloads constructor(private val collect: MutableCollection<Card> = mutableListOf()) {
+public class CardMessageBuilder @JvmOverloads constructor(
+    private val collect: MutableCollection<Card> = mutableListOf()
+) {
 
     private fun addCard0(card: Card): CardMessageBuilder = also {
         collect.add(card)
@@ -101,7 +103,9 @@ public annotation class CardBuildDsl
  * 针对 [Card] 的构建器。
  */
 @CardBuildDsl
-public class CardBuilder @JvmOverloads constructor(private val collect: MutableCollection<CardModule> = mutableListOf()) {
+public class CardBuilder @JvmOverloads constructor(
+    private val collect: MutableCollection<CardModule> = mutableListOf()
+) {
     /**
      * 卡片风格.
      *
@@ -172,7 +176,9 @@ public annotation class CardModuleBuildDsl
  * 针对 [CardModule] 的集合的构建器。
  */
 @CardModuleBuildDsl
-public class CardModulesBuilder @JvmOverloads constructor(private val collect: MutableCollection<CardModule> = mutableListOf()) {
+public class CardModulesBuilder @JvmOverloads constructor(
+    private val collect: MutableCollection<CardModule> = mutableListOf()
+) {
     private fun add(module: CardModule): CardModulesBuilder = also {
         collect.add(module)
     }
@@ -204,6 +210,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region section
+
     /**
      * 添加一个 [CardModule.Section].
      */
@@ -238,6 +245,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region container
+
     /**
      * 添加一个 [CardModule.Container]
      */
@@ -255,6 +263,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region action-group
+
     /**
      * 添加一个[CardModule.ActionGroup].
      */
@@ -273,6 +282,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region context
+
     /**
      * 添加一个 [CardModule.Context]
      */
@@ -291,6 +301,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region divider
+
     /**
      * 添加一个 [CardModule.Divider].
      */
@@ -298,6 +309,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region files(file,audio,video)
+
     /**
      * 添加一个 [CardModule.Files.File]
      */
@@ -325,6 +337,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region countdown
+
     /**
      * 添加一个 [CardModule.Countdown].
      */
@@ -363,6 +376,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region invite
+
     /**
      * 添加一个 [CardModule.Invite].
      */
@@ -372,6 +386,7 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     //endregion
 
     //region collect action
+
     /**
      * 得到当前收集的所有 [CardModule].
      */
@@ -388,4 +403,3 @@ public class CardModulesBuilder @JvmOverloads constructor(private val collect: M
     }
     //endregion
 }
-

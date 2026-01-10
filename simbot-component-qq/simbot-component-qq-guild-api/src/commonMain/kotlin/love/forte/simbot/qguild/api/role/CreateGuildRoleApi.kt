@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.api.role
@@ -41,6 +47,7 @@ import kotlin.jvm.JvmStatic
  */
 public class CreateGuildRoleApi private constructor(
     guildId: String,
+    @Suppress("ConstructorParameterNaming")
     private val _body: NewBody,
 ) : PostQQGuildApi<GuildRoleCreated>() {
     public companion object Factory : SimplePostApiDescription(
@@ -105,6 +112,5 @@ public data class GuildRoleCreated(
     // TODO 与文档描述不符，实际上为null
     //  see https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1ZCS7xZH0UF&contentID=1jDEHr&businessType=2&from=181174&shareSource=5&biz=ka
 )
-
 
 

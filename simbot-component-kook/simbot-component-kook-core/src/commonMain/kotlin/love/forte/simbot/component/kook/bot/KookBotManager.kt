@@ -169,4 +169,5 @@ public fun interface KookBotManagerFactoryConfigurerProvider :
     PluginFactoryConfigurerProvider<KookBotManagerConfiguration>
 
 
-internal expect fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders(): Sequence<KookBotManagerFactoryConfigurerProvider>
+internal expect fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders():
+    Sequence<KookBotManagerFactoryConfigurerProvider>

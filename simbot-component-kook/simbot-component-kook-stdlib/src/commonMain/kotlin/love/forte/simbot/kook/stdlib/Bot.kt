@@ -306,7 +306,9 @@ private data class BotWsTicket(override val clientId: String, override val token
  */
 @Suppress("DEPRECATION")
 @Deprecated("Use `Bot.subscribe(...)`", ReplaceWith("this.subscribe<EX>(processor)"))
-public inline fun <reified EX : EventExtra> Bot.processor(crossinline processor: suspend Event<EX>.(raw: String) -> Unit) {
+public inline fun <reified EX : EventExtra> Bot.processor(
+    crossinline processor: suspend Event<EX>.(raw: String) -> Unit
+) {
     processor { raw ->
         if (extra is EX) {
             @Suppress("UNCHECKED_CAST")
@@ -355,7 +357,7 @@ public enum class ProcessorType {
      * 的影响，默认为异步。如果此配置为 `false` 则 [NORMAL] 的实际表现效果将会与 [PREPARE] 类似，
      * 只是优先级低于 [PREPARE]。
      */
-    NORMAL;
+    NORMAL
 }
 
 /**
@@ -378,5 +380,5 @@ public enum class SubscribeSequence {
      * 的影响，默认为异步。如果此配置为 `false` 则 [NORMAL] 的实际表现效果将会与 [PREPARE] 类似，
      * 只是优先级低于 [PREPARE]。
      */
-    NORMAL;
+    NORMAL
 }

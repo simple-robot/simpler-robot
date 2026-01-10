@@ -36,7 +36,9 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
-public class GetGuildViewApi private constructor(private val guildId: String) : KookGetApi<SimpleGuildWithRolesAndChannels>() {
+public class GetGuildViewApi private constructor(
+    private val guildId: String
+) : KookGetApi<SimpleGuildWithRolesAndChannels>() {
     public companion object Factory {
         private val PATH = ApiPath.create("guild", "view")
 
@@ -50,7 +52,8 @@ public class GetGuildViewApi private constructor(private val guildId: String) : 
         public fun create(guildId: String): GetGuildViewApi = GetGuildViewApi(guildId)
     }
 
-    override val resultDeserializationStrategy: DeserializationStrategy<SimpleGuildWithRolesAndChannels> get() = SimpleGuildWithRolesAndChannels.serializer()
+    override val resultDeserializationStrategy: DeserializationStrategy<SimpleGuildWithRolesAndChannels>
+        get() = SimpleGuildWithRolesAndChannels.serializer()
     override val apiPath: ApiPath get() = PATH
 
     override fun urlBuild(builder: URLBuilder) {

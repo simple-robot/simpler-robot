@@ -98,7 +98,7 @@ public interface Channel {
         /**
          * 语音频道
          */
-        VOICE(2);
+        VOICE(2)
     }
 }
 

@@ -88,6 +88,7 @@ public abstract class KookMemberChangedEvent : KookSystemEvent(), ChangeEvent {
 // region member相关
 
 // region 频道进出相关
+
 /**
  * KOOK [成员变更事件][KookMemberChangedEvent] 中与**语音频道的进出**相关的变更事件。
  * 这类事件代表某人进入、离开某个语音频道 (`channel`)，而不代表成员进入、离开了当前的频道服务器（`guild`）。
@@ -141,6 +142,7 @@ public abstract class KookMemberExitedChannelEvent : KookMemberChannelChangedEve
 
 
 // region 频道服务器进出
+
 /**
  * KOOK [成员变更事件][KookMemberChangedEvent] 中与**频道服务器进出**相关的变更事件。
  * 这类事件代表某人加入、离开某个频道服务器。
@@ -245,6 +247,7 @@ public abstract class KookMemberUpdatedEvent : KookMemberChangedEvent(), MemberC
 
 
 // region bot相关
+
 /**
  * 频道成员的变动事件中，变动本体为bot自身时的事件。
  * 对应 KOOK 原始事件的 [SelfExitedGuildEventExtra] 和 [SelfJoinedGuildEventExtra]。

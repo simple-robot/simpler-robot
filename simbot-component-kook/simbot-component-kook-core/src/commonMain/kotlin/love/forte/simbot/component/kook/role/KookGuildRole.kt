@@ -147,7 +147,9 @@ public interface KookGuildRole : KookRole {
     public suspend fun grantTo(member: Member): KookMemberRole {
         // KookGuildRole.grantTo 只支持 KookMember 类型的 member
         val kookMember = member as? KookMember
-            ?: throw ClassCastException("KookGuildRole.grantTo only support member of type KookMember, but ${member::class}")
+            ?: throw ClassCastException(
+                "KookGuildRole.grantTo only support member of type KookMember, but ${member::class}"
+            )
         return grantTo(kookMember)
     }
 
@@ -202,6 +204,7 @@ public suspend inline fun <R : KookGuildRole> R.update(block: KookGuildRoleUpdat
 @ExperimentalSimbotAPI
 public interface KookGuildRoleUpdater {
     //region DSL API
+
     /**
      * 名称
      */
@@ -233,6 +236,7 @@ public interface KookGuildRoleUpdater {
 
 
     //region Java API
+
     /**
      * 名称
      */

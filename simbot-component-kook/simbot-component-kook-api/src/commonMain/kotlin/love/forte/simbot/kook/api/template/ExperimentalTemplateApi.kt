@@ -25,7 +25,7 @@ package love.forte.simbot.kook.api.template
 
 @RequiresOptIn(
     message = "模板消息相关API是实验性的。" +
-            "它们尚未公开于官方文档，无法保证稳定性，并且可能会在未来被修改、删除。"
+        "它们尚未公开于官方文档，无法保证稳定性，并且可能会在未来被修改、删除。"
 )
 @Retention(AnnotationRetention.BINARY)
 public annotation class ExperimentalTemplateApi

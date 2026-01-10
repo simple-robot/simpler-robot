@@ -42,6 +42,7 @@ import love.forte.simbot.suspendrunner.ST
 public interface KookGuildRoleCreator {
 
     //region DSL API
+
     /**
      * 角色名称。如果不写，则为"新角色"
      */
@@ -66,4 +67,3 @@ public interface KookGuildRoleCreator {
     @ST
     public suspend fun create(): KookGuildRole
 }
-

@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.event
@@ -56,7 +62,8 @@ public sealed class Signal<D>(@Serializable(Opcode.SerializerByCode::class) publ
      * 然后进行 `websocket` 连接，一旦连接成功，就会返回 [OpCode 10 Hello][Hello] 消息。这个消息主要的内容是心跳周期，单位毫秒(milliseconds)
      */
     @Serializable
-    public data class Hello(@SerialName("d") override val data: Data) : Signal<Hello.Data>(Opcode.Hello),
+    public data class Hello(@SerialName("d") override val data: Data) :
+        Signal<Hello.Data>(Opcode.Hello),
         ReceivedSignal {
         /**
          * @property heartbeatInterval 心跳周期，单位毫秒(milliseconds)
@@ -71,7 +78,8 @@ public sealed class Signal<D>(@Serializable(Opcode.SerializerByCode::class) publ
      * 建立 `websocket` 连接之后，就需要进行鉴权了，需要发送一个 [OpCode 2 Identify](https://bot.q.qq.com/wiki/develop/api/gateway/opcode.html) 消息
      */
     @Serializable
-    public data class Identify(@SerialName("d") override val data: Data) : Signal<Identify.Data>(Opcode.Identify),
+    public data class Identify(@SerialName("d") override val data: Data) :
+        Signal<Identify.Data>(Opcode.Identify),
         SendingSignal {
 
         /**
@@ -102,7 +110,8 @@ public sealed class Signal<D>(@Serializable(Opcode.SerializerByCode::class) publ
      *
      */
     @Serializable
-    public data class Heartbeat(@SerialName("d") override val data: Long?) : Signal<Long?>(Opcode.Heartbeat),
+    public data class Heartbeat(@SerialName("d") override val data: Long?) :
+        Signal<Long?>(Opcode.Heartbeat),
         SendingSignal
 
     /**
@@ -132,7 +141,8 @@ public sealed class Signal<D>(@Serializable(Opcode.SerializerByCode::class) publ
      *
      */
     @Serializable
-    public data class Resume(@SerialName("d") override val data: Data) : Signal<Data>(Opcode.Resume),
+    public data class Resume(@SerialName("d") override val data: Data) :
+        Signal<Data>(Opcode.Resume),
         SendingSignal {
 
         /**

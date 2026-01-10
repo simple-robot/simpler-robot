@@ -57,7 +57,7 @@ public class GetThreadViewApi private constructor(
          * @param threadId 帖子 id
          */
         @JvmStatic
-        public fun create(channelId: String, threadId: String): GetThreadViewApi = 
+        public fun create(channelId: String, threadId: String): GetThreadViewApi =
             GetThreadViewApi(channelId, threadId)
     }
 

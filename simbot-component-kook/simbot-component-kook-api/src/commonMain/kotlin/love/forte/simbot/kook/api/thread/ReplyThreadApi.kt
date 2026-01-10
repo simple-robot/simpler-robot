@@ -61,10 +61,10 @@ public class ReplyThreadApi private constructor(public override val body: Body) 
     ) {
         override fun toString(): String {
             return "ReplyThreadApi.Body(" +
-                    "channelId='$channelId', " +
-                    "threadId='$threadId', " +
-                    "content='$content', " +
-                    "replyId=$replyId)"
+                "channelId='$channelId', " +
+                "threadId='$threadId', " +
+                "content='$content', " +
+                "replyId=$replyId)"
         }
 
         override fun equals(other: Any?): Boolean {

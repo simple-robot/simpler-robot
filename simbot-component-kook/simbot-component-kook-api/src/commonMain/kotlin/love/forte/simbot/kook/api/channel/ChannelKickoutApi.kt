@@ -52,7 +52,7 @@ public class ChannelKickoutApi private constructor(
          * @param userId 用户 id
          */
         @JvmStatic
-        public fun create(channelId: String, userId: String): ChannelKickoutApi = 
+        public fun create(channelId: String, userId: String): ChannelKickoutApi =
             ChannelKickoutApi(channelId, userId)
     }
 
@@ -66,9 +66,9 @@ public class ChannelKickoutApi private constructor(
 
     @Serializable
     private data class Body(
-        @SerialName("channel_id") 
+        @SerialName("channel_id")
         val channelId: String,
-        @SerialName("user_id") 
+        @SerialName("user_id")
         val userId: String
     )
 }

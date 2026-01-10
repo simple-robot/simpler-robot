@@ -130,7 +130,7 @@ public enum class ThreadSortType(public val value: Int) {
      * 最新回复
      */
     LATEST_REPLY(1),
-    
+
     /**
      * 最新创建
      */

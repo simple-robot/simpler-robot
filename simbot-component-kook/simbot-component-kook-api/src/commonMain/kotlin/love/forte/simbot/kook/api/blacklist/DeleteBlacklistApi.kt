@@ -65,9 +65,9 @@ public class DeleteBlacklistApi private constructor(
 
     @Serializable
     private data class Body(
-        @SerialName("guild_id") 
+        @SerialName("guild_id")
         val guildId: String,
-        @SerialName("target_id") 
+        @SerialName("target_id")
         val targetId: String,
     )
 }

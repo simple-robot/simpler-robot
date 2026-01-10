@@ -218,7 +218,10 @@ private class ChannelInfoChannel(
         get() = channelInfo.type
 
     override fun toString(): String {
-        return "ChannelInfoChannel(channelInfo=$channelInfo, guildId='$guildId', topic='$topic', slowMode=$slowMode, permissionOverwrites=$permissionOverwrites, permissionUsers=$permissionUsers, permissionSync=$permissionSync, hasPassword=$hasPassword)"
+        return "ChannelInfoChannel(channelInfo=$channelInfo, guildId='$guildId', topic='$topic', slowMode=$slowMode, " +
+            "permissionOverwrites=$permissionOverwrites, " +
+            "permissionUsers=$permissionUsers, permissionSync=$permissionSync, " +
+            "hasPassword=$hasPassword)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -282,4 +285,3 @@ public inline fun GetChannelListApi.Factory.createItemFlow(
         page = listData.meta.page + 1
     } while (listData.items.isNotEmpty() && listData.meta.page < listData.meta.pageTotal)
 }
-

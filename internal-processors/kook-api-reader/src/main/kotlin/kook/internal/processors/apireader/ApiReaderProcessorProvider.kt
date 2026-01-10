@@ -41,9 +41,11 @@ private const val ENABLE_OPTION = "kook.api.reader.enable"
  */
 class ApiReaderProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
-        if (environment.options[ENABLE_OPTION].toBoolean())
+        if (environment.options[ENABLE_OPTION].toBoolean()) {
             ApiReaderProcessor(environment)
-        else NonProcessor
+        } else {
+            NonProcessor
+        }
 }
 
 /**
@@ -52,7 +54,9 @@ class ApiReaderProcessorProvider : SymbolProcessorProvider {
  */
 class EventReaderProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
-        if (environment.options[ENABLE_OPTION].toBoolean())
+        if (environment.options[ENABLE_OPTION].toBoolean()) {
             EventReaderProcessor(environment)
-        else NonProcessor
+        } else {
+            NonProcessor
+        }
 }

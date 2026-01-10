@@ -34,7 +34,10 @@ import love.forte.simbot.kook.api.KookPostApi
  *
  * @author ForteScarlet
  */
-public class CreateGuildMuteApi private constructor(private val _body: Any) : KookPostApi<Unit>() {
+public class CreateGuildMuteApi private constructor(
+    @Suppress("ConstructorParameterNaming")
+    private val _body: Any
+) : KookPostApi<Unit>() {
     public companion object Factory {
         private val PATH = ApiPath.create("guild-mute", "create")
 
@@ -72,4 +75,3 @@ public class CreateGuildMuteApi private constructor(private val _body: Any) : Ko
     private data class Body(val guildId: String, val userId: String, val type: Int)
 
 }
-

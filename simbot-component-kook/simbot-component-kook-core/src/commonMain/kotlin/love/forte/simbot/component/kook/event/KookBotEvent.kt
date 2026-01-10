@@ -77,7 +77,7 @@ public abstract class KookBotEvent<out EX : EventExtra, out E : KEvent<EX>> : Ko
     public abstract val sourceEventRaw: String
 
     override fun toString(): String {
-        return "KookBotEvent(type=${sourceEvent.type}, channelType=${sourceEvent.channelType}, source=${sourceEvent})"
+        return "KookBotEvent(type=${sourceEvent.type}, channelType=${sourceEvent.channelType}, source=$sourceEvent)"
     }
 }
 
@@ -100,6 +100,6 @@ public abstract class KookSystemEvent :
     public abstract val sourceBody: Any?
 
     override fun toString(): String {
-        return "KookSystemEvent(type=${sourceEvent.type}, channelType=${sourceEvent.channelType}, source=${sourceEvent})"
+        return "KookSystemEvent(type=${sourceEvent.type}, channelType=${sourceEvent.channelType}, source=$sourceEvent)"
     }
 }

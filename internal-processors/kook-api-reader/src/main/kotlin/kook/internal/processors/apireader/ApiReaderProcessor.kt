@@ -69,11 +69,13 @@ abstract class ReaderProcessor(private val environment: SymbolProcessorEnvironme
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val targetFilePath: String? = environment.options[optionName]
 
-        val targetFile = File(targetFilePath ?: run {
-            val msg = "target output file option ['$optionName'] is null!"
-            environment.logger.warn(msg)
-            return emptyList()
-        })
+        val targetFile = File(
+            targetFilePath ?: run {
+                val msg = "target output file option ['$optionName'] is null!"
+                environment.logger.warn(msg)
+                return emptyList()
+            }
+        )
 
         this.targetFile = targetFile
 

@@ -68,10 +68,13 @@ private fun RetryInfo?.incr(exception: Throwable? = null): RetryInfo {
         return RetryInfo(time = 1, exceptions = exception?.let { listOf(it) } ?: emptyList())
     }
 
-    return copy(time = time + 1, exceptions = buildList {
-        addAll(exceptions)
-        exception?.also(::add)
-    })
+    return copy(
+        time = time + 1,
+        exceptions = buildList {
+            addAll(exceptions)
+            exception?.also(::add)
+        }
+    )
 }
 
 /**
@@ -403,7 +406,9 @@ private class CreateClient(
                     bot.eventLogger.debug("Event process flow is completed. No exception.")
                 } else {
                     bot.eventLogger.debug(
-                        "Event process flow is completed. Cause: {}", e.message, e
+                        "Event process flow is completed. Cause: {}",
+                        e.message,
+                        e
                     )
                 }
             }.launchIn(bot)
@@ -465,6 +470,7 @@ private class Receiving(
     private inline val eventLogger
         get() = bot.eventLogger
 
+    @Suppress("ReturnCount")
     override suspend fun invoke(): State? {
         val session = client.session
         if (!session.isActive) {
@@ -550,6 +556,7 @@ private class Receiving(
         }
     }
 
+    @Suppress("ReturnCount")
     @OptIn(InternalKookApi::class, FragileSimbotAPI::class)
     private suspend fun processSignalString(eventString: String): State {
         eventLogger.trace("Signal: {}", eventString)
@@ -626,10 +633,12 @@ private class Receiving(
                             throw se
                         } else {
                             // 无法解析 extra，降级为 UnknownExtra
-                            eventLogger.warn("Cannot resolve event deserialization strategy " +
+                            eventLogger.warn(
+                                "Cannot resolve event deserialization strategy " +
                                     "via json property 'd', use UnknownExtra instead. " +
                                     "Enable `love.forte.simbot.kook.event.\${bot.clientId}`'s debug logger " +
-                                    "for more details and stacktrace.")
+                                    "for more details and stacktrace."
+                            )
 
                             eventLogger.debug(
                                 "Cannot resolve event deserialization strategy " +
@@ -727,4 +736,3 @@ private data class EventData(val event: Signal.Event<*>, val raw: String)
  */
 @InternalSimbotAPI
 public expect suspend fun Frame.Binary.readToTextWithDeflated(): String
-

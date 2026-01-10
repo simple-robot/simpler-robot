@@ -80,15 +80,15 @@ public class UpdateChannelApi private constructor(public override val body: Body
     ) {
         override fun toString(): String {
             return "UpdateChannelApi.Body(" +
-                    "channelId='$channelId', " +
-                    "name=$name, " +
-                    "level=$level, " +
-                    "parentId=$parentId, " +
-                    "topic=$topic, " +
-                    "slowMode=$slowMode, " +
-                    "limitAmount=$limitAmount, " +
-                    "voiceQuality=$voiceQuality, " +
-                    "password=$password)"
+                "channelId='$channelId', " +
+                "name=$name, " +
+                "level=$level, " +
+                "parentId=$parentId, " +
+                "topic=$topic, " +
+                "slowMode=$slowMode, " +
+                "limitAmount=$limitAmount, " +
+                "voiceQuality=$voiceQuality, " +
+                "password=$password)"
         }
 
         override fun equals(other: Any?): Boolean {
@@ -145,7 +145,7 @@ public class UpdateChannelApi private constructor(public override val body: Body
         /**
          * 语音品质：高品质
          */
-        HIGH("3");
+        HIGH("3")
     }
 
     /**
@@ -226,7 +226,7 @@ public class UpdateChannelApi private constructor(public override val body: Body
         /**
          * 6小时
          */
-        HOURS_6(21600000);
+        HOURS_6(21600000)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")

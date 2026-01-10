@@ -117,7 +117,13 @@ public sealed class MessageType {
          * @see CARD
          */
         public val standards: List<MessageType> = listOf(
-            TEXT, IMAGE, VIDEO, FILE, KMARKDOWN, CARD, SYSTEM
+            TEXT,
+            IMAGE,
+            VIDEO,
+            FILE,
+            KMARKDOWN,
+            CARD,
+            SYSTEM
         )
 
         // TODO

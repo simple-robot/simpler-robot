@@ -21,6 +21,8 @@
  *
  */
 
+@file:Suppress("ConstructorParameterNaming")
+
 package love.forte.simbot.component.kook.message
 
 import kotlinx.serialization.SerialName
@@ -147,7 +149,11 @@ public class KookAttachment private constructor(@SerialName("attachment") privat
 @Serializable
 @SerialName("kook.attachment.image")
 @ExperimentalSimbotAPI
-public class KookAttachmentImage private constructor(@SerialName("attachment") private val _attachment: MessageAttachments) :
+public class KookAttachmentImage private constructor(
+    @SerialName(
+        "attachment"
+    ) private val _attachment: MessageAttachments
+) :
     KookAttachmentMessage(), RemoteUrlAwareImage {
     internal constructor(attachments: Attachments) : this(attachments.toMessageAttachment())
 
@@ -176,7 +182,11 @@ public class KookAttachmentImage private constructor(@SerialName("attachment") p
 @Serializable
 @SerialName("kook.attachment.file")
 @ExperimentalSimbotAPI
-public class KookAttachmentFile private constructor(@SerialName("attachment") private val _attachment: MessageAttachments) :
+public class KookAttachmentFile private constructor(
+    @SerialName(
+        "attachment"
+    ) private val _attachment: MessageAttachments
+) :
     KookAttachmentMessage() {
     internal constructor(attachments: Attachments) : this(attachments.toMessageAttachment())
 
@@ -200,7 +210,11 @@ public class KookAttachmentFile private constructor(@SerialName("attachment") pr
 @Serializable
 @SerialName("kook.attachment.video")
 @ExperimentalSimbotAPI
-public class KookAttachmentVideo private constructor(@SerialName("attachment") private val _attachment: MessageAttachments) :
+public class KookAttachmentVideo private constructor(
+    @SerialName(
+        "attachment"
+    ) private val _attachment: MessageAttachments
+) :
     KookAttachmentMessage() {
     internal constructor(attachments: Attachments) : this(attachments.toMessageAttachment())
 

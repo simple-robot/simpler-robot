@@ -86,6 +86,7 @@ public inline fun Application.kookBotsIfSupport(
 }
 
 // region bot manager 获取扩展
+
 /**
  * 从一个 [Plugin] 序列中过滤寻找所有的 [KookBotManager]。
  */
@@ -141,4 +142,3 @@ public inline fun Iterable<Plugin>.firstKookBotManagerOrNull(): KookBotManager? 
  */
 public inline val Application.kookBotManagers: List<KookBotManager> get() = botManagers.filterIsKookBotManagers()
 // endregion
-

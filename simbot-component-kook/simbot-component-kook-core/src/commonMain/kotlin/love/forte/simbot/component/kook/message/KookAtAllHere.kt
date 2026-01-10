@@ -39,5 +39,6 @@ import love.forte.simbot.message.AtAll
 @Serializable
 public object KookAtAllHere : KookMessageElement {
     override fun equals(other: Any?): Boolean = other === this
+    override fun hashCode(): Int = super.hashCode()
     override fun toString(): String = "AtAllHere"
 }

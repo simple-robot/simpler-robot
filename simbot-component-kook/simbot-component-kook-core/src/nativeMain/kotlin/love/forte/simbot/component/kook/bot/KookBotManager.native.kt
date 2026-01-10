@@ -23,4 +23,5 @@
 
 package love.forte.simbot.component.kook.bot
 
-internal actual fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders(): Sequence<KookBotManagerFactoryConfigurerProvider> = emptySequence()
+internal actual fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders():
+    Sequence<KookBotManagerFactoryConfigurerProvider> = emptySequence()

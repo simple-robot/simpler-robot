@@ -39,6 +39,7 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 //region request
+
 /**
  * 使用 [KookBot] 对 [api] 发起请求。
  *
@@ -77,6 +78,7 @@ public suspend fun KookBot.requestResult(api: KookApi<*>): ApiResult {
 //endregion
 
 //region requestBy
+
 /**
  * 使用 [KookApi] 通过 [bot] 发起请求。
  *

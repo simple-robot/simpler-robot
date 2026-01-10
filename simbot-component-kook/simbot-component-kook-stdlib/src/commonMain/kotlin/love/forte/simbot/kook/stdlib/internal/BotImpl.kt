@@ -74,11 +74,16 @@ internal class BotImpl(
     override val coroutineContext: CoroutineContext = configuration.coroutineContext.minusKey(Job) + job
 
     override val apiClient: HttpClient = resolveHttpClient(
-        configuration, configuration.clientEngine, configuration.clientEngineFactory, configuration.clientEngineConfig
+        configuration,
+        configuration.clientEngine,
+        configuration.clientEngineFactory,
+        configuration.clientEngineConfig
     ).also(::closeOnBotClosed)
 
     internal val wsClient: HttpClient = resolveWsClient(
-        configuration.wsEngine, configuration.wsEngineFactory, configuration.wsEngineConfig
+        configuration.wsEngine,
+        configuration.wsEngineFactory,
+        configuration.wsEngineConfig
     ).also(::closeOnBotClosed)
 
     private fun resolveHttpClient(
@@ -107,7 +112,11 @@ internal class BotImpl(
         val apiHttpConnectTimeoutMillis = configuration.timeout?.connectTimeoutMillis
         val apiHttpSocketTimeoutMillis = configuration.timeout?.socketTimeoutMillis
 
-        if (apiHttpRequestTimeoutMillis != null || apiHttpConnectTimeoutMillis != null || apiHttpSocketTimeoutMillis != null) {
+        if (
+            apiHttpRequestTimeoutMillis != null ||
+            apiHttpConnectTimeoutMillis != null ||
+            apiHttpSocketTimeoutMillis != null
+        ) {
             install(HttpTimeout) {
                 apiHttpRequestTimeoutMillis?.also { requestTimeoutMillis = it }
                 apiHttpConnectTimeoutMillis?.also { connectTimeoutMillis = it }
@@ -184,7 +193,7 @@ internal class BotImpl(
     }
 
     override val botUserInfo: Me
-        get() = if (::_me.isInitialized) _me else throw IllegalStateException("Bot is not initialized.")
+        get() = if (::_me.isInitialized) _me else error("Bot is not initialized.")
 
     override suspend fun offline() {
         OfflineApi.requestBy(this)
@@ -218,7 +227,7 @@ internal class BotImpl(
                 }
 
                 if (currentState == null) {
-                    throw IllegalStateException("Bot start failed.")
+                    error("Bot start failed.")
                 }
 
                 currentClientJob = launch { currentState.loop() }
@@ -312,4 +321,3 @@ internal class BotImpl(
         }
     }
 }
-

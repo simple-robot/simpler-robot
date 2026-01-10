@@ -54,5 +54,9 @@ internal class KookVoiceMemberImpl(
 }
 
 
-internal fun VoiceChannelUser.toVoiceMember(bot: KookBotImpl, voiceChannelId: String, delegate: KookMember): KookVoiceMemberImpl =
+internal fun VoiceChannelUser.toVoiceMember(
+    bot: KookBotImpl,
+    voiceChannelId: String,
+    delegate: KookMember
+): KookVoiceMemberImpl =
     KookVoiceMemberImpl(bot, delegate, voiceChannelId, this)

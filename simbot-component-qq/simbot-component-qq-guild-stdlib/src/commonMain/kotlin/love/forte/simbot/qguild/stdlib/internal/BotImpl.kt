@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2025. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.stdlib.internal
@@ -98,11 +104,11 @@ internal class BotImpl(
         if (ticket.secret.isEmpty()) {
             logger.error(
                 "The `ticket.secret` is empty. " +
-                        "Since v4.0.0-beta6, the authentication logic within component " +
-                        "has been migrated to new logic that requires the use of `secret`. " +
-                        "If you do not configure the `ticket.secret`, " +
-                        "it will most likely fail to start and throw an exception. " +
-                        "See also: https://github.com/simple-robot/simbot-component-qq-guild/pull/163"
+                    "Since v4.0.0-beta6, the authentication logic within component " +
+                    "has been migrated to new logic that requires the use of `secret`. " +
+                    "If you do not configure the `ticket.secret`, " +
+                    "it will most likely fail to start and throw an exception. " +
+                    "See also: https://github.com/simple-robot/simbot-component-qq-guild/pull/163"
             )
         }
     }
@@ -118,12 +124,18 @@ internal class BotImpl(
     }
 
     private suspend fun ed25519PrivateKey() =
-        if (::_ed25519PrivateKey.isInitialized) _ed25519PrivateKey
-        else ed25519KeyPair.await().privateKey
+        if (::_ed25519PrivateKey.isInitialized) {
+            _ed25519PrivateKey
+        } else {
+            ed25519KeyPair.await().privateKey
+        }
 
     private suspend fun ed25519PublicKey() =
-        if (::_ed25519PublicKey.isInitialized) _ed25519PublicKey
-        else ed25519KeyPair.await().publicKey
+        if (::_ed25519PublicKey.isInitialized) {
+            _ed25519PublicKey
+        } else {
+            ed25519KeyPair.await().publicKey
+        }
 
     internal val eventDecoder = Signal.Dispatch.dispatchJson {
         isLenient = true
@@ -184,7 +196,10 @@ internal class BotImpl(
         val apiHttpConnectTimeoutMillis = configuration.apiHttpConnectTimeoutMillis
         val apiHttpSocketTimeoutMillis = configuration.apiHttpSocketTimeoutMillis
 
-        if (apiHttpRequestTimeoutMillis != null || apiHttpConnectTimeoutMillis != null || apiHttpSocketTimeoutMillis != null) {
+        if (apiHttpRequestTimeoutMillis != null ||
+            apiHttpConnectTimeoutMillis != null ||
+            apiHttpSocketTimeoutMillis != null
+        ) {
             install(HttpTimeout) {
                 apiHttpRequestTimeoutMillis?.also { requestTimeoutMillis = it }
                 apiHttpConnectTimeoutMillis?.also { connectTimeoutMillis = it }
@@ -232,7 +247,6 @@ internal class BotImpl(
             }
 
             SubscribeSequence.NORMAL -> {
-
                 processorQueue.add(processor)
                 DisposableHandleImpl(processorQueue, processor)
             }
@@ -346,7 +360,7 @@ internal class BotImpl(
 
         if (st == null) {
             // 当前状态为空且尚未进入事件接收状态
-            throw IllegalStateException("The current state is null and not yet in the event receiving state")
+            error("The current state is null and not yet in the event receiving state")
         }
 
         val stageLoopJob: Job = launch {
@@ -420,6 +434,7 @@ internal class BotImpl(
             }
         }
 
+    @Suppress("ReturnCount")
     @OptIn(ExperimentalStdlibApi::class, InternalEd25519Api::class)
     override suspend fun emitEvent(
         payload: String,
@@ -438,16 +453,16 @@ internal class BotImpl(
 
             check(Ed25519KeyPair.CRYPTO_SIGN_BYTES == signatureBytes.size) {
                 "Invalid signature hex size, " +
-                        "expect ${Ed25519KeyPair.CRYPTO_SIGN_BYTES}, " +
-                        "actual ${signatureBytes.size}"
+                    "expect ${Ed25519KeyPair.CRYPTO_SIGN_BYTES}, " +
+                    "actual ${signatureBytes.size}"
             }
 
             val and: UByte = signatureBytes[63].toUByte().and(224u)
 
             check(and == 0u.toUByte()) {
                 "Invalid signature hex, " +
-                        "expect signatureBytes[63] && 224 == 0, " +
-                        "actual $and (0x${and.toHexString()})"
+                    "expect signatureBytes[63] && 224 == 0, " +
+                    "actual $and (0x${and.toHexString()})"
             }
 
             val msg = "$signatureTimestamp$payload"
@@ -563,7 +578,7 @@ internal class BotImpl(
         }
     }
 
-    //// self api
+    // // self api
 
     override suspend fun me(): User {
         return GetBotInfoApi.requestDataBy(this)
@@ -609,7 +624,9 @@ internal suspend fun BotImpl.emitEvent(dispatch: Signal.Dispatch, raw: String) {
         }.onFailure { e ->
             if (logger.isDebugEnabled) {
                 logger.debug(
-                    "Event pre-precess failure. raw: {}, event: {}", raw, dispatch
+                    "Event pre-precess failure. raw: {}, event: {}",
+                    raw,
+                    dispatch
                 )
             }
             logger.error("Event pre-precess failure.", e)
@@ -626,7 +643,9 @@ internal suspend fun BotImpl.emitEvent(dispatch: Signal.Dispatch, raw: String) {
             }.onFailure { e ->
                 if (logger.isDebugEnabled) {
                     logger.debug(
-                        "Event precess failure. raw: {}, event: {}", raw, dispatch
+                        "Event precess failure. raw: {}, event: {}",
+                        raw,
+                        dispatch
                     )
                 }
                 logger.error("Event precess failure.", e)

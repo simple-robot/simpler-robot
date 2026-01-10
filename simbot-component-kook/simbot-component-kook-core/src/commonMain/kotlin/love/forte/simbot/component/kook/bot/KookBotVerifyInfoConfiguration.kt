@@ -171,7 +171,7 @@ public data class KookBotVerifyInfoConfiguration(
          */
         val isNormalEventProcessAsync: Boolean? = null,
 
-        ) {
+    ) {
         public companion object
     }
 

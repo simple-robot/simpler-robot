@@ -43,7 +43,7 @@ public class LeaveGuildApi(guildId: String) : KookPostApi<Unit>() {
         /**
          * 构造 [LeaveGuildApi]
          *
-         * @param guildId 	服务器 id
+         * @param guildId 服务器 id
          */
         @JvmStatic
         public fun create(guildId: String): LeaveGuildApi =

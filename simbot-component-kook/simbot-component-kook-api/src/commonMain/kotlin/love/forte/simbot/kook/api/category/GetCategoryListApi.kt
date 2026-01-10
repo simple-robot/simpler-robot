@@ -55,7 +55,7 @@ public class GetCategoryListApi private constructor(
          * @param channelId 帖子频道 id
          */
         @JvmStatic
-        public fun create(channelId: String): GetCategoryListApi = 
+        public fun create(channelId: String): GetCategoryListApi =
             GetCategoryListApi(channelId)
     }
 
