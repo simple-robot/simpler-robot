@@ -38,9 +38,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> Unit = {}) {
     compilerOptions {
         javaParameters.set(true)
-        freeCompilerArgs.addAll(
-            "-jvm-default=all"
-        )
+        freeCompilerArgs.add("-Xjsr305=strict")
     }
 
     testRuns["test"].executionTask.configure {
@@ -80,8 +78,7 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
                 else -> JvmTarget.fromTarget(jdkVersion.toString())
             }
         )
-        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
-        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-jvm-default=all", "-Xjsr305=strict"))
+        freeCompilerArgs.add("-Xjsr305=strict")
     }
     block()
 }
