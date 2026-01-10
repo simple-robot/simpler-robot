@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -28,11 +28,14 @@ import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.Buffer
+import kotlinx.io.Source
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.use
 
 
 /**
@@ -96,7 +99,9 @@ class InputFileTests {
         assertInputFileByMockClient(
             bytes.size,
             realText,
-            InputFile(InputProvider(bytes.size.toLong()) { ByteReadPacket(bytes) })
+            InputFile(
+                InputProvider(bytes.size.toLong()) { bytes.toSource() }
+            )
         )
     }
 
@@ -117,7 +122,9 @@ class InputFileTests {
         val realText = "Hello, World"
         val bytes = realText.toByteArray()
 
-        assertInputFileByMockClient(bytes.size, realText, InputFile(ByteReadPacket(bytes)))
+        assertInputFileByMockClient(bytes.size, realText, InputFile(bytes.toSource()))
     }
 
 }
+
+private fun ByteArray.toSource(): Source = Buffer().apply { write(this@toSource) }

@@ -27,6 +27,10 @@ package love.forte.simbot.qguild.api.message
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.io.RawSource
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.CompositeEncoder
@@ -223,7 +227,7 @@ public class MessageSendApi private constructor(
          * 可使用的类型：
          * - [ByteArray]
          * - [InputProvider]
-         * - [ByteReadPacket]
+         * - [RawSource]
          * - [ChannelProvider]
          * - [resolveOther] 中平台可支持的额外类型
          */
@@ -256,7 +260,7 @@ public class MessageSendApi private constructor(
              * 所有平台：
              * - [ByteArray]
              * - [InputProvider]
-             * - [ByteReadPacket]
+             * - [RawSource]
              * - [ChannelProvider]
              *
              * JVM 平台：
@@ -280,7 +284,7 @@ public class MessageSendApi private constructor(
                             field = value
                         }
 
-                        is ByteReadPacket -> {
+                        is RawSource -> {
                             field = value
                         }
 
@@ -334,8 +338,8 @@ public class MessageSendApi private constructor(
                 fileImage = inputProvider
             }
 
-            public fun setFileImage(byteReadPacket: ByteReadPacket) {
-                fileImage = byteReadPacket
+            public fun setFileImage(rawSource: RawSource) {
+                fileImage = rawSource
             }
 
             public fun setFileImage(channelProvider: ChannelProvider) {
@@ -436,15 +440,33 @@ private const val FILE_IMAGE_PROPERTY_NAME = "file_image"
 
 /**
  * support:
+ * - [Path]
+ * - [RawSource]
  * - [ByteArray]
  * - [InputProvider]
- * - [io.ktor.utils.io.core.ByteReadPacket]
  * - [ChannelProvider]
- * - [resolveOther] support other platform type.
+ * - [resolveOther] support another platform type.
  */
-
 private fun FormBuilder.appendFileImage(fileImage: Any?) {
     when (fileImage) {
+        is Path -> {
+            val imgHeaders = Headers.build {
+                append(HttpHeaders.ContentDisposition, "filename=\"image\"")
+            }
+            append(
+                key = FILE_IMAGE_PROPERTY_NAME,
+                InputProvider { SystemFileSystem.source(fileImage).buffered() },
+                imgHeaders
+            )
+        }
+
+        is RawSource -> {
+            val imgHeaders = Headers.build {
+                append(HttpHeaders.ContentDisposition, "filename=\"image\"")
+            }
+            append(key = FILE_IMAGE_PROPERTY_NAME, InputProvider { fileImage.buffered() }, imgHeaders)
+        }
+
         is ByteArray -> {
             val imgHeaders = Headers.build {
                 append(HttpHeaders.ContentDisposition, "filename=\"image\"")
@@ -453,13 +475,6 @@ private fun FormBuilder.appendFileImage(fileImage: Any?) {
         }
 
         is InputProvider -> {
-            val imgHeaders = Headers.build {
-                append(HttpHeaders.ContentDisposition, "filename=\"image\"")
-            }
-            append(key = FILE_IMAGE_PROPERTY_NAME, fileImage, imgHeaders)
-        }
-
-        is ByteReadPacket -> {
             val imgHeaders = Headers.build {
                 append(HttpHeaders.ContentDisposition, "filename=\"image\"")
             }
@@ -475,7 +490,6 @@ private fun FormBuilder.appendFileImage(fileImage: Any?) {
 
         else -> {
             resolveOther(fileImage)
-            // do nothing
         }
     }
 
@@ -486,6 +500,8 @@ private fun FormBuilder.appendFileImage(fileImage: Any?) {
  *
  * 其他平台处理除了
  *
+ * - [Kotlinx's Path][Path]
+ * - [RawSource]
  * - [ByteArray]
  * - [InputProvider]
  * - [ByteReadPacket]

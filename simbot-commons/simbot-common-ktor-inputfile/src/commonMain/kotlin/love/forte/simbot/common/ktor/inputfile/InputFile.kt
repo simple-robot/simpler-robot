@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -28,6 +28,7 @@ package love.forte.simbot.common.ktor.inputfile
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.io.Source
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -111,17 +112,17 @@ private class ChannelProviderInputFile(private val channel: ChannelProvider, pri
  */
 @JvmName("of")
 @JvmOverloads
-public fun InputFile(byteReadPacket: ByteReadPacket, defaultHeaders: Headers = Headers.Empty): InputFile =
-    ByteReadPacketInputFile(byteReadPacket, defaultHeaders)
+public fun InputFile(source: Source, defaultHeaders: Headers = Headers.Empty): InputFile =
+    SourceInputFile(source, defaultHeaders)
 
-private class ByteReadPacketInputFile(private val byteReadPacket: ByteReadPacket, private val defaultHeaders: Headers) :
+private class SourceInputFile(private val source: Source, private val defaultHeaders: Headers) :
     InputFile {
     override fun includeTo(key: String, headers: Headers, formBuilder: FormBuilder) {
-        formBuilder.append(key, byteReadPacket, defaultHeaders + headers)
+        formBuilder.append(key, source, defaultHeaders + headers)
     }
 
     override fun toFormPart(key: String, headers: Headers): FormPart<*> =
-        FormPart(key, byteReadPacket, defaultHeaders + headers)
+        FormPart(key, source, defaultHeaders + headers)
 }
 
 internal operator fun Headers.plus(other: Headers): Headers {
