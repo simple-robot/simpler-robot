@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2021-2025. ForteScarlet.
+ *     Copyright (c) 2021-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -32,6 +32,12 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    id("com.gradle.develocity") version "4.3"
+}
+
+// https://docs.gradle.com/develocity/intellij-plugin/current/#troubleshooting
+develocity {
+    // configuration
 }
 
 // benchmarks
@@ -39,6 +45,13 @@ plugins {
 
 // internals
 include(":internal-processors:interface-uml-processor")
+include(":internal-processors:onebot-event-type-resolver-processor")
+include(":internal-processors:onebot-include-component-message-elements-processor")
+include(":internal-processors:kook-api-reader")
+include(":internal-processors:kook-message-element-processor")
+include(":internal-processors:qq-api-reader")
+include(":internal-processors:qq-dispatch-serializer-processor")
+include(":internal-processors:qq-intents-processor")
 
 // gradle
 // include(":simbot-gradles:simbot-gradle-plugin")
@@ -75,6 +88,30 @@ include(":simbot-cores:simbot-core-spring-boot-starter-v2")
 
 // extensions
 include(":simbot-extensions:simbot-extension-continuous-session")
+
+// components
+// onebot
+include(":simbot-component-onebot:simbot-component-onebot-common")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-common")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-core")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-event")
+include(":simbot-component-onebot:simbot-component-onebot-v11:simbot-component-onebot-v11-message")
+
+// kook
+include(":simbot-component-kook:simbot-component-kook-api")
+include(":simbot-component-kook:simbot-component-kook-stdlib")
+include(":simbot-component-kook:simbot-component-kook-core")
+
+// qq
+include(":simbot-component-qq:simbot-component-qq-guild-api")
+include(":simbot-component-qq:simbot-component-qq-guild-stdlib")
+include(":simbot-component-qq:simbot-component-qq-guild-core")
+include(":simbot-component-qq:simbot-component-qq-guild-internal-ed25519")
+
+// samples
+include(":samples:qq-webhook-server-ktor")
+include(":samples:qq-webhook-server-spring")
+include(":samples:qq-webhook-server-spring-webflux")
 
 // local tests
 include(":tests:spring-boot-starter-test")

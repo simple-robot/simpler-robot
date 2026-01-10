@@ -14,6 +14,11 @@
     wrap-ansi "^8.1.0"
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
+"@js-joda/core@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/@js-joda/core/-/core-3.2.0.tgz#3e61e21b7b2b8a6be746df1335cf91d70db2a273"
+  integrity sha512-PMqgJ0sw5B7FKb2d5bWYIoxjri+QlW/Pys7+Rw82jSH0QN3rB05jZ/VrrsUdh1w4+i2kw9JOejXGq/KhDOX7Kg==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.npmmirror.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -261,12 +266,24 @@ js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
-kotlin-web-helpers@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmmirror.com/kotlin-web-helpers/-/kotlin-web-helpers-2.1.0.tgz#6cd4b0f0dc3baea163929c8638155b8d19c55a74"
-  integrity sha512-NAJhiNB84tnvJ5EQx7iER3GWw7rsTZkX9HVHZpe7E3dDBD/dhTzqgSwNU3MfQjniy2rB04bP24WM9Z32ntUWRg==
+kotlin-web-helpers@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/kotlin-web-helpers/-/kotlin-web-helpers-3.0.0.tgz#3ed6b48f694f74bb60a737a9d7e2c0e3b29abdb9"
+  integrity sha512-kdQO4AJQkUPvpLh9aglkXDRyN+CfXO7pKq+GESEnxooBFkQpytLrqZis3ABvmFN1cGw/ZQ/K38u5sRGW+NfBnw==
   dependencies:
     format-util "^1.0.5"
+
+libsodium-sumo@^0.7.13:
+  version "0.7.16"
+  resolved "https://registry.npmmirror.com/libsodium-sumo/-/libsodium-sumo-0.7.16.tgz#85037acdf9029296373bf2a9f078930a723eedb5"
+  integrity sha512-x6atrz2AdXCJg6G709x9W9TTJRI6/0NcL5dD0l5GGVqNE48UJmDsjO4RUWYTeyXXUpg+NXZ2SHECaZnFRYzwGA==
+
+libsodium-wrappers-sumo@0.7.13:
+  version "0.7.13"
+  resolved "https://registry.npmmirror.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.7.13.tgz#a33aea845a0bb56db067548f04feba28c730ab8e"
+  integrity sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==
+  dependencies:
+    libsodium-sumo "^0.7.13"
 
 locate-path@^6.0.0:
   version "6.0.0"
@@ -300,10 +317,10 @@ minimatch@^9.0.4, minimatch@^9.0.5:
   resolved "https://registry.npmmirror.com/minipass/-/minipass-7.1.2.tgz#93a9626ce5e5e66bd4db86849e7515e92340a707"
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
 
-mocha@11.7.1:
-  version "11.7.1"
-  resolved "https://registry.npmmirror.com/mocha/-/mocha-11.7.1.tgz#91948fecd624fb4bd154ed260b7e1ad3910d7c7a"
-  integrity sha512-5EK+Cty6KheMS/YLPPMJC64g5V61gIR25KsRItHw6x4hEKT6Njp1n9LOlH4gpevuwMVS66SXaBBpg+RWZkza4A==
+mocha@11.7.2:
+  version "11.7.2"
+  resolved "https://registry.npmmirror.com/mocha/-/mocha-11.7.2.tgz#3c0079fe5cc2f8ea86d99124debcc42bb1ab22b5"
+  integrity sha512-lkqVJPmqqG/w5jmmFtiRvtA2jkDyNVUcefFJKb2uyX4dekk8Okgqop3cgbFiaIvj8uCRJVTP5x9dfxGyXm2jvQ==
   dependencies:
     browser-stdout "^1.3.1"
     chokidar "^4.0.1"

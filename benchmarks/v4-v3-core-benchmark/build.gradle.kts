@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -22,9 +22,6 @@
  */
 
 import love.forte.gradle.common.core.project.setup
-import love.forte.gradle.common.kotlin.multiplatform.applyTier1
-import love.forte.gradle.common.kotlin.multiplatform.applyTier2
-import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
@@ -42,9 +39,7 @@ kotlin {
         configJs()
     }
 
-    applyTier1()
-    applyTier2()
-    applyTier3()
+    applyTier123()
 
     sourceSets {
         commonMain {

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -33,5 +33,44 @@ fun AbiValidationVariantSpec.configAbiValidation() {
         "love.forte.simbot.annotations.InternalSimbotAPI",
         "love.forte.simbot.resource.ExperimentalIOResourceAPI",
         "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI"
+    )
+}
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configOneBotAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI",
+        "love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI",
+        "love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor",
+        "love.forte.simbot.component.onebot.common.annotations.SourceEventConstructor",
+
+        // CustomEventResolver
+        "love.forte.simbot.component.onebot.v11.core.event.ExperimentalCustomEventResolverApi",
+
+        // CustomOneBotApi
+        "love.forte.simbot.component.onebot.v11.core.api.ExperimentalCustomOneBotApi",
+
+        // OneBotNonStandardApi
+        "love.forte.simbot.component.onebot.v11.core.api.nonstandard.OneBotNonStandardApi"
+    )
+}
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configKookAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.kook.ExperimentalKookApi",
+        "love.forte.simbot.kook.InternalKookApi",
+        "love.forte.simbot.kook.api.template.ExperimentalTemplateApi",
+        "love.forte.simbot.component.kook.blacklist.ExperimentalBlacklistApi"
+    )
+}
+
+@ExperimentalAbiValidation
+fun AbiValidationVariantSpec.configQQAbiValidation() {
+    filters.excluded.annotatedWith.addAll(
+        "love.forte.simbot.qguild.QGInternalApi",
+        "love.forte.simbot.component.qguild.ExperimentalQGApi",
+        "love.forte.simbot.qguild.ExperimentalQGMediaApi",
+        "love.forte.simbot.qguild.ed25519.annotations.InternalEd25519Api"
     )
 }

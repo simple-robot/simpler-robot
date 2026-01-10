@@ -1,0 +1,33 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-onebot-v11-common>
+final class love.forte.simbot.component.onebot.v11.common.api/StatusResult { // love.forte.simbot.component.onebot.v11.common.api/StatusResult|null[0]
+    final val good // love.forte.simbot.component.onebot.v11.common.api/StatusResult.good|{}good[0]
+        final fun <get-good>(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.common.api/StatusResult.good.<get-good>|<get-good>(){}[0]
+    final val online // love.forte.simbot.component.onebot.v11.common.api/StatusResult.online|{}online[0]
+        final fun <get-online>(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.common.api/StatusResult.online.<get-online>|<get-online>(){}[0]
+
+    final fun component1(): kotlin/Boolean? // love.forte.simbot.component.onebot.v11.common.api/StatusResult.component1|component1(){}[0]
+    final fun component2(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.common.api/StatusResult.component2|component2(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.common.api/StatusResult.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.common.api/StatusResult.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.common.api/StatusResult.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.common.api/StatusResult> { // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer|null[0]
+        final val descriptor // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.component.onebot.v11.common.api/StatusResult // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.component.onebot.v11.common.api/StatusResult) // love.forte.simbot.component.onebot.v11.common.api/StatusResult.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.component.onebot.v11.common.api.StatusResult){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.common.api/StatusResult.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.onebot.v11.common.api/StatusResult> // love.forte.simbot.component.onebot.v11.common.api/StatusResult.Companion.serializer|serializer(){}[0]
+    }
+}

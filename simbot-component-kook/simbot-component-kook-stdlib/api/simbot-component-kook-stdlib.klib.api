@@ -1,0 +1,237 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-kook-stdlib>
+final enum class love.forte.simbot.kook.stdlib/ProcessorType : kotlin/Enum<love.forte.simbot.kook.stdlib/ProcessorType> { // love.forte.simbot.kook.stdlib/ProcessorType|null[0]
+    enum entry NORMAL // love.forte.simbot.kook.stdlib/ProcessorType.NORMAL|null[0]
+    enum entry PREPARE // love.forte.simbot.kook.stdlib/ProcessorType.PREPARE|null[0]
+
+    final val entries // love.forte.simbot.kook.stdlib/ProcessorType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.kook.stdlib/ProcessorType> // love.forte.simbot.kook.stdlib/ProcessorType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.kook.stdlib/ProcessorType // love.forte.simbot.kook.stdlib/ProcessorType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.kook.stdlib/ProcessorType> // love.forte.simbot.kook.stdlib/ProcessorType.values|values#static(){}[0]
+}
+
+final enum class love.forte.simbot.kook.stdlib/SubscribeSequence : kotlin/Enum<love.forte.simbot.kook.stdlib/SubscribeSequence> { // love.forte.simbot.kook.stdlib/SubscribeSequence|null[0]
+    enum entry NORMAL // love.forte.simbot.kook.stdlib/SubscribeSequence.NORMAL|null[0]
+    enum entry PREPARE // love.forte.simbot.kook.stdlib/SubscribeSequence.PREPARE|null[0]
+
+    final val entries // love.forte.simbot.kook.stdlib/SubscribeSequence.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.kook.stdlib/SubscribeSequence> // love.forte.simbot.kook.stdlib/SubscribeSequence.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.kook.stdlib/SubscribeSequence // love.forte.simbot.kook.stdlib/SubscribeSequence.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.kook.stdlib/SubscribeSequence> // love.forte.simbot.kook.stdlib/SubscribeSequence.values|values#static(){}[0]
+}
+
+abstract fun interface love.forte.simbot.kook.stdlib/EventProcessor { // love.forte.simbot.kook.stdlib/EventProcessor|null[0]
+    abstract suspend fun (love.forte.simbot.kook.event/Event<*>).invoke(kotlin/String) // love.forte.simbot.kook.stdlib/EventProcessor.invoke|invoke@love.forte.simbot.kook.event.Event<*>(kotlin.String){}[0]
+}
+
+abstract interface love.forte.simbot.kook.stdlib/Bot : kotlinx.coroutines/CoroutineScope { // love.forte.simbot.kook.stdlib/Bot|null[0]
+    abstract val apiClient // love.forte.simbot.kook.stdlib/Bot.apiClient|{}apiClient[0]
+        abstract fun <get-apiClient>(): io.ktor.client/HttpClient // love.forte.simbot.kook.stdlib/Bot.apiClient.<get-apiClient>|<get-apiClient>(){}[0]
+    abstract val botUserInfo // love.forte.simbot.kook.stdlib/Bot.botUserInfo|{}botUserInfo[0]
+        abstract fun <get-botUserInfo>(): love.forte.simbot.kook.api.user/Me // love.forte.simbot.kook.stdlib/Bot.botUserInfo.<get-botUserInfo>|<get-botUserInfo>(){}[0]
+    abstract val configuration // love.forte.simbot.kook.stdlib/Bot.configuration|{}configuration[0]
+        abstract fun <get-configuration>(): love.forte.simbot.kook.stdlib/BotConfiguration // love.forte.simbot.kook.stdlib/Bot.configuration.<get-configuration>|<get-configuration>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.kook.stdlib/Bot.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.kook.stdlib/Bot.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val isActive // love.forte.simbot.kook.stdlib/Bot.isActive|{}isActive[0]
+        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isActive.<get-isActive>|<get-isActive>(){}[0]
+    abstract val isStarted // love.forte.simbot.kook.stdlib/Bot.isStarted|{}isStarted[0]
+        abstract fun <get-isStarted>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isStarted.<get-isStarted>|<get-isStarted>(){}[0]
+    abstract val ticket // love.forte.simbot.kook.stdlib/Bot.ticket|{}ticket[0]
+        abstract fun <get-ticket>(): love.forte.simbot.kook.stdlib/Ticket // love.forte.simbot.kook.stdlib/Bot.ticket.<get-ticket>|<get-ticket>(){}[0]
+
+    abstract fun close() // love.forte.simbot.kook.stdlib/Bot.close|close(){}[0]
+    abstract fun subscribe(love.forte.simbot.kook.stdlib/SubscribeSequence, love.forte.simbot.kook.stdlib/EventProcessor) // love.forte.simbot.kook.stdlib/Bot.subscribe|subscribe(love.forte.simbot.kook.stdlib.SubscribeSequence;love.forte.simbot.kook.stdlib.EventProcessor){}[0]
+    abstract suspend fun join() // love.forte.simbot.kook.stdlib/Bot.join|join(){}[0]
+    abstract suspend fun me(): love.forte.simbot.kook.api.user/Me // love.forte.simbot.kook.stdlib/Bot.me|me(){}[0]
+    abstract suspend fun offline() // love.forte.simbot.kook.stdlib/Bot.offline|offline(){}[0]
+    abstract suspend fun start(kotlin/Boolean) // love.forte.simbot.kook.stdlib/Bot.start|start(kotlin.Boolean){}[0]
+    open fun processor(love.forte.simbot.kook.stdlib/EventProcessor) // love.forte.simbot.kook.stdlib/Bot.processor|processor(love.forte.simbot.kook.stdlib.EventProcessor){}[0]
+    open fun processor(love.forte.simbot.kook.stdlib/ProcessorType, love.forte.simbot.kook.stdlib/EventProcessor) // love.forte.simbot.kook.stdlib/Bot.processor|processor(love.forte.simbot.kook.stdlib.ProcessorType;love.forte.simbot.kook.stdlib.EventProcessor){}[0]
+    open fun subscribe(love.forte.simbot.kook.stdlib/EventProcessor) // love.forte.simbot.kook.stdlib/Bot.subscribe|subscribe(love.forte.simbot.kook.stdlib.EventProcessor){}[0]
+    open suspend fun start() // love.forte.simbot.kook.stdlib/Bot.start|start(){}[0]
+}
+
+abstract interface love.forte.simbot.kook.stdlib/Ticket { // love.forte.simbot.kook.stdlib/Ticket|null[0]
+    abstract val clientId // love.forte.simbot.kook.stdlib/Ticket.clientId|{}clientId[0]
+        abstract fun <get-clientId>(): kotlin/String // love.forte.simbot.kook.stdlib/Ticket.clientId.<get-clientId>|<get-clientId>(){}[0]
+    abstract val token // love.forte.simbot.kook.stdlib/Ticket.token|{}token[0]
+        abstract fun <get-token>(): kotlin/String // love.forte.simbot.kook.stdlib/Ticket.token.<get-token>|<get-token>(){}[0]
+    abstract val type // love.forte.simbot.kook.stdlib/Ticket.type|{}type[0]
+        abstract fun <get-type>(): love.forte.simbot.kook/TokenType // love.forte.simbot.kook.stdlib/Ticket.type.<get-type>|<get-type>(){}[0]
+
+    final object Companion { // love.forte.simbot.kook.stdlib/Ticket.Companion|null[0]
+        final fun botWsTicket(kotlin/String, kotlin/String): love.forte.simbot.kook.stdlib/Ticket // love.forte.simbot.kook.stdlib/Ticket.Companion.botWsTicket|botWsTicket(kotlin.String;kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.kook.stdlib/BotConfiguration { // love.forte.simbot.kook.stdlib/BotConfiguration|null[0]
+    constructor <init>() // love.forte.simbot.kook.stdlib/BotConfiguration.<init>|<init>(){}[0]
+
+    final var clientEngine // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngine|{}clientEngine[0]
+        final fun <get-clientEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngine.<get-clientEngine>|<get-clientEngine>(){}[0]
+        final fun <set-clientEngine>(io.ktor.client.engine/HttpClientEngine?) // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngine.<set-clientEngine>|<set-clientEngine>(io.ktor.client.engine.HttpClientEngine?){}[0]
+    final var clientEngineConfig // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineConfig|{}clientEngineConfig[0]
+        final fun <get-clientEngineConfig>(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineConfig.<get-clientEngineConfig>|<get-clientEngineConfig>(){}[0]
+        final fun <set-clientEngineConfig>(love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration?) // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineConfig.<set-clientEngineConfig>|<set-clientEngineConfig>(love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?){}[0]
+    final var clientEngineFactory // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineFactory|{}clientEngineFactory[0]
+        final fun <get-clientEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineFactory.<get-clientEngineFactory>|<get-clientEngineFactory>(){}[0]
+        final fun <set-clientEngineFactory>(io.ktor.client.engine/HttpClientEngineFactory<*>?) // love.forte.simbot.kook.stdlib/BotConfiguration.clientEngineFactory.<set-clientEngineFactory>|<set-clientEngineFactory>(io.ktor.client.engine.HttpClientEngineFactory<*>?){}[0]
+    final var connectTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.connectTimeoutMillis|{}connectTimeoutMillis[0]
+        final fun <get-connectTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.connectTimeoutMillis.<get-connectTimeoutMillis>|<get-connectTimeoutMillis>(){}[0]
+        final fun <set-connectTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.connectTimeoutMillis.<set-connectTimeoutMillis>|<set-connectTimeoutMillis>(kotlin.Long?){}[0]
+    final var coroutineContext // love.forte.simbot.kook.stdlib/BotConfiguration.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.kook.stdlib/BotConfiguration.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+        final fun <set-coroutineContext>(kotlin.coroutines/CoroutineContext) // love.forte.simbot.kook.stdlib/BotConfiguration.coroutineContext.<set-coroutineContext>|<set-coroutineContext>(kotlin.coroutines.CoroutineContext){}[0]
+    final var isCompress // love.forte.simbot.kook.stdlib/BotConfiguration.isCompress|{}isCompress[0]
+        final fun <get-isCompress>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/BotConfiguration.isCompress.<get-isCompress>|<get-isCompress>(){}[0]
+        final fun <set-isCompress>(kotlin/Boolean) // love.forte.simbot.kook.stdlib/BotConfiguration.isCompress.<set-isCompress>|<set-isCompress>(kotlin.Boolean){}[0]
+    final var isNormalEventProcessAsync // love.forte.simbot.kook.stdlib/BotConfiguration.isNormalEventProcessAsync|{}isNormalEventProcessAsync[0]
+        final fun <get-isNormalEventProcessAsync>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/BotConfiguration.isNormalEventProcessAsync.<get-isNormalEventProcessAsync>|<get-isNormalEventProcessAsync>(){}[0]
+        final fun <set-isNormalEventProcessAsync>(kotlin/Boolean) // love.forte.simbot.kook.stdlib/BotConfiguration.isNormalEventProcessAsync.<set-isNormalEventProcessAsync>|<set-isNormalEventProcessAsync>(kotlin.Boolean){}[0]
+    final var requestTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.requestTimeoutMillis|{}requestTimeoutMillis[0]
+        final fun <get-requestTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.requestTimeoutMillis.<get-requestTimeoutMillis>|<get-requestTimeoutMillis>(){}[0]
+        final fun <set-requestTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.requestTimeoutMillis.<set-requestTimeoutMillis>|<set-requestTimeoutMillis>(kotlin.Long?){}[0]
+    final var socketTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.socketTimeoutMillis|{}socketTimeoutMillis[0]
+        final fun <get-socketTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.socketTimeoutMillis.<get-socketTimeoutMillis>|<get-socketTimeoutMillis>(){}[0]
+        final fun <set-socketTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.socketTimeoutMillis.<set-socketTimeoutMillis>|<set-socketTimeoutMillis>(kotlin.Long?){}[0]
+    final var timeout // love.forte.simbot.kook.stdlib/BotConfiguration.timeout|{}timeout[0]
+        final fun <get-timeout>(): love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration? // love.forte.simbot.kook.stdlib/BotConfiguration.timeout.<get-timeout>|<get-timeout>(){}[0]
+        final fun <set-timeout>(love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration?) // love.forte.simbot.kook.stdlib/BotConfiguration.timeout.<set-timeout>|<set-timeout>(love.forte.simbot.kook.stdlib.BotConfiguration.TimeoutConfiguration?){}[0]
+    final var wsConnectTimeout // love.forte.simbot.kook.stdlib/BotConfiguration.wsConnectTimeout|{}wsConnectTimeout[0]
+        final fun <get-wsConnectTimeout>(): kotlin/Long // love.forte.simbot.kook.stdlib/BotConfiguration.wsConnectTimeout.<get-wsConnectTimeout>|<get-wsConnectTimeout>(){}[0]
+        final fun <set-wsConnectTimeout>(kotlin/Long) // love.forte.simbot.kook.stdlib/BotConfiguration.wsConnectTimeout.<set-wsConnectTimeout>|<set-wsConnectTimeout>(kotlin.Long){}[0]
+    final var wsEngine // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngine|{}wsEngine[0]
+        final fun <get-wsEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngine.<get-wsEngine>|<get-wsEngine>(){}[0]
+        final fun <set-wsEngine>(io.ktor.client.engine/HttpClientEngine?) // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngine.<set-wsEngine>|<set-wsEngine>(io.ktor.client.engine.HttpClientEngine?){}[0]
+    final var wsEngineConfig // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineConfig|{}wsEngineConfig[0]
+        final fun <get-wsEngineConfig>(): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration? // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineConfig.<get-wsEngineConfig>|<get-wsEngineConfig>(){}[0]
+        final fun <set-wsEngineConfig>(love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration?) // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineConfig.<set-wsEngineConfig>|<set-wsEngineConfig>(love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration?){}[0]
+    final var wsEngineFactory // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineFactory|{}wsEngineFactory[0]
+        final fun <get-wsEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineFactory.<get-wsEngineFactory>|<get-wsEngineFactory>(){}[0]
+        final fun <set-wsEngineFactory>(io.ktor.client.engine/HttpClientEngineFactory<*>?) // love.forte.simbot.kook.stdlib/BotConfiguration.wsEngineFactory.<set-wsEngineFactory>|<set-wsEngineFactory>(io.ktor.client.engine.HttpClientEngineFactory<*>?){}[0]
+
+    final fun disableTimeout() // love.forte.simbot.kook.stdlib/BotConfiguration.disableTimeout|disableTimeout(){}[0]
+
+    final class EngineConfiguration { // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration|null[0]
+        constructor <init>(kotlin/Boolean? = ...) // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.<init>|<init>(kotlin.Boolean?){}[0]
+
+        final var pipelining // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.pipelining|{}pipelining[0]
+            final fun <get-pipelining>(): kotlin/Boolean? // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.pipelining.<get-pipelining>|<get-pipelining>(){}[0]
+            final fun <set-pipelining>(kotlin/Boolean?) // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.pipelining.<set-pipelining>|<set-pipelining>(kotlin.Boolean?){}[0]
+
+        final fun component1(): kotlin/Boolean? // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.component1|component1(){}[0]
+        final fun copy(kotlin/Boolean? = ...): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.copy|copy(kotlin.Boolean?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration> { // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer|null[0]
+            final val descriptor // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration) // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration> // love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class TimeoutConfiguration { // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration|null[0]
+        constructor <init>() // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.<init>|<init>(){}[0]
+        constructor <init>(kotlin/Long? = ..., kotlin/Long? = ..., kotlin/Long? = ...) // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.<init>|<init>(kotlin.Long?;kotlin.Long?;kotlin.Long?){}[0]
+
+        final var connectTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.connectTimeoutMillis|{}connectTimeoutMillis[0]
+            final fun <get-connectTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.connectTimeoutMillis.<get-connectTimeoutMillis>|<get-connectTimeoutMillis>(){}[0]
+            final fun <set-connectTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.connectTimeoutMillis.<set-connectTimeoutMillis>|<set-connectTimeoutMillis>(kotlin.Long?){}[0]
+        final var requestTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.requestTimeoutMillis|{}requestTimeoutMillis[0]
+            final fun <get-requestTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.requestTimeoutMillis.<get-requestTimeoutMillis>|<get-requestTimeoutMillis>(){}[0]
+            final fun <set-requestTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.requestTimeoutMillis.<set-requestTimeoutMillis>|<set-requestTimeoutMillis>(kotlin.Long?){}[0]
+        final var socketTimeoutMillis // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.socketTimeoutMillis|{}socketTimeoutMillis[0]
+            final fun <get-socketTimeoutMillis>(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.socketTimeoutMillis.<get-socketTimeoutMillis>|<get-socketTimeoutMillis>(){}[0]
+            final fun <set-socketTimeoutMillis>(kotlin/Long?) // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.socketTimeoutMillis.<set-socketTimeoutMillis>|<set-socketTimeoutMillis>(kotlin.Long?){}[0]
+
+        final fun component1(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.component1|component1(){}[0]
+        final fun component2(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.component2|component2(){}[0]
+        final fun component3(): kotlin/Long? // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.component3|component3(){}[0]
+        final fun copy(kotlin/Long? = ..., kotlin/Long? = ..., kotlin/Long? = ...): love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.copy|copy(kotlin.Long?;kotlin.Long?;kotlin.Long?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration> { // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer|null[0]
+            final val descriptor // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration) // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.kook.stdlib.BotConfiguration.TimeoutConfiguration){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration> // love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object Companion { // love.forte.simbot.kook.stdlib/BotConfiguration.Companion|null[0]
+        final const val DEFAULT_WS_CONNECT_TIMEOUT // love.forte.simbot.kook.stdlib/BotConfiguration.Companion.DEFAULT_WS_CONNECT_TIMEOUT|{}DEFAULT_WS_CONNECT_TIMEOUT[0]
+            final fun <get-DEFAULT_WS_CONNECT_TIMEOUT>(): kotlin/Long // love.forte.simbot.kook.stdlib/BotConfiguration.Companion.DEFAULT_WS_CONNECT_TIMEOUT.<get-DEFAULT_WS_CONNECT_TIMEOUT>|<get-DEFAULT_WS_CONNECT_TIMEOUT>(){}[0]
+    }
+}
+
+final class love.forte.simbot.kook.stdlib/EventDeserializationException : love.forte.simbot.kook/KookException { // love.forte.simbot.kook.stdlib/EventDeserializationException|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlinx.serialization/SerializationException) // love.forte.simbot.kook.stdlib/EventDeserializationException.<init>|<init>(kotlin.String;kotlin.String;kotlinx.serialization.SerializationException){}[0]
+
+    final val source // love.forte.simbot.kook.stdlib/EventDeserializationException.source|{}source[0]
+        final fun <get-source>(): kotlin/String // love.forte.simbot.kook.stdlib/EventDeserializationException.source.<get-source>|<get-source>(){}[0]
+}
+
+final class love.forte.simbot.kook.stdlib/KookBotClientCloseException : love.forte.simbot.kook/KookException { // love.forte.simbot.kook.stdlib/KookBotClientCloseException|null[0]
+    constructor <init>(io.ktor.websocket/CloseReason?) // love.forte.simbot.kook.stdlib/KookBotClientCloseException.<init>|<init>(io.ktor.websocket.CloseReason?){}[0]
+    constructor <init>(io.ktor.websocket/CloseReason?, kotlin/String?) // love.forte.simbot.kook.stdlib/KookBotClientCloseException.<init>|<init>(io.ktor.websocket.CloseReason?;kotlin.String?){}[0]
+    constructor <init>(io.ktor.websocket/CloseReason?, kotlin/String?, kotlin/Throwable?) // love.forte.simbot.kook.stdlib/KookBotClientCloseException.<init>|<init>(io.ktor.websocket.CloseReason?;kotlin.String?;kotlin.Throwable?){}[0]
+    constructor <init>(io.ktor.websocket/CloseReason?, kotlin/Throwable?) // love.forte.simbot.kook.stdlib/KookBotClientCloseException.<init>|<init>(io.ktor.websocket.CloseReason?;kotlin.Throwable?){}[0]
+
+    final val closeReason // love.forte.simbot.kook.stdlib/KookBotClientCloseException.closeReason|{}closeReason[0]
+        final fun <get-closeReason>(): io.ktor.websocket/CloseReason? // love.forte.simbot.kook.stdlib/KookBotClientCloseException.closeReason.<get-closeReason>|<get-closeReason>(){}[0]
+}
+
+final class love.forte.simbot.kook.stdlib/KookBotConnectException : love.forte.simbot.kook/KookException { // love.forte.simbot.kook.stdlib/KookBotConnectException|null[0]
+    constructor <init>() // love.forte.simbot.kook.stdlib/KookBotConnectException.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.kook.stdlib/KookBotConnectException.<init>|<init>(kotlin.String?){}[0]
+    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.kook.stdlib/KookBotConnectException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
+    constructor <init>(kotlin/Throwable?) // love.forte.simbot.kook.stdlib/KookBotConnectException.<init>|<init>(kotlin.Throwable?){}[0]
+}
+
+final object love.forte.simbot.kook.stdlib/BotFactory { // love.forte.simbot.kook.stdlib/BotFactory|null[0]
+    final fun (love.forte.simbot.kook.stdlib/BotFactory).create(love.forte.simbot.kook.stdlib/Ticket, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.kook.stdlib/BotConfiguration>? = ...): love.forte.simbot.kook.stdlib/Bot // love.forte.simbot.kook.stdlib/BotFactory.create|create@love.forte.simbot.kook.stdlib.BotFactory(love.forte.simbot.kook.stdlib.Ticket;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.kook.stdlib.BotConfiguration>?){}[0]
+    final fun create(love.forte.simbot.kook.stdlib/Ticket, love.forte.simbot.kook.stdlib/BotConfiguration = ...): love.forte.simbot.kook.stdlib/Bot // love.forte.simbot.kook.stdlib/BotFactory.create|create(love.forte.simbot.kook.stdlib.Ticket;love.forte.simbot.kook.stdlib.BotConfiguration){}[0]
+}
+
+final const val love.forte.simbot.kook.stdlib/DEFAULT_COMPRESS // love.forte.simbot.kook.stdlib/DEFAULT_COMPRESS|{}DEFAULT_COMPRESS[0]
+    final fun <get-DEFAULT_COMPRESS>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/DEFAULT_COMPRESS.<get-DEFAULT_COMPRESS>|<get-DEFAULT_COMPRESS>(){}[0]
+
+final inline fun (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/processor(love.forte.simbot.kook.event/Event.Type, crossinline kotlin.coroutines/SuspendFunction2<love.forte.simbot.kook.event/Event<*>, kotlin/String, kotlin/Unit>) // love.forte.simbot.kook.stdlib/processor|processor@love.forte.simbot.kook.stdlib.Bot(love.forte.simbot.kook.event.Event.Type;kotlin.coroutines.SuspendFunction2<love.forte.simbot.kook.event.Event<*>,kotlin.String,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/subscribe(love.forte.simbot.kook.event/Event.Type, love.forte.simbot.kook.stdlib/SubscribeSequence = ..., crossinline kotlin.coroutines/SuspendFunction2<love.forte.simbot.kook.event/Event<*>, kotlin/String, kotlin/Unit>) // love.forte.simbot.kook.stdlib/subscribe|subscribe@love.forte.simbot.kook.stdlib.Bot(love.forte.simbot.kook.event.Event.Type;love.forte.simbot.kook.stdlib.SubscribeSequence;kotlin.coroutines.SuspendFunction2<love.forte.simbot.kook.event.Event<*>,kotlin.String,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.kook.stdlib/BotConfiguration).love.forte.simbot.kook.stdlib/engine(kotlin/Boolean = ..., kotlin/Function1<love.forte.simbot.kook.stdlib/BotConfiguration.EngineConfiguration, kotlin/Unit>) // love.forte.simbot.kook.stdlib/engine|engine@love.forte.simbot.kook.stdlib.BotConfiguration(kotlin.Boolean;kotlin.Function1<love.forte.simbot.kook.stdlib.BotConfiguration.EngineConfiguration,kotlin.Unit>){}[0]
+final inline fun (love.forte.simbot.kook.stdlib/BotConfiguration).love.forte.simbot.kook.stdlib/timeout(kotlin/Boolean = ..., kotlin/Function1<love.forte.simbot.kook.stdlib/BotConfiguration.TimeoutConfiguration, kotlin/Unit>) // love.forte.simbot.kook.stdlib/timeout|timeout@love.forte.simbot.kook.stdlib.BotConfiguration(kotlin.Boolean;kotlin.Function1<love.forte.simbot.kook.stdlib.BotConfiguration.TimeoutConfiguration,kotlin.Unit>){}[0]
+final inline fun <#A: reified love.forte.simbot.kook.event/EventExtra> (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/processor(crossinline kotlin.coroutines/SuspendFunction2<love.forte.simbot.kook.event/Event<#A>, kotlin/String, kotlin/Unit>) // love.forte.simbot.kook.stdlib/processor|processor@love.forte.simbot.kook.stdlib.Bot(kotlin.coroutines.SuspendFunction2<love.forte.simbot.kook.event.Event<0:0>,kotlin.String,kotlin.Unit>){0§<love.forte.simbot.kook.event.EventExtra>}[0]
+final inline fun <#A: reified love.forte.simbot.kook.event/EventExtra> (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/subscribe(love.forte.simbot.kook.stdlib/SubscribeSequence = ..., crossinline kotlin.coroutines/SuspendFunction2<love.forte.simbot.kook.event/Event<#A>, kotlin/String, kotlin/Unit>) // love.forte.simbot.kook.stdlib/subscribe|subscribe@love.forte.simbot.kook.stdlib.Bot(love.forte.simbot.kook.stdlib.SubscribeSequence;kotlin.coroutines.SuspendFunction2<love.forte.simbot.kook.event.Event<0:0>,kotlin.String,kotlin.Unit>){0§<love.forte.simbot.kook.event.EventExtra>}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.kook.stdlib/requestBy(love.forte.simbot.kook.stdlib/Bot): io.ktor.client.statement/HttpResponse // love.forte.simbot.kook.stdlib/requestBy|requestBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.kook.stdlib.Bot){}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.kook.stdlib/requestResultBy(love.forte.simbot.kook.stdlib/Bot): love.forte.simbot.kook.api/ApiResult // love.forte.simbot.kook.stdlib/requestResultBy|requestResultBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.kook.stdlib.Bot){}[0]
+final suspend fun (love.forte.simbot.kook.api/KookApi<*>).love.forte.simbot.kook.stdlib/requestTextBy(love.forte.simbot.kook.stdlib/Bot): kotlin/String // love.forte.simbot.kook.stdlib/requestTextBy|requestTextBy@love.forte.simbot.kook.api.KookApi<*>(love.forte.simbot.kook.stdlib.Bot){}[0]
+final suspend fun (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/alsoStart(): love.forte.simbot.kook.stdlib/Bot // love.forte.simbot.kook.stdlib/alsoStart|alsoStart@love.forte.simbot.kook.stdlib.Bot(){}[0]
+final suspend fun (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/closeAndJoin() // love.forte.simbot.kook.stdlib/closeAndJoin|closeAndJoin@love.forte.simbot.kook.stdlib.Bot(){}[0]
+final suspend fun (love.forte.simbot.kook.stdlib/Bot).love.forte.simbot.kook.stdlib/startAndJoin() // love.forte.simbot.kook.stdlib/startAndJoin|startAndJoin@love.forte.simbot.kook.stdlib.Bot(){}[0]
+final suspend fun <#A: kotlin/Any> (love.forte.simbot.kook.api/KookApi<#A>).love.forte.simbot.kook.stdlib/requestDataBy(love.forte.simbot.kook.stdlib/Bot): #A // love.forte.simbot.kook.stdlib/requestDataBy|requestDataBy@love.forte.simbot.kook.api.KookApi<0:0>(love.forte.simbot.kook.stdlib.Bot){0§<kotlin.Any>}[0]

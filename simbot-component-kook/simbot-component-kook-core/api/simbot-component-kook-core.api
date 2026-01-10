@@ -1,0 +1,1616 @@
+public final class love/forte/simbot/component/kook/ExceptionKt {
+	public static final fun kookGuildNotExistsException (Ljava/lang/String;)Llove/forte/simbot/component/kook/KookGuildNotExistsException;
+	public static final fun kookMemberNotExistsException (Ljava/lang/String;)Llove/forte/simbot/component/kook/KookMemberNotExistsException;
+}
+
+public final class love/forte/simbot/component/kook/KookBotManagersKt {
+	public static final fun filterIsKookBotManagers (Ljava/lang/Iterable;)Ljava/util/List;
+	public static final fun filterIsKookBotManagers (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
+	public static final fun firstKookBotManager (Ljava/lang/Iterable;)Llove/forte/simbot/component/kook/bot/KookBotManager;
+	public static final fun firstKookBotManager (Lkotlin/sequences/Sequence;)Llove/forte/simbot/component/kook/bot/KookBotManager;
+	public static final fun firstKookBotManagerOrNull (Ljava/lang/Iterable;)Llove/forte/simbot/component/kook/bot/KookBotManager;
+	public static final fun firstKookBotManagerOrNull (Lkotlin/sequences/Sequence;)Llove/forte/simbot/component/kook/bot/KookBotManager;
+	public static final fun getKookBotManagers (Llove/forte/simbot/application/Application;)Ljava/util/List;
+	public static final fun kookBots (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function2;)V
+	public static final fun kookBotsIfSupport (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function2;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookCategory : love/forte/simbot/definition/Category {
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getSource ()Llove/forte/simbot/kook/objects/Channel;
+	public synthetic fun name (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun toChannel ()Llove/forte/simbot/component/kook/KookCategoryChannel;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookCategoryChannel : love/forte/simbot/component/kook/KookChannel {
+	public abstract fun getCategory ()Llove/forte/simbot/component/kook/KookCategory;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookChannel : love/forte/simbot/ability/DeleteSupport, love/forte/simbot/definition/Channel {
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun deleteBlocking ([Llove/forte/simbot/ability/DeleteOption;)V
+	public fun deleteReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
+	public abstract fun getCategory ()Llove/forte/simbot/component/kook/KookCategory;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getGuildId ()Llove/forte/simbot/common/id/ID;
+	public fun getHasPassword ()Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getLevel ()I
+	public fun getName ()Ljava/lang/String;
+	public fun getParentId ()Llove/forte/simbot/common/id/ID;
+	public fun getPermissionSync ()I
+	public fun getSlowMode ()I
+	public abstract fun getSource ()Llove/forte/simbot/kook/objects/Channel;
+	public fun getTopic ()Ljava/lang/String;
+	public fun getUserId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun updater ()Llove/forte/simbot/component/kook/KookChannelUpdater;
+}
+
+public final class love/forte/simbot/component/kook/KookChannelKt {
+	public static final fun getSlowModeDuration (Llove/forte/simbot/component/kook/KookChannel;)J
+	public static final fun update (Llove/forte/simbot/component/kook/KookChannel;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookChannelUpdater {
+	public fun applyBuilder (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/kook/KookChannelUpdater;
+	public abstract synthetic fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun executeAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun executeBlocking ()Llove/forte/simbot/component/kook/KookChannel;
+	public fun executeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getBuilder ()Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Builder;
+	public abstract fun getChannel ()Llove/forte/simbot/component/kook/KookChannel;
+	public abstract fun setBuilder (Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Builder;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookChatCapableChannel : kotlinx/coroutines/CoroutineScope, love/forte/simbot/component/kook/KookChannel, love/forte/simbot/definition/ChatChannel {
+	public abstract fun getCategory ()Llove/forte/simbot/component/kook/KookCategory;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getName ()Ljava/lang/String;
+	public synthetic fun send (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun send$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun send$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun send$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun sendAsync (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun sendAsync$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun sendAsync$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun sendAsync$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendBlocking (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendReserve (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun sendReserve$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun sendReserve$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun sendReserve$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookChatChannel : love/forte/simbot/component/kook/KookChatCapableChannel {
+}
+
+public final class love/forte/simbot/component/kook/KookComponent : love/forte/simbot/component/Component {
+	public static final field Factory Llove/forte/simbot/component/kook/KookComponent$Factory;
+	public static final field ID_VALUE Ljava/lang/String;
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/String;
+	public static final fun getMessageSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/KookComponent$Factory : love/forte/simbot/component/ComponentFactory {
+	public synthetic fun create (Ljava/lang/Object;Llove/forte/simbot/common/function/ConfigurerFunction;)Ljava/lang/Object;
+	public fun create (Llove/forte/simbot/component/ComponentConfigureContext;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/component/kook/KookComponent;
+	public synthetic fun getKey ()Llove/forte/simbot/common/function/MergeableFactory$Key;
+	public fun getKey ()Llove/forte/simbot/component/ComponentFactory$Key;
+	public final fun getMessageSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class love/forte/simbot/component/kook/KookComponentConfiguration {
+}
+
+public final class love/forte/simbot/component/kook/KookComponentFactoryProvider : love/forte/simbot/component/ComponentFactoryProvider {
+	public fun <init> ()V
+	public fun provide ()Llove/forte/simbot/component/ComponentFactory;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookComponentUsageBuilder {
+	public abstract fun botManager (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun component (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class love/forte/simbot/component/kook/KookComponentUsageKt {
+	public static final fun useKook (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun useKook$default (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun useKookBotManager (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun useKookBotManager$default (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun useKookComponent (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun useKookComponent$default (Llove/forte/simbot/application/ApplicationFactoryConfigurer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookGuild : kotlinx/coroutines/CoroutineScope, love/forte/simbot/component/kook/role/KookRoleOperator, love/forte/simbot/definition/Guild {
+	public abstract synthetic fun botAsMember (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun channel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun chatChannel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getBotAsMember ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getBotAsMember ()Llove/forte/simbot/definition/Member;
+	public fun getBotAsMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBotAsMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookChannel;
+	public synthetic fun getChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Channel;
+	public fun getChannelAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getChannels ()Llove/forte/simbot/common/collectable/Collectable;
+	public fun getChatChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getChatChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/ChatChannel;
+	public fun getChatChannelAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getChatChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getChatChannels ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getIcon ()Ljava/lang/String;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getMember (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getMember (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getMembers ()Llove/forte/simbot/common/collectable/Collectable;
+	public fun getName ()Ljava/lang/String;
+	public fun getOwner ()Llove/forte/simbot/component/kook/KookMember;
+	public fun getOwnerAsync ()Ljava/util/concurrent/CompletableFuture;
+	public abstract fun getOwnerId ()Llove/forte/simbot/common/id/ID;
+	public fun getOwnerReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getSource ()Llove/forte/simbot/kook/objects/Guild;
+	public fun getTopic ()Ljava/lang/String;
+	public fun getVoiceChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookVoiceChannel;
+	public fun getVoiceChannelAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getVoiceChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getVoiceChannels ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun member (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun owner (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun voiceChannel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/component/kook/KookGuildNotExistsException : java/util/NoSuchElementException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookMember : kotlinx/coroutines/CoroutineScope, love/forte/simbot/ability/DeleteSupport, love/forte/simbot/definition/Member {
+	public static final field Companion Llove/forte/simbot/component/kook/KookMember$Companion;
+	public static final field DEFAULT_MUTE_TYPE I
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAvatar ()Ljava/lang/String;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getGuildId ()Llove/forte/simbot/common/id/ID;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getIdentifyNum ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public fun getNick ()Ljava/lang/String;
+	public abstract fun getSource ()Llove/forte/simbot/kook/objects/User;
+	public abstract synthetic fun mute (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun mute (Llove/forte/simbot/kook/api/guild/MuteType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun muteAsync (I)Ljava/util/concurrent/CompletableFuture;
+	public fun muteAsync (Llove/forte/simbot/kook/api/guild/MuteType;)Ljava/util/concurrent/CompletableFuture;
+	public fun muteBlocking (I)Z
+	public fun muteBlocking (Llove/forte/simbot/kook/api/guild/MuteType;)Z
+	public fun muteReserve (I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun muteReserve (Llove/forte/simbot/kook/api/guild/MuteType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun unmute (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun unmute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun unmute (Llove/forte/simbot/kook/api/guild/MuteType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun unmuteAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun unmuteAsync (I)Ljava/util/concurrent/CompletableFuture;
+	public fun unmuteAsync (Llove/forte/simbot/kook/api/guild/MuteType;)Ljava/util/concurrent/CompletableFuture;
+	public fun unmuteBlocking ()Z
+	public fun unmuteBlocking (I)Z
+	public fun unmuteBlocking (Llove/forte/simbot/kook/api/guild/MuteType;)Z
+	public fun unmuteReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun unmuteReserve (I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun unmuteReserve (Llove/forte/simbot/kook/api/guild/MuteType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/kook/KookMember$Companion {
+	public static final field DEFAULT_MUTE_TYPE I
+}
+
+public final class love/forte/simbot/component/kook/KookMemberNotExistsException : java/util/NoSuchElementException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookUserChat : love/forte/simbot/ability/DeleteSupport, love/forte/simbot/definition/Contact {
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAvatar ()Ljava/lang/String;
+	public fun getChatCode ()Ljava/lang/String;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getName ()Ljava/lang/String;
+	public abstract fun getSource ()Llove/forte/simbot/kook/api/userchat/UserChatView;
+	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageCreatedReceipt;
+	public synthetic fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookVoiceChannel : love/forte/simbot/component/kook/KookChatChannel {
+	public abstract fun getMembers ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun kickoutMember (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun kickoutMemberAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun kickoutMemberBlocking (Llove/forte/simbot/common/id/ID;)V
+	public fun kickoutMemberReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun moveMember (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun moveMember (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun moveMemberAsync (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)Ljava/util/concurrent/CompletableFuture;
+	public fun moveMemberAsync (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun moveMemberBlocking (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)V
+	public fun moveMemberBlocking (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)V
+	public fun moveMemberReserve (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun moveMemberReserve (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/component/kook/KookVoiceMember : love/forte/simbot/component/kook/KookMember {
+	public abstract synthetic fun kickout (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun kickoutAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun kickoutBlocking ()V
+	public fun kickoutReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun move (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun moveAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun moveBlocking (Llove/forte/simbot/common/id/ID;)V
+	public fun moveReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface annotation class love/forte/simbot/component/kook/blacklist/ExperimentalBlacklistApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class love/forte/simbot/component/kook/bot/KookBot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/bot/Bot {
+	public fun cancel (Ljava/lang/Throwable;)V
+	public fun getAvatar ()Ljava/lang/String;
+	public abstract fun getComponent ()Llove/forte/simbot/component/kook/KookComponent;
+	public abstract fun getContactRelation ()Llove/forte/simbot/component/kook/bot/KookContactRelation;
+	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getGroupRelation ()Llove/forte/simbot/bot/GroupRelation;
+	public abstract fun getGuildRelation ()Llove/forte/simbot/component/kook/bot/KookGuildRelation;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getLogger ()Lorg/slf4j/Logger;
+	public fun getName ()Ljava/lang/String;
+	public abstract fun getSourceBot ()Llove/forte/simbot/kook/stdlib/Bot;
+	public fun isActive ()Z
+	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
+	public fun isStarted ()Z
+	public synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageContent;
+	public synthetic fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromIdReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun messageFromReference (Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun messageFromReferenceAsync (Llove/forte/simbot/message/MessageReference;)Ljava/util/concurrent/CompletableFuture;
+	public fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/component/kook/message/KookMessageContent;
+	public synthetic fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromReferenceReserve (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun uploadAsset (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun uploadAssetAsync (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Ljava/util/concurrent/CompletableFuture;
+	public fun uploadAssetBlocking (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Llove/forte/simbot/component/kook/message/KookAsset;
+	public synthetic fun uploadAssetImage (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun uploadAssetImageAsync (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Ljava/util/concurrent/CompletableFuture;
+	public fun uploadAssetImageBlocking (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public fun uploadAssetImageReserve (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun uploadAssetReserve (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotConfiguration$Companion;
+	public fun <init> (Llove/forte/simbot/kook/stdlib/BotConfiguration;)V
+	public final fun getBotConfiguration ()Llove/forte/simbot/kook/stdlib/BotConfiguration;
+	public final fun getSyncPeriods ()Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public final fun setBotConfiguration (Llove/forte/simbot/kook/stdlib/BotConfiguration;)V
+	public final fun setSyncPeriods (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;)V
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$Companion {
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod$Companion;
+	public fun <init> ()V
+	public fun <init> (JJ)V
+	public synthetic fun <init> (JJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()J
+	public final fun copy (JJ)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;JJILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBatchDelay ()J
+	public final fun getSyncPeriod ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods$Companion;
+	public fun <init> ()V
+	public fun <init> (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;)V
+	public synthetic fun <init> (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;
+	public final fun copy (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGuild ()Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/component/kook/bot/KookBotManager : love/forte/simbot/bot/JobBasedBotManager, love/forte/simbot/component/kook/bot/KookBotRegistrar {
+	public static final field Factory Llove/forte/simbot/component/kook/bot/KookBotManager$Factory;
+	public fun <init> ()V
+	public fun configurable (Llove/forte/simbot/bot/SerializableBotConfiguration;)Z
+	protected abstract fun getComponent ()Llove/forte/simbot/component/Component;
+	public abstract fun getConfiguration ()Llove/forte/simbot/component/kook/bot/KookBotManagerConfiguration;
+	protected abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public synthetic fun register (Llove/forte/simbot/bot/SerializableBotConfiguration;)Llove/forte/simbot/bot/Bot;
+	public fun register (Llove/forte/simbot/bot/SerializableBotConfiguration;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun register (Llove/forte/simbot/kook/stdlib/Ticket;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/kook/bot/KookBot;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotManager$Factory : love/forte/simbot/plugin/PluginFactory {
+	public synthetic fun create (Ljava/lang/Object;Llove/forte/simbot/common/function/ConfigurerFunction;)Ljava/lang/Object;
+	public fun create (Llove/forte/simbot/plugin/PluginConfigureContext;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/component/kook/bot/KookBotManager;
+	public synthetic fun getKey ()Llove/forte/simbot/common/function/MergeableFactory$Key;
+	public fun getKey ()Llove/forte/simbot/plugin/PluginFactory$Key;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotManagerConfiguration {
+	public fun <init> ()V
+	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+}
+
+public abstract interface class love/forte/simbot/component/kook/bot/KookBotManagerFactoryConfigurerProvider : love/forte/simbot/plugin/PluginFactoryConfigurerProvider {
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotManagerFactoryProvider : love/forte/simbot/plugin/PluginFactoryProvider {
+	public fun <init> ()V
+	public fun loadConfigures ()Lkotlin/sequences/Sequence;
+	public fun provide ()Llove/forte/simbot/plugin/PluginFactory;
+}
+
+public abstract interface class love/forte/simbot/component/kook/bot/KookBotRegistrar {
+	public abstract fun register (Llove/forte/simbot/kook/stdlib/Ticket;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public abstract fun register (Llove/forte/simbot/kook/stdlib/Ticket;Llove/forte/simbot/component/kook/bot/KookBotConfiguration;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public static synthetic fun register$default (Llove/forte/simbot/component/kook/bot/KookBotRegistrar;Llove/forte/simbot/kook/stdlib/Ticket;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun registerWs (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun registerWs (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/component/kook/bot/KookBotConfiguration;)Llove/forte/simbot/component/kook/bot/KookBot;
+	public static synthetic fun registerWs$default (Llove/forte/simbot/component/kook/bot/KookBotRegistrar;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBot;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration : love/forte/simbot/bot/SerializableBotConfiguration {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Companion;
+	public fun <init> (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;)V
+	public synthetic fun <init> (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;
+	public final fun component2 ()Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;
+	public final fun copy (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConfig ()Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;
+	public final fun getTicket ()Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Boolean;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;Ljava/lang/Long;Ljava/lang/Boolean;)V
+	public synthetic fun <init> (Ljava/lang/Boolean;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;Ljava/lang/Long;Ljava/lang/Boolean;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Boolean;
+	public final fun component2 ()Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public final fun component3 ()Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;
+	public final fun component4 ()Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;
+	public final fun component5 ()Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;
+	public final fun component6 ()Ljava/lang/Long;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/Boolean;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;Ljava/lang/Long;Ljava/lang/Boolean;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;Ljava/lang/Boolean;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;Ljava/lang/Long;Ljava/lang/Boolean;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClientEngineConfig ()Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;
+	public final fun getSyncPeriods ()Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;
+	public final fun getTimeout ()Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;
+	public final fun getWsConnectTimeout ()Ljava/lang/Long;
+	public final fun getWsEngineConfig ()Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;
+	public fun hashCode ()I
+	public final fun isCompress ()Ljava/lang/Boolean;
+	public final fun isNormalEventProcessAsync ()Ljava/lang/Boolean;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket : love/forte/simbot/kook/stdlib/Ticket {
+	public static final field Companion Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getClientId ()Ljava/lang/String;
+	public fun getToken ()Ljava/lang/String;
+	public final fun getTokenTypePrefix ()Ljava/lang/String;
+	public fun getType ()Llove/forte/simbot/kook/TokenType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/kook/bot/KookContactRelation : love/forte/simbot/bot/ContactRelation {
+	public abstract synthetic fun contact (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun contactCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookUserChat;
+	public synthetic fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Contact;
+	public fun getContactAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getContactReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getContacts ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getContacts (Ljava/lang/Integer;)Llove/forte/simbot/common/collectable/Collectable;
+}
+
+public abstract interface class love/forte/simbot/component/kook/bot/KookGuildRelation : love/forte/simbot/bot/GuildRelation {
+	public fun getGuild (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getGuild (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Guild;
+	public fun getGuildAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getGuildCount ()I
+	public fun getGuildCountAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getGuildCountReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getGuildReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun guild (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookAddedCategoryEvent : love/forte/simbot/component/kook/event/KookCategoryChangedEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookCategoryChannel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookAddedChannelEvent : love/forte/simbot/component/kook/event/KookChannelChangedEvent, love/forte/simbot/event/ChannelEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotEvent : love/forte/simbot/component/kook/event/KookEvent, love/forte/simbot/event/BotEvent {
+	public fun <init> ()V
+	public abstract fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public abstract fun getSourceEventRaw ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotMemberChangedEvent : love/forte/simbot/component/kook/event/KookMemberChangedEvent, love/forte/simbot/event/GuildEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getSourceBody ()Llove/forte/simbot/kook/event/BotSelfGuildEventBody;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotRegisteredEvent : love/forte/simbot/component/kook/event/KookEvent, love/forte/simbot/event/BotRegisteredEvent {
+	public fun <init> ()V
+	public abstract fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotSelfChannelMessageEvent : love/forte/simbot/component/kook/event/KookMessageEvent$Channel, love/forte/simbot/event/ChannelEvent {
+	public fun <init> ()V
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAuthor ()Llove/forte/simbot/component/kook/KookMember;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotSelfExitedGuildEvent : love/forte/simbot/component/kook/event/KookBotMemberChangedEvent, love/forte/simbot/event/GuildEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/BotSelfGuildEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotSelfJoinedGuildEvent : love/forte/simbot/component/kook/event/KookBotMemberChangedEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/BotSelfGuildEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotSelfMessageEvent : love/forte/simbot/component/kook/event/KookMessageEvent$Person, love/forte/simbot/event/ContactEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookUserChat;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookBotStartedEvent : love/forte/simbot/component/kook/event/KookEvent, love/forte/simbot/event/BotStartedEvent {
+	public fun <init> ()V
+	public abstract fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookCategoryChangedEvent : love/forte/simbot/component/kook/event/KookSystemEvent, love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public fun <init> ()V
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookChannelChangedEvent : love/forte/simbot/component/kook/event/KookSystemEvent, love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public fun <init> ()V
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookChannelMessageEvent : love/forte/simbot/component/kook/event/KookMessageEvent$Channel, love/forte/simbot/event/ChatChannelMessageEvent {
+	public fun <init> ()V
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
+	public fun getAuthor ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Member;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookContactMessageEvent : love/forte/simbot/component/kook/event/KookMessageEvent$Person, love/forte/simbot/event/ContactMessageEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookUserChat;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookDeletedCategoryEvent : love/forte/simbot/component/kook/event/KookCategoryChangedEvent, love/forte/simbot/event/ChannelEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookCategoryChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedChannelEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookDeletedChannelEvent : love/forte/simbot/component/kook/event/KookChannelChangedEvent, love/forte/simbot/event/ChannelEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedChannelEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookDeletedChannelMessageEvent : love/forte/simbot/component/kook/event/KookDeletedMessageEvent {
+	public fun <init> ()V
+	public fun getDeletedMsgId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedMessageEventExtra$Body;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookDeletedMessageEvent : love/forte/simbot/component/kook/event/KookSystemEvent {
+	public fun <init> ()V
+	public abstract fun getDeletedMsgId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getSourceBody ()Ljava/lang/Object;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public abstract fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookDeletedPrivateMessageEvent : love/forte/simbot/component/kook/event/KookDeletedMessageEvent {
+	public fun <init> ()V
+	public final fun getAuthorId ()Llove/forte/simbot/common/id/ID;
+	public final fun getChatCode ()Ljava/lang/String;
+	public fun getDeletedMsgId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedPrivateMessageEventExtra$Body;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public final fun getTargetId ()Llove/forte/simbot/common/id/ID;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookEvent : love/forte/simbot/event/Event {
+	public fun <init> ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberChangedEvent : love/forte/simbot/component/kook/event/KookSystemEvent, love/forte/simbot/event/ChangeEvent {
+	public fun <init> ()V
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberChannelChangedEvent : love/forte/simbot/component/kook/event/KookMemberChangedEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public fun <init> ()V
+	public abstract synthetic fun channel (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getChannel ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public fun getChannelAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getChannelReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookMember;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberExitedChannelEvent : love/forte/simbot/component/kook/event/KookMemberChannelChangedEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/ExitedChannelEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberExitedGuildEvent : love/forte/simbot/component/kook/event/KookMemberGuildChangedEvent, love/forte/simbot/event/GuildMemberDecreaseEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/ExitedGuildEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberGuildChangedEvent : love/forte/simbot/component/kook/event/KookMemberChangedEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookGuild;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberJoinedChannelEvent : love/forte/simbot/component/kook/event/KookMemberChannelChangedEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/JoinedChannelEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberJoinedGuildEvent : love/forte/simbot/component/kook/event/KookMemberGuildChangedEvent, love/forte/simbot/event/GuildMemberIncreaseEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getMember ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
+	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/JoinedGuildEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberOfflineEvent : love/forte/simbot/component/kook/event/KookUserOnlineStatusChangedEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/GuildMemberOnlineStatusChangedEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun isOnline ()Z
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberOnlineEvent : love/forte/simbot/component/kook/event/KookUserOnlineStatusChangedEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/GuildMemberOnlineStatusChangedEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun isOnline ()Z
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMemberUpdatedEvent : love/forte/simbot/component/kook/event/KookMemberChangedEvent, love/forte/simbot/event/MemberChangeEvent, love/forte/simbot/event/OrganizationSourceEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getBeforeSource ()Llove/forte/simbot/kook/objects/User;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookMember;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/UpdatedGuildMemberEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMessageBtnClickEvent : love/forte/simbot/component/kook/event/KookSystemEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/MessageBtnClickEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public final fun getUserId ()Llove/forte/simbot/common/id/ID;
+	public final fun getValue ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMessageEvent : love/forte/simbot/component/kook/event/KookBotEvent, love/forte/simbot/event/MessageEvent {
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessageContent ()Llove/forte/simbot/component/kook/message/KookReceiveMessageContent;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun replyAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun replyBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMessageEvent$Channel : love/forte/simbot/component/kook/event/KookMessageEvent, love/forte/simbot/event/ChannelEvent, love/forte/simbot/event/MessageEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMessageEvent$Person : love/forte/simbot/component/kook/event/KookMessageEvent, love/forte/simbot/event/MessageEvent {
+	public fun <init> ()V
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookMessagePinEvent : love/forte/simbot/component/kook/event/KookChannelChangedEvent, love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/ChannelEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getChannelId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getMsgId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
+	public abstract fun getOperatorId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
+	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
+	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun queryMsg (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun queryMsgAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun queryMsgBlocking ()Llove/forte/simbot/message/MessageContent;
+	public fun queryMsgReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookPinnedMessageEvent : love/forte/simbot/component/kook/event/KookMessagePinEvent {
+	public fun <init> ()V
+	public fun getChannelId ()Llove/forte/simbot/common/id/ID;
+	public fun getMsgId ()Llove/forte/simbot/common/id/ID;
+	public fun getOperatorId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/PingEventExtraBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookSystemEvent : love/forte/simbot/component/kook/event/KookBotEvent {
+	public fun <init> ()V
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getSourceBody ()Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUnpinnedMessageEvent : love/forte/simbot/component/kook/event/KookMessagePinEvent {
+	public fun <init> ()V
+	public fun getChannelId ()Llove/forte/simbot/common/id/ID;
+	public fun getMsgId ()Llove/forte/simbot/common/id/ID;
+	public fun getOperatorId ()Llove/forte/simbot/common/id/ID;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/PingEventExtraBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUpdatedCategoryEvent : love/forte/simbot/component/kook/event/KookCategoryChangedEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookCategoryChannel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUpdatedChannelEvent : love/forte/simbot/component/kook/event/KookChannelChangedEvent {
+	public fun <init> ()V
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUpdatedChannelMessageEvent : love/forte/simbot/component/kook/event/KookUpdatedMessageEvent {
+	public fun <init> ()V
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/UpdatedMessageEventExtra$Body;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public fun getUpdatedContent ()Ljava/lang/String;
+	public fun getUpdatedMessageContent ()Llove/forte/simbot/component/kook/message/KookUpdatedMessageContent;
+	public fun getUpdatedMsgId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUpdatedMessageEvent : love/forte/simbot/component/kook/event/KookSystemEvent {
+	public fun <init> ()V
+	public abstract fun getSourceBody ()Ljava/lang/Object;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public abstract fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public abstract fun getUpdatedContent ()Ljava/lang/String;
+	public abstract fun getUpdatedMessageContent ()Llove/forte/simbot/component/kook/message/KookUpdatedMessageContent;
+	public abstract fun getUpdatedMsgId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUpdatedPrivateMessageEvent : love/forte/simbot/component/kook/event/KookUpdatedMessageEvent {
+	public fun <init> ()V
+	public final fun getAuthorId ()Llove/forte/simbot/common/id/ID;
+	public final fun getChatCode ()Ljava/lang/String;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/UpdatedPrivateMessageEventExtra$Body;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public final fun getTargetId ()Llove/forte/simbot/common/id/ID;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public fun getUpdatedContent ()Ljava/lang/String;
+	public fun getUpdatedMessageContent ()Llove/forte/simbot/component/kook/message/KookUpdatedMessageContent;
+	public fun getUpdatedMsgId ()Llove/forte/simbot/common/id/ID;
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUserOnlineStatusChangedEvent : love/forte/simbot/component/kook/event/KookSystemEvent, love/forte/simbot/event/ChangeEvent {
+	public synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getContent ()Ljava/lang/Boolean;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public final fun getGuildIds ()Ljava/util/List;
+	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getSourceBody ()Llove/forte/simbot/kook/event/GuildMemberOnlineStatusChangedEventBody;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public final fun getUserId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun isOnline ()Z
+}
+
+public abstract class love/forte/simbot/component/kook/event/KookUserUpdatedEvent : love/forte/simbot/component/kook/event/KookSystemEvent, love/forte/simbot/event/ChangeEvent {
+	public fun <init> ()V
+	public synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/kook/event/UserUpdatedEventBody;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun getSourceBody ()Ljava/lang/Object;
+	public fun getSourceBody ()Llove/forte/simbot/kook/event/UserUpdatedEventBody;
+	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+}
+
+public final class love/forte/simbot/component/kook/event/UnsupportedKookEvent : love/forte/simbot/component/kook/event/KookBotEvent {
+	public fun <init> (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/event/Event;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceEventRaw ()Ljava/lang/String;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/kook/message/BaseKookReceiveMessageContent : love/forte/simbot/component/kook/message/KookMessageContent {
+	public fun <init> ()V
+}
+
+public final class love/forte/simbot/component/kook/message/KookAggregatedMessageReceipt$Companion {
+	public final fun merge (Ljava/util/Collection;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+}
+
+public final class love/forte/simbot/component/kook/message/KookApiMessage : love/forte/simbot/component/kook/message/KookMessageElement {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookApiMessage$Companion;
+	public fun <init> (Llove/forte/simbot/kook/api/KookApi;)V
+	public final fun component1 ()Llove/forte/simbot/kook/api/KookApi;
+	public final fun copy (Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/component/kook/message/KookApiMessage;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/message/KookApiMessage;Llove/forte/simbot/kook/api/KookApi;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookApiMessage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getApi ()Llove/forte/simbot/kook/api/KookApi;
+	public fun hashCode ()I
+	public static final fun toRequest (Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/component/kook/message/KookApiMessage;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookApiMessage$Companion {
+	public final fun toRequest (Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/component/kook/message/KookApiMessage;
+}
+
+public final class love/forte/simbot/component/kook/message/KookApiRequestedReceipt : love/forte/simbot/component/kook/message/SingleKookMessageReceipt {
+	public fun <init> (Ljava/lang/Object;Z)V
+	public fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getResult ()Ljava/lang/Object;
+	public fun isDirect ()Z
+}
+
+public final class love/forte/simbot/component/kook/message/KookAsset : love/forte/simbot/component/kook/message/KookAssetMessage {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookAsset$Companion;
+	public fun <init> (Llove/forte/simbot/kook/api/asset/Asset;I)V
+	public fun <init> (Llove/forte/simbot/kook/api/asset/Asset;Llove/forte/simbot/kook/messages/MessageType;)V
+	public final fun component1 ()Llove/forte/simbot/kook/api/asset/Asset;
+	public final fun component2 ()I
+	public final fun copy (Llove/forte/simbot/kook/api/asset/Asset;I)Llove/forte/simbot/component/kook/message/KookAsset;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/message/KookAsset;Llove/forte/simbot/kook/api/asset/Asset;IILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookAsset;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAsset ()Llove/forte/simbot/kook/api/asset/Asset;
+	public fun getType ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAsset$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAsset$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAsset;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAsset;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAsset$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAssetImage : love/forte/simbot/component/kook/message/KookAssetMessage, love/forte/simbot/message/RemoteUrlAwareImage {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookAssetImage$Companion;
+	public fun <init> (Llove/forte/simbot/kook/api/asset/Asset;)V
+	public final fun component1 ()Llove/forte/simbot/kook/api/asset/Asset;
+	public final fun copy (Llove/forte/simbot/kook/api/asset/Asset;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/kook/message/KookAssetImage;Llove/forte/simbot/kook/api/asset/Asset;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAsset ()Llove/forte/simbot/kook/api/asset/Asset;
+	public final fun getAssetUrl ()Ljava/lang/String;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getType ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public synthetic fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAssetImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAssetImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAssetImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAssetImage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/component/kook/message/KookAssetMessage : love/forte/simbot/component/kook/message/KookMessageElement {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookAssetMessage$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final fun asImage (Llove/forte/simbot/kook/api/asset/Asset;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public static final fun asMessage (Llove/forte/simbot/kook/api/asset/Asset;I)Llove/forte/simbot/component/kook/message/KookAsset;
+	public static final fun asMessage (Llove/forte/simbot/kook/api/asset/Asset;Llove/forte/simbot/kook/messages/MessageType;)Llove/forte/simbot/component/kook/message/KookAsset;
+	public abstract fun getAsset ()Llove/forte/simbot/kook/api/asset/Asset;
+	public abstract fun getType ()I
+	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Llove/forte/simbot/component/kook/message/KookAssetMessage;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/component/kook/message/KookAssetMessage$Companion {
+	public final fun asImage (Llove/forte/simbot/kook/api/asset/Asset;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public final fun asMessage (Llove/forte/simbot/kook/api/asset/Asset;I)Llove/forte/simbot/component/kook/message/KookAsset;
+	public final fun asMessage (Llove/forte/simbot/kook/api/asset/Asset;Llove/forte/simbot/kook/messages/MessageType;)Llove/forte/simbot/component/kook/message/KookAsset;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAtAllHere : love/forte/simbot/component/kook/message/KookMessageElement {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAtAllHere;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachment : love/forte/simbot/component/kook/message/KookAttachmentMessage {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookAttachment$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAttachment ()Llove/forte/simbot/kook/objects/Attachments;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAttachment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAttachment$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAttachment;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachment;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachment$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAttachmentFile$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAttachmentFile$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAttachmentFile;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentFile;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachmentFile$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAttachmentImage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAttachmentImage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAttachmentImage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentImage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachmentImage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class love/forte/simbot/component/kook/message/KookAttachmentMessage : love/forte/simbot/component/kook/message/KookMessageElement {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookAttachmentMessage$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public abstract fun getAttachment ()Llove/forte/simbot/kook/objects/Attachments;
+	public final fun getAttachmentName ()Ljava/lang/String;
+	public final fun getAttachmentSize ()J
+	public final fun getAttachmentType ()Ljava/lang/String;
+	public final fun getAttachmentUrl ()Ljava/lang/String;
+	public static final fun of (Llove/forte/simbot/kook/objects/Attachments;)Llove/forte/simbot/component/kook/message/KookAttachmentMessage;
+	public static final synthetic fun write$Self (Llove/forte/simbot/component/kook/message/KookAttachmentMessage;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachmentMessage$Companion {
+	public final fun of (Llove/forte/simbot/kook/objects/Attachments;)Llove/forte/simbot/component/kook/message/KookAttachmentMessage;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookAttachmentVideo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAttachmentVideo$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookAttachmentVideo;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentVideo;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookAttachmentVideo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookCardMessage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookCardMessage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookCardMessage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookCardMessage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookCardMessage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageDetailsContent : love/forte/simbot/component/kook/message/KookMessageContent {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookChannelMessageDetailsContent$Companion;
+	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getMessages ()Llove/forte/simbot/message/Messages;
+	public fun getPlainText ()Ljava/lang/String;
+	public fun getRawContent ()Ljava/lang/String;
+	public final fun getSourceDetails ()Llove/forte/simbot/kook/messages/ChannelMessageDetails;
+	public fun hashCode ()I
+	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun toContent (Llove/forte/simbot/kook/messages/ChannelMessageDetails;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/component/kook/message/KookChannelMessageDetailsContent;
+	public static final fun toMessages (Llove/forte/simbot/kook/messages/ChannelMessageDetails;)Llove/forte/simbot/message/Messages;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageDetailsContent$Companion {
+	public final fun toContent (Llove/forte/simbot/kook/messages/ChannelMessageDetails;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/component/kook/message/KookChannelMessageDetailsContent;
+	public final fun toMessages (Llove/forte/simbot/kook/messages/ChannelMessageDetails;)Llove/forte/simbot/message/Messages;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookKMarkdownMessage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookKMarkdownMessage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookKMarkdownMessage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookKMarkdownMessage;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookKMarkdownMessage$Companion {
+	public final fun asMessage (Llove/forte/simbot/kook/objects/kmd/KMarkdown;)Llove/forte/simbot/component/kook/message/KookKMarkdownMessage;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class love/forte/simbot/component/kook/message/KookMessageContent : love/forte/simbot/ability/DeleteSupport, love/forte/simbot/message/MessageContent {
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessages ()Llove/forte/simbot/message/Messages;
+	public abstract fun getRawContent ()Ljava/lang/String;
+	public fun getReference ()Llove/forte/simbot/component/kook/message/KookQuote;
+	public synthetic fun getReference ()Llove/forte/simbot/message/MessageReference;
+	public fun getReferenceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessage ()Llove/forte/simbot/component/kook/message/KookMessageContent;
+	public synthetic fun getReferenceMessage ()Llove/forte/simbot/message/MessageContent;
+	public fun getReferenceMessageAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageCreatedReceipt : love/forte/simbot/component/kook/message/SingleKookMessageReceipt {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookMessageCreatedReceipt$Companion;
+	public fun <init> (Llove/forte/simbot/kook/api/message/SendMessageResult;ZLlove/forte/simbot/component/kook/bot/KookBot;)V
+	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getNonce ()Ljava/lang/String;
+	public synthetic fun getResult ()Ljava/lang/Object;
+	public fun getResult ()Llove/forte/simbot/kook/api/message/SendMessageResult;
+	public final fun getTimestamp ()Llove/forte/simbot/common/time/Timestamp;
+	public fun isDirect ()Z
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageCreatedReceipt$Companion {
+}
+
+public abstract interface class love/forte/simbot/component/kook/message/KookMessageElement : love/forte/simbot/message/Message$Element {
+}
+
+public abstract interface class love/forte/simbot/component/kook/message/KookMessageReceipt : love/forte/simbot/message/MessageReceipt {
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessages {
+	public static final field AT_TYPE_CHANNEL Ljava/lang/String;
+	public static final field AT_TYPE_ROLE Ljava/lang/String;
+	public static final field AT_TYPE_USER Ljava/lang/String;
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookMessages;
+	public static final fun atChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/At;
+	public static final fun atRole (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/At;
+	public static final fun atUser (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/At;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessagesTransformerKt {
+	public static final fun sendToChannel (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendToChannel$default (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun sendToDirectByChatCode (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendToDirectByChatCode$default (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun sendToDirectByTargetId (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendToDirectByTargetId$default (Llove/forte/simbot/message/Message;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/component/kook/message/KookQuote : love/forte/simbot/message/MessageReference {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookQuote$Companion;
+	public final fun component1 ()Llove/forte/simbot/kook/objects/Quote;
+	public static final fun create (Llove/forte/simbot/kook/objects/Quote;)Llove/forte/simbot/component/kook/message/KookQuote;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getQuote ()Llove/forte/simbot/kook/objects/Quote;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/kook/message/KookQuote$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookQuote$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/kook/message/KookQuote;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookQuote;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookQuote$Companion {
+	public final fun create (Llove/forte/simbot/kook/objects/Quote;)Llove/forte/simbot/component/kook/message/KookQuote;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookReceiveMessageContent : love/forte/simbot/component/kook/message/BaseKookReceiveMessageContent {
+	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getMessages ()Llove/forte/simbot/message/Messages;
+	public fun getPlainText ()Ljava/lang/String;
+	public fun getRawContent ()Ljava/lang/String;
+	public final fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookReceiveMessageContentKt {
+	public static final fun toContent (Llove/forte/simbot/kook/event/Event;ZLlove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/component/kook/message/KookReceiveMessageContent;
+	public static final fun toMessages (Llove/forte/simbot/kook/event/Event;)Llove/forte/simbot/message/Messages;
+}
+
+public abstract interface annotation class love/forte/simbot/component/kook/message/KookSendOnlyMessage : java/lang/annotation/Annotation {
+}
+
+public abstract class love/forte/simbot/component/kook/message/KookTempTarget : love/forte/simbot/component/kook/message/KookMessageElement {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookTempTarget$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final fun byId (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookTempTarget;
+	public static final fun current ()Llove/forte/simbot/component/kook/message/KookTempTarget;
+	public static final synthetic fun write$Self (Llove/forte/simbot/component/kook/message/KookTempTarget;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class love/forte/simbot/component/kook/message/KookTempTarget$Companion {
+	public final fun byId (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookTempTarget;
+	public final fun current ()Llove/forte/simbot/component/kook/message/KookTempTarget;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/kook/message/KookUpdatedMessageContent : love/forte/simbot/component/kook/message/BaseKookReceiveMessageContent {
+	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getMessages ()Llove/forte/simbot/message/Messages;
+	public fun getPlainText ()Ljava/lang/String;
+	public fun getRawContent ()Ljava/lang/String;
+	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/kook/message/SingleKookMessageReceipt : love/forte/simbot/message/SingleMessageReceipt, love/forte/simbot/component/kook/message/KookMessageReceipt {
+	public fun <init> ()V
+	public abstract fun getResult ()Ljava/lang/Object;
+	public abstract fun isDirect ()Z
+}
+
+public final class love/forte/simbot/component/kook/role/KookRole$Companion {
+}
+
+public abstract interface class love/forte/simbot/component/kook/role/KookRoleOperator {
+}
+
+public final class love/forte/simbot/component/kook/util/KookBotRequests {
+	public static final synthetic fun request (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestAsync (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestBlocking (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Lio/ktor/client/statement/HttpResponse;
+	public static final synthetic fun requestBy (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestByAsync (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestByBlocking (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Lio/ktor/client/statement/HttpResponse;
+	public static final fun requestByReserve (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final synthetic fun requestData (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestDataAsync (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestDataBlocking (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/lang/Object;
+	public static final synthetic fun requestDataBy (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestDataByAsync (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestDataByBlocking (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/lang/Object;
+	public static final fun requestDataByReserve (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestDataReserve (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestReserve (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final synthetic fun requestResult (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestResultAsync (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestResultBlocking (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/kook/api/ApiResult;
+	public static final synthetic fun requestResultBy (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestResultByAsync (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestResultByBlocking (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/kook/api/ApiResult;
+	public static final fun requestResultByReserve (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestResultReserve (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final synthetic fun requestText (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestTextAsync (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestTextBlocking (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Ljava/lang/String;
+	public static final synthetic fun requestTextBy (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun requestTextByAsync (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun requestTextByBlocking (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Ljava/lang/String;
+	public static final fun requestTextByReserve (Llove/forte/simbot/kook/api/KookApi;Llove/forte/simbot/component/kook/bot/KookBot;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static final fun requestTextReserve (Llove/forte/simbot/component/kook/bot/KookBot;Llove/forte/simbot/kook/api/KookApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/kook/util/RegexWalkerKt {
+	public static final fun walk (Lkotlin/text/Regex;Ljava/lang/String;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;)Z
+}
+

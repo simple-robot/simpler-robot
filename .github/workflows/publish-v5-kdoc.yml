@@ -1,0 +1,57 @@
+name: Publish V5 KDoc
+on:
+  workflow_dispatch:
+
+
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+  GRADLE_VERSION: 8.10.2
+  IS_CI: true
+  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  GRADLE_OPTS: "-XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
+
+jobs:
+  deploy-v5-doc:
+    name: Deploy V5 API Doc
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Generate documentation
+        run: gradle dokkaGenerate -s --warning-mode all -x test --build-cache
+        env:
+          SIMBOT_IS_SNAPSHOT: false
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=2G -Dfile.encoding=UTF-8"
+          ORG_GRADLE_PROJECT_org.gradle.daemon: "false"
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/main-v5
+          publish_dir: ./build/dokka/html
+          destination_dir: main-v5

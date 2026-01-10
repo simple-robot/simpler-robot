@@ -1,0 +1,276 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-qq-guild-stdlib>
+final enum class love.forte.simbot.qguild.stdlib/SubscribeSequence : kotlin/Enum<love.forte.simbot.qguild.stdlib/SubscribeSequence> { // love.forte.simbot.qguild.stdlib/SubscribeSequence|null[0]
+    enum entry NORMAL // love.forte.simbot.qguild.stdlib/SubscribeSequence.NORMAL|null[0]
+    enum entry PRE // love.forte.simbot.qguild.stdlib/SubscribeSequence.PRE|null[0]
+
+    final val entries // love.forte.simbot.qguild.stdlib/SubscribeSequence.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.qguild.stdlib/SubscribeSequence> // love.forte.simbot.qguild.stdlib/SubscribeSequence.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.qguild.stdlib/SubscribeSequence // love.forte.simbot.qguild.stdlib/SubscribeSequence.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.qguild.stdlib/SubscribeSequence> // love.forte.simbot.qguild.stdlib/SubscribeSequence.values|values#static(){}[0]
+}
+
+abstract fun interface love.forte.simbot.qguild.stdlib/EventProcessor { // love.forte.simbot.qguild.stdlib/EventProcessor|null[0]
+    abstract suspend fun (love.forte.simbot.qguild.event/Signal.Dispatch).invoke(kotlin/String) // love.forte.simbot.qguild.stdlib/EventProcessor.invoke|invoke@love.forte.simbot.qguild.event.Signal.Dispatch(kotlin.String){}[0]
+}
+
+abstract interface love.forte.simbot.qguild.stdlib/Bot : kotlinx.coroutines/CoroutineScope { // love.forte.simbot.qguild.stdlib/Bot|null[0]
+    abstract val accessToken // love.forte.simbot.qguild.stdlib/Bot.accessToken|{}accessToken[0]
+        abstract fun <get-accessToken>(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.accessToken.<get-accessToken>|<get-accessToken>(){}[0]
+    abstract val apiClient // love.forte.simbot.qguild.stdlib/Bot.apiClient|{}apiClient[0]
+        abstract fun <get-apiClient>(): io.ktor.client/HttpClient // love.forte.simbot.qguild.stdlib/Bot.apiClient.<get-apiClient>|<get-apiClient>(){}[0]
+    abstract val apiDecoder // love.forte.simbot.qguild.stdlib/Bot.apiDecoder|{}apiDecoder[0]
+        abstract fun <get-apiDecoder>(): kotlinx.serialization.json/Json // love.forte.simbot.qguild.stdlib/Bot.apiDecoder.<get-apiDecoder>|<get-apiDecoder>(){}[0]
+    abstract val apiServer // love.forte.simbot.qguild.stdlib/Bot.apiServer|{}apiServer[0]
+        abstract fun <get-apiServer>(): io.ktor.http/Url // love.forte.simbot.qguild.stdlib/Bot.apiServer.<get-apiServer>|<get-apiServer>(){}[0]
+    abstract val client // love.forte.simbot.qguild.stdlib/Bot.client|{}client[0]
+        abstract fun <get-client>(): love.forte.simbot.qguild.stdlib/Bot.Client? // love.forte.simbot.qguild.stdlib/Bot.client.<get-client>|<get-client>(){}[0]
+    abstract val configuration // love.forte.simbot.qguild.stdlib/Bot.configuration|{}configuration[0]
+        abstract fun <get-configuration>(): love.forte.simbot.qguild.stdlib/BotConfiguration // love.forte.simbot.qguild.stdlib/Bot.configuration.<get-configuration>|<get-configuration>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.qguild.stdlib/Bot.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.qguild.stdlib/Bot.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val shard // love.forte.simbot.qguild.stdlib/Bot.shard|{}shard[0]
+        abstract fun <get-shard>(): love.forte.simbot.qguild.event/Shard // love.forte.simbot.qguild.stdlib/Bot.shard.<get-shard>|<get-shard>(){}[0]
+    abstract val ticket // love.forte.simbot.qguild.stdlib/Bot.ticket|{}ticket[0]
+        abstract fun <get-ticket>(): love.forte.simbot.qguild.stdlib/Bot.Ticket // love.forte.simbot.qguild.stdlib/Bot.ticket.<get-ticket>|<get-ticket>(){}[0]
+
+    abstract fun cancel(kotlin/Throwable?) // love.forte.simbot.qguild.stdlib/Bot.cancel|cancel(kotlin.Throwable?){}[0]
+    abstract fun subscribe(love.forte.simbot.qguild.stdlib/SubscribeSequence, love.forte.simbot.qguild.stdlib/EventProcessor): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/Bot.subscribe|subscribe(love.forte.simbot.qguild.stdlib.SubscribeSequence;love.forte.simbot.qguild.stdlib.EventProcessor){}[0]
+    abstract suspend fun emitEvent(kotlin/String, love.forte.simbot.qguild.stdlib/EmitEventOptions? = ...): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.qguild.stdlib/Bot.emitEvent|emitEvent(kotlin.String;love.forte.simbot.qguild.stdlib.EmitEventOptions?){}[0]
+    abstract suspend fun join() // love.forte.simbot.qguild.stdlib/Bot.join|join(){}[0]
+    abstract suspend fun me(): love.forte.simbot.qguild.model/User // love.forte.simbot.qguild.stdlib/Bot.me|me(){}[0]
+    abstract suspend fun start() // love.forte.simbot.qguild.stdlib/Bot.start|start(){}[0]
+    abstract suspend fun start(love.forte.simbot.qguild.api/GatewayInfo) // love.forte.simbot.qguild.stdlib/Bot.start|start(love.forte.simbot.qguild.api.GatewayInfo){}[0]
+    open fun cancel() // love.forte.simbot.qguild.stdlib/Bot.cancel|cancel(){}[0]
+    open fun registerPreProcessor(love.forte.simbot.qguild.stdlib/EventProcessor): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/Bot.registerPreProcessor|registerPreProcessor(love.forte.simbot.qguild.stdlib.EventProcessor){}[0]
+    open fun registerProcessor(love.forte.simbot.qguild.stdlib/EventProcessor): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/Bot.registerProcessor|registerProcessor(love.forte.simbot.qguild.stdlib.EventProcessor){}[0]
+    open fun subscribe(love.forte.simbot.qguild.stdlib/EventProcessor): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/Bot.subscribe|subscribe(love.forte.simbot.qguild.stdlib.EventProcessor){}[0]
+    open suspend fun emitEvent(kotlin/String): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.qguild.stdlib/Bot.emitEvent|emitEvent(kotlin.String){}[0]
+
+    abstract interface Client { // love.forte.simbot.qguild.stdlib/Bot.Client|null[0]
+        abstract val isActive // love.forte.simbot.qguild.stdlib/Bot.Client.isActive|{}isActive[0]
+            abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.qguild.stdlib/Bot.Client.isActive.<get-isActive>|<get-isActive>(){}[0]
+        abstract val seq // love.forte.simbot.qguild.stdlib/Bot.Client.seq|{}seq[0]
+            abstract fun <get-seq>(): kotlin/Long // love.forte.simbot.qguild.stdlib/Bot.Client.seq.<get-seq>|<get-seq>(){}[0]
+    }
+
+    final class Ticket { // love.forte.simbot.qguild.stdlib/Bot.Ticket|null[0]
+        constructor <init>(kotlin/String, kotlin/String, kotlin/String) // love.forte.simbot.qguild.stdlib/Bot.Ticket.<init>|<init>(kotlin.String;kotlin.String;kotlin.String){}[0]
+
+        final val appId // love.forte.simbot.qguild.stdlib/Bot.Ticket.appId|{}appId[0]
+            final fun <get-appId>(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.appId.<get-appId>|<get-appId>(){}[0]
+        final val secret // love.forte.simbot.qguild.stdlib/Bot.Ticket.secret|{}secret[0]
+            final fun <get-secret>(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.secret.<get-secret>|<get-secret>(){}[0]
+        final val token // love.forte.simbot.qguild.stdlib/Bot.Ticket.token|{}token[0]
+            final fun <get-token>(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.token.<get-token>|<get-token>(){}[0]
+
+        final fun component1(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.component1|component1(){}[0]
+        final fun component2(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.component2|component2(){}[0]
+        final fun component3(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.qguild.stdlib/Bot.Ticket // love.forte.simbot.qguild.stdlib/Bot.Ticket.copy|copy(kotlin.String;kotlin.String;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.stdlib/Bot.Ticket.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.stdlib/Bot.Ticket.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.stdlib/Bot.Ticket.toString|toString(){}[0]
+    }
+}
+
+abstract interface love.forte.simbot.qguild.stdlib/BotConfiguration { // love.forte.simbot.qguild.stdlib/BotConfiguration|null[0]
+    abstract val apiClientEngine // love.forte.simbot.qguild.stdlib/BotConfiguration.apiClientEngine|{}apiClientEngine[0]
+        abstract fun <get-apiClientEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.qguild.stdlib/BotConfiguration.apiClientEngine.<get-apiClientEngine>|<get-apiClientEngine>(){}[0]
+    abstract val apiClientEngineFactory // love.forte.simbot.qguild.stdlib/BotConfiguration.apiClientEngineFactory|{}apiClientEngineFactory[0]
+        abstract fun <get-apiClientEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.qguild.stdlib/BotConfiguration.apiClientEngineFactory.<get-apiClientEngineFactory>|<get-apiClientEngineFactory>(){}[0]
+    abstract val apiDecoder // love.forte.simbot.qguild.stdlib/BotConfiguration.apiDecoder|{}apiDecoder[0]
+        abstract fun <get-apiDecoder>(): kotlinx.serialization.json/Json // love.forte.simbot.qguild.stdlib/BotConfiguration.apiDecoder.<get-apiDecoder>|<get-apiDecoder>(){}[0]
+    abstract val apiHttpConnectTimeoutMillis // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpConnectTimeoutMillis|{}apiHttpConnectTimeoutMillis[0]
+        abstract fun <get-apiHttpConnectTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpConnectTimeoutMillis.<get-apiHttpConnectTimeoutMillis>|<get-apiHttpConnectTimeoutMillis>(){}[0]
+    abstract val apiHttpRequestTimeoutMillis // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpRequestTimeoutMillis|{}apiHttpRequestTimeoutMillis[0]
+        abstract fun <get-apiHttpRequestTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpRequestTimeoutMillis.<get-apiHttpRequestTimeoutMillis>|<get-apiHttpRequestTimeoutMillis>(){}[0]
+    abstract val apiHttpSocketTimeoutMillis // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpSocketTimeoutMillis|{}apiHttpSocketTimeoutMillis[0]
+        abstract fun <get-apiHttpSocketTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/BotConfiguration.apiHttpSocketTimeoutMillis.<get-apiHttpSocketTimeoutMillis>|<get-apiHttpSocketTimeoutMillis>(){}[0]
+    abstract val clientProperties // love.forte.simbot.qguild.stdlib/BotConfiguration.clientProperties|{}clientProperties[0]
+        abstract fun <get-clientProperties>(): kotlin.collections/Map<kotlin/String, kotlin/String> // love.forte.simbot.qguild.stdlib/BotConfiguration.clientProperties.<get-clientProperties>|<get-clientProperties>(){}[0]
+    abstract val coroutineContext // love.forte.simbot.qguild.stdlib/BotConfiguration.coroutineContext|{}coroutineContext[0]
+        abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.qguild.stdlib/BotConfiguration.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    abstract val disableWs // love.forte.simbot.qguild.stdlib/BotConfiguration.disableWs|{}disableWs[0]
+        abstract fun <get-disableWs>(): kotlin/Boolean // love.forte.simbot.qguild.stdlib/BotConfiguration.disableWs.<get-disableWs>|<get-disableWs>(){}[0]
+    abstract val exceptionHandler // love.forte.simbot.qguild.stdlib/BotConfiguration.exceptionHandler|{}exceptionHandler[0]
+        abstract fun <get-exceptionHandler>(): love.forte.simbot.qguild.stdlib/ExceptionProcessor? // love.forte.simbot.qguild.stdlib/BotConfiguration.exceptionHandler.<get-exceptionHandler>|<get-exceptionHandler>(){}[0]
+    abstract val intents // love.forte.simbot.qguild.stdlib/BotConfiguration.intents|{}intents[0]
+        abstract fun <get-intents>(): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.stdlib/BotConfiguration.intents.<get-intents>|<get-intents>(){}[0]
+    abstract val serverUrl // love.forte.simbot.qguild.stdlib/BotConfiguration.serverUrl|{}serverUrl[0]
+        abstract fun <get-serverUrl>(): io.ktor.http/Url // love.forte.simbot.qguild.stdlib/BotConfiguration.serverUrl.<get-serverUrl>|<get-serverUrl>(){}[0]
+    abstract val shard // love.forte.simbot.qguild.stdlib/BotConfiguration.shard|{}shard[0]
+        abstract fun <get-shard>(): love.forte.simbot.qguild.event/Shard // love.forte.simbot.qguild.stdlib/BotConfiguration.shard.<get-shard>|<get-shard>(){}[0]
+    abstract val wsClientEngine // love.forte.simbot.qguild.stdlib/BotConfiguration.wsClientEngine|{}wsClientEngine[0]
+        abstract fun <get-wsClientEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.qguild.stdlib/BotConfiguration.wsClientEngine.<get-wsClientEngine>|<get-wsClientEngine>(){}[0]
+    abstract val wsClientEngineFactory // love.forte.simbot.qguild.stdlib/BotConfiguration.wsClientEngineFactory|{}wsClientEngineFactory[0]
+        abstract fun <get-wsClientEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.qguild.stdlib/BotConfiguration.wsClientEngineFactory.<get-wsClientEngineFactory>|<get-wsClientEngineFactory>(){}[0]
+    open val intentsValue // love.forte.simbot.qguild.stdlib/BotConfiguration.intentsValue|{}intentsValue[0]
+        open fun <get-intentsValue>(): kotlin/Int // love.forte.simbot.qguild.stdlib/BotConfiguration.intentsValue.<get-intentsValue>|<get-intentsValue>(){}[0]
+}
+
+abstract interface love.forte.simbot.qguild.stdlib/DisposableHandle { // love.forte.simbot.qguild.stdlib/DisposableHandle|null[0]
+    abstract fun dispose() // love.forte.simbot.qguild.stdlib/DisposableHandle.dispose|dispose(){}[0]
+}
+
+abstract interface love.forte.simbot.qguild.stdlib/ExceptionProcessor { // love.forte.simbot.qguild.stdlib/ExceptionProcessor|null[0]
+    abstract suspend fun process(kotlin/Throwable) // love.forte.simbot.qguild.stdlib/ExceptionProcessor.process|process(kotlin.Throwable){}[0]
+}
+
+final class love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration : love.forte.simbot.qguild.event/IntentsAppender, love.forte.simbot.qguild.stdlib/BotConfiguration { // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration|null[0]
+    constructor <init>() // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.<init>|<init>(){}[0]
+
+    final var apiClientEngine // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngine|{}apiClientEngine[0]
+        final fun <get-apiClientEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngine.<get-apiClientEngine>|<get-apiClientEngine>(){}[0]
+        final fun <set-apiClientEngine>(io.ktor.client.engine/HttpClientEngine?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngine.<set-apiClientEngine>|<set-apiClientEngine>(io.ktor.client.engine.HttpClientEngine?){}[0]
+    final var apiClientEngineFactory // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngineFactory|{}apiClientEngineFactory[0]
+        final fun <get-apiClientEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngineFactory.<get-apiClientEngineFactory>|<get-apiClientEngineFactory>(){}[0]
+        final fun <set-apiClientEngineFactory>(io.ktor.client.engine/HttpClientEngineFactory<*>?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiClientEngineFactory.<set-apiClientEngineFactory>|<set-apiClientEngineFactory>(io.ktor.client.engine.HttpClientEngineFactory<*>?){}[0]
+    final var apiDecoder // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiDecoder|{}apiDecoder[0]
+        final fun <get-apiDecoder>(): kotlinx.serialization.json/Json // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiDecoder.<get-apiDecoder>|<get-apiDecoder>(){}[0]
+        final fun <set-apiDecoder>(kotlinx.serialization.json/Json) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiDecoder.<set-apiDecoder>|<set-apiDecoder>(kotlinx.serialization.json.Json){}[0]
+    final var apiHttpConnectTimeoutMillis // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpConnectTimeoutMillis|{}apiHttpConnectTimeoutMillis[0]
+        final fun <get-apiHttpConnectTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpConnectTimeoutMillis.<get-apiHttpConnectTimeoutMillis>|<get-apiHttpConnectTimeoutMillis>(){}[0]
+        final fun <set-apiHttpConnectTimeoutMillis>(kotlin/Long?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpConnectTimeoutMillis.<set-apiHttpConnectTimeoutMillis>|<set-apiHttpConnectTimeoutMillis>(kotlin.Long?){}[0]
+    final var apiHttpRequestTimeoutMillis // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpRequestTimeoutMillis|{}apiHttpRequestTimeoutMillis[0]
+        final fun <get-apiHttpRequestTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpRequestTimeoutMillis.<get-apiHttpRequestTimeoutMillis>|<get-apiHttpRequestTimeoutMillis>(){}[0]
+        final fun <set-apiHttpRequestTimeoutMillis>(kotlin/Long?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpRequestTimeoutMillis.<set-apiHttpRequestTimeoutMillis>|<set-apiHttpRequestTimeoutMillis>(kotlin.Long?){}[0]
+    final var apiHttpSocketTimeoutMillis // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpSocketTimeoutMillis|{}apiHttpSocketTimeoutMillis[0]
+        final fun <get-apiHttpSocketTimeoutMillis>(): kotlin/Long? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpSocketTimeoutMillis.<get-apiHttpSocketTimeoutMillis>|<get-apiHttpSocketTimeoutMillis>(){}[0]
+        final fun <set-apiHttpSocketTimeoutMillis>(kotlin/Long?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.apiHttpSocketTimeoutMillis.<set-apiHttpSocketTimeoutMillis>|<set-apiHttpSocketTimeoutMillis>(kotlin.Long?){}[0]
+    final var clientProperties // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.clientProperties|{}clientProperties[0]
+        final fun <get-clientProperties>(): kotlin.collections/Map<kotlin/String, kotlin/String> // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.clientProperties.<get-clientProperties>|<get-clientProperties>(){}[0]
+        final fun <set-clientProperties>(kotlin.collections/Map<kotlin/String, kotlin/String>) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.clientProperties.<set-clientProperties>|<set-clientProperties>(kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+    final var coroutineContext // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+        final fun <set-coroutineContext>(kotlin.coroutines/CoroutineContext) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.coroutineContext.<set-coroutineContext>|<set-coroutineContext>(kotlin.coroutines.CoroutineContext){}[0]
+    final var disableWs // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.disableWs|{}disableWs[0]
+        final fun <get-disableWs>(): kotlin/Boolean // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.disableWs.<get-disableWs>|<get-disableWs>(){}[0]
+        final fun <set-disableWs>(kotlin/Boolean) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.disableWs.<set-disableWs>|<set-disableWs>(kotlin.Boolean){}[0]
+    final var exceptionHandler // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.exceptionHandler|{}exceptionHandler[0]
+        final fun <get-exceptionHandler>(): love.forte.simbot.qguild.stdlib/ExceptionProcessor? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.exceptionHandler.<get-exceptionHandler>|<get-exceptionHandler>(){}[0]
+        final fun <set-exceptionHandler>(love.forte.simbot.qguild.stdlib/ExceptionProcessor?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.exceptionHandler.<set-exceptionHandler>|<set-exceptionHandler>(love.forte.simbot.qguild.stdlib.ExceptionProcessor?){}[0]
+    final var intents // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intents|{}intents[0]
+        final fun <get-intents>(): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intents.<get-intents>|<get-intents>(){}[0]
+        final fun <set-intents>(love.forte.simbot.qguild.event/Intents) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intents.<set-intents>|<set-intents>(love.forte.simbot.qguild.event.Intents){}[0]
+    final var intentsValue // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intentsValue|{}intentsValue[0]
+        final fun <get-intentsValue>(): kotlin/Int // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intentsValue.<get-intentsValue>|<get-intentsValue>(){}[0]
+        final fun <set-intentsValue>(kotlin/Int) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.intentsValue.<set-intentsValue>|<set-intentsValue>(kotlin.Int){}[0]
+    final var serverUrl // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.serverUrl|{}serverUrl[0]
+        final fun <get-serverUrl>(): io.ktor.http/Url // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.serverUrl.<get-serverUrl>|<get-serverUrl>(){}[0]
+        final fun <set-serverUrl>(io.ktor.http/Url) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.serverUrl.<set-serverUrl>|<set-serverUrl>(io.ktor.http.Url){}[0]
+    final var shard // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.shard|{}shard[0]
+        final fun <get-shard>(): love.forte.simbot.qguild.event/Shard // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.shard.<get-shard>|<get-shard>(){}[0]
+        final fun <set-shard>(love.forte.simbot.qguild.event/Shard) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.shard.<set-shard>|<set-shard>(love.forte.simbot.qguild.event.Shard){}[0]
+    final var wsClientEngine // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngine|{}wsClientEngine[0]
+        final fun <get-wsClientEngine>(): io.ktor.client.engine/HttpClientEngine? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngine.<get-wsClientEngine>|<get-wsClientEngine>(){}[0]
+        final fun <set-wsClientEngine>(io.ktor.client.engine/HttpClientEngine?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngine.<set-wsClientEngine>|<set-wsClientEngine>(io.ktor.client.engine.HttpClientEngine?){}[0]
+    final var wsClientEngineFactory // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngineFactory|{}wsClientEngineFactory[0]
+        final fun <get-wsClientEngineFactory>(): io.ktor.client.engine/HttpClientEngineFactory<*>? // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngineFactory.<get-wsClientEngineFactory>|<get-wsClientEngineFactory>(){}[0]
+        final fun <set-wsClientEngineFactory>(io.ktor.client.engine/HttpClientEngineFactory<*>?) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.wsClientEngineFactory.<set-wsClientEngineFactory>|<set-wsClientEngineFactory>(io.ktor.client.engine.HttpClientEngineFactory<*>?){}[0]
+
+    final fun addIntents(love.forte.simbot.qguild.event/Intents): love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.addIntents|addIntents(love.forte.simbot.qguild.event.Intents){}[0]
+    final fun appendIntents(love.forte.simbot.qguild.event/Intents) // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.appendIntents|appendIntents(love.forte.simbot.qguild.event.Intents){}[0]
+    final fun useSandboxServerUrl() // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.useSandboxServerUrl|useSandboxServerUrl(){}[0]
+
+    final object Companion // love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration.Companion|null[0]
+}
+
+final class love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification { // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    final val signatureEd25519 // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.signatureEd25519|{}signatureEd25519[0]
+        final fun <get-signatureEd25519>(): kotlin/String // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.signatureEd25519.<get-signatureEd25519>|<get-signatureEd25519>(){}[0]
+    final val signatureTimestamp // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.signatureTimestamp|{}signatureTimestamp[0]
+        final fun <get-signatureTimestamp>(): kotlin/String // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.signatureTimestamp.<get-signatureTimestamp>|<get-signatureTimestamp>(){}[0]
+
+    final fun component1(): kotlin/String // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.component1|component1(){}[0]
+    final fun component2(): kotlin/String // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ...): love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.copy|copy(kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification.toString|toString(){}[0]
+}
+
+final class love.forte.simbot.qguild.stdlib/EmitEventOptions { // love.forte.simbot.qguild.stdlib/EmitEventOptions|null[0]
+    constructor <init>() // love.forte.simbot.qguild.stdlib/EmitEventOptions.<init>|<init>(){}[0]
+
+    final var ed25519SignatureVerification // love.forte.simbot.qguild.stdlib/EmitEventOptions.ed25519SignatureVerification|{}ed25519SignatureVerification[0]
+        final fun <get-ed25519SignatureVerification>(): love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification? // love.forte.simbot.qguild.stdlib/EmitEventOptions.ed25519SignatureVerification.<get-ed25519SignatureVerification>|<get-ed25519SignatureVerification>(){}[0]
+        final fun <set-ed25519SignatureVerification>(love.forte.simbot.qguild.stdlib/Ed25519SignatureVerification?) // love.forte.simbot.qguild.stdlib/EmitEventOptions.ed25519SignatureVerification.<set-ed25519SignatureVerification>|<set-ed25519SignatureVerification>(love.forte.simbot.qguild.stdlib.Ed25519SignatureVerification?){}[0]
+    final var ignoreMissingOpcode // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreMissingOpcode|{}ignoreMissingOpcode[0]
+        final fun <get-ignoreMissingOpcode>(): kotlin/Boolean // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreMissingOpcode.<get-ignoreMissingOpcode>|<get-ignoreMissingOpcode>(){}[0]
+        final fun <set-ignoreMissingOpcode>(kotlin/Boolean) // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreMissingOpcode.<set-ignoreMissingOpcode>|<set-ignoreMissingOpcode>(kotlin.Boolean){}[0]
+    final var ignoreUnknownOpcode // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreUnknownOpcode|{}ignoreUnknownOpcode[0]
+        final fun <get-ignoreUnknownOpcode>(): kotlin/Boolean // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreUnknownOpcode.<get-ignoreUnknownOpcode>|<get-ignoreUnknownOpcode>(){}[0]
+        final fun <set-ignoreUnknownOpcode>(kotlin/Boolean) // love.forte.simbot.qguild.stdlib/EmitEventOptions.ignoreUnknownOpcode.<set-ignoreUnknownOpcode>|<set-ignoreUnknownOpcode>(kotlin.Boolean){}[0]
+}
+
+open class love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException : kotlin/IllegalStateException { // love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException|null[0]
+    constructor <init>() // love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException.<init>|<init>(kotlin.String?){}[0]
+    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
+    constructor <init>(kotlin/Throwable?) // love.forte.simbot.qguild.stdlib/BotAlreadyCancelledException.<init>|<init>(kotlin.Throwable?){}[0]
+}
+
+sealed class love.forte.simbot.qguild.stdlib/EmitResult { // love.forte.simbot.qguild.stdlib/EmitResult|null[0]
+    final class Verified : love.forte.simbot.qguild.stdlib/EmitResult { // love.forte.simbot.qguild.stdlib/EmitResult.Verified|null[0]
+        constructor <init>(love.forte.simbot.qguild.event/Signal.CallbackVerify.Verified) // love.forte.simbot.qguild.stdlib/EmitResult.Verified.<init>|<init>(love.forte.simbot.qguild.event.Signal.CallbackVerify.Verified){}[0]
+
+        final val verified // love.forte.simbot.qguild.stdlib/EmitResult.Verified.verified|{}verified[0]
+            final fun <get-verified>(): love.forte.simbot.qguild.event/Signal.CallbackVerify.Verified // love.forte.simbot.qguild.stdlib/EmitResult.Verified.verified.<get-verified>|<get-verified>(){}[0]
+
+        final fun component1(): love.forte.simbot.qguild.event/Signal.CallbackVerify.Verified // love.forte.simbot.qguild.stdlib/EmitResult.Verified.component1|component1(){}[0]
+        final fun copy(love.forte.simbot.qguild.event/Signal.CallbackVerify.Verified = ...): love.forte.simbot.qguild.stdlib/EmitResult.Verified // love.forte.simbot.qguild.stdlib/EmitResult.Verified.copy|copy(love.forte.simbot.qguild.event.Signal.CallbackVerify.Verified){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.stdlib/EmitResult.Verified.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.stdlib/EmitResult.Verified.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.stdlib/EmitResult.Verified.toString|toString(){}[0]
+    }
+
+    final object Dispatched : love.forte.simbot.qguild.stdlib/EmitResult { // love.forte.simbot.qguild.stdlib/EmitResult.Dispatched|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.stdlib/EmitResult.Dispatched.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.stdlib/EmitResult.Dispatched.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.stdlib/EmitResult.Dispatched.toString|toString(){}[0]
+    }
+
+    final object Nothing : love.forte.simbot.qguild.stdlib/EmitResult { // love.forte.simbot.qguild.stdlib/EmitResult.Nothing|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.stdlib/EmitResult.Nothing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.stdlib/EmitResult.Nothing.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.stdlib/EmitResult.Nothing.toString|toString(){}[0]
+    }
+}
+
+final object love.forte.simbot.qguild.stdlib/BotFactory { // love.forte.simbot.qguild.stdlib/BotFactory|null[0]
+    final fun create(kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration>): love.forte.simbot.qguild.stdlib/Bot // love.forte.simbot.qguild.stdlib/BotFactory.create|create(kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.stdlib.ConfigurableBotConfiguration>){}[0]
+    final fun create(kotlin/String, kotlin/String, kotlin/String, love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration? = ...): love.forte.simbot.qguild.stdlib/Bot // love.forte.simbot.qguild.stdlib/BotFactory.create|create(kotlin.String;kotlin.String;kotlin.String;love.forte.simbot.qguild.stdlib.ConfigurableBotConfiguration?){}[0]
+    final fun create(love.forte.simbot.qguild.stdlib/Bot.Ticket, love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration>): love.forte.simbot.qguild.stdlib/Bot // love.forte.simbot.qguild.stdlib/BotFactory.create|create(love.forte.simbot.qguild.stdlib.Bot.Ticket;love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.stdlib.ConfigurableBotConfiguration>){}[0]
+    final fun create(love.forte.simbot.qguild.stdlib/Bot.Ticket, love.forte.simbot.qguild.stdlib/ConfigurableBotConfiguration? = ...): love.forte.simbot.qguild.stdlib/Bot // love.forte.simbot.qguild.stdlib/BotFactory.create|create(love.forte.simbot.qguild.stdlib.Bot.Ticket;love.forte.simbot.qguild.stdlib.ConfigurableBotConfiguration?){}[0]
+}
+
+final fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/botToken(): kotlin/String // love.forte.simbot.qguild.stdlib/botToken|botToken@love.forte.simbot.qguild.stdlib.Bot(){}[0]
+final fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/qqBotToken(): kotlin/String // love.forte.simbot.qguild.stdlib/qqBotToken|qqBotToken@love.forte.simbot.qguild.stdlib.Bot(){}[0]
+final inline fun <#A: reified love.forte.simbot.qguild.event/Signal.Dispatch> (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/process(crossinline kotlin.coroutines/SuspendFunction2<#A, kotlin/String, kotlin/Unit>): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/process|process@love.forte.simbot.qguild.stdlib.Bot(kotlin.coroutines.SuspendFunction2<0:0,kotlin.String,kotlin.Unit>){0§<love.forte.simbot.qguild.event.Signal.Dispatch>}[0]
+final inline fun <#A: reified love.forte.simbot.qguild.event/Signal.Dispatch> (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/subscribe(love.forte.simbot.qguild.stdlib/SubscribeSequence = ..., crossinline kotlin.coroutines/SuspendFunction2<#A, kotlin/String, kotlin/Unit>): love.forte.simbot.qguild.stdlib/DisposableHandle // love.forte.simbot.qguild.stdlib/subscribe|subscribe@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.stdlib.SubscribeSequence;kotlin.coroutines.SuspendFunction2<0:0,kotlin.String,kotlin.Unit>){0§<love.forte.simbot.qguild.event.Signal.Dispatch>}[0]
+final suspend fun (love.forte.simbot.qguild.api/QQGuildApi<*>).love.forte.simbot.qguild.stdlib/requestBy(love.forte.simbot.qguild.stdlib/Bot): io.ktor.client.statement/HttpResponse // love.forte.simbot.qguild.stdlib/requestBy|requestBy@love.forte.simbot.qguild.api.QQGuildApi<*>(love.forte.simbot.qguild.stdlib.Bot){}[0]
+final suspend fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/request(love.forte.simbot.qguild.api/QQGuildApi<*>): io.ktor.client.statement/HttpResponse // love.forte.simbot.qguild.stdlib/request|request@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<*>){}[0]
+final suspend fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/requestText(love.forte.simbot.qguild.api/QQGuildApi<*>): kotlin/String // love.forte.simbot.qguild.stdlib/requestText|requestText@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<*>){}[0]
+final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/requestData(love.forte.simbot.qguild.api/QQGuildApi<#A>): #A // love.forte.simbot.qguild.stdlib/requestData|requestData@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<0:0>){0§<kotlin.Any>}[0]
+final suspend inline fun (love.forte.simbot.qguild.api/QQGuildApi<*>).love.forte.simbot.qguild.stdlib/requestTextBy(love.forte.simbot.qguild.stdlib/Bot, kotlin/Function1<io.ktor.client.statement/HttpResponse, kotlin/Unit> = ...): kotlin/String // love.forte.simbot.qguild.stdlib/requestTextBy|requestTextBy@love.forte.simbot.qguild.api.QQGuildApi<*>(love.forte.simbot.qguild.stdlib.Bot;kotlin.Function1<io.ktor.client.statement.HttpResponse,kotlin.Unit>){}[0]
+final suspend inline fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/emitEvent(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.stdlib/EmitEventOptions, kotlin/Unit>): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.qguild.stdlib/emitEvent|emitEvent@love.forte.simbot.qguild.stdlib.Bot(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.stdlib.EmitEventOptions,kotlin.Unit>){}[0]
+final suspend inline fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.stdlib/requestDataBy(love.forte.simbot.qguild.stdlib/Bot): #A // love.forte.simbot.qguild.stdlib/requestDataBy|requestDataBy@love.forte.simbot.qguild.api.QQGuildApi<0:0>(love.forte.simbot.qguild.stdlib.Bot){0§<kotlin.Any>}[0]
+
+// Targets: [js]
+final fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/requestByAsync(love.forte.simbot.qguild.api/QQGuildApi<*>): kotlin.js/Promise<io.ktor.client.statement/HttpResponse> // love.forte.simbot.qguild.stdlib/requestByAsync|requestByAsync@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<*>){}[0]
+
+// Targets: [js]
+final fun (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/requestTextByAsync(love.forte.simbot.qguild.api/QQGuildApi<*>): kotlin.js/Promise<kotlin/String> // love.forte.simbot.qguild.stdlib/requestTextByAsync|requestTextByAsync@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<*>){}[0]
+
+// Targets: [js]
+final fun <#A: kotlin/Any> (love.forte.simbot.qguild.stdlib/Bot).love.forte.simbot.qguild.stdlib/requestDataByAsync(love.forte.simbot.qguild.api/QQGuildApi<#A>): kotlin.js/Promise<#A> // love.forte.simbot.qguild.stdlib/requestDataByAsync|requestDataByAsync@love.forte.simbot.qguild.stdlib.Bot(love.forte.simbot.qguild.api.QQGuildApi<0:0>){0§<kotlin.Any>}[0]

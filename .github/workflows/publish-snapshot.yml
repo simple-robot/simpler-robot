@@ -1,0 +1,148 @@
+name: Publish Snapshot
+on: # push
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+      - dev-snapshot**
+    paths:
+      - 'buildSrc'
+      - '**src/**/kotlin/**.kt'
+      - '**src/**/java/**.java'
+      - '**/src/**/kotlin/**.kt'
+      - '**/src/**/java/**.java'
+      - '**/build.gradle.kts'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+  GRADLE_VERSION: 8.10.2
+  NODE_VERSION: 22
+  IS_CI: true
+  SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_KEY_CONTENTS: ${{ secrets.GPG_SECRET_KEY }}
+  SIGNING_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  MAVEN_CENTRAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+  MAVEN_CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+  SIMBOT_IS_SNAPSHOT: true
+  SIMBOT_SNAPSHOT_ONLY: true
+  GRADLE_OPTS: "-XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
+
+jobs:
+  run-tests:
+    name: Run all tests
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Run All Tests
+        run: gradle assemble allTests -s --warning-mode all
+        env:
+          ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: test-reports-${{ matrix.os }}
+          path: '**/build/reports/tests'
+          retention-days: 7
+
+  publish-snapshot:
+    name: Publish snapshot
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - uses: actions/checkout@v6
+      # setup Java
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Publish snapshots
+        run: gradle publishToMavenCentral --info --warning-mode all -x test
+        env:
+          SIMBOT_IS_SNAPSHOT: true
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ env.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ env.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ env.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ env.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ env.GPG_KEY_CONTENTS }}
+
+  # parallel=true 容易出现 Metaspace 的异常? 去了试试
+
+  deploy-doc:
+    name: Deploy snapshots API doc
+    needs: publish-snapshot
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Generate documentation
+        run: gradle dokkaGenerate -s --warning-mode all -x test
+        env:
+          SIMBOT_IS_SNAPSHOT: true
+          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/snapshots/main
+          publish_dir: ./build/dokka/html
+          destination_dir: snapshots/main
