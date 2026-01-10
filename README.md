@@ -60,8 +60,14 @@
 simbot提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写**Bot风格**的事件调度应用。
 主要应用于对接各种类型的Bot应用平台/框架，并提供部分组件库实现。
 
-> [!info]
+> [!note]
 > 自 5.0 版本起，所有由我们团队维护且稳定的组件，均合并至当前核心仓库一同维护。
+> 
+> | 组件库 | 原仓库 | 现目录 |
+> | ---- | ---- | ---- |
+> | QQ组件 | [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild) | [simbot-component-qq](https://github.com/simple-robot/simpler-robot/tree/dev/simbot-component-qq) |
+> | OneBot组件 | [simple-robot/simbot-component-onebot](https://github.com/simple-robot/simbot-component-onebot) | [simbot-component-onebot](https://github.com/simple-robot/simpler-robot/tree/dev/simbot-component-onebot) |
+> | KOOK组件 | [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook) | [simbot-component-kook](https://github.com/simple-robot/simpler-robot/tree/dev/simbot-component-kook) |
 
 simbot的**平台功能**由组件驱动，安装不同的组件库来获得不同的功能支持。
 
