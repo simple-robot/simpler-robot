@@ -10,19 +10,19 @@ public final class love/forte/simbot/common/ktor/inputfile/InputFiles {
 	public static final fun of (Lio/ktor/client/request/forms/ChannelProvider;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Lio/ktor/client/request/forms/InputProvider;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Lio/ktor/client/request/forms/InputProvider;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
-	public static final fun of (Lio/ktor/utils/io/core/ByteReadPacket;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
-	public static final fun of (Lio/ktor/utils/io/core/ByteReadPacket;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Ljava/io/File;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Ljava/io/File;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Ljava/nio/file/Path;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of (Ljava/nio/file/Path;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
+	public static final fun of (Lkotlinx/io/Source;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
+	public static final fun of (Lkotlinx/io/Source;Lio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of ([B)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static final fun of ([BLio/ktor/http/Headers;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static synthetic fun of$default (Lio/ktor/client/request/forms/ChannelProvider;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static synthetic fun of$default (Lio/ktor/client/request/forms/InputProvider;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
-	public static synthetic fun of$default (Lio/ktor/utils/io/core/ByteReadPacket;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static synthetic fun of$default (Ljava/io/File;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static synthetic fun of$default (Ljava/nio/file/Path;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
+	public static synthetic fun of$default (Lkotlinx/io/Source;Lio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 	public static synthetic fun of$default ([BLio/ktor/http/Headers;ILjava/lang/Object;)Llove/forte/simbot/common/ktor/inputfile/InputFile;
 }
 

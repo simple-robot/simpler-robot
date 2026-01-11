@@ -393,7 +393,6 @@ public final synthetic class love/forte/simbot/component/kook/bot/KookBotConfigu
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$GuildSyncPeriod$Companion {
@@ -422,7 +421,6 @@ public final synthetic class love/forte/simbot/component/kook/bot/KookBotConfigu
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/bot/KookBotConfiguration$SyncPeriods$Companion {
@@ -495,7 +493,6 @@ public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Companion {
@@ -536,7 +533,6 @@ public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Config$Companion {
@@ -569,7 +565,6 @@ public final synthetic class love/forte/simbot/component/kook/bot/KookBotVerifyI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfiguration$Ticket$Companion {
@@ -1233,7 +1228,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAsset$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAsset;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAsset$Companion {
@@ -1264,7 +1258,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAssetI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAssetImage;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAssetImage$Companion {
@@ -1293,6 +1286,7 @@ public final class love/forte/simbot/component/kook/message/KookAssetMessage$Com
 public final class love/forte/simbot/component/kook/message/KookAtAllHere : love/forte/simbot/component/kook/message/KookMessageElement {
 	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookAtAllHere;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1313,7 +1307,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAttach
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachment;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAttachment$Companion {
@@ -1328,7 +1321,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAttach
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentFile;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAttachmentFile$Companion {
@@ -1343,7 +1335,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAttach
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentImage;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAttachmentImage$Companion {
@@ -1375,7 +1366,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookAttach
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookAttachmentVideo;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookAttachmentVideo$Companion {
@@ -1390,7 +1380,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookCardMe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookCardMessage;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookCardMessage$Companion {
@@ -1427,7 +1416,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookKMarkd
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookKMarkdownMessage;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookKMarkdownMessage$Companion {
@@ -1511,7 +1499,6 @@ public final synthetic class love/forte/simbot/component/kook/message/KookQuote$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/kook/message/KookQuote;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/kook/message/KookQuote$Companion {

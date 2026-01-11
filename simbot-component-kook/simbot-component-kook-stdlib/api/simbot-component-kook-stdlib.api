@@ -94,7 +94,6 @@ public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$Engi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration$Companion {
@@ -130,7 +129,6 @@ public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$Time
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration$Companion {

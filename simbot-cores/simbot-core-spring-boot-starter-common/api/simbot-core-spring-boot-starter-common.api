@@ -72,6 +72,13 @@ public final class love/forte/simbot/spring/common/application/MismatchConfigura
 public abstract interface class love/forte/simbot/spring/common/application/SpringApplication : love/forte/simbot/application/Application {
 }
 
+public final class love/forte/simbot/spring/common/application/SpringApplication$DefaultImpls {
+	public static fun asFuture (Llove/forte/simbot/spring/common/application/SpringApplication;)Ljava/util/concurrent/CompletableFuture;
+	public static fun cancel (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+	public static fun joinBlocking (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+	public static fun joinReserve (Llove/forte/simbot/spring/common/application/SpringApplication;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
 public class love/forte/simbot/spring/common/application/SpringApplicationBuilder : love/forte/simbot/application/AbstractApplicationBuilder {
 	public fun <init> ()V
 	public fun getApplicationConfigurationProperties ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;
@@ -144,10 +151,25 @@ public abstract interface class love/forte/simbot/spring/common/application/Spri
 public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationFactory : love/forte/simbot/application/ApplicationFactory {
 }
 
+public final class love/forte/simbot/spring/common/application/SpringApplicationFactory$DefaultImpls {
+	public static fun create (Llove/forte/simbot/spring/common/application/SpringApplicationFactory;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
+}
+
 public abstract interface class love/forte/simbot/spring/common/application/SpringApplicationLauncher : love/forte/simbot/application/ApplicationLauncher {
+}
+
+public final class love/forte/simbot/spring/common/application/SpringApplicationLauncher$DefaultImpls {
+	public static fun launchIn (Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;Lkotlinx/coroutines/CoroutineScope;)Llove/forte/simbot/common/async/Async;
+	public static fun launchInGlobal (Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;)Llove/forte/simbot/common/async/Async;
 }
 
 public abstract interface class love/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration : love/forte/simbot/core/event/SimpleEventDispatcherConfiguration {
 	public fun setExecutorDispatcher (Ljava/util/concurrent/Executor;)V
+}
+
+public final class love/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration$DefaultImpls {
+	public static fun addDispatchInterceptor (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;Llove/forte/simbot/event/EventDispatchInterceptor;)V
+	public static fun addInterceptor (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;Llove/forte/simbot/event/EventInterceptor;)V
+	public static fun setExecutorDispatcher (Llove/forte/simbot/spring/common/application/SpringEventDispatcherConfiguration;Ljava/util/concurrent/Executor;)V
 }
 

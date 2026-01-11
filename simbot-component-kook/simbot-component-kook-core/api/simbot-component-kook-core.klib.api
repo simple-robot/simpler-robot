@@ -1348,6 +1348,7 @@ sealed class love.forte.simbot.component.kook.message/KookTempTarget : love.fort
 
 final object love.forte.simbot.component.kook.message/KookAtAllHere : kotlinx.serialization.internal/SerializerFactory, love.forte.simbot.component.kook.message/KookMessageElement { // love.forte.simbot.component.kook.message/KookAtAllHere|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookAtAllHere.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookAtAllHere.hashCode|hashCode(){}[0]
     final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.kook.message/KookAtAllHere> // love.forte.simbot.component.kook.message/KookAtAllHere.serializer|serializer(){}[0]
     final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.component.kook.message/KookAtAllHere.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookAtAllHere.toString|toString(){}[0]

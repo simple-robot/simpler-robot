@@ -54,8 +54,8 @@ class CreateBlacklistApiTest {
 
         // Test URL path segments
         val url = api.url
-        assertTrue(url.pathSegments.contains("blacklist"))
-        assertTrue(url.pathSegments.contains("create"))
+        assertTrue(url.segments.contains("blacklist"))
+        assertTrue(url.segments.contains("create"))
 
         // Test body is not null
         assertNotNull(api.body)

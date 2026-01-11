@@ -3,6 +3,8 @@ public abstract interface annotation class love/forte/simbot/spring/EnableSimbot
 
 public final class love/forte/simbot/spring/application/Spring : love/forte/simbot/spring/common/application/SpringApplicationFactory {
 	public static final field INSTANCE Llove/forte/simbot/spring/application/Spring;
+	public synthetic fun create ()Llove/forte/simbot/application/ApplicationLauncher;
+	public fun create ()Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
 	public synthetic fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/ApplicationLauncher;
 	public fun create (Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/spring/common/application/SpringApplicationLauncher;
 }
@@ -305,6 +307,7 @@ protected class love/forte/simbot/spring/configuration/binder/ResolveBinderManag
 
 public final class love/forte/simbot/spring/configuration/binder/SpringAutoInjectBinderFactory : love/forte/simbot/quantcat/common/binder/ParameterBinderFactory {
 	public fun <init> (Lorg/springframework/beans/factory/BeanFactory;)V
+	public fun getPriority ()I
 	public synthetic fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
 	public fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
 }

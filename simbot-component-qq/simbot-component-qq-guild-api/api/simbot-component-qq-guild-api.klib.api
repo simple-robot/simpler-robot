@@ -1592,8 +1592,8 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
             final fun fromMessage(love.forte.simbot.qguild.model/Message) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.fromMessage|fromMessage(love.forte.simbot.qguild.model.Message){}[0]
             final fun setFileImage(io.ktor.client.request.forms/ChannelProvider) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.client.request.forms.ChannelProvider){}[0]
             final fun setFileImage(io.ktor.client.request.forms/InputProvider) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.client.request.forms.InputProvider){}[0]
-            final fun setFileImage(io.ktor.utils.io.core/ByteReadPacket) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.utils.io.core.ByteReadPacket){}[0]
             final fun setFileImage(kotlin/ByteArray) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(kotlin.ByteArray){}[0]
+            final fun setFileImage(kotlinx.io/RawSource) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(kotlinx.io.RawSource){}[0]
         }
 
         final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.api.message/MessageSendApi.Body> { // love.forte.simbot.qguild.api.message/MessageSendApi.Body.$serializer|null[0]

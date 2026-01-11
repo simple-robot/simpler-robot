@@ -1,3 +1,26 @@
+/*
+ *     Copyright (c) 2026. ForteScarlet.
+ *
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
+ *
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package love.forte.simbot.component.qgguild.test
 
 import kotlinx.serialization.InternalSerializationApi
@@ -90,26 +113,28 @@ class FileConfigTest {
         val decoded = json.decodeFromString(SerializableBotConfiguration.serializer(), jsonStr)
         assertIs<QGBotFileConfiguration>(decoded)
         assertNotNull(decoded.config)
-        assertIs<ShardConfig.Full>(decoded.config!!.shardConfig)
+        assertIs<ShardConfig.Full>(decoded.config.shardConfig)
     }
 
     @OptIn(InternalSerializationApi::class)
     private fun configJson(
         @FormatLanguage(value = "json", prefix = CONFIG_JSON_PREFIX, suffix = CONFIG_JSON_SUFFIX)
-        json: String): String {
-
+        json: String
+    ): String {
         return "$CONFIG_JSON_PREFIX$json$CONFIG_JSON_SUFFIX"
     }
 
     @Test
     fun configIntentsBitsTest() {
         val decoded = json.decodeFromString<QGBotFileConfiguration>(
-            configJson(//language=json
+            configJson( //language=json
                 """{"intents": {
                     "type": "bitBased",
                     "bits": [0, 1, 30]
               }}
-            """.trimIndent()))
+                """.trimIndent()
+            )
+        )
 
         val intents = decoded.config?.intentsConfig?.intents
         assertNotNull(intents)
@@ -122,12 +147,14 @@ class FileConfigTest {
     @Test
     fun configIntentsNamesTest() {
         val decoded = json.decodeFromString<QGBotFileConfiguration>(
-            configJson(//language=json
+            configJson( //language=json
                 """{"intents": {
                     "type": "nameBased",
                     "names": ["Guilds", "forums_event", "GUILD_MESSAGES"]
               }}
-            """.trimIndent()))
+                """.trimIndent()
+            )
+        )
 
         val intents = decoded.config?.intentsConfig?.intents
         assertNotNull(intents)
@@ -140,12 +167,14 @@ class FileConfigTest {
     @Test
     fun configIntentsRawTest() {
         val decoded = json.decodeFromString<QGBotFileConfiguration>(
-            configJson(//language=json
+            configJson( //language=json
                 """{"intents": {
                     "type": "raw",
                     "intents": 123456789
               }}
-            """.trimIndent()))
+                """.trimIndent()
+            )
+        )
 
         val intents = decoded.config?.intentsConfig?.intents
         assertNotNull(intents)

@@ -46,6 +46,7 @@ import love.forte.simbot.kook.stdlib.*
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 /**
  *
@@ -162,7 +163,7 @@ internal class BotImpl(
         }
 
         WebSockets {
-            pingInterval = 30_000L
+            pingInterval = 30.seconds
         }
 
         engineConfiguration?.also { ec ->
