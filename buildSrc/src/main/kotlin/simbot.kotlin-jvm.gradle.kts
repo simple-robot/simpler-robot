@@ -27,6 +27,6 @@ plugins {
 
 kotlin {
     compilerOptions {
-        extraWarnings.set(true)
+        // extraWarnings.set(true)
     }
 }

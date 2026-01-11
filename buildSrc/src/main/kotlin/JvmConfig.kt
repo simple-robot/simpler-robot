@@ -22,6 +22,7 @@
  */
 
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.get
@@ -85,10 +86,19 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
     block()
 }
 
-inline fun Project.configJavaCompileWithModule(
+class PatchModuleArgumentProvider(
+    private val moduleName: String,
+    private val patchedOutput: FileCollection,
+) : CommandLineArgumentProvider {
+    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+    override fun asArguments(): Iterable<String> =
+        listOf("--patch-module", "$moduleName=${patchedOutput.asPath}")
+}
+
+fun Project.configJavaCompileWithModule(
     moduleName: String? = null,
     jvmVersion: String = JVMConstants.KT_JVM_TARGET,
-    crossinline block: JavaCompile.() -> Unit = {}
+    block: JavaCompile.() -> Unit = {}
 ) {
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
@@ -97,19 +107,14 @@ inline fun Project.configJavaCompileWithModule(
 
         // see https://kotlinlang.org/docs/gradle-configure-project.html#configure-with-java-modules-jpms-enabled
         if (moduleName != null) {
-            options.compilerArgumentProviders.add(
-                CommandLineArgumentProvider {
-                    // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-                    val sourceSet = sourceSets.findByName("main") ?: sourceSets.findByName("jvmMain")
-                    if (sourceSet != null) {
-                        listOf("--patch-module", "$moduleName=${sourceSet.output.asPath}")
-                    } else {
-                        emptyList()
-                    }
-                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-                }
-            )
+            // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
+            val sourceSet = project.sourceSets.findByName("main") ?: project.sourceSets.findByName("jvmMain")
+            val patchModuleOutput = sourceSet?.output
+            if (patchModuleOutput != null) {
+                options.compilerArgumentProviders.add(
+                    PatchModuleArgumentProvider(moduleName, patchModuleOutput)
+                )
+            }
         }
 
         block()
