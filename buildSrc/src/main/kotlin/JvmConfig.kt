@@ -28,6 +28,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import org.gradle.process.CommandLineArgumentProvider
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -39,6 +40,7 @@ inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> U
     compilerOptions {
         javaParameters.set(true)
         freeCompilerArgs.add("-Xjsr305=strict")
+        jvmDefault.set(JvmDefaultMode.NO_COMPATIBILITY)
     }
 
     testRuns["test"].executionTask.configure {

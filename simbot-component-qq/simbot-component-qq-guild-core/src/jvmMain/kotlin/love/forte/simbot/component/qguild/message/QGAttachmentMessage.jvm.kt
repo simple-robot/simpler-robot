@@ -25,7 +25,6 @@ package love.forte.simbot.component.qguild.message
 
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.util.cio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import love.forte.simbot.component.qguild.bot.QGBot
@@ -44,9 +43,7 @@ internal actual suspend fun readBinaryData(
     try {
         val jUrl = URI.create(url).toURL()
         return withContext(Dispatchers.IO) {
-            jUrl.openStream()
-                .toByteReadChannel(context = Dispatchers.IO)
-                .toByteArray()
+            jUrl.openStream().readAllBytes()
         }
     } catch (io: IOException) {
         throw IllegalStateException(io.localizedMessage, io)

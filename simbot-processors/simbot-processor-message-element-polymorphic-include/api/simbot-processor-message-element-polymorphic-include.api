@@ -56,6 +56,7 @@ public class love/forte/simbot/processor/message/element/polymorphic/include/Mes
 	protected fun getVisibility ()Lcom/squareup/kotlinpoet/KModifier;
 	protected fun getVisitor ()Lcom/google/devtools/ksp/symbol/KSVisitor;
 	protected fun isLocalOnly ()Z
+	public fun onError ()V
 	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
 	protected fun setBaseKSClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;)V
 	protected fun useInFile (Lcom/squareup/kotlinpoet/FileSpec$Builder;)V
@@ -76,6 +77,8 @@ public class love/forte/simbot/processor/message/element/polymorphic/include/Mes
 
 public final class love/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessorProvider$EmptySymbolProcessor : com/google/devtools/ksp/processing/SymbolProcessor {
 	public static final field INSTANCE Llove/forte/simbot/processor/message/element/polymorphic/include/MessageElementPolymorphicIncludeProcessorProvider$EmptySymbolProcessor;
+	public fun finish ()V
+	public fun onError ()V
 	public fun process (Lcom/google/devtools/ksp/processing/Resolver;)Ljava/util/List;
 }
 
