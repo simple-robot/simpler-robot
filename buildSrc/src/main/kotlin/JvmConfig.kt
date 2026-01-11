@@ -108,7 +108,7 @@ fun Project.configJavaCompileWithModule(
         // see https://kotlinlang.org/docs/gradle-configure-project.html#configure-with-java-modules-jpms-enabled
         if (moduleName != null) {
             // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-            val sourceSet = project.sourceSets.findByName("main") ?: project.sourceSets.findByName("jvmMain")
+            val sourceSet = sourceSets.findByName("main") ?: sourceSets.findByName("jvmMain")
             val patchModuleOutput = sourceSet?.output
             if (patchModuleOutput != null) {
                 options.compilerArgumentProviders.add(
