@@ -72,7 +72,7 @@ class SendGroupForwardMsgTests {
 
         val mockEngine = MockEngine { request ->
             // 验证请求 URL
-            assertEquals("send_group_forward_msg", request.url.pathSegments.last())
+            assertEquals("send_group_forward_msg", request.url.segments.last())
 
             // 解析请求体，验证序列化结果
             val requestBody = request.body.toByteArray().decodeToString()
@@ -152,7 +152,7 @@ class SendGroupForwardMsgTests {
 
         val mockEngine = MockEngine { request ->
             // 验证请求 URL
-            assertEquals("send_group_forward_msg", request.url.pathSegments.last())
+            assertEquals("send_group_forward_msg", request.url.segments.last())
 
             // 解析请求体，验证序列化结果
             val requestBody = request.body.toByteArray().decodeToString()

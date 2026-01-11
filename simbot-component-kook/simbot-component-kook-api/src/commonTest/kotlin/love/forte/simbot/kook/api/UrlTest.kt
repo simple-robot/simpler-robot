@@ -41,22 +41,22 @@ class UrlTest {
     @Test
     fun testUrlPathSegments() {
         assertEquals(
-            listOf("", "api", "v3"),
-            Url("https://www.kookapp.cn/api/v3").pathSegments,
-            "Url.pathSegments should be ['', 'api', 'v3']"
+            listOf("api", "v3"),
+            Url("https://www.kookapp.cn/api/v3").segments,
+            "Url.segments should be ['api', 'v3']"
         )
 
         assertEquals(
-            listOf("", "api", "v3"),
-            Kook.SERVER_URL_WITH_VERSION.pathSegments,
-            "Kook.SERVER_URL_WITH_VERSION.pathSegments should be ['', 'api', 'v3']"
+            listOf("api", "v3"),
+            Kook.SERVER_URL_WITH_VERSION.segments,
+            "Kook.SERVER_URL_WITH_VERSION.segments should be ['api', 'v3']"
         )
 
         val api = buildUrl(Kook.SERVER_URL_WITH_VERSION) {}
         assertEquals(
-            listOf("", "api", "v3"),
-            api.pathSegments,
-            "api.pathSegments should be ['', 'api', 'v3']"
+            listOf("api", "v3"),
+            api.segments,
+            "api.segments should be ['api', 'v3']"
         )
     }
 

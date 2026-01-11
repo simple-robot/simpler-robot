@@ -57,7 +57,7 @@ class ApiRequestTests {
     ): HttpClient {
         return HttpClient(
             MockEngine { req ->
-                assertEquals(action, req.url.pathSegments.last())
+                assertEquals(action, req.url.segments.last())
                 logger.debug("Data: {}", req.body.toByteArray().decodeToString())
                 respondOk(
                     OneBot11.DefaultJson.encodeToString(
@@ -83,7 +83,7 @@ class ApiRequestTests {
 
         val data = SendPrivateMsgApi.create(
             123.ID,
-            OneBotMessageOutgoing.Companion.create(
+            OneBotMessageOutgoing.create(
                 listOf(
                     OneBotText.create("Hello, World"),
                     OneBotFace.create(555.ID)

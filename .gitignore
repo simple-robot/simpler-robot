@@ -121,3 +121,6 @@ website/node_modules
 generated-docs
 
 .claude
+.aiassistant
+AGENTS.md
+CLAUDE.md

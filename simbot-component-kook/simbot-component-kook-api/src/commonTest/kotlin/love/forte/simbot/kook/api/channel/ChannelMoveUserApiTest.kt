@@ -130,8 +130,8 @@ class ChannelMoveUserApiTest {
         val url = api.url
         
         // Check that the URL path is correct
-        assertTrue(url.pathSegments.contains("channel"))
-        assertTrue(url.pathSegments.contains("move-user"))
+        assertTrue(url.segments.contains("channel"))
+        assertTrue(url.segments.contains("move-user"))
         
         // Verify it's a POST API
         assertEquals(HttpMethod.Post, api.method)

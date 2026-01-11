@@ -161,7 +161,7 @@ class ChannelKickoutApiTest {
         // Verify API path structure
         val url = api.url
         assertEquals("https://www.kookapp.cn/api/v3/channel/kickout", url.toString())
-        assertEquals(listOf("", "api", "v3", "channel", "kickout"), url.pathSegments)
+        assertEquals(listOf("api", "v3", "channel", "kickout"), url.segments)
     }
 
     @Test

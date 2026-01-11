@@ -267,6 +267,6 @@ class VoiceKeepAliveApiTest {
         val url = api.url
 
         assertEquals("https://www.kookapp.cn/api/v3/voice/keep-alive", url.toString())
-        assertEquals(listOf("", "api", "v3", "voice", "keep-alive"), url.pathSegments)
+        assertEquals(listOf("api", "v3", "voice", "keep-alive"), url.segments)
     }
 }
