@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -20,43 +20,4 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-import love.forte.gradle.common.core.project.setup
-
-plugins {
-    id("simbot.kotlin-multiplatform")
-}
-
-setup(P.SimbotBenchmark)
-
-kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-
-    js(IR) {
-        configJs()
-    }
-
-    applyTier123()
-
-    sourceSets {
-        commonMain {
-            dependencies {
-                // jvm compile only
-                api(project(":simbot-api"))
-                api(project(":simbot-cores:simbot-core"))
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(kotlin("test"))
-                implementation(libs.kotlinx.serialization.json)
-            }
-        }
-    }
-}
 

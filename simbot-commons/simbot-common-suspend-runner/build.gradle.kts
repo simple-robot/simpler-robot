@@ -24,7 +24,7 @@
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 

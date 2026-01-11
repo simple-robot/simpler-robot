@@ -23,7 +23,7 @@
 
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
     alias(libs.plugins.ksp)
