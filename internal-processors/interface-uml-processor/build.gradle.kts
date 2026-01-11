@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -47,7 +47,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
  */
 
 plugins {
-    kotlin("jvm")
+    id("simbot.kotlin-jvm")
     alias(libs.plugins.ksp)
 }
 

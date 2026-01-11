@@ -25,7 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }

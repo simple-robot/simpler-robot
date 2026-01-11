@@ -22,7 +22,7 @@
  */
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 
