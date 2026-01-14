@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)

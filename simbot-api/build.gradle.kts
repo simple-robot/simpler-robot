@@ -27,7 +27,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.time.Instant
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
