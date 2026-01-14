@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2025. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -793,7 +793,7 @@ public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineSc
  * - [ExecutionException] (概率很低）
  * - [InterruptedException]
  */
-public sealed class RunInBlockingException protected constructor(cause: Throwable) : RuntimeException(cause)
+public sealed class RunInBlockingException(cause: Throwable) : RuntimeException(cause)
 
 @Suppress("unused", "ClassName")
 private class `$RunInBlockingException$`(cause: Throwable) : RunInBlockingException(cause)
@@ -833,7 +833,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
             // value is a Future.
             @Suppress("UNCHECKED_CAST")
             valueUpdater.updateAndGet(this) { curr ->
-                (curr as? CompletableFuture<T> ?: CompletableFuture<T>()).also { f ->
+                (curr as? CompletableFuture<T> ?: CompletableFuture()).also { f ->
                     result.onSuccess { value ->
                         f.complete(value)
                     }.onFailure { e ->

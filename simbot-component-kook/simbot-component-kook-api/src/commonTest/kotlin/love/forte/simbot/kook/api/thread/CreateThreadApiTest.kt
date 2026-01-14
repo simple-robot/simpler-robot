@@ -119,7 +119,7 @@ class CreateThreadApiTest {
             .categoryId(categoryId)
             .cover(cover)
             .build()
-            
+
         val api = CreateThreadApi.create(body)
 
         // Capture actual request body using MockEngine
@@ -173,14 +173,14 @@ class CreateThreadApiTest {
         assertTrue(threadView.mentionAll)
         assertFalse(threadView.mentionHere)
         assertEquals("机器人新闻播报：今日要闻 @全体成员  test@", threadView.previewContent)
-        
+
         // Test media
         assertEquals(1, threadView.medias.size)
         val media = threadView.medias[0]
         assertEquals(2, media.type)
         assertEquals("https://xxx.com/xxxxx.png", media.src)
         assertEquals("", media.title)
-        
+
         // Test category
         assertEquals("xxx", threadView.category.id)
         assertEquals("xxx", threadView.category.name)
@@ -202,7 +202,7 @@ class CreateThreadApiTest {
             .cover(cover)
             .build()
 
-        val api = CreateThreadApi.create(body)
+        CreateThreadApi.create(body)
         assertEquals(channelId, body.channelId)
         assertEquals(guildId, body.guildId)
         assertEquals(title, body.title)
@@ -236,7 +236,7 @@ class CreateThreadApiTest {
         val guildId = "2222222222222222"
         val title = "Test"
         val content = "Content"
-        
+
         val body1 = CreateThreadApi.Body(channelId, guildId, title, content)
         val body2 = CreateThreadApi.Body(channelId, guildId, title, content)
         val body3 = CreateThreadApi.Body(channelId, guildId, title, "Different Content")

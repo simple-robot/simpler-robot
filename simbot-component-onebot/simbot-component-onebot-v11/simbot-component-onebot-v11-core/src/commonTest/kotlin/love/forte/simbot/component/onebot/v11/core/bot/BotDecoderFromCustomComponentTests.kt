@@ -110,8 +110,6 @@ class BotDecoderFromCustomComponentTests {
 
             return m2
         }
-
-        error("no")
     }
 
     private fun doSerial(bot: OneBotBot): List<OneBotMessageSegment> {

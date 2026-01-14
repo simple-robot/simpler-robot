@@ -136,8 +136,8 @@ internal class KookMemberImpl(
             }
 
             throw DeleteFailureException(
-                "Kick member(id=${source.id}) on failure. HTTP status: ${respEx.response.status.value}): " +
-                    "${respEx.message}",
+                "Kick member(id=${source.id}) on failure. " +
+                    "HTTP status: ${respEx.response.status.value}): ${respEx.message}",
                 respEx
             )
         }
