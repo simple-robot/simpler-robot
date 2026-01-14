@@ -32,8 +32,31 @@ env:
   GRADLE_OPTS: "-XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Build with Gradle
+        run: gradle assemble -s --warning-mode all
+
   run-tests:
-    name: Run all tests
+    name: Run all tests on ${{ matrix.os }}
+    needs: build
     strategy:
       matrix:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
@@ -57,7 +80,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run All Tests
-        run: gradle assemble allTests -s --warning-mode all
+        run: gradle allTests -s --warning-mode all
         env:
           ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
 
