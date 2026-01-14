@@ -72,9 +72,11 @@ fun KotlinTargetContainerWithPresetFunctions.applyTier3(
     supportKtorServer: Boolean = false,
     supportKtorClient: Boolean = false,
     watchosX64: Boolean = true,
+    watchosDeviceArm64: Boolean = true,
+    androidNative: Boolean = true,
 ): List<KotlinNativeTarget> {
     return buildList {
-        if (!supportKtorClient) {
+        if (androidNative) {
             add(androidNativeArm32())
             add(androidNativeArm64())
             add(androidNativeX86())
@@ -82,7 +84,7 @@ fun KotlinTargetContainerWithPresetFunctions.applyTier3(
         }
         add(mingwX64())
         // Apple macOS hosts
-        if (!supportKtorServer && !supportKtorClient) {
+        if (watchosDeviceArm64) {
             add(watchosDeviceArm64())
         }
         add(macosX64())
