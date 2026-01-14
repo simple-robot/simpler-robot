@@ -46,12 +46,8 @@ kotlin {
     }
 
     applyTier1()
-    applyTier2(
-        supportKtorClient = true,
-        // stdlib 不再支持
-        watchosX64 = false
-    )
-    applyTier3(supportKtorClient = true)
+    applyTier2()
+    applyTier3(supportKtorClient = true, watchosX64 = false)
 
     sourceSets {
         commonMain.dependencies {
