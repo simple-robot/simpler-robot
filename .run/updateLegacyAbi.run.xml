@@ -22,7 +22,7 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="updateYarn" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="updateLegacyAbi" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -33,8 +33,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="kotlinUpgradeYarnLock" />
-          <option value="kotlinWasmUpgradeYarnLock" />
+          <option value="updateLegacyAbi" />
         </list>
       </option>
       <option name="vmOptions" />

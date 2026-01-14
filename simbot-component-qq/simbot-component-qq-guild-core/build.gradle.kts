@@ -46,12 +46,9 @@ kotlin {
     }
 
     applyTier1()
-    applyTier2(
-        supportKtorClient = true,
-        // stdlib 不再支持
-        watchosX64 = false
-    )
-    applyTier3(supportKtorClient = true)
+    applyTier2()
+    // TODO multiplatform-crypto-libsodium 不支持 watchosX64 target 和 android native targets
+    applyTier3(supportKtorClient = true, watchosX64 = false, androidNative = false, watchosDeviceArm64 = false)
 
     sourceSets {
         commonMain.dependencies {
