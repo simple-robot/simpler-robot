@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,49 +23,4 @@
 
 package love.forte.simbot.common.streamable
 
-/**
- *
- * 一个可流化的包装器类型。
- * 用于提供更便捷地对 [Sequence] 进行转化的API。
- *
- * [Streamable] 是一种用于便捷操作的**转化器**，
- * 而不是直接对流进行操作的类型。
- * 它的作用是尽可能减小不同平台间对 [Sequence] 的操作差异。
- *
- * [Streamable] 会有部分平台专供的API，例如在 JVM 中可转化为 `Stream`。
- *
- * @since 4.4.0
- *
- * @author ForteScarlet
- */
-public actual class Streamable<out T> private actual constructor(
-    private val seq: Sequence<T>
-) : Iterable<T> {
-    public actual fun asSequence(): Sequence<T> = seq
-    actual override fun iterator(): Iterator<T> = seq.iterator()
-
-    /**
-     * 将结果转化为 [List]
-     */
-    public actual fun collectToList(): List<T> = seq.toList()
-
-    /**
-     * 将内部的序列结果收集到 [C] 中。
-     */
-    public actual fun <C : MutableCollection<in T>> collectTo(collection: C): C =
-        seq.toCollection(collection)
-
-    /**
-     * 收集元素为数组。
-     */
-    public fun collectToArray(): Array<out T> =
-        seq.toList().toTypedArray()
-
-    public actual companion object {
-        /**
-         * 将 [Sequence] 转化为 [Streamable]
-         */
-        public actual fun <T> Sequence<T>.asStreamable(): Streamable<T> =
-            Streamable(this)
-    }
-}
+internal actual fun <T> Sequence<T>.collectToTypedArray(): Array<out T> = toList().toTypedArray()
