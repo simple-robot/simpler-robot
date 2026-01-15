@@ -81,8 +81,6 @@ jobs:
 
       - name: Run All Tests
         run: gradle allTests -s --warning-mode all
-        env:
-          ORG_GRADLE_PROJECT_kotlin.native.enableKlibsCrossCompilation: "false"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v6
