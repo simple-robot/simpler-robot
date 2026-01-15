@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -58,7 +58,7 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 
 @ExperimentalSimbotCollectionApi
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
-    private val lists = mutableMapOf<Int, MutableList<T>>()
+    private val lists = mutableMapOf<Int, ArrayDeque<T>>()
 
     override val size: Int
         get() = lists.values.sumOf { it.size }
@@ -69,7 +69,7 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     override fun isEmpty(): Boolean = lists.values.all { it.isEmpty() }
 
     override fun add(priority: Int, value: T) {
-        val list = lists.getOrPut(priority) { mutableListOf() }
+        val list = lists.getOrPut(priority) { ArrayDeque() }
         list.add(value)
     }
 
@@ -107,7 +107,6 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         lists.values.removeAll { list -> list.removedAllAndEmpty(predicate) }
     }
 
-
     override fun clear() {
         lists.clear()
     }
@@ -116,7 +115,6 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private fun <T> MutableList<T>.removedAllAndEmpty(predicate: (T) -> Boolean): Boolean =
         removeAll(predicate) && isEmpty()
 
-    // copy iterator
     override fun iterator(): Iterator<T> {
         val sorted = lists.toMap().entries.sortedBy { it.key }
         return iterator {
