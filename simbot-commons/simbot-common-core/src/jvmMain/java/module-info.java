@@ -4,6 +4,7 @@ module simbot.common.core {
     requires static simbot.common.annotations;
     requires transitive simbot.common.suspendrunner;
     requires transitive simbot.common.collection;
+    requires transitive simbot.common.time;
     requires static kotlinx.coroutines.reactor;
     requires transitive kotlinx.serialization.core;
     requires static reactor.core;
@@ -19,6 +20,5 @@ module simbot.common.core {
     exports love.forte.simbot.common.serialization;
     exports love.forte.simbot.common.services;
     exports love.forte.simbot.common.text;
-    exports love.forte.simbot.common.time;
     exports love.forte.simbot.common.weak;
 }

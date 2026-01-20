@@ -22,22 +22,21 @@
  */
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("simbot.kotlin-multiplatform")
-    kotlin("plugin.serialization")
-//    id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
 
-configJavaCompileWithModule("simbot.common.core")
+configJavaCompileWithModule("simbot.common.time")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+    configKotlinJvm()
 
     js(IR) {
         configJs()
@@ -45,7 +44,7 @@ kotlin {
 
     applyTier123()
 
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         configWasmJs()
     }
@@ -58,39 +57,16 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-
-                api(project(":simbot-commons:simbot-common-annotations"))
-                api(project(":simbot-commons:simbot-common-suspend-runner"))
-                api(project(":simbot-commons:simbot-common-collection"))
-                api(project(":simbot-commons:simbot-common-time"))
-                api(libs.kotlinx.serialization.core)
-            }
-        }
         commonTest {
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.coroutines.test)
                 implementation(kotlin("test"))
-                implementation(libs.kotlinx.serialization.json)
             }
-        }
-
-        jvmMain.dependencies {
-            compileOnly(libs.kotlinx.coroutines.reactor)
-            compileOnly(libs.kotlinx.coroutines.reactive)
         }
 
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))
-                implementation(libs.kotlinx.coroutines.reactor)
-                implementation("io.projectreactor:reactor-test:3.7.11")
             }
         }
     }
 }
-
-
