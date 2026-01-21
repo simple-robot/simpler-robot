@@ -68,11 +68,11 @@ import kotlin.time.Clock
  * ## 默认实现
  *
  * - [MillisecondTimestamp] 是全平台的默认实现，提供一个毫秒值，进行一个简单的包装。
- * - [InstantTimestamp] 是自 5.0 开始提供的新的全平台的默认实现，
+ * - [StandardInstantTimestamp] 是自 5.0 开始提供的新的全平台的默认实现，
  *   基于 Kotlin （2.3+）的标准库的 [Instant][kotlin.time.Instant] 提供 [Timestamp] 的能力实现。
  *
  * @see MillisecondTimestamp
- * @see InstantTimestamp
+ * @see StandardInstantTimestamp
  *
  * @author ForteScarlet
  */
@@ -120,7 +120,7 @@ public interface Timestamp : Comparable<Timestamp> {
          * @since 5.0
          */
         @JvmStatic
-        public fun now(clock: Clock): Timestamp = InstantTimestamp(clock.now())
+        public fun now(clock: Clock): Timestamp = StandardInstantTimestamp(clock.now())
     }
 }
 

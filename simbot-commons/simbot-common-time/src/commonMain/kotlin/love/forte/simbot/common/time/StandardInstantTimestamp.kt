@@ -26,11 +26,12 @@ package love.forte.simbot.common.time
 import kotlin.time.Instant
 
 /**
- * 使用 [Instant] 作为时间戳基准的 [Timestamp] 实现。
+ * 使用 Kotlin 标准库中的 [Instant] 作为时间戳基准的 [Timestamp] 实现。
+ *
  * @author ForteScarlet
  * @since 5.0
  */
-public class InstantTimestamp(private val instant: Instant) : Timestamp {
+public class StandardInstantTimestamp(private val instant: Instant) : Timestamp {
     override val milliseconds: Long
         get() = instant.toEpochMilliseconds()
 
@@ -38,7 +39,7 @@ public class InstantTimestamp(private val instant: Instant) : Timestamp {
         if (this === other) return true
         if (other !is Timestamp) return false
 
-        if (other is InstantTimestamp) {
+        if (other is StandardInstantTimestamp) {
             return instant == other.instant
         }
 
