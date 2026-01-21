@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,6 +23,10 @@
 
 package love.forte.simbot.logger
 
+/**
+ * 日志工厂。
+ *
+ */
 public actual object LoggerFactory {
 
     /**
@@ -43,7 +47,13 @@ public actual object LoggerFactory {
     public fun getLogger(name: String, level: LogLevel): Logger = SimpleConsoleLogger(name = name, level = level)
 }
 
-
+/**
+ * 使用 [LoggerFactory] 通过类型 [T] 构建 [Logger]。
+ *
+ * 通常这会使得结果 [Logger] 的 [name][Logger.getName]
+ * 与目标类型 [T] 有关，比如为 [T] 的全限定名称。
+ */
 public actual inline fun <reified T> LoggerFactory.logger(): Logger {
+    // T::class.qualifiedName ?:
     return getLogger(T::class.simpleName ?: T::class.toString())
 }

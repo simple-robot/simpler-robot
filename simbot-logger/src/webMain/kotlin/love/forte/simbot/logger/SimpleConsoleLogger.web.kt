@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -25,7 +25,7 @@ package love.forte.simbot.logger
 
 import love.forte.simbot.logger.internal.AbstractSimpleLogger
 import love.forte.simbot.logger.internal.toDisplayName
-
+import web.console.console
 
 /**
  *
@@ -40,27 +40,42 @@ internal class SimpleConsoleLogger(
 
 
     override fun trace0(formattedLog: String, throwable: Throwable?) {
-        console.log("[trace]", "[$displayName]:", formattedLog)
-        throwable?.stackTraceToString()?.also { console.log(it) }
+        if (throwable == null) {
+            console.trace("[$displayName]:", formattedLog)
+        } else {
+            console.trace("[$displayName]:", formattedLog, throwable.stackTraceToString())
+        }
     }
 
     override fun debug0(formattedLog: String, throwable: Throwable?) {
-        console.log("[debug]", "[$displayName]:", formattedLog)
-        throwable?.stackTraceToString()?.also { console.log(it) }
+        if (throwable == null) {
+            console.debug("[$displayName]:", formattedLog)
+        } else {
+            console.debug("[$displayName]:", formattedLog, throwable.stackTraceToString())
+        }
     }
 
     override fun info0(formattedLog: String, throwable: Throwable?) {
-        console.info("[$displayName]:", formattedLog)
-        throwable?.stackTraceToString()?.also { console.info(it) }
+        if (throwable == null) {
+            console.info("[$displayName]:", formattedLog)
+        } else {
+            console.info("[$displayName]:", formattedLog, throwable.stackTraceToString())
+        }
     }
 
     override fun warn0(formattedLog: String, throwable: Throwable?) {
-        console.warn("[$displayName]:", formattedLog)
-        throwable?.stackTraceToString()?.also { console.warn(it) }
+        if (throwable == null) {
+            console.warn("[$displayName]:", formattedLog)
+        } else {
+            console.warn("[$displayName]:", formattedLog, throwable.stackTraceToString())
+        }
     }
 
     override fun error0(formattedLog: String, throwable: Throwable?) {
-        console.error("[$displayName]:", formattedLog)
-        throwable?.stackTraceToString()?.also { console.error(it) }
+        if (throwable == null) {
+            console.error("[$displayName]:", formattedLog)
+        } else {
+            console.error("[$displayName]:", formattedLog, throwable.stackTraceToString())
+        }
     }
 }
