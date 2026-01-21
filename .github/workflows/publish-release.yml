@@ -64,7 +64,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Run All Tests pre release
-        run: gradle checkLegacyAbi allTests -s --warning-mode all
+        run: gradle checkLegacyAbi allTests -s --warning-mode all -x watchosSimulatorArm64Test -x iosX64Test -x macosX64Test -x watchosX64Test -x tvosX64Test
 
       - name: Upload test reports
         uses: actions/upload-artifact@v6

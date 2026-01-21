@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -51,10 +51,9 @@ internal actual fun customDispatcher(
     name: String?,
 ): CoroutineDispatcher? {
     val core = coreThreads ?: return null
-    require(core <= 1) { "'coreThreads' must >= 1, but $core" }
+    require(core >= 1) { "'coreThreads' must >= 1, but $core" }
 
     return Dispatchers.IO.limitedParallelism(core, name ?: "Custom-DP.FT.$core")
-    // return newFixedThreadPoolContext(core, name ?: "Custom-DP.FT.$core")
 }
 
 /**

@@ -632,51 +632,6 @@ public final class love/forte/simbot/common/text/StringsKt {
 	public static final fun toHex ([B)Ljava/lang/String;
 }
 
-public final class love/forte/simbot/common/time/InstantTimestamp : java/io/Serializable, love/forte/simbot/common/time/Timestamp {
-	public static final field Companion Llove/forte/simbot/common/time/InstantTimestamp$Companion;
-	public synthetic fun <init> (Ljava/time/Instant;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getInstant ()Ljava/time/Instant;
-	public fun getMilliseconds ()J
-	public fun hashCode ()I
-	public static final fun of (Ljava/time/Instant;)Llove/forte/simbot/common/time/InstantTimestamp;
-	public fun timeAs (Ljava/util/concurrent/TimeUnit;)J
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class love/forte/simbot/common/time/InstantTimestamp$Companion {
-	public final fun of (Ljava/time/Instant;)Llove/forte/simbot/common/time/InstantTimestamp;
-}
-
-public final class love/forte/simbot/common/time/JavaDurationsKt {
-	public static final synthetic fun getJava-LRDsOJo (J)Ljava/time/Duration;
-	public static final synthetic fun getJavaOrNull-LRDsOJo (J)Ljava/time/Duration;
-	public static final synthetic fun getKotlin (Ljava/time/Duration;)J
-	public static final fun java-VtjQ1oo (JLkotlin/jvm/functions/Function1;)Ljava/time/Duration;
-	public static synthetic fun java-VtjQ1oo$default (JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/time/Duration;
-}
-
-public final class love/forte/simbot/common/time/MillisecondTimestamp : love/forte/simbot/common/time/Timestamp {
-	public fun <init> (J)V
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getMilliseconds ()J
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class love/forte/simbot/common/time/Timestamp : java/lang/Comparable {
-	public static final field Companion Llove/forte/simbot/common/time/Timestamp$Companion;
-	public synthetic fun compareTo (Ljava/lang/Object;)I
-	public fun compareTo (Llove/forte/simbot/common/time/Timestamp;)I
-	public abstract fun getMilliseconds ()J
-	public static fun ofMilliseconds (J)Llove/forte/simbot/common/time/Timestamp;
-	public fun timeAs (Ljava/util/concurrent/TimeUnit;)J
-}
-
-public final class love/forte/simbot/common/time/Timestamp$Companion {
-	public final fun ofMilliseconds (J)Llove/forte/simbot/common/time/Timestamp;
-}
-
 public final class love/forte/simbot/common/weak/NonWeakRefImpl : love/forte/simbot/common/weak/WeakRef {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun clear ()V

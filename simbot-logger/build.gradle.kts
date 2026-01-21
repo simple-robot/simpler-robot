@@ -80,6 +80,9 @@ kotlin {
                 api(libs.slf4j.api)
             }
         }
+        webMain.dependencies {
+            api(kotlinWrappers.web)
+        }
     }
 }
 

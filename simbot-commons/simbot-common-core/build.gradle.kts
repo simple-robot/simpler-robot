@@ -65,6 +65,7 @@ kotlin {
                 api(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-collection"))
+                api(project(":simbot-commons:simbot-common-time"))
                 api(libs.kotlinx.serialization.core)
             }
         }

@@ -40,6 +40,21 @@ develocity {
     // configuration
 }
 
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
+    repositories {
+        mavenCentral()
+    }
+
+    // https://github.com/JetBrains/kotlin-wrappers
+    versionCatalogs {
+        register("kotlinWrappers") {
+            val wrappersVersion = "2026.1.10"
+            from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
+        }
+    }
+}
+
 // benchmarks
 // include(":benchmarks:v4-v3-core-benchmark")
 
@@ -72,6 +87,7 @@ include(":simbot-commons:simbot-common-core")
 include(":simbot-commons:simbot-common-ktor-inputfile")
 include(":simbot-commons:simbot-common-suspend-runner")
 include(":simbot-commons:simbot-common-stage-loop")
+include(":simbot-commons:simbot-common-time")
 include(":simbot-api")
 include(":simbot-test")
 include(":simbot-cores:simbot-core")
