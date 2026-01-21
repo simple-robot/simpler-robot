@@ -63,10 +63,10 @@ public class InstantTimestamp private constructor(public val instant: Instant) :
         private const val serialVersionUID: Long = 1L
 
         /**
-         * 通过 [Instant] 得到一个 [StandardInstantTimestamp]。
+         * 通过 [Instant] 得到一个 [InstantTimestamp]。
          */
         @JvmStatic
         @JvmName("of")
-        public fun Instant.toTimestamp(): StandardInstantTimestamp = StandardInstantTimestamp(this)
+        public fun Instant.toTimestamp(): InstantTimestamp = InstantTimestamp(this)
     }
 }

@@ -1,37 +1,12 @@
 // Klib ABI Dump
 // Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Alias: native => [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
-// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
 // - Show declarations: true
 
 // Library unique name: <love.forte.simbot.common:simbot-common-core>
-final enum class love.forte.simbot.common.time/TimeUnit : kotlin/Enum<love.forte.simbot.common.time/TimeUnit> { // love.forte.simbot.common.time/TimeUnit|null[0]
-    enum entry DAYS // love.forte.simbot.common.time/TimeUnit.DAYS|null[0]
-    enum entry HOURS // love.forte.simbot.common.time/TimeUnit.HOURS|null[0]
-    enum entry MICROSECONDS // love.forte.simbot.common.time/TimeUnit.MICROSECONDS|null[0]
-    enum entry MILLISECONDS // love.forte.simbot.common.time/TimeUnit.MILLISECONDS|null[0]
-    enum entry MINUTES // love.forte.simbot.common.time/TimeUnit.MINUTES|null[0]
-    enum entry NANOSECONDS // love.forte.simbot.common.time/TimeUnit.NANOSECONDS|null[0]
-    enum entry SECONDS // love.forte.simbot.common.time/TimeUnit.SECONDS|null[0]
-
-    final val entries // love.forte.simbot.common.time/TimeUnit.entries|#static{}entries[0]
-        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.common.time/TimeUnit> // love.forte.simbot.common.time/TimeUnit.entries.<get-entries>|<get-entries>#static(){}[0]
-
-    final fun convert(kotlin/Long, love.forte.simbot.common.time/TimeUnit): kotlin/Long // love.forte.simbot.common.time/TimeUnit.convert|convert(kotlin.Long;love.forte.simbot.common.time.TimeUnit){}[0]
-    final fun toDays(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toDays|toDays(kotlin.Long){}[0]
-    final fun toHours(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toHours|toHours(kotlin.Long){}[0]
-    final fun toMicros(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMicros|toMicros(kotlin.Long){}[0]
-    final fun toMillis(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMillis|toMillis(kotlin.Long){}[0]
-    final fun toMinutes(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toMinutes|toMinutes(kotlin.Long){}[0]
-    final fun toNanos(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toNanos|toNanos(kotlin.Long){}[0]
-    final fun toSeconds(kotlin/Long): kotlin/Long // love.forte.simbot.common.time/TimeUnit.toSeconds|toSeconds(kotlin.Long){}[0]
-    final fun valueOf(kotlin/String): love.forte.simbot.common.time/TimeUnit // love.forte.simbot.common.time/TimeUnit.valueOf|valueOf#static(kotlin.String){}[0]
-    final fun values(): kotlin/Array<love.forte.simbot.common.time/TimeUnit> // love.forte.simbot.common.time/TimeUnit.values|values#static(){}[0]
-}
-
 abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.common.async/CompletionHandler { // love.forte.simbot.common.async/CompletionHandler|null[0]
     abstract fun invoke(#A) // love.forte.simbot.common.async/CompletionHandler.invoke|invoke(1:0){}[0]
 }
@@ -145,18 +120,6 @@ abstract interface love.forte.simbot.common.attribute/MutableAttributeMap : love
 abstract interface love.forte.simbot.common.id/IDContainer { // love.forte.simbot.common.id/IDContainer|null[0]
     abstract val id // love.forte.simbot.common.id/IDContainer.id|{}id[0]
         abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.common.id/IDContainer.id.<get-id>|<get-id>(){}[0]
-}
-
-abstract interface love.forte.simbot.common.time/Timestamp : kotlin/Comparable<love.forte.simbot.common.time/Timestamp> { // love.forte.simbot.common.time/Timestamp|null[0]
-    abstract val milliseconds // love.forte.simbot.common.time/Timestamp.milliseconds|{}milliseconds[0]
-        abstract fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/Timestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
-
-    open fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/Timestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
-    open fun timeAs(love.forte.simbot.common.time/TimeUnit): kotlin/Long // love.forte.simbot.common.time/Timestamp.timeAs|timeAs(love.forte.simbot.common.time.TimeUnit){}[0]
-
-    final object Companion { // love.forte.simbot.common.time/Timestamp.Companion|null[0]
-        final fun ofMilliseconds(kotlin/Long): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.ofMilliseconds|ofMilliseconds(kotlin.Long){}[0]
-    }
 }
 
 final class <#A: kotlin/Any> love.forte.simbot.common.attribute/Attribute { // love.forte.simbot.common.attribute/Attribute|null[0]
@@ -414,17 +377,6 @@ final class love.forte.simbot.common.id/UUID : love.forte.simbot.common.id/ID { 
     }
 }
 
-final class love.forte.simbot.common.time/MillisecondTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/MillisecondTimestamp|null[0]
-    constructor <init>(kotlin/Long) // love.forte.simbot.common.time/MillisecondTimestamp.<init>|<init>(kotlin.Long){}[0]
-
-    final val milliseconds // love.forte.simbot.common.time/MillisecondTimestamp.milliseconds|{}milliseconds[0]
-        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/MillisecondTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/MillisecondTimestamp.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/MillisecondTimestamp.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // love.forte.simbot.common.time/MillisecondTimestamp.toString|toString(){}[0]
-}
-
 open class <#A: kotlin/Any, #B: kotlin/Any, #C: love.forte.simbot.common.function/MergeableFactory.Key> love.forte.simbot.common.function/MergeableFactoriesConfigurator { // love.forte.simbot.common.function/MergeableFactoriesConfigurator|null[0]
     constructor <init>(kotlin.collections/Map<#C, love.forte.simbot.common.function/ConfigurerFunction<kotlin/Any>>, kotlin.collections/Map<#C, kotlin/Function1<#A, #B>>) // love.forte.simbot.common.function/MergeableFactoriesConfigurator.<init>|<init>(kotlin.collections.Map<1:2,love.forte.simbot.common.function.ConfigurerFunction<kotlin.Any>>;kotlin.collections.Map<1:2,kotlin.Function1<1:0,1:1>>){}[0]
 
@@ -605,45 +557,6 @@ final suspend fun <#A: kotlin/Any?> (love.forte.simbot.common.async/Async<#A>).l
 // Targets: [native]
 final const val love.forte.simbot.common.services/isJvm // love.forte.simbot.common.services/isJvm|{}isJvm[0]
     final fun <get-isJvm>(): kotlin/Boolean // love.forte.simbot.common.services/isJvm.<get-isJvm>|<get-isJvm>(){}[0]
-
-// Targets: [apple]
-final class love.forte.simbot.common.time/NSDateTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/NSDateTimestamp|null[0]
-    constructor <init>(platform.Foundation/NSDate) // love.forte.simbot.common.time/NSDateTimestamp.<init>|<init>(platform.Foundation.NSDate){}[0]
-
-    final val date // love.forte.simbot.common.time/NSDateTimestamp.date|{}date[0]
-        final fun <get-date>(): platform.Foundation/NSDate // love.forte.simbot.common.time/NSDateTimestamp.date.<get-date>|<get-date>(){}[0]
-    final val milliseconds // love.forte.simbot.common.time/NSDateTimestamp.milliseconds|{}milliseconds[0]
-        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/NSDateTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
-
-    final fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/NSDateTimestamp.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // love.forte.simbot.common.time/NSDateTimestamp.toString|toString(){}[0]
-
-    final object Companion // love.forte.simbot.common.time/NSDateTimestamp.Companion|null[0]
-}
-
-// Targets: [js, wasmJs]
-final class love.forte.simbot.common.time/DateTimestamp : love.forte.simbot.common.time/Timestamp { // love.forte.simbot.common.time/DateTimestamp|null[0]
-    final val date // love.forte.simbot.common.time/DateTimestamp.date|{}date[0]
-        // Targets: [js]
-        final fun <get-date>(): kotlin.js/Date // love.forte.simbot.common.time/DateTimestamp.date.<get-date>|<get-date>(){}[0]
-
-        // Targets: [wasmJs]
-        final fun <get-date>(): kotlin.js/JsAny // love.forte.simbot.common.time/DateTimestamp.date.<get-date>|<get-date>(){}[0]
-    final val milliseconds // love.forte.simbot.common.time/DateTimestamp.milliseconds|{}milliseconds[0]
-        final fun <get-milliseconds>(): kotlin/Long // love.forte.simbot.common.time/DateTimestamp.milliseconds.<get-milliseconds>|<get-milliseconds>(){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/DateTimestamp.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/DateTimestamp.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // love.forte.simbot.common.time/DateTimestamp.toString|toString(){}[0]
-
-    // Targets: [js]
-    constructor <init>(kotlin.js/Date) // love.forte.simbot.common.time/DateTimestamp.<init>|<init>(kotlin.js.Date){}[0]
-
-    // Targets: [wasmJs]
-    constructor <init>(kotlin.js/JsAny) // love.forte.simbot.common.time/DateTimestamp.<init>|<init>(kotlin.js.JsAny){}[0]
-}
 
 // Targets: [js, wasmJs]
 final val love.forte.simbot.common.services/isJvm // love.forte.simbot.common.services/isJvm|{}isJvm[0]
