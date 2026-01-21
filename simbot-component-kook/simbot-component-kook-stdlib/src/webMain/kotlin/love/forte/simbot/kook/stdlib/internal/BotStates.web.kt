@@ -25,6 +25,7 @@ package love.forte.simbot.kook.stdlib.internal
 
 import io.ktor.websocket.*
 import js.buffer.ArrayBuffer
+import js.buffer.toArrayBuffer
 import js.typedarrays.Uint8Array
 import love.forte.simbot.annotations.InternalSimbotAPI
 import web.blob.Blob
@@ -32,8 +33,10 @@ import web.compression.CompressionFormat
 import web.compression.DecompressionStream
 import web.compression.deflate
 import web.encoding.TextDecoder
+import web.streams.ReadableWritablePair
 import web.streams.read
 import kotlin.js.ExperimentalWasmJsInterop
+import kotlin.js.toJsArray
 import kotlin.js.unsafeCast
 
 /**
@@ -47,10 +50,15 @@ import kotlin.js.unsafeCast
 @OptIn(ExperimentalWasmJsInterop::class)
 @InternalSimbotAPI
 public actual suspend fun Frame.Binary.readToTextWithDeflated(): String {
-    val blob = dataToBlob()
+    //   Cannot access 'Cloneable' which is a supertype of 'ByteArray'.
+    //   Check your module classpath for missing or conflicting dependencies.
+    // 只是 IDE 的错误提示：https://youtrack.jetbrains.com/issue/KTIJ-36883
+    val blob = Blob(arrayOf(data.toArrayBuffer()).toJsArray())
 
     val decompressionStream = DecompressionStream(CompressionFormat.deflate)
-    val decompressedStream = blob.stream().pipeThrough<Uint8Array<ArrayBuffer>>(decompressionStream.unsafeCast())
+    val decompressedStream = blob.stream().pipeThrough(
+        decompressionStream.unsafeCast<ReadableWritablePair<Uint8Array<ArrayBuffer>, Uint8Array<ArrayBuffer>>>()
+    )
 
     val reader = decompressedStream.getReader()
 
@@ -78,4 +86,3 @@ public actual suspend fun Frame.Binary.readToTextWithDeflated(): String {
 // 直接使用存在错误：
 //   Cannot access 'Cloneable' which is a supertype of 'ByteArray'.
 //   Check your module classpath for missing or conflicting dependencies.
-internal expect fun Frame.Binary.dataToBlob(): Blob
