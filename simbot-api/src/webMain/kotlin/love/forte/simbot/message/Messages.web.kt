@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,13 +21,10 @@
  *
  */
 
-package love.forte.simbot.component
+package love.forte.simbot.message
 
-import love.forte.simbot.common.services.Services
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
-/**
- * 获取通过 [addComponentFactoryProvider] 添加的内容的副本序列。
- */
-public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>> =
-    Services.loadProviders<ComponentFactoryProvider<*>>().map { it() }
-
+internal actual fun PolymorphicModuleBuilder<Message.Element>.resolvePlatformStandardSerializers() {
+    // nothing.
+}

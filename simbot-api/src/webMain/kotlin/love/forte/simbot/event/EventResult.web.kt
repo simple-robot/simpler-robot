@@ -23,8 +23,32 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.await
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.toList
+import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.Promise
 
+/**
+ * 收集 [StandardEventResult.CollectableReactivelyResult.content] 的结果并返回。
+ * 如果结果不可收集或不支持收集，则得到原值。
+ *
+ * native 平台下支持 Kotlin Coroutines 本身的可挂起类型 [Deferred] 和 [Flow] 和 [Promise]。
+ * 可收集类型参考 [StandardEventResult.CollectableReactivelyResult.content] 说明。
+ *
+ * @see StandardEventResult.CollectableReactivelyResult.content
+ * @return The collected result.
+ */
 @OptIn(ExperimentalWasmJsInterop::class)
-internal actual suspend fun Promise<*>.awaitValue(): Any? = await()
+public actual suspend fun StandardEventResult.CollectableReactivelyResult.collectCollectableReactively(): Any? {
+    return when (val c = content) {
+        null -> null
+        is Deferred<*> -> c.await()
+        is Flow<*> -> c.toList()
+        is Promise<*> -> c.awaitValue()
+        else -> content
+    }
+}
+
+@OptIn(ExperimentalWasmJsInterop::class)
+internal expect suspend fun Promise<*>.awaitValue(): Any?
