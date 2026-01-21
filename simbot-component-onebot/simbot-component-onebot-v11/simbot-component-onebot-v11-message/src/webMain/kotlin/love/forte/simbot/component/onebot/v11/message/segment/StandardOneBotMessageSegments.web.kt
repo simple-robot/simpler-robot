@@ -21,49 +21,21 @@
  *
  */
 
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+package love.forte.simbot.component.onebot.v11.message.segment
 
+import love.forte.simbot.component.onebot.v11.message.Base64Encoder
+import love.forte.simbot.resource.Resource
 
-plugins {
-    id("simbot.kotlin-multiplatform")
-    id("org.jetbrains.dokka")
+internal actual fun resolveResourceToFileValuePlatform(
+    resource: Resource,
+    localFileToBase64: Boolean,
+    encoder: Base64Encoder
+): String? = null
+
+internal actual fun uriResource(uri: String): Resource {
+    throw UnsupportedOperationException("URI resource is not supported in Web platform")
 }
 
-configJavaCompileWithModule("simbot.common.apidefinition")
-apply(plugin = "simbot-maven-publish")
-
-kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-
-    js(IR) {
-        configJs()
-    }
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        configWasmJs()
-    }
-
-    applyTier123(supportKtorClient = true)
-
-    sourceSets {
-        commonMain.dependencies {
-            api(libs.kotlinx.serialization.core)
-            api(libs.ktor.http)
-        }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-        jvmTest {
-            dependencies {
-                implementation(libs.slf4j.api)
-            }
-        }
-    }
+internal actual fun pathResource(path: String): Resource {
+    throw UnsupportedOperationException("Path resource is not supported in Web platform")
 }
-

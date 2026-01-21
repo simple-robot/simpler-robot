@@ -164,6 +164,11 @@ internal class BotImpl(
 
         WebSockets {
             pingInterval = 30.seconds
+            // TODO for JVM:
+            //  https://ktor.io/docs/server-websocket-deflate.html#installation
+            // extensions {
+            //    install(WebSocketDeflateExtension)
+            // }
         }
 
         engineConfiguration?.also { ec ->

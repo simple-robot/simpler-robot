@@ -22,6 +22,7 @@
  */
 
 import com.google.devtools.ksp.gradle.KspAATask
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("simbot.kotlin-multiplatform")
@@ -50,6 +51,11 @@ kotlin {
 
     js(IR) {
         configJs()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
     }
 
     applyTier123(supportKtorClient = true)

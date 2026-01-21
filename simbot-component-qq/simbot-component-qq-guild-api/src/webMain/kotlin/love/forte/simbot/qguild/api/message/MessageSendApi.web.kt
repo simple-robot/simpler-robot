@@ -21,49 +21,6 @@
  *
  */
 
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+package love.forte.simbot.qguild.api.message
 
-
-plugins {
-    id("simbot.kotlin-multiplatform")
-    id("org.jetbrains.dokka")
-}
-
-configJavaCompileWithModule("simbot.common.apidefinition")
-apply(plugin = "simbot-maven-publish")
-
-kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-
-    js(IR) {
-        configJs()
-    }
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        configWasmJs()
-    }
-
-    applyTier123(supportKtorClient = true)
-
-    sourceSets {
-        commonMain.dependencies {
-            api(libs.kotlinx.serialization.core)
-            api(libs.ktor.http)
-        }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-        jvmTest {
-            dependencies {
-                implementation(libs.slf4j.api)
-            }
-        }
-    }
-}
-
+internal actual fun checkFileImage(fileImage: Any): Unit = Unit
