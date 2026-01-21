@@ -81,7 +81,6 @@ jobs:
             -x watchosSimulatorArm64Test \
             -x iosX64Test \
             -x macosX64Test \
-            -x watchosDeviceArm64Test \
             -x watchosX64Test \
             -x tvosX64Test
 
