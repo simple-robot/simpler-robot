@@ -23,8 +23,9 @@
 
 package love.forte.simbot.common.time
 
-import love.forte.simbot.annotations.ExperimentalSimbotAPI
+import love.forte.simbot.common.time.Timestamp.Companion.now
 import kotlin.jvm.JvmStatic
+import kotlin.time.Clock
 
 /**
  * 一个用于表示 Unix 时间戳的类型。
@@ -34,7 +35,12 @@ import kotlin.jvm.JvmStatic
  * [Timestamp] **不是日期API** ，而仅是一种忽略时间单位的时间戳包装体。
  * 因此 [Timestamp] 本身不提供例如解析某格式的日期（例如 ISO-8601）或进行日期格式化等功能。
  *
- * 这些功能也许会在某些支持的特定平台上提供辅助实现（例如在JVM平台上使用 `java.time` 相关API）。
+ * 它类似 [Instant][kotlin.time.Instant]，只不过诞生自 Kotlin 标准库尚未提供 [Instant][kotlin.time.Instant] 的时代。
+ *
+ * 这些功能也许会在某些支持的特定平台上提供辅助实现或额外实现：
+ * - 在JVM平台上使用 `java.time` 相关API
+ * - 在 apple 平台上提供基于 `platform.Foundation.NSDate` 的实现
+ * - 在 web 平台上提供基于 `js.date.Date` 的实现
  *
  * 当然，也可以自行实现 `Timestamp` 来定制化其内部细节。
  *
@@ -59,9 +65,14 @@ import kotlin.jvm.JvmStatic
  * [Timestamp] 应支持与任意 [Timestamp] 类型进行匹配，但是无法保证 [equals] 结果为 `true` 的两个结果的 [hashCode] 相同。
  *
  *
- * ## [MillisecondTimestamp]
+ * ## 默认实现
  *
- * [MillisecondTimestamp] 是全平台的默认实现，提供一个毫秒值，进行一个简单的包装。
+ * - [MillisecondTimestamp] 是全平台的默认实现，提供一个毫秒值，进行一个简单的包装。
+ * - [InstantTimestamp] 是自 5.0 开始提供的新的全平台的默认实现，
+ *   基于 Kotlin （2.3+）的标准库的 [Instant][kotlin.time.Instant] 提供 [Timestamp] 的能力实现。
+ *
+ * @see MillisecondTimestamp
+ * @see InstantTimestamp
  *
  * @author ForteScarlet
  */
@@ -93,15 +104,23 @@ public interface Timestamp : Comparable<Timestamp> {
         /**
          * 得到一个记录了当前时间戳信息的 [Timestamp] 实例。
          *
-         * 实验性: [now] 在大多数原生平台中实现不稳定。请尽可能在可靠平台中使用（例如 `JVM`、`JS`）
+         * 从 5.0（对应 Kotlin 2.3）开始，[now] 直接通过 Kotlin 标准库的 [Clock.System] 得到 [Timestamp]。
+         *
+         * 相当于：
+         * ```Kotlin
+         * val now = now(Clock.System)
+         * ```
          */
         @JvmStatic
-        @ExperimentalSimbotAPI
-        public fun now(): Timestamp = nowInternal()
+        public fun now(): Timestamp = now(Clock.System)
+
+        /**
+         * 得到一个记录了当前时间戳信息的 [Timestamp] 实例。
+         *
+         * @since 5.0
+         */
+        @JvmStatic
+        public fun now(clock: Clock): Timestamp = InstantTimestamp(clock.now())
     }
 }
 
-/**
- * 得到一个记录了当前时间戳信息的 [Timestamp] 实例。
- */
-internal expect fun nowInternal(): Timestamp

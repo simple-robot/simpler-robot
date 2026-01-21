@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,38 +21,36 @@
  *
  */
 
-package love.forte.simbot.timestamp
+package love.forte.simbot.common.weak
 
-import love.forte.simbot.annotations.ExperimentalSimbotAPI
-import love.forte.simbot.common.time.DateTimestamp
-import love.forte.simbot.common.time.Timestamp
-import kotlin.js.Date
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  *
  * @author ForteScarlet
  */
-class DateTimestampTests {
+class JsWeakTests {
 
     @Test
-    fun jsDateTimestampTest() {
-        val timestamp = DateTimestamp(Date())
-
-        // is milliseconds (13位)
-        assertTrue { timestamp.milliseconds.toString().length >= 13 }
-
-        Date().let { d ->
-            assertEquals(DateTimestamp(d), DateTimestamp(d))
+    fun weakTest() {
+        val data = Any()
+        val ref = weakRef(data)
+        println(ref)
+        println(ref::class)
+        val value = ref.value
+        println(value)
+        if (value != null) {
+            println(value::class)
         }
     }
 
-    @OptIn(ExperimentalSimbotAPI::class)
     @Test
-    fun jsTimestampNowIsDateTimestampTest() {
-        assertTrue("JS Timestamp.now is not DateTimestamp instance") { Timestamp.now() is DateTimestamp }
+    fun jsWeakTest() {
+        @Suppress("UNUSED_VARIABLE")
+        val ref = Any()
+        val jsWeakRef = js("new WeakRef(ref);")
+        println(jsWeakRef.deref)
+        println(jsWeakRef.deref1)
     }
 
 }

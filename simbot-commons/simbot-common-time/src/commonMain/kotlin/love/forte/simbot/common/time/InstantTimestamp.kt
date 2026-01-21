@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,16 +23,33 @@
 
 package love.forte.simbot.common.time
 
+import kotlin.time.Instant
+
 /**
- * Represents a date object capable of providing the current epoch time in milliseconds.
- * This class is designed to work with JavaScript environments and provides a bridge
- * to access the `getTime` method which retrieves the number of milliseconds since
- * January 1, 1970, 00:00:00 UTC.
- *
- * Due to its external nature, instances of this class should be obtained through
- * platform-specific methods rather than instantiated directly.
+ * 使用 [Instant] 作为时间戳基准的 [Timestamp] 实现。
+ * @author ForteScarlet
+ * @since 5.0
  */
-@OptIn(ExperimentalWasmJsInterop::class)
-internal external class Date : JsAny {
-    fun getTime(): Double
+public class InstantTimestamp(private val instant: Instant) : Timestamp {
+    override val milliseconds: Long
+        get() = instant.toEpochMilliseconds()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Timestamp) return false
+
+        if (other is InstantTimestamp) {
+            return instant == other.instant
+        }
+
+        return milliseconds == other.milliseconds
+    }
+
+    override fun hashCode(): Int {
+        return instant.hashCode()
+    }
+
+    override fun toString(): String {
+        return "InstantTimestamp(instant=$instant)"
+    }
 }

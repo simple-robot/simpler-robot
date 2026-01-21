@@ -57,9 +57,15 @@ kotlin {
     }
 
     sourceSets {
+        commonMain.dependencies {
+            api(project(":simbot-commons:simbot-common-annotations"))
+        }
+
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
 
@@ -67,6 +73,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-junit5"))
             }
+        }
+
+        webMain.dependencies {
+            api(kotlinWrappers.js)
         }
     }
 }

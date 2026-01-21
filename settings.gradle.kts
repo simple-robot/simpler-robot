@@ -40,6 +40,21 @@ develocity {
     // configuration
 }
 
+dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
+    repositories {
+        mavenCentral()
+    }
+
+    // https://github.com/JetBrains/kotlin-wrappers
+    versionCatalogs {
+        register("kotlinWrappers") {
+            val wrappersVersion = "2026.1.10"
+            from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
+        }
+    }
+}
+
 // benchmarks
 // include(":benchmarks:v4-v3-core-benchmark")
 

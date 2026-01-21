@@ -23,12 +23,7 @@
 
 package love.forte.simbot.common.time
 
-import kotlin.js.Date
-
-/**
- * 得到一个记录了当前 epoch 时间的 Timestamp 实例。
- */
-internal actual fun nowInternal(): Timestamp = DateTimestamp(Date())
+import js.date.Date
 
 
 /**
@@ -52,3 +47,10 @@ public class DateTimestamp(public val date: Date) : Timestamp {
     override fun hashCode(): Int = date.hashCode()
     override fun toString(): String = "DateTimestamp(milliseconds=$milliseconds, date=$date)"
 }
+
+
+/**
+ * 将 [Date] 转化为 [Timestamp]。
+ * @since 5.0
+ */
+public fun Date.toTimestamp(): Timestamp = DateTimestamp(this)

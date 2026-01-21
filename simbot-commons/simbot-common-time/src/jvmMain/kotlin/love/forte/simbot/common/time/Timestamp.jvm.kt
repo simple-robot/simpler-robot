@@ -59,7 +59,7 @@ public class InstantTimestamp private constructor(public val instant: Instant) :
     override fun toString(): String = "InstantTimestamp(milliseconds=$milliseconds, instant=$instant)"
 
     public companion object {
-        @Suppress("ConstPropertyName")
+        @Suppress("unused")
         private const val serialVersionUID: Long = 1L
 
         /**
@@ -70,10 +70,3 @@ public class InstantTimestamp private constructor(public val instant: Instant) :
         public fun Instant.toTimestamp(): InstantTimestamp = InstantTimestamp(this)
     }
 }
-
-/**
- * 通过 [System.currentTimeMillis] 获取当前时间戳并转化为 [Timestamp]。
- *
- */
-internal actual fun nowInternal(): Timestamp =
-    Timestamp.ofMilliseconds(System.currentTimeMillis())

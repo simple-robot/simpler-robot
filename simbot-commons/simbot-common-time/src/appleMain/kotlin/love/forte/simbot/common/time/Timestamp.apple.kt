@@ -25,10 +25,8 @@ package love.forte.simbot.common.time
 
 import kotlinx.cinterop.UnsafeNumber
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
-import love.forte.simbot.common.time.NSDateTimestamp.Companion.toTimestamp
 import platform.Foundation.NSDate
 import platform.Foundation.compare
-import platform.Foundation.now
 import platform.Foundation.timeIntervalSince1970
 
 
@@ -72,7 +70,7 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
     }
 
     override fun hashCode(): Int = date.hashCode()
-    override fun toString(): String = "NSDateTimestamp(milliseconds=$milliseconds, date=$date)"
+    override fun toString(): String = "NSDateTimestamp(date=$date)"
 
 
     public companion object {
@@ -86,21 +84,3 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
     }
 }
 
-
-/**
- * 得到一个记录了当前 epoch 时间的 Timestamp 实例。
- *
- * 通过 [NSDate.timeIntervalSince1970] 计算得到。
- *
- * 计算方式：
- * ```kotlin
- * (NSDate.now().timeIntervalSince1970() * 1000).toLong()
- * ```
- *
- * @see NSDateTimestamp
- */
-@OptIn(ExperimentalSimbotAPI::class)
-internal actual fun nowInternal(): Timestamp =
-    NSDate.now().toTimestamp()
-
-// NSDate
