@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * This class represents a serializer for converting a ByteArray to and from Base64 string representation.
@@ -39,13 +38,11 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 public object Base64BytesSerializer : KSerializer<ByteArray> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Base64Bytes", PrimitiveKind.STRING)
 
-    @ExperimentalEncodingApi
     override fun deserialize(decoder: Decoder): ByteArray {
         val str = decoder.decodeString()
         return Base64.decode(str)
     }
 
-    @ExperimentalEncodingApi
     override fun serialize(encoder: Encoder, value: ByteArray) {
         encoder.encodeString(Base64.encode(value))
     }

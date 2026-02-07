@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -21,9 +21,12 @@
  *
  */
 
-import love.forte.simbot.ability.*
+import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption.*
 import love.forte.simbot.ability.StandardDeleteOption.Companion.inStandardAnalysis
+import love.forte.simbot.ability.isIgnoreOnFailure
+import love.forte.simbot.ability.isIgnoreOnNoSuchTarget
+import love.forte.simbot.ability.isIgnoreOnUnsupported
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -46,7 +49,7 @@ class StandardDeleteOptionTests {
                 assertTrue(isEmpty)
                 assertFalse(isFull)
 
-                StandardDeleteOption.entries.forEach {
+                entries.forEach {
                     assertFalse(it in this)
                 }
             }
@@ -60,7 +63,7 @@ class StandardDeleteOptionTests {
                 assertFalse(isEmpty)
                 assertFalse(isFull)
 
-                StandardDeleteOption.entries.forEach {
+                entries.forEach {
                     if (it == IGNORE_ON_FAILURE) {
                         assertTrue(it in this)
                     } else {
@@ -100,12 +103,12 @@ class StandardDeleteOptionTests {
             }
         }
 
-        with(StandardDeleteOption.entries.toTypedArray()) {
+        with(entries.toTypedArray()) {
             inStandardAnalysis {
                 assertFalse(isEmpty)
                 assertTrue(isFull)
 
-                StandardDeleteOption.entries.forEach {
+                entries.forEach {
                     assertTrue(contains(it))
                 }
 

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -30,15 +30,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IDContainer
-import love.forte.simbot.message.At.Companion.equals
-import love.forte.simbot.message.At.Companion.hashCode
 import love.forte.simbot.message.OfflineImage.Companion.toOfflineImage
 import love.forte.simbot.message.Text.Companion.of
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.ResourceBase64Serializer
 import love.forte.simbot.resource.fileResource
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
 import kotlin.jvm.*
 
@@ -411,7 +408,6 @@ public expect fun Resource.toOfflineResourceImage(): OfflineResourceImage
  * 序列化中 [resource] 会使用基于 `Base64` 实现的 [ResourceBase64Serializer] 来作为其序列化器。
  * 请谨慎使用，频繁地将具有一定尺寸的 bytes 数据进行 base64 编码或解码可能会存在一定的性能损耗。
  */
-@OptIn(ExperimentalEncodingApi::class)
 @Serializable
 @SerialName("m.std.img.offline.resource")
 public data class SimpleOfflineResourceImage(

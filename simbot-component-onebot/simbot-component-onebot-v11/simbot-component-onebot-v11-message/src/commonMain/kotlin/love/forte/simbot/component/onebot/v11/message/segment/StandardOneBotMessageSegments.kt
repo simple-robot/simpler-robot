@@ -29,10 +29,8 @@ import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.toResource
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 
-@OptIn(ExperimentalEncodingApi::class)
 internal fun resolveUrlOrFileToResource(url: String?, file: String, encoder: Base64Encoder): Resource {
     return if (url != null) {
         uriResource(url)
@@ -56,7 +54,6 @@ internal fun resolveUrlOrFileToResource(url: String?, file: String, encoder: Bas
 internal expect fun uriResource(uri: String): Resource
 internal expect fun pathResource(path: String): Resource
 
-@OptIn(ExperimentalEncodingApi::class)
 internal fun base64Resource(data: String, base64: Base64?): Resource {
     // TODO 是否需要考虑为 decoder 也提供额外参数或注解？
     return (base64 ?: Base64.Default).decode(data).toResource()
@@ -82,7 +79,6 @@ internal fun resolveResourceToFileValue(
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 internal fun computeBase64FileValue(data: ByteArray, encoder: Base64Encoder): String {
     return buildString {
         append("base64://")

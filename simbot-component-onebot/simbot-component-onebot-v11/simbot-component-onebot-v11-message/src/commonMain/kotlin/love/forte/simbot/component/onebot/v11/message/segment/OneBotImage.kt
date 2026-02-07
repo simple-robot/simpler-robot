@@ -35,7 +35,6 @@ import love.forte.simbot.message.Image
 import love.forte.simbot.message.UrlAwareImage
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -61,7 +60,6 @@ public class OneBotImage private constructor(
     private val resource0: Resource? = null,
     private val base64Encoder: String? = null,
     @Transient
-    @OptIn(ExperimentalEncodingApi::class)
     private val base64EncoderValue: Base64Encoder =
         base64Encoder?.let { standardEncoderByName(it) } ?: Base64Encoder.Default
 ) : OneBotMessageSegment, OneBotMessageSegmentElementResolver {
@@ -123,7 +121,6 @@ public class OneBotImage private constructor(
          *
          * @throws UnsupportedOperationException 如果解析 [resource] 时平台不支持
          */
-        @OptIn(ExperimentalEncodingApi::class)
         @JvmStatic
         @JvmOverloads
         public fun create(resource: Resource, additional: AdditionalParams? = null): OneBotImage {
@@ -240,6 +237,5 @@ public inline fun OneBotImage.Factory.create(
     return create(resource, OneBotImage.AdditionalParams().also(block))
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 private inline val OneBotImage.AdditionalParams?.base64EncoderOrDefault: Base64Encoder
     get() = this?.base64Encoder ?: Base64Encoder.Default

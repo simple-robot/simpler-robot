@@ -24,7 +24,6 @@
 package love.forte.simbot.component.onebot.v11.message
 
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmField
 
 
@@ -45,27 +44,23 @@ public interface Base64Encoder {
         /**
          * Get a [Base64Encoder] instance based on [kotlin.io.encoding.Base64.Default].
          */
-        @ExperimentalEncodingApi
         @JvmField
         public val Default: Base64Encoder = KotlinBase64Encoder(Base64.Default)
 
         /**
          * Get a [Base64Encoder] instance based on [kotlin.io.encoding.Base64.Mime].
          */
-        @ExperimentalEncodingApi
         @JvmField
         public val Mime: Base64Encoder = KotlinBase64Encoder(Base64.Mime)
 
         /**
          * Get a [Base64Encoder] instance based on [kotlin.io.encoding.Base64.UrlSafe].
          */
-        @ExperimentalEncodingApi
         @JvmField
         public val UrlSafe: Base64Encoder = KotlinBase64Encoder(Base64.UrlSafe)
     }
 }
 
-@ExperimentalEncodingApi
 private class KotlinBase64Encoder(val base64: Base64) : Base64Encoder {
     override fun <A : Appendable> encodeToAppendable(source: ByteArray, destination: A): A {
         base64.encodeToAppendable(source, destination)
@@ -73,7 +68,6 @@ private class KotlinBase64Encoder(val base64: Base64) : Base64Encoder {
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 internal fun standardEncoderByName(name: String): Base64Encoder? {
     return when {
         name.equals("Default", true) -> Base64Encoder.Default
@@ -85,7 +79,6 @@ internal fun standardEncoderByName(name: String): Base64Encoder? {
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 internal fun Base64Encoder.standardName(): String? {
     return when (this) {
         Base64Encoder.Default -> "Default"
@@ -95,5 +88,4 @@ internal fun Base64Encoder.standardName(): String? {
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 internal val Base64Encoder.base64: Base64? get() = (this as? KotlinBase64Encoder)?.base64

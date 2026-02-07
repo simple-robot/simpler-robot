@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -66,7 +66,7 @@ public interface InitializableBot : ConfigurableBot {
     /**
      * 是否正在初始化。
      * 当 [isInitialized] 为 `false` 且 [init] 内部正在进行初始化并持有锁时，
-     * [isInitializing] 得到 `false`。
+     * [isInitializing] 得到 `true`。
      */
     public val isInitializing: Boolean
 }

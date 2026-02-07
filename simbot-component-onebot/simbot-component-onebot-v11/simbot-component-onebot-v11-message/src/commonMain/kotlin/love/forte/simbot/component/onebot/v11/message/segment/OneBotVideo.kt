@@ -32,7 +32,6 @@ import love.forte.simbot.component.onebot.v11.message.standardEncoderByName
 import love.forte.simbot.component.onebot.v11.message.standardName
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -51,7 +50,6 @@ public class OneBotVideo private constructor(
     private val resource0: Resource? = null,
     private val base64Encoder: String? = null,
     @Transient
-    @OptIn(ExperimentalEncodingApi::class)
     private val base64EncoderValue: Base64Encoder =
         base64Encoder?.let { standardEncoderByName(it) } ?: Base64Encoder.Default
 ) : OneBotMessageSegment {
@@ -191,6 +189,5 @@ public class OneBotVideo private constructor(
     }
 }
 
-@OptIn(ExperimentalEncodingApi::class)
 private inline val OneBotVideo.AdditionalParams?.base64EncoderOrDefault: Base64Encoder
     get() = this?.base64Encoder ?: Base64Encoder.Default

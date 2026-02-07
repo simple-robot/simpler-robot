@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,37 +23,12 @@
 
 package love.forte.simbot.ability
 
-import love.forte.simbot.event.RequestEvent
-import love.forte.simbot.suspendrunner.ST
-
-
 /**
- * 对“拒绝行为”的支持，由 [RequestEvent] 实现。
- *
- * @author ForteScarlet
+ * @see DeleteSupport.delete
  */
-public interface RejectSupport {
-    /**
-     * 拒绝此请求。
-     *
-     * @throws Throwable 任何可能产生的错误。
-     */
-    @ST
-    public suspend fun reject()
-
-    /**
-     * 拒绝此请求。
-     *
-     * 对实现者：此函数具有默认实现以确保二进制兼容。
-     *
-     * @param options 用于当前拒绝行为的可选项。
-     * 如果某选项实现不支持则会被忽略，支持的范围由实现者决定。
-     * @since 4.0.0-RC3
-     * @throws Throwable 任何可能产生的错误。
-     */
-    @ST
-    public suspend fun reject(vararg options: RejectOption) {
-        reject()
-    }
+public open class DeleteFailureException : IllegalStateException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
 }
-

@@ -245,16 +245,26 @@ abstract interface love.forte.simbot.ability/RejectSupport { // love.forte.simbo
     open suspend fun reject(kotlin/Array<out love.forte.simbot.ability/RejectOption>...) // love.forte.simbot.ability/RejectSupport.reject|reject(kotlin.Array<out|love.forte.simbot.ability.RejectOption>...){}[0]
 }
 
+abstract interface love.forte.simbot.ability/ReplyOption // love.forte.simbot.ability/ReplyOption|null[0]
+
 abstract interface love.forte.simbot.ability/ReplySupport { // love.forte.simbot.ability/ReplySupport|null[0]
     abstract suspend fun reply(kotlin/String): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(kotlin.String){}[0]
     abstract suspend fun reply(love.forte.simbot.message/Message): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(love.forte.simbot.message.Message){}[0]
     abstract suspend fun reply(love.forte.simbot.message/MessageContent): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(love.forte.simbot.message.MessageContent){}[0]
+    open suspend fun reply(kotlin/String, kotlin/Array<out love.forte.simbot.ability/ReplyOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(kotlin.String;kotlin.Array<out|love.forte.simbot.ability.ReplyOption>...){}[0]
+    open suspend fun reply(love.forte.simbot.message/Message, kotlin/Array<out love.forte.simbot.ability/ReplyOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(love.forte.simbot.message.Message;kotlin.Array<out|love.forte.simbot.ability.ReplyOption>...){}[0]
+    open suspend fun reply(love.forte.simbot.message/MessageContent, kotlin/Array<out love.forte.simbot.ability/ReplyOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/ReplySupport.reply|reply(love.forte.simbot.message.MessageContent;kotlin.Array<out|love.forte.simbot.ability.ReplyOption>...){}[0]
 }
+
+abstract interface love.forte.simbot.ability/SendOption // love.forte.simbot.ability/SendOption|null[0]
 
 abstract interface love.forte.simbot.ability/SendSupport { // love.forte.simbot.ability/SendSupport|null[0]
     abstract suspend fun send(kotlin/String): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(kotlin.String){}[0]
     abstract suspend fun send(love.forte.simbot.message/Message): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(love.forte.simbot.message.Message){}[0]
     abstract suspend fun send(love.forte.simbot.message/MessageContent): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(love.forte.simbot.message.MessageContent){}[0]
+    open suspend fun send(kotlin/String, kotlin/Array<out love.forte.simbot.ability/SendOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(kotlin.String;kotlin.Array<out|love.forte.simbot.ability.SendOption>...){}[0]
+    open suspend fun send(love.forte.simbot.message/Message, kotlin/Array<out love.forte.simbot.ability/SendOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(love.forte.simbot.message.Message;kotlin.Array<out|love.forte.simbot.ability.SendOption>...){}[0]
+    open suspend fun send(love.forte.simbot.message/MessageContent, kotlin/Array<out love.forte.simbot.ability/SendOption>...): love.forte.simbot.message/MessageReceipt // love.forte.simbot.ability/SendSupport.send|send(love.forte.simbot.message.MessageContent;kotlin.Array<out|love.forte.simbot.ability.SendOption>...){}[0]
 }
 
 abstract interface love.forte.simbot.application/Application : kotlinx.coroutines/CoroutineScope, love.forte.simbot.ability/CompletionAware, love.forte.simbot.ability/LifecycleAware { // love.forte.simbot.application/Application|null[0]
