@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,37 +23,16 @@
 
 package love.forte.simbot.ability
 
-import love.forte.simbot.event.RequestEvent
-import love.forte.simbot.suspendrunner.ST
-
-
 /**
- * 对“拒绝行为”的支持，由 [RequestEvent] 实现。
+ * 使用 [SendSupport.send] 时可以使用的额外选项。
+ * 选项的实现由 [SendSupport] 的实现方自由扩展。
  *
+ * 对于实现方而言，当遇到 **可预期** 的选项出现无法使用、无法满足的条件等情况时，
+ * 应当优先考虑抛出明确的异常。而对于 **预期外** 的选项（例如由其他实现方实现的未知类型），
+ * 则优先考虑对其进行忽略过滤。
+ *
+ * @see SendSupport.send
  * @author ForteScarlet
+ * @since 5.0
  */
-public interface RejectSupport {
-    /**
-     * 拒绝此请求。
-     *
-     * @throws Throwable 任何可能产生的错误。
-     */
-    @ST
-    public suspend fun reject()
-
-    /**
-     * 拒绝此请求。
-     *
-     * 对实现者：此函数具有默认实现以确保二进制兼容。
-     *
-     * @param options 用于当前拒绝行为的可选项。
-     * 如果某选项实现不支持则会被忽略，支持的范围由实现者决定。
-     * @since 4.0.0-RC3
-     * @throws Throwable 任何可能产生的错误。
-     */
-    @ST
-    public suspend fun reject(vararg options: RejectOption) {
-        reject()
-    }
-}
-
+public interface SendOption

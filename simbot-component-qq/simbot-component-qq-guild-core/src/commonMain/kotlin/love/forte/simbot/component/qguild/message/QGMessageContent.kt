@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -20,7 +26,6 @@ package love.forte.simbot.component.qguild.message
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.qguild.QQGuildComponent
 import love.forte.simbot.message.*
 import love.forte.simbot.qguild.message.ContentTextDecoder
 import love.forte.simbot.qguild.model.Message
@@ -50,16 +55,17 @@ public abstract class QGBaseMessageContent : MessageContent {
      * - [At]: 当存在提及用户的内嵌格式时（例如 `<@123456>`）。
      * 按理说会与 [sourceMessage.mentions][QGSourceMessage.mentions] 对应。
      * - [At(type=channel)][At]: 当存在提及频道的内嵌格式时（例如 `<#123456>`）。
-     * 类型同样为 [At], 但是 [At.type] 的值为 [QQGuildComponent.AT_CHANNEL_TYPE]。
+     * 类型同样为 [At], 但是 [At.type] 的值为
+     * [QQGuildComponent.AT_CHANNEL_TYPE][love.forte.simbot.component.qguild.QQGuildComponent.AT_CHANNEL_TYPE]。
      * - [AtAll]: 当 [sourceMessage.mentionEveryone][QGSourceMessage.mentionEveryone] == true 时，
      * 会将所有的 `@everyone` 视为提及所有而被转化为 [AtAll]；而如果为 `false` 则不会转化并被视为普通的文本字符串。
      * - [Face]: 当 `content` 中存在系统表情时（例如 `<emoji:5>`）会被转化为 [Face] 类型。
      * 注意并不是转化为 [Emoji]，因为其代表的是**系统表情**。
      *
      * 上述解析结束后，会再根据原始消息中的其他可转化属性在结果后面继续追加如下可能的类型：
-     * - [QGArk]: 来自于 [sourceMessage.ark][QGSourceMessage.ark]
-     * - [QGAttachmentMessage]: 来自于 [sourceMessage.attachments][QGSourceMessage.attachments]，可能有多个
-     * - [QGReference]: 来自于 [sourceMessage.messageReference][QGSourceMessage.messageReference]
+     * - [QGArk]: 来自 [sourceMessage.ark][QGSourceMessage.ark]
+     * - [QGAttachmentMessage]: 来自 [sourceMessage.attachments][QGSourceMessage.attachments]，可能有多个
+     * - [QGReference]: 来自 [sourceMessage.messageReference][QGSourceMessage.messageReference]
      *
      */
     abstract override val messages: Messages

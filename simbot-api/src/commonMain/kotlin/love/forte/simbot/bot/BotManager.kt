@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -117,7 +117,7 @@ public interface BotManager : AutoConfigurableBotPlugin, LifecycleAware, Complet
      */
     public fun find(id: ID): Bot? = try {
         get(id)
-    } catch (ignore: NoSuchBotException) {
+    } catch (_: NoSuchBotException) {
         null
     }
 

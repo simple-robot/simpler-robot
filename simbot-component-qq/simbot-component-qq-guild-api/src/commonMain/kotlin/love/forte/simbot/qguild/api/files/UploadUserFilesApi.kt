@@ -32,7 +32,6 @@ import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.model.MessageMedia
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -155,7 +154,6 @@ public class UploadUserFilesApi private constructor(
 //        FormDataHeader
 //    }
 
-    @OptIn(ExperimentalEncodingApi::class)
     override fun createBody(): Any {
         if (fileDataBytes != null) {
             _body.fileDataBase64Hex = Base64.encode(fileDataBytes)

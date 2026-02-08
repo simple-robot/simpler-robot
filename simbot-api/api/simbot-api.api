@@ -83,34 +83,64 @@ public abstract interface class love/forte/simbot/ability/RejectSupport {
 	public fun rejectReserve ([Llove/forte/simbot/ability/RejectOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
+public abstract interface class love/forte/simbot/ability/ReplyOption {
+}
+
 public abstract interface class love/forte/simbot/ability/ReplySupport {
 	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun reply (Ljava/lang/String;[Llove/forte/simbot/ability/ReplyOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun reply (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/ReplyOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun reply (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun reply (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/ReplyOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun replyAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Ljava/lang/String;[Llove/forte/simbot/ability/ReplyOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun replyAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/ReplyOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun replyAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/ReplyOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun replyBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Ljava/lang/String;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Ljava/lang/String;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/ReplyOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/ability/SendOption {
 }
 
 public abstract interface class love/forte/simbot/ability/SendSupport {
 	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Ljava/lang/String;[Llove/forte/simbot/ability/SendOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/SendOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun send (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/SendOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Ljava/lang/String;[Llove/forte/simbot/ability/SendOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/SendOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun sendAsync (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/SendOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Ljava/lang/String;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Ljava/lang/String;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/Message;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun sendReserve (Llove/forte/simbot/message/MessageContent;[Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
 public final class love/forte/simbot/ability/StandardDeleteOption : java/lang/Enum, love/forte/simbot/ability/DeleteOption {

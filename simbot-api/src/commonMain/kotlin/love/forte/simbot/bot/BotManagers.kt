@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -68,8 +68,7 @@ public interface BotManagers : Collection<BotManager> {
      * @since 4.2.0
      */
     public fun firstBot(id: ID): Bot =
-        asSequence().mapNotNull { it.find(id) }
-            .first()
+        asSequence().firstNotNullOf { it.find(id) }
 }
 
 /**

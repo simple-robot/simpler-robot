@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,7 +23,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.event.StandardEventResult.Invalid.isTruncated
+import love.forte.simbot.event.EventResult.Companion.empty
+import love.forte.simbot.event.EventResult.Companion.invalid
 import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
