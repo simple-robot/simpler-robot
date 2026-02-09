@@ -2960,7 +2960,17 @@ public abstract interface class love/forte/simbot/plugin/AbstractJPlugin$Key : l
 	public abstract fun getName ()Ljava/lang/String;
 }
 
+public abstract interface class love/forte/simbot/plugin/CancellablePlugin : love/forte/simbot/plugin/Plugin {
+	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun isActive ()Z
+	public abstract fun isCanceled ()Z
+}
+
 public abstract interface class love/forte/simbot/plugin/Plugin {
+}
+
+public final class love/forte/simbot/plugin/PluginAlreadyCancelledException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
 
 public abstract interface class love/forte/simbot/plugin/PluginConfigureContext {

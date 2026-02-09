@@ -1233,6 +1233,15 @@ abstract interface love.forte.simbot.message/UrlAwareMessage { // love.forte.sim
     abstract suspend fun url(): kotlin/String // love.forte.simbot.message/UrlAwareMessage.url|url(){}[0]
 }
 
+abstract interface love.forte.simbot.plugin/CancellablePlugin : love.forte.simbot.plugin/Plugin { // love.forte.simbot.plugin/CancellablePlugin|null[0]
+    abstract val isActive // love.forte.simbot.plugin/CancellablePlugin.isActive|{}isActive[0]
+        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.plugin/CancellablePlugin.isActive.<get-isActive>|<get-isActive>(){}[0]
+    abstract val isCanceled // love.forte.simbot.plugin/CancellablePlugin.isCanceled|{}isCanceled[0]
+        abstract fun <get-isCanceled>(): kotlin/Boolean // love.forte.simbot.plugin/CancellablePlugin.isCanceled.<get-isCanceled>|<get-isCanceled>(){}[0]
+
+    abstract fun cancel(kotlin/Throwable?) // love.forte.simbot.plugin/CancellablePlugin.cancel|cancel(kotlin.Throwable?){}[0]
+}
+
 abstract interface love.forte.simbot.plugin/Plugin // love.forte.simbot.plugin/Plugin|null[0]
 
 abstract interface love.forte.simbot.plugin/PluginConfigureContext { // love.forte.simbot.plugin/PluginConfigureContext|null[0]
@@ -1716,6 +1725,10 @@ final class love.forte.simbot.message/Text : love.forte.simbot.message/PlainText
         final fun of(kotlin/String): love.forte.simbot.message/Text // love.forte.simbot.message/Text.Companion.of|of(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.message/Text> // love.forte.simbot.message/Text.Companion.serializer|serializer(){}[0]
     }
+}
+
+final class love.forte.simbot.plugin/PluginAlreadyCancelledException : kotlin/RuntimeException { // love.forte.simbot.plugin/PluginAlreadyCancelledException|null[0]
+    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.plugin/PluginAlreadyCancelledException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
 }
 
 final class love.forte.simbot.plugin/PluginFactoriesConfigurator : love.forte.simbot.common.function/MergeableFactoriesConfigurator<love.forte.simbot.plugin/PluginConfigureContext, love.forte.simbot.plugin/Plugin, love.forte.simbot.plugin/PluginFactory.Key> { // love.forte.simbot.plugin/PluginFactoriesConfigurator|null[0]

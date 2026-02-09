@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,14 +24,6 @@
 package love.forte.simbot.plugin
 
 import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.application.ApplicationEventRegistrar
-import love.forte.simbot.common.function.ConfigurerFunction
-import love.forte.simbot.common.function.MergeableFactoriesConfigurator
-import love.forte.simbot.common.function.MergeableFactory
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.Components
-import love.forte.simbot.event.EventDispatcher
 
 /**
  *
@@ -54,77 +46,50 @@ import love.forte.simbot.event.EventDispatcher
 public interface Plugin
 
 /**
- * [Plugin] 的工厂函数，用于配置并预构建 [Plugin] 实例。
+ * 表示一个可以被取消/终止的 [Plugin]。
  *
- * @see Plugin
- * @param P 目标组件类型
- * @param CONF 配置类型。配置类型应是一个可变类，以便于在 DSL 中进行动态配置。
+ * 取消的过程**不可逆**，当一个插件被取消后，不可再次回到活跃状态，且不应当再有任何状态改变或可用行为。
+ * 对于会产生各种副作用的行为，都应当抛出 [PluginAlreadyCancelledException] 异常。
+ *
+ * @author ForteScarlet
+ * @since 5.0
  */
-public interface PluginFactory<P : Plugin, CONF : Any> :
-    MergeableFactory<PluginFactory.Key, P, CONF, PluginConfigureContext> {
+public interface CancellablePlugin : Plugin {
+
     /**
-     * 用于 [PluginFactory] 在内部整合时的标识类型。
+     * 是否处于活跃状态，即尚未被 [取消][isCanceled] 的状态。
      *
-     * 更多说明参阅 [MergeableFactory.Key]。
+     * 属性值的变化规则参考 [cancel] 说明。
+     */
+    public val isActive: Boolean
+
+    /**
+     * 是否已经取消。
      *
-     * @see PluginFactory.key
-     * @see MergeableFactory.key
+     * 属性值的变化规则参考 [cancel] 说明。
      */
-    public interface Key : MergeableFactory.Key
+    public val isCanceled: Boolean
+
+    /**
+     * 取消此插件。
+     *
+     * 当插件被取消时，其应当立刻尝试等待并停止其所有工作、取消其内部的所有可取消的子工作，
+     * 并且释放所有资源。过程中，应当立刻生效并拒绝所有新的行为申请。
+     *
+     * 当调用 [cancel] 后，[isActive] 的值立即变为 `false`，并进入 _取消流程_ 。
+     * 当取消流程完全结束后，[isCanceled] 的值将会变为 `true`。而在此期间，为 _正在关闭_ 状态。
+     *
+     * cancel 应当是原子的，且可以多次调用。当调用一次后，后续的其他调用将无效。
+     *
+     * cancel 的实现应当尽可能地快速且避免阻塞。
+     */
+    public fun cancel(cause: Throwable?)
 }
 
 /**
- * 一个 [Plugin] 的安装器接口，
- * 提供用于安装 [Plugin] 的能力。
+ * [插件][CancellablePlugin] 已经被关闭后继续尝试调用产生副作用的各类行为能力时产生的异常。
+ *
+ * @since 5.0
+ * @see CancellablePlugin
  */
-public interface PluginInstaller {
-    /**
-     * 注册安装一个插件 [Plugin] 类型，并为其添加一个对应的配置。
-     */
-    public fun <P : Plugin, CONF : Any> install(
-        pluginFactory: PluginFactory<P, CONF>, configurer: ConfigurerFunction<CONF>
-    )
-
-    /**
-     * 注册安装一个插件 [Plugin] 类型。
-     */
-    public fun <P : Plugin, CONF : Any> install(pluginFactory: PluginFactory<P, CONF>) {
-        install(pluginFactory) {}
-    }
-}
-
-/**
- * 提供给 [PluginFactoriesConfigurator] 用于配置 [Plugin] 的上下文信息。
- * 可以得到来自 [Application][love.forte.simbot.application.Application] 的初始化配置信息
- * 和 [Component] 的配置信息。
- */
-public interface PluginConfigureContext {
-    /**
-     * 构建 Application 的配置信息
-     */
-    public val applicationConfiguration: ApplicationConfiguration
-
-    /**
-     * Application 的阶段事件注册器。
-     */
-    public val applicationEventRegistrar: ApplicationEventRegistrar
-
-    /**
-     * 目前构建得到的 [Components]
-     */
-    public val components: Components
-
-    /**
-     * 事件调度器。
-     */
-    public val eventDispatcher: EventDispatcher
-}
-
-/**
- * 用于对 [PluginFactory] 进行聚合组装的配置器。
- */
-public class PluginFactoriesConfigurator(
-    configurators: Map<PluginFactory.Key, ConfigurerFunction<Any>> = emptyMap(),
-    factories: Map<PluginFactory.Key, (PluginConfigureContext) -> Plugin> = emptyMap(),
-) : MergeableFactoriesConfigurator<PluginConfigureContext, Plugin, PluginFactory.Key>(configurators, factories)
-
+public class PluginAlreadyCancelledException(message: String?, cause: Throwable?) : RuntimeException(message, cause)
