@@ -23,6 +23,7 @@
 
 package love.forte.simbot.plugin
 
+import love.forte.simbot.ability.LifecycleAware
 import love.forte.simbot.application.Application
 
 /**
@@ -54,42 +55,47 @@ public interface Plugin
  * @author ForteScarlet
  * @since 5.0
  */
-public interface CancellablePlugin : Plugin {
-
+public interface CloseablePlugin : Plugin, LifecycleAware {
     /**
-     * 是否处于活跃状态，即尚未被 [取消][isCanceled] 的状态。
+     * 是否处于活跃状态，近似于 [kotlinx.coroutines.Job.isActive]。
      *
-     * 属性值的变化规则参考 [cancel] 说明。
+     * 属性值的变化规则参考 [close] 说明。
      */
-    public val isActive: Boolean
+    override val isActive: Boolean
 
     /**
      * 是否已经取消。
-     *
-     * 属性值的变化规则参考 [cancel] 说明。
+     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表它已经 [彻底完成][isCompleted]。
      */
-    public val isCanceled: Boolean
+    public val isClosed: Boolean
 
     /**
-     * 取消此插件。
+     * 是否已经彻底完成。
+     */
+    override val isCompleted: Boolean
+
+    /**
+     * 结束并关闭此插件。
      *
      * 当插件被取消时，其应当立刻尝试等待并停止其所有工作、取消其内部的所有可取消的子工作，
      * 并且释放所有资源。过程中，应当立刻生效并拒绝所有新的行为申请。
      *
-     * 当调用 [cancel] 后，[isActive] 的值立即变为 `false`，并进入 _取消流程_ 。
-     * 当取消流程完全结束后，[isCanceled] 的值将会变为 `true`。而在此期间，为 _正在关闭_ 状态。
+     * 当调用 [close] 后，[isClosed] 的值立即变为 `true`，并进入 _取消流程_ 。
+     * 当取消流程完全结束后，[isCompleted] 的值将会变为 `true`。而在此期间，为 _正在关闭_ 状态。
      *
-     * cancel 应当是原子的，且可以多次调用。当调用一次后，后续的其他调用将无效。
+     * [close] 视为常规完成此插件，它不会强行终止子任务，而是等待它们**自然完成**。
+     * 此行为近似于 [Job.complete][kotlinx.coroutines.CompletableJob.complete]。
      *
-     * cancel 的实现应当尽可能地快速且避免阻塞。
+     * [close] 应当是原子的，且可以多次调用。当调用一次后，后续的其他调用将无效，
+     * [close] 的实现应当尽可能地快速且避免阻塞。
      */
-    public fun cancel(cause: Throwable?)
+    public fun close()
 }
 
 /**
- * [插件][CancellablePlugin] 已经被关闭后继续尝试调用产生副作用的各类行为能力时产生的异常。
+ * [插件][CloseablePlugin] 已经被关闭后继续尝试调用产生副作用的各类行为能力时产生的异常。
  *
  * @since 5.0
- * @see CancellablePlugin
+ * @see CloseablePlugin
  */
 public class PluginAlreadyCancelledException(message: String?, cause: Throwable?) : RuntimeException(message, cause)

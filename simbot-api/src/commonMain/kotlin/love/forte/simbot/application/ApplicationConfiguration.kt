@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -46,12 +46,7 @@ public interface ApplicationConfiguration {
      * [Application] 本身存在生命周期，如果 [coroutineContext] 中存在 [Job],
      * 则会被作为父任务被关联。
      *
-     * [Application] 中的 [coroutineContext] 会在此配置中被传递给其他子配置（例如 [Plugins] 或 [Components]），
-     * 而是否会使用此上下文则交由它们自行决定（[Application] 也无法干涉）。
-     * 我们建议使用 [Application] 的 [coroutineContext] 作为各子配置的基础上下文，
-     * 至少将生命周期与 [Application] 进行关联（使用父子任务或在存在多个任务的情况下使用 [Job.linkTo] 关联到 [Application] 的任务上），
-     * 由此来保证 [Application] 生命周期的影响和有效性。
-     *
+     * 更多内容参考 [Application] 的相关说明。
      */
     public val coroutineContext: CoroutineContext
 

@@ -107,7 +107,7 @@ import love.forte.simbot.component.onebot.v11.event.RawEvent as OBRawEvent
 internal class OneBotBotImpl(
     private val uniqueId: String,
     override val coroutineContext: CoroutineContext,
-    override val job: Job,
+    override val job: CompletableJob,
     override val configuration: OneBotBotConfiguration,
     override val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
@@ -202,6 +202,7 @@ internal class OneBotBotImpl(
 
     private fun initJobCompletion() {
         job.invokeOnCompletion {
+            wsSession?.cancel()
             apiClient.close()
             wsClient?.close()
         }
@@ -324,36 +325,38 @@ internal class OneBotBotImpl(
     private val startLock = Mutex()
 
 
-    override suspend fun start(): Unit = startLock.withLock {
-        job.ensureActive()
-        initConfiguration()
+    override suspend fun start(): Unit {
+        ensureAlive()
+        startLock.withLock {
+            initConfiguration()
 
-        // 更新个人信息
-        val info = queryLoginInfo()
-        logger.debug("Update bot login info: {}", info)
+            // 更新个人信息
+            val info = queryLoginInfo()
+            logger.debug("Update bot login info: {}", info)
 
-        if (wsEnabled) {
-            val wsHost = eventServerHost!!
-            val client = wsClient!!
-            logger.debug("WebSocket connection is enabled to {} via client {}", wsHost, client)
-            val wsSession = createEventSession(client, wsHost).also { s ->
-                // init it first
-                val initialSession = s.createSessionWithRetry()
-                launch { s.launch(initialSession) }
+            if (wsEnabled) {
+                val wsHost = eventServerHost!!
+                val client = wsClient!!
+                logger.debug("WebSocket connection is enabled to {} via client {}", wsHost, client)
+                val wsSession = createEventSession(client, wsHost).also { s ->
+                    // init it first
+                    val initialSession = s.createSessionWithRetry()
+                    launch { s.launch(initialSession) }
+                }
+                logger.debug("WebSocket session connected: {}", wsSession)
+                this.wsSession = wsSession
+            } else {
+                logger.debug("WebSocket connection is disabled because of the `eventServerHost` is null")
             }
-            logger.debug("WebSocket session connected: {}", wsSession)
-            this.wsSession = wsSession
-        } else {
-            logger.debug("WebSocket connection is disabled because of the `eventServerHost` is null")
-        }
 
-        if (!isStarted) {
-            isStarted = true
-            launch {
-                eventProcessor
-                    .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
-                    .onEachErrorLog(logger)
-                    .collect()
+            if (!isStarted) {
+                isStarted = true
+                launch {
+                    eventProcessor
+                        .push(OneBotBotStartedEventImpl(this@OneBotBotImpl))
+                        .onEachErrorLog(logger)
+                        .collect()
+                }
             }
         }
     }
@@ -445,7 +448,7 @@ internal class OneBotBotImpl(
         @OptIn(DelicateCoroutinesApi::class)
         suspend fun launch(initialSession: DefaultWebSocketSession? = null) {
             var session: DefaultWebSocketSession? = initialSession
-            while (sessionJob.isActive) {
+            while (sessionJob.isActive && isAlive) {
                 if (session?.isActive != true) {
                     session = null
                 }
@@ -504,11 +507,7 @@ internal class OneBotBotImpl(
                 logger.debug("Session {} done. The reason: {}", currentSession, reason)
             }
 
-            logger.debug(
-                "The EventSession is done.",
-                isActive,
-                sessionJob.isActive
-            )
+            logger.debug("The EventSession is done.")
         }
 
         @Suppress("LoopWithTooManyJumpStatements")
@@ -735,6 +734,12 @@ internal class OneBotBotImpl(
             logger.error("Internal message pre send event process failed", ex)
             throw ex
         }
+    }
+
+    override fun beforeJobComplete() {
+        apiClient.close()
+        wsClient?.close()
+        wsSession?.cancel()
     }
 
     override fun toString(): String =

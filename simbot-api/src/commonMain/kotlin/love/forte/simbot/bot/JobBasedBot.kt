@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,12 +23,15 @@
 
 package love.forte.simbot.bot
 
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.selects.SelectClause0
 import kotlinx.coroutines.selects.select
 import love.forte.simbot.ability.OnCompletion
 import kotlin.concurrent.Volatile
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.jvm.JvmSynthetic
 
 
@@ -40,11 +43,33 @@ import kotlin.jvm.JvmSynthetic
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalAtomicApi::class)
 public abstract class JobBasedBot : Bot {
     /**
      * 当前 bot 持有的 job.
      */
-    protected abstract val job: Job
+    protected abstract val job: CompletableJob
+
+    private val closed = AtomicBoolean(false)
+
+    @Suppress("SameParameterValue")
+    protected open fun compareAndSetClosed(expectedValue: Boolean, newValue: Boolean): Boolean {
+        return closed.compareAndSet(expectedValue, newValue)
+    }
+
+    protected open val isAlive: Boolean
+        get() = isActive && !isClosed
+
+    protected open fun ensureNotClosed() {
+        if (isClosed) {
+            throw BotAlreadyClosedException("Bot is already closed.")
+        }
+    }
+
+    protected open fun ensureAlive() {
+        ensureNotClosed()
+        job.ensureActive()
+    }
 
     /**
      * 是否已经启动。
@@ -57,6 +82,9 @@ public abstract class JobBasedBot : Bot {
     @Volatile
     override var isStarted: Boolean = false
         protected set
+
+    override val isClosed: Boolean
+        get() = closed.load()
 
     override fun onCompletion(handle: OnCompletion) {
         job.invokeOnCompletion { cause -> handle.invoke(cause) }
@@ -73,8 +101,19 @@ public abstract class JobBasedBot : Bot {
         job.join()
     }
 
-    override fun cancel(reason: Throwable?) {
-        job.cancel(reason?.let { CancellationException(it.message, it) })
+    protected open fun beforeJobComplete() {
+    }
+
+    protected open fun afterJobComplete() {
+    }
+
+    override fun close() {
+        if (!compareAndSetClosed(expectedValue = false, newValue = true)) {
+            return
+        }
+        beforeJobComplete()
+        job.complete()
+        afterJobComplete()
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,7 +23,7 @@
 
 package love.forte.simbot.spring2.application.internal
 
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ability.OnCompletion
@@ -34,8 +34,10 @@ import love.forte.simbot.application.NormalApplicationEventHandler
 import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.plugin.CloseablePlugin
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.spring.common.application.SpringApplication
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
 
 
@@ -50,12 +52,23 @@ internal class SpringApplicationImpl(
     override val botManagers: BotManagers,
     val events: ApplicationLaunchStages
 ) : SpringApplication {
-    private val job: Job
+    private val closed = AtomicBoolean(false)
+    private val job: CompletableJob
     override val coroutineContext: CoroutineContext
 
     init {
         val newJob = SupervisorJob(configuration.coroutineContext[Job])
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
+
+        newJob.invokeOnCompletion {
+            if (!closed.compareAndSet(false, true)) {
+                return@invokeOnCompletion
+            }
+
+            invokeRequestCancelEvent()
+            cancelPlugins()
+            invokeCancelledEvent()
+        }
 
         this.job = newJob
         this.coroutineContext = newCoroutineContext
@@ -81,15 +94,36 @@ internal class SpringApplicationImpl(
     override val isCompleted: Boolean
         get() = job.isCompleted
 
-    override fun cancel(reason: Throwable?) {
+    override val isClosed: Boolean
+        get() = closed.get()
+
+    override fun close() {
+        if (!closed.compareAndSet(false, true)) {
+            return
+        }
+        invokeRequestCancelEvent()
+        cancelPlugins()
+        job.complete()
+        invokeCancelledEvent()
+    }
+
+    private fun invokeCancelledEvent() {
+        invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
+            invoke(this@SpringApplicationImpl)
+        }
+    }
+
+    private fun invokeRequestCancelEvent() {
         invokeNormalHandler(ApplicationLaunchStage.RequestCancel) {
             invoke(this@SpringApplicationImpl)
         }
+    }
 
-        job.cancel(reason?.let { CancellationException(reason.message, it) })
-
-        invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
-            invoke(this@SpringApplicationImpl)
+    private fun cancelPlugins() {
+        for (plugin in plugins) {
+            if (plugin is CloseablePlugin) {
+                plugin.close()
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,7 +23,7 @@
 
 package love.forte.simbot.core.application
 
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.modules.SerializersModule
@@ -42,6 +42,8 @@ import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.plugin.*
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 
 
@@ -50,6 +52,7 @@ import kotlin.coroutines.CoroutineContext
  * @see Simple
  *
  */
+@OptIn(ExperimentalAtomicApi::class)
 private class SimpleApplicationImpl(
     override val configuration: SimpleApplicationConfiguration,
     override val eventDispatcher: SimpleEventDispatcher,
@@ -58,12 +61,24 @@ private class SimpleApplicationImpl(
     override val botManagers: BotManagers,
     val events: ApplicationLaunchStages
 ) : SimpleApplication {
-    private val job: Job
+    private val closed = AtomicBoolean(false)
+
+    private val job: CompletableJob
     override val coroutineContext: CoroutineContext
 
     init {
         val newJob = SupervisorJob(configuration.coroutineContext[Job])
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
+
+        newJob.invokeOnCompletion {
+            if (!closed.compareAndSet(expectedValue = false, newValue = true)) {
+                return@invokeOnCompletion
+            }
+
+            invokeRequestCancelEvent()
+            cancelPlugins()
+            invokeCancelledEvent()
+        }
 
         this.job = newJob
         this.coroutineContext = newCoroutineContext
@@ -79,15 +94,34 @@ private class SimpleApplicationImpl(
         }
     }
 
-    override fun cancel(reason: Throwable?) {
+    override fun close() {
+        if (!closed.compareAndSet(expectedValue = false, newValue = true)) {
+            return
+        }
+
+        invokeRequestCancelEvent()
+        cancelPlugins()
+        job.complete()
+        invokeCancelledEvent()
+    }
+
+    private fun invokeCancelledEvent() {
+        invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
+            invoke(this@SimpleApplicationImpl)
+        }
+    }
+
+    private fun invokeRequestCancelEvent() {
         invokeNormalHandler(ApplicationLaunchStage.RequestCancel) {
             invoke(this@SimpleApplicationImpl)
         }
+    }
 
-        job.cancel(reason?.let { CancellationException(reason.message, it) })
-
-        invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
-            invoke(this@SimpleApplicationImpl)
+    private fun cancelPlugins() {
+        for (plugin in plugins) {
+            if (plugin is CloseablePlugin) {
+                plugin.close()
+            }
         }
     }
 
@@ -100,6 +134,9 @@ private class SimpleApplicationImpl(
 
     override val isCompleted: Boolean
         get() = job.isCompleted
+
+    override val isClosed: Boolean
+        get() = closed.load()
 
     override fun onCompletion(handle: OnCompletion) {
         job.invokeOnCompletion { handle.invoke(it) }
@@ -220,6 +257,7 @@ public object Simple :
     }
 }
 
+@Suppress("RedundantVisibilityModifier")
 private class SimpleApplicationFactoryConfigurer(
     public override val configConfigurers: MutableList<ConfigurerFunction<SimpleApplicationBuilder>> = mutableListOf(),
     public override val applicationEventRegistrarConfigurations:

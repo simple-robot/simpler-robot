@@ -27,13 +27,11 @@ import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.websocket.*
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
+import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collection.ConcurrentQueue
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
@@ -45,6 +43,9 @@ import love.forte.simbot.kook.event.Signal
 import love.forte.simbot.kook.stdlib.*
 import love.forte.simbot.logger.LoggerFactory
 import kotlin.concurrent.Volatile
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.update
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -52,10 +53,12 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @author ForteScarlet
  */
-@OptIn(ExperimentalSimbotCollectionApi::class)
+@OptIn(ExperimentalSimbotCollectionApi::class, ExperimentalAtomicApi::class)
 internal class BotImpl(
-    override val ticket: Ticket, override val configuration: BotConfiguration
+    override val ticket: Ticket,
+    override val configuration: BotConfiguration
 ) : Bot {
+    private val closed = atomic(false)
     private val botLogger = LoggerFactory.getLogger("love.forte.simbot.kook.bot.${ticket.clientId}")
     internal val eventLogger = LoggerFactory.getLogger("love.forte.simbot.kook.event.${ticket.clientId}")
 
@@ -71,7 +74,7 @@ internal class BotImpl(
         queueMap[subscribeSequence].add(processor)
     }
 
-    private val job = SupervisorJob(configuration.coroutineContext[Job])
+    private val job: CompletableJob = SupervisorJob(configuration.coroutineContext[Job])
     override val coroutineContext: CoroutineContext = configuration.coroutineContext.minusKey(Job) + job
 
     override val apiClient: HttpClient = resolveHttpClient(
@@ -79,13 +82,22 @@ internal class BotImpl(
         configuration.clientEngine,
         configuration.clientEngineFactory,
         configuration.clientEngineConfig
-    ).also(::closeOnBotClosed)
+    )
 
     internal val wsClient: HttpClient = resolveWsClient(
         configuration.wsEngine,
         configuration.wsEngineFactory,
         configuration.wsEngineConfig
-    ).also(::closeOnBotClosed)
+    )
+
+
+    init {
+        job.invokeOnCompletion {
+            closed.value = true
+            apiClient.close()
+            wsClient.close()
+        }
+    }
 
     private fun resolveHttpClient(
         configuration: BotConfiguration,
@@ -178,16 +190,22 @@ internal class BotImpl(
         }
     }
 
-
-    private fun closeOnBotClosed(client: HttpClient) {
-        job.invokeOnCompletion { client.close() }
-    }
+    /**
+     * 是否可以继续接收、处理事件：仍然活跃且未被关闭。
+     */
+    internal val isAlive: Boolean
+        get() = isActive && !isClosed
 
     override val isActive: Boolean
         get() = job.isActive
 
     @Volatile
     override var isStarted: Boolean = false
+
+    override val isCompleted: Boolean
+        get() = job.isCompleted
+    override val isClosed: Boolean
+        get() = closed.value
 
     @Volatile
     private lateinit var _me: Me
@@ -207,23 +225,21 @@ internal class BotImpl(
 
     private val startLock = Mutex()
 
-    @Volatile
-    private var currentClientJob: Job? = null
+    private fun ensureNotClosed() {
+        check(!isClosed) { "Bot is closed." }
+    }
+
+    internal fun ensureAlive() {
+        ensureNotClosed()
+        job.ensureActive()
+    }
+
+    private val currentClientJob: AtomicReference<Job?> = AtomicReference(null)
 
     override suspend fun start(closeBotOnFailure: Boolean) {
+        ensureAlive()
         try {
             startLock.withLock {
-                if (job.isCancelled) {
-                    throw CancellationException("Bot has bean cancelled.")
-                }
-                // close current client if exist
-                if (currentClientJob != null) {
-                    botLogger.debug("Cancel current client: {}", currentClientJob)
-                    currentClientJob?.cancel()
-                    currentClientJob = null
-                }
-
-
                 val connect = Connect(this, botLogger, configuration.isCompress)
                 botLogger.debug("Create connect: {}", connect)
 
@@ -236,7 +252,14 @@ internal class BotImpl(
                     error("Bot start failed.")
                 }
 
-                currentClientJob = launch { currentState.loop() }
+                currentClientJob.update { old ->
+                    if (old != null) {
+                        botLogger.debug("Cancel current client: {}", old)
+                        old.cancel()
+                    }
+
+                    launch { currentState.loop(onEach = { this@BotImpl.isAlive }) }
+                }
 
                 isStarted = true
 
@@ -260,8 +283,13 @@ internal class BotImpl(
     }
 
     override fun close() {
-        job.cancel()
-        currentClientJob = null
+        if (!closed.compareAndSet(expect = false, value = true)) {
+            return
+        }
+
+        apiClient.close()
+        wsClient.close()
+        job.complete()
     }
 
     internal suspend fun processEvent(event: Signal.Event<*>, raw: String) {

@@ -91,6 +91,21 @@ public interface Bot : CoroutineScope {
     public val isStarted: Boolean
 
     /**
+     * Bot 是否已经 [关闭][close] 并彻底完成。
+     *
+     * @since 5.0
+     */
+    public val isCompleted: Boolean
+
+    /**
+     * 当前 [Bot] 是否已经通过调用 [close] 而关闭了。
+     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表当前 [Bot] 已经 [彻底完成][isCompleted]。
+     *
+     * @since 5.0
+     */
+    public val isClosed: Boolean
+
+    /**
      * 当前bot作为用户时的信息。
      *
      * bot必须至少启动一次或执行过一次 [me] 才能获取到此信息。
@@ -214,16 +229,19 @@ public interface Bot : CoroutineScope {
     public suspend fun start(closeBotOnFailure: Boolean)
 
     /**
-     * 挂起 bot 直到其被 [关闭][close]。
+     * 挂起 bot 直到其被 [关闭][close] 并 [彻底完成][isCompleted]。
      */
     @ST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
 
     /**
-     * 关闭此 bot 。
-     * bot 被关闭后 [isActive] 将会开始得到 `false`。
+     * 完成并关闭此 bot 。
      *
-     * @see kotlinx.coroutines.Job.cancel
+     * [close] 会将 [Bot] 视为常规完成任务，
+     * 它不会强制终止所有子任务，而是会持续等待它们直到所有子任务**自然完成**。
+     * 这行为近似于 [kotlinx.coroutines.CompletableJob.complete]。
+     *
+     * @see kotlinx.coroutines.CompletableJob.complete
      */
     public fun close()
 }

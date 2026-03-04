@@ -23,8 +23,10 @@
 
 package love.forte.simbot.component.onebot.v11.core.bot.internal
 
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -76,7 +78,8 @@ internal class OneBotBotManagerImpl(
 
         val configContext = configuration.coroutineContext
         val mergedContext = configContext.mergeWith(coroutineContext)
-        val job = mergedContext[Job]!!
+        val mergedContextJob = mergedContext[Job]!!
+        val job: CompletableJob = mergedContextJob as? CompletableJob ?: SupervisorJob(mergedContextJob)
 
         fun createBot(): OneBotBotImpl =
             OneBotBotImpl(

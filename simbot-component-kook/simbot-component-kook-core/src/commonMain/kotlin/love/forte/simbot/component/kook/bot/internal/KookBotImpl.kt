@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.ability.OnCompletion
+import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
@@ -79,14 +80,10 @@ internal class KookBotImpl(
     override val sourceBot: KBot,
     override val component: KookComponent,
     private val configuration: KookBotConfiguration
-) : KookBot {
+) : KookBot, JobBasedBot() {
     override val coroutineContext: CoroutineContext = sourceBot.coroutineContext
     internal val subContext: CoroutineContext = coroutineContext.minusKey(Job)
-    private val job = coroutineContext[Job]!!
-
-    override fun onCompletion(handle: OnCompletion) {
-        job.invokeOnCompletion { handle.invoke(it) }
-    }
+    override val job = SupervisorJob(coroutineContext[Job])
 
     override val isCompleted: Boolean
         get() = job.isCompleted
@@ -227,33 +224,40 @@ internal class KookBotImpl(
     private val startLock = Mutex()
     private var syncJob: Job? = null
 
-    override suspend fun start() = startLock.withLock {
-        val (guildSyncPeriod, batchDelay) = configuration.syncPeriods.guild
-        val first = started.compareAndSet(expect = false, value = true)
+    override suspend fun start() {
+        ensureAlive()
+        startLock.withLock {
+            val (guildSyncPeriod, batchDelay) = configuration.syncPeriods.guild
+            val first = started.compareAndSet(expect = false, value = true)
 
-        inCacheModify {
-            // 从 inCacheModify 中注册事件，防止一开始的事件对缓存有操作
-            if (first) {
-                registerEvent()
+            inCacheModify {
+                // 从 inCacheModify 中注册事件，防止一开始的事件对缓存有操作
+                if (first) {
+                    registerEvent()
+                }
+
+                sourceBot.start()
+
+                dataSync(batchDelay)
             }
 
-            sourceBot.start()
+            syncJob?.cancel()
+            syncJob = guildDataSyncJob(guildSyncPeriod, batchDelay)
 
-            dataSync(batchDelay)
+            // publish event
+            publishStartEvent()
         }
-
-        syncJob?.cancel()
-        syncJob = guildDataSyncJob(guildSyncPeriod, batchDelay)
-
-        // publish event
-        publishStartEvent()
     }
 
+
+    override fun beforeJobComplete() {
+        sourceBot.close()
+    }
 
     private fun guildDataSyncJob(syncPeriod: Long, batchDelay: Long): Job {
         if (syncPeriod > 0) {
             return launch {
-                while (true) {
+                while (isActive && this@KookBotImpl.isAlive) {
                     delay(syncPeriod)
                     dataSync(batchDelay)
                 }

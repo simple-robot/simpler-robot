@@ -79,16 +79,14 @@ internal class BotImpl(
 ) : Bot {
     internal val logger = LoggerFactory.getLogger("love.forte.simbot.qguild.bot.${ticket.appId}")
 
-    // private val parentJob: Job
     override val coroutineContext: CoroutineContext
-    private val job: Job
+    private val job: CompletableJob
 
     init {
         configCheck()
 
         val configContext = configuration.coroutineContext
-        val parentJob = configContext[Job]
-        job = SupervisorJob(parentJob)
+        job = SupervisorJob(configContext[Job])
         coroutineContext = configContext.minusKey(Job) + job + CoroutineName("QGBot.${ticket.appId}")
     }
 
