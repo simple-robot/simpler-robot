@@ -14,6 +14,10 @@ open annotation class love.forte.simbot.component.onebot.common.annotations/Expe
     constructor <init>() // love.forte.simbot.component.onebot.common.annotations/ExperimentalOneBotAPI.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.component.onebot.common.annotations/InternalForInheritanceOneBotBotApi : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/InternalForInheritanceOneBotBotApi|null[0]
+    constructor <init>() // love.forte.simbot.component.onebot.common.annotations/InternalForInheritanceOneBotBotApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI : kotlin/Annotation { // love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI|null[0]
     constructor <init>() // love.forte.simbot.component.onebot.common.annotations/InternalOneBotAPI.<init>|<init>(){}[0]
 }

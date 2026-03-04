@@ -10,6 +10,10 @@ open annotation class love.forte.simbot.component.kook.blacklist/ExperimentalBla
     constructor <init>() // love.forte.simbot.component.kook.blacklist/ExperimentalBlacklistApi.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.component.kook.bot/InternalForInheritanceKookBotApi : kotlin/Annotation { // love.forte.simbot.component.kook.bot/InternalForInheritanceKookBotApi|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.bot/InternalForInheritanceKookBotApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.component.kook.message/KookSendOnlyMessage : kotlin/Annotation { // love.forte.simbot.component.kook.message/KookSendOnlyMessage|null[0]
     constructor <init>() // love.forte.simbot.component.kook.message/KookSendOnlyMessage.<init>|<init>(){}[0]
 }

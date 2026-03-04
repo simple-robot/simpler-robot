@@ -537,6 +537,9 @@ public abstract interface class love/forte/simbot/bot/GuildRelation {
 	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface annotation class love/forte/simbot/bot/InheritanceBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/bot/InitializableBot : love/forte/simbot/bot/ConfigurableBot {
 	public abstract synthetic fun init (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initAsync ()Ljava/util/concurrent/CompletableFuture;

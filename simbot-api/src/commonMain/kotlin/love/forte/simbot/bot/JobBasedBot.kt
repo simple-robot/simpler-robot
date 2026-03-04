@@ -44,6 +44,7 @@ import kotlin.jvm.JvmSynthetic
  * @author ForteScarlet
  */
 @OptIn(ExperimentalAtomicApi::class)
+@SubclassOptInRequired(InheritanceBotApi::class)
 public abstract class JobBasedBot : Bot {
     /**
      * 当前 bot 持有的 job.

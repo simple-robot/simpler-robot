@@ -77,7 +77,7 @@ kotlin {
             dependencies {
                 api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.jetbrains.annotations)
-                implementation(project(":simbot-logger"))
+                api(project(":simbot-logger"))
 
                 api(project(":simbot-commons:simbot-common-streamable"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))

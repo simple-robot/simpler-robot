@@ -10,6 +10,10 @@ open annotation class love.forte.simbot.application/ApplicationFactoryConfigurer
     constructor <init>() // love.forte.simbot.application/ApplicationFactoryConfigurerDSL.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.bot/InheritanceBotApi : kotlin/Annotation { // love.forte.simbot.bot/InheritanceBotApi|null[0]
+    constructor <init>() // love.forte.simbot.bot/InheritanceBotApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.event/EventDispatcherConfigurationDSL : kotlin/Annotation { // love.forte.simbot.event/EventDispatcherConfigurationDSL|null[0]
     constructor <init>() // love.forte.simbot.event/EventDispatcherConfigurationDSL.<init>|<init>(){}[0]
 }

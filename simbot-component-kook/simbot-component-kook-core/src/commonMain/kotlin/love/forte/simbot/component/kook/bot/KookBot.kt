@@ -24,10 +24,7 @@
 package love.forte.simbot.component.kook.bot
 
 import kotlinx.coroutines.CoroutineScope
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.ContactRelation
-import love.forte.simbot.bot.GroupRelation
-import love.forte.simbot.bot.GuildRelation
+import love.forte.simbot.bot.*
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -64,6 +61,8 @@ import love.forte.simbot.kook.stdlib.Bot as KBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
+@SubclassOptInRequired(InternalForInheritanceKookBotApi::class)
 public interface KookBot : Bot, CoroutineScope {
     /**
      * 源自 [sourceBot] 的 [CoroutineContext]

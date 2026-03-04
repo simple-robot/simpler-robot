@@ -26,9 +26,7 @@ package love.forte.simbot.application
 import kotlinx.coroutines.Job
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.common.coroutines.linkTo
 import love.forte.simbot.component.Components
-import love.forte.simbot.plugin.Plugins
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 

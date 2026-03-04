@@ -44,6 +44,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * 用于测试的 [Bot] 实现。
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
 @Suppress("MemberVisibilityCanBePrivate")
 public open class TestBot(
     override var component: Component = TestComponent(TestComponentConfiguration()),

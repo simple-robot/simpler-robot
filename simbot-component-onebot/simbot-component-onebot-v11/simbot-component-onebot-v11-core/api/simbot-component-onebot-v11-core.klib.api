@@ -157,7 +157,7 @@ abstract interface love.forte.simbot.component.onebot.v11.core.api/OneBotApiExec
     abstract suspend fun executeRaw(love.forte.simbot.component.onebot.v11.core.api/BasicOneBotApi<*>): kotlin/String // love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutable.executeRaw|executeRaw(love.forte.simbot.component.onebot.v11.core.api.BasicOneBotApi<*>){}[0]
 }
 
-abstract interface love.forte.simbot.component.onebot.v11.core.bot/OneBotBot : love.forte.simbot.bot/Bot, love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutable { // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot|null[0]
+abstract interface love.forte.simbot.component.onebot.v11.core.bot/OneBotBot : love.forte.simbot.bot/Bot, love.forte.simbot.bot/InitializableBot, love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutable { // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot|null[0]
     abstract val apiAccessToken // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.apiAccessToken|{}apiAccessToken[0]
         abstract fun <get-apiAccessToken>(): kotlin/String? // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.apiAccessToken.<get-apiAccessToken>|<get-apiAccessToken>(){}[0]
     abstract val apiClient // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.apiClient|{}apiClient[0]
@@ -195,6 +195,7 @@ abstract interface love.forte.simbot.component.onebot.v11.core.bot/OneBotBot : l
     abstract suspend fun queryLoginInfo(): love.forte.simbot.component.onebot.v11.core.api/GetLoginInfoResult // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.queryLoginInfo|queryLoginInfo(){}[0]
     abstract suspend fun start() // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.start|start(){}[0]
     open fun pushAndLaunch(kotlin/String): kotlinx.coroutines/Job // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.pushAndLaunch|pushAndLaunch(kotlin.String){}[0]
+    open suspend fun init(): kotlin/Boolean // love.forte.simbot.component.onebot.v11.core.bot/OneBotBot.init|init(){}[0]
 }
 
 abstract interface love.forte.simbot.component.onebot.v11.core.bot/OneBotBotFriendRelation : love.forte.simbot.bot/ContactRelation { // love.forte.simbot.component.onebot.v11.core.bot/OneBotBotFriendRelation|null[0]

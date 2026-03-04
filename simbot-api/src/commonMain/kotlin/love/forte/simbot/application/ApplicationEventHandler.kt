@@ -107,11 +107,13 @@ public sealed class ApplicationLaunchStage<H : ApplicationEventHandler> {
     public data object Launch : ApplicationLaunchStage<SuspendApplicationEventHandler<Application>>()
 
     /**
-     * 在 [ApplicationLauncher] 被要求关闭时。
+     * 在 [ApplicationLauncher] 通过 [Application.close] 被要求关闭时。
      *
      * 此时的 [Application] 尚未关闭 [Job]，`Application.isActive` 仍将返回 `true`。
      *
      * [RequestCancel] 中的操作应当迅速且安全，避免抛出异常，也不应长时间阻塞。
+     *
+     * 注意：如果直接通过 [Job.cancel] 关闭任务，则不会发出 [RequestCancel] 事件。
      */
     public data object RequestCancel : ApplicationLaunchStage<NormalApplicationEventHandler<Application>>()
 

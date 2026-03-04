@@ -27,6 +27,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
@@ -36,6 +37,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.QQGuildComponent
+import love.forte.simbot.component.qguild.bot.InternalForInheritanceQGBotApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.channel.*
@@ -90,6 +92,7 @@ import love.forte.simbot.qguild.stdlib.Bot as StdlibBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class, InternalForInheritanceQGBotApi::class)
 internal class QGBotImpl(
     override val source: StdlibBot,
     override val component: QQGuildComponent,

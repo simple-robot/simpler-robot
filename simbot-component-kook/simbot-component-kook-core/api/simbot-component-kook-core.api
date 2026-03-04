@@ -321,6 +321,9 @@ public abstract interface class love/forte/simbot/component/kook/KookVoiceMember
 public abstract interface annotation class love/forte/simbot/component/kook/blacklist/ExperimentalBlacklistApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class love/forte/simbot/component/kook/bot/InternalForInheritanceKookBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/component/kook/bot/KookBot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/bot/Bot {
 	public fun getAvatar ()Ljava/lang/String;
 	public abstract fun getComponent ()Llove/forte/simbot/component/kook/KookComponent;

@@ -41,6 +41,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import kotlinx.serialization.modules.overwriteWith
 import love.forte.simbot.annotations.FragileSimbotAPI
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collectable.Collectable
@@ -50,6 +51,7 @@ import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.onebot.common.annotations.InternalForInheritanceOneBotBotApi
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
@@ -104,6 +106,7 @@ import love.forte.simbot.component.onebot.v11.event.RawEvent as OBRawEvent
  * [OneBotBot] 的实现
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class, InternalForInheritanceOneBotBotApi::class)
 internal class OneBotBotImpl(
     private val uniqueId: String,
     override val coroutineContext: CoroutineContext,
@@ -133,7 +136,6 @@ internal class OneBotBotImpl(
     override var apiAccessToken: String? = null
     override var eventAccessToken: String? = null
 
-
     override lateinit var apiClient: HttpClient
         private set
 
@@ -144,6 +146,12 @@ internal class OneBotBotImpl(
 
     private val initLock = Mutex()
     private val initialized = atomic(false)
+
+    override val isInitialized: Boolean
+        get() = initialized.value
+
+    override val isInitializing: Boolean
+        get() = !isInitialized && initLock.isLocked
 
     override suspend fun initConfiguration(): Boolean {
         if (initialized.value) {
@@ -168,10 +176,10 @@ internal class OneBotBotImpl(
     }
 
     override val isConfigurationInitialized: Boolean
-        get() = initialized.value
+        get() = isInitialized
 
     override val isConfigurationInitializing: Boolean
-        get() = !isConfigurationInitialized && initLock.isLocked
+        get() = isInitializing
 
     private fun initDecoderJson() {
         decoderJson = Json(baseDecoderJson) {
@@ -325,7 +333,7 @@ internal class OneBotBotImpl(
     private val startLock = Mutex()
 
 
-    override suspend fun start(): Unit {
+    override suspend fun start() {
         ensureAlive()
         startLock.withLock {
             initConfiguration()

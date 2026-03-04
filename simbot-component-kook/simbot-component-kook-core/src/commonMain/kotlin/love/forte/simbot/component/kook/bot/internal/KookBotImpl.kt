@@ -27,7 +27,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import love.forte.simbot.ability.OnCompletion
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collectable.Collectable
@@ -41,10 +41,7 @@ import love.forte.simbot.component.kook.KookChannel
 import love.forte.simbot.component.kook.KookChatChannel
 import love.forte.simbot.component.kook.KookComponent
 import love.forte.simbot.component.kook.KookVoiceChannel
-import love.forte.simbot.component.kook.bot.KookBot
-import love.forte.simbot.component.kook.bot.KookBotConfiguration
-import love.forte.simbot.component.kook.bot.KookContactRelation
-import love.forte.simbot.component.kook.bot.KookGuildRelation
+import love.forte.simbot.component.kook.bot.*
 import love.forte.simbot.component.kook.event.internal.KookBotStartedEventImpl
 import love.forte.simbot.component.kook.internal.*
 import love.forte.simbot.component.kook.util.requestData
@@ -75,6 +72,7 @@ import love.forte.simbot.kook.stdlib.Bot as KBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class, InternalForInheritanceKookBotApi::class)
 internal class KookBotImpl(
     internal val eventProcessor: EventProcessor,
     override val sourceBot: KBot,

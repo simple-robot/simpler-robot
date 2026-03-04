@@ -34,6 +34,8 @@ import love.forte.simbot.application.NormalApplicationEventHandler
 import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.plugin.CloseablePlugin
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.spring.common.application.SpringApplication
@@ -52,6 +54,10 @@ internal class SpringApplicationImpl(
     override val botManagers: BotManagers,
     val events: ApplicationLaunchStages
 ) : SpringApplication {
+    companion object {
+        val logger = LoggerFactory.logger<SpringApplicationImpl>()
+    }
+
     private val closed = AtomicBoolean(false)
     private val job: CompletableJob
     override val coroutineContext: CoroutineContext
@@ -61,12 +67,10 @@ internal class SpringApplicationImpl(
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
 
         newJob.invokeOnCompletion {
-            if (!closed.compareAndSet(false, true)) {
-                return@invokeOnCompletion
+            if (closed.compareAndSet(false, true)) {
+                cancelPlugins()
             }
 
-            invokeRequestCancelEvent()
-            cancelPlugins()
             invokeCancelledEvent()
         }
 
@@ -79,7 +83,11 @@ internal class SpringApplicationImpl(
     ) {
         events[stage]?.forEach { handler ->
             (handler as? H)?.also { handler0 ->
-                block(handler0)
+                runCatching {
+                    block(handler0)
+                }.onFailure { e ->
+                    logger.error("Invoke application event stage {} handler failed.", stage, e)
+                }
             }
         }
     }
@@ -104,7 +112,6 @@ internal class SpringApplicationImpl(
         invokeRequestCancelEvent()
         cancelPlugins()
         job.complete()
-        invokeCancelledEvent()
     }
 
     private fun invokeCancelledEvent() {
@@ -122,7 +129,11 @@ internal class SpringApplicationImpl(
     private fun cancelPlugins() {
         for (plugin in plugins) {
             if (plugin is CloseablePlugin) {
-                plugin.close()
+                runCatching {
+                    plugin.close()
+                }.onFailure { e ->
+                    logger.error("Close plugin {} failed: {}", plugin, e.message, e)
+                }
             }
         }
     }

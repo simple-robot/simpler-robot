@@ -67,6 +67,7 @@ import kotlinx.coroutines.cancel as cancelJob
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(InheritanceBotApi::class)
 public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineScope, BotRelations {
     /**
      * 当前bot的标识。

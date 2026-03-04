@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -24,17 +24,12 @@
 package love.forte.simbot.component.onebot.common.annotations
 
 /**
- * 一个标记性注解，标记一个类型 (通常是一个抽象类或接口)
- * 或函数应当仅由**内部实现**，
- * 对外实现不稳定且不保证兼容性。
- *
- * 现在此注解的标注能力由
- * [SubclassOptInRequired] + [InternalForInheritanceOneBotBotApi] 提供更好地支持。
- *
- * @see InternalForInheritanceOneBotBotApi
+ * 为 OneBot 组件下 Bot 相关接口类型的实现提供警告信息。
  */
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@MustBeDocumented
-public annotation class OneBotInternalImplementationsOnly
-
+@Target(AnnotationTarget.CLASS)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.ERROR,
+    message = "OneBotBot 及其相关接口是面向 OneBot 组件库内部实现的类型，" +
+        "它可能随时添加更多需要明确实现的抽象 API 而不会确保对继承的安全兼容，因此它不应该由用户随意实现。"
+)
+public annotation class InternalForInheritanceOneBotBotApi

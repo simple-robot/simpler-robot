@@ -43,6 +43,7 @@ import kotlin.test.assertNotNull
  *
  * @author ForteScarlet
  */
+@Suppress("unused")
 class BotConfigurationTests {
 
     @Serializable
@@ -96,6 +97,7 @@ class BotConfigurationTests {
         }
     }
 
+    @OptIn(InheritanceBotApi::class)
     private data class FooBot(override val name: String) : JobBasedBot() {
         override val job = Job()
         override val coroutineContext: CoroutineContext = job

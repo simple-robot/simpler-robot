@@ -29,13 +29,13 @@ import io.ktor.client.statement.*
 import love.forte.simbot.ability.EventMentionAware
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.QQGuildComponent
 import love.forte.simbot.component.qguild.channel.QGTextChannel
-import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.event.QGAtMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGGroupAtMessageCreateEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
@@ -76,6 +76,8 @@ import love.forte.simbot.qguild.stdlib.Bot as QGSourceBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
+@SubclassOptInRequired(InternalForInheritanceQGBotApi::class)
 public interface QGBot : Bot, EventMentionAware {
     /**
      * QQ频道的 [组件][QQGuildComponent] 对象实例。
@@ -238,8 +240,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。
@@ -256,8 +258,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。
@@ -274,8 +276,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。

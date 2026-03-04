@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -44,6 +44,7 @@ package love.forte.simbot.bot
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(InheritanceBotApi::class)
 public interface ConfigurableBot : Bot {
     /**
      * 当前 Bot 持有的配置信息。

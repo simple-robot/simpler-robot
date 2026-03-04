@@ -40,6 +40,7 @@ import love.forte.simbot.suspendrunner.ST
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(InheritanceBotApi::class)
 public interface InitializableBot : ConfigurableBot {
 
     /**

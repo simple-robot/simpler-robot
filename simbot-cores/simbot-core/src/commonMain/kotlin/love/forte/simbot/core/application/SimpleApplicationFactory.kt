@@ -41,6 +41,8 @@ import love.forte.simbot.core.event.SimpleEventDispatcher
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.plugin.*
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -61,6 +63,10 @@ private class SimpleApplicationImpl(
     override val botManagers: BotManagers,
     val events: ApplicationLaunchStages
 ) : SimpleApplication {
+    companion object {
+        val logger = LoggerFactory.logger<SimpleApplicationImpl>()
+    }
+
     private val closed = AtomicBoolean(false)
 
     private val job: CompletableJob
@@ -71,12 +77,11 @@ private class SimpleApplicationImpl(
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
 
         newJob.invokeOnCompletion {
-            if (!closed.compareAndSet(expectedValue = false, newValue = true)) {
-                return@invokeOnCompletion
+            if (closed.compareAndSet(expectedValue = false, newValue = true)) {
+                // 之前没关闭过，说明这是首次关闭，说明是直接通过 cancel 关的。
+                cancelPlugins()
             }
 
-            invokeRequestCancelEvent()
-            cancelPlugins()
             invokeCancelledEvent()
         }
 
@@ -89,7 +94,11 @@ private class SimpleApplicationImpl(
     ) {
         events[stage]?.forEach { handler ->
             (handler as? H)?.also { handler0 ->
-                block(handler0)
+                runCatching {
+                    block(handler0)
+                }.onFailure { e ->
+                    logger.error("Invoke application event stage {} handler failed.", stage, e)
+                }
             }
         }
     }
@@ -102,10 +111,10 @@ private class SimpleApplicationImpl(
         invokeRequestCancelEvent()
         cancelPlugins()
         job.complete()
-        invokeCancelledEvent()
     }
 
     private fun invokeCancelledEvent() {
+        println("invokeCancelledEvent: 111")
         invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
             invoke(this@SimpleApplicationImpl)
         }
@@ -120,7 +129,11 @@ private class SimpleApplicationImpl(
     private fun cancelPlugins() {
         for (plugin in plugins) {
             if (plugin is CloseablePlugin) {
-                plugin.close()
+                runCatching {
+                    plugin.close()
+                }.onFailure { e ->
+                    logger.error("Close plugin {} failed: {}", plugin, e.message, e)
+                }
             }
         }
     }
