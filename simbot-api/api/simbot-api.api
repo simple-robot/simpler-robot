@@ -213,13 +213,17 @@ public abstract class love/forte/simbot/application/AbstractApplicationFactoryCo
 public abstract interface class love/forte/simbot/application/Application : kotlinx/coroutines/CoroutineScope, love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware {
 	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
 	public fun cancel ()V
-	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun close ()V
 	public abstract fun getBotManagers ()Llove/forte/simbot/bot/BotManagers;
 	public abstract fun getComponents ()Llove/forte/simbot/component/Components;
 	public abstract fun getConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
 	public abstract fun getPlugins ()Llove/forte/simbot/plugin/Plugins;
+	public abstract fun isActive ()Z
+	public abstract fun isClosed ()Z
+	public abstract fun isCompleted ()Z
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -385,10 +389,14 @@ public abstract interface class love/forte/simbot/bot/AutoConfigurableBotPlugin 
 public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/ability/CompletionAware, love/forte/simbot/ability/LifecycleAware, love/forte/simbot/bot/BotRelations, love/forte/simbot/common/id/IDContainer {
 	public fun asFuture ()Ljava/util/concurrent/CompletableFuture;
 	public fun cancel ()V
-	public abstract fun cancel (Ljava/lang/Throwable;)V
+	public fun cancel (Ljava/lang/Throwable;)V
+	public abstract fun close ()V
 	public abstract fun getComponent ()Llove/forte/simbot/component/Component;
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun isActive ()Z
+	public abstract fun isClosed ()Z
+	public abstract fun isCompleted ()Z
 	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
 	public abstract fun isStarted ()Z
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -406,6 +414,13 @@ public abstract interface class love/forte/simbot/bot/Bot : kotlinx/coroutines/C
 	public fun startAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun startBlocking ()V
 	public fun startReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public class love/forte/simbot/bot/BotAlreadyClosedException : java/lang/IllegalStateException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
 }
 
 public class love/forte/simbot/bot/BotException : java/lang/RuntimeException {
@@ -522,6 +537,9 @@ public abstract interface class love/forte/simbot/bot/GuildRelation {
 	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface annotation class love/forte/simbot/bot/InheritanceBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/bot/InitializableBot : love/forte/simbot/bot/ConfigurableBot {
 	public abstract synthetic fun init (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initAsync ()Ljava/util/concurrent/CompletableFuture;
@@ -533,10 +551,17 @@ public abstract interface class love/forte/simbot/bot/InitializableBot : love/fo
 
 public abstract class love/forte/simbot/bot/JobBasedBot : love/forte/simbot/bot/Bot {
 	public fun <init> ()V
-	public fun cancel (Ljava/lang/Throwable;)V
-	protected abstract fun getJob ()Lkotlinx/coroutines/Job;
+	protected fun afterJobComplete ()V
+	protected fun beforeJobComplete ()V
+	public fun close ()V
+	protected fun compareAndSetClosed (ZZ)Z
+	protected fun ensureAlive ()V
+	protected fun ensureNotClosed ()V
+	protected abstract fun getJob ()Lkotlinx/coroutines/CompletableJob;
 	public final fun getOnJoin ()Lkotlinx/coroutines/selects/SelectClause0;
 	public fun isActive ()Z
+	protected fun isAlive ()Z
+	public fun isClosed ()Z
 	public fun isCompleted ()Z
 	public fun isStarted ()Z
 	public synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2960,7 +2985,18 @@ public abstract interface class love/forte/simbot/plugin/AbstractJPlugin$Key : l
 	public abstract fun getName ()Ljava/lang/String;
 }
 
+public abstract interface class love/forte/simbot/plugin/CloseablePlugin : love/forte/simbot/ability/LifecycleAware, love/forte/simbot/plugin/Plugin {
+	public abstract fun close ()V
+	public abstract fun isActive ()Z
+	public abstract fun isClosed ()Z
+	public abstract fun isCompleted ()Z
+}
+
 public abstract interface class love/forte/simbot/plugin/Plugin {
+}
+
+public final class love/forte/simbot/plugin/PluginAlreadyCancelledException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
 
 public abstract interface class love/forte/simbot/plugin/PluginConfigureContext {

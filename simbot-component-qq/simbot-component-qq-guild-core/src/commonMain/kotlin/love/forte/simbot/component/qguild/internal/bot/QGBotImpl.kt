@@ -27,6 +27,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
@@ -36,6 +37,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.QQGuildComponent
+import love.forte.simbot.component.qguild.bot.InternalForInheritanceQGBotApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.channel.*
@@ -90,6 +92,7 @@ import love.forte.simbot.qguild.stdlib.Bot as StdlibBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class, InternalForInheritanceQGBotApi::class)
 internal class QGBotImpl(
     override val source: StdlibBot,
     override val component: QQGuildComponent,
@@ -99,11 +102,8 @@ internal class QGBotImpl(
     internal val logger =
         LoggerFactory.getLogger("love.forte.simbot.component.qguild.bot.${source.ticket.secret}")
 
-    override val job: Job
-        get() = source.coroutineContext[Job]!!
-
-    override val coroutineContext: CoroutineContext
-        get() = source.coroutineContext
+    override val job: CompletableJob = SupervisorJob(source.coroutineContext[Job])
+    override val coroutineContext: CoroutineContext = source.coroutineContext + job
 
     private val cacheConfig = configuration.cacheConfig
     private val cacheable = cacheConfig?.enable == true
@@ -143,7 +143,6 @@ internal class QGBotImpl(
 
     override val avatar: String
         get() = if (!::botSelf.isInitialized) "" else botSelf.avatar
-
 
     override fun isMe(id: ID): Boolean {
         if (id == this.id) return true
@@ -424,6 +423,7 @@ internal class QGBotImpl(
      * 启动当前bot。
      */
     override suspend fun start() {
+        ensureAlive()
         startLock.withLock {
             sourceListenerDisposableHandle?.also { handle ->
                 handle.dispose()
@@ -526,6 +526,10 @@ internal class QGBotImpl(
             logger.error("Internal message pre send event process failed", ex)
             throw ex
         }
+    }
+
+    override fun beforeJobComplete() {
+        source.cancel()
     }
 
     override fun toString(): String {

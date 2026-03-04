@@ -24,10 +24,7 @@
 package love.forte.simbot.component.kook.bot
 
 import kotlinx.coroutines.CoroutineScope
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.ContactRelation
-import love.forte.simbot.bot.GroupRelation
-import love.forte.simbot.bot.GuildRelation
+import love.forte.simbot.bot.*
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -64,6 +61,8 @@ import love.forte.simbot.kook.stdlib.Bot as KBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
+@SubclassOptInRequired(InternalForInheritanceKookBotApi::class)
 public interface KookBot : Bot, CoroutineScope {
     /**
      * 源自 [sourceBot] 的 [CoroutineContext]
@@ -101,13 +100,11 @@ public interface KookBot : Bot, CoroutineScope {
      * bot 是否处于活跃状态
      */
     override val isActive: Boolean
-        get() = sourceBot.isActive
 
     /**
      * bot 是否已经被启动过
      */
     override val isStarted: Boolean
-        get() = sourceBot.isStarted
 
     /**
      * 头像信息
@@ -147,15 +144,6 @@ public interface KookBot : Bot, CoroutineScope {
     @ST
     public suspend fun uploadAssetImage(api: CreateAssetApi): KookAssetImage =
         KookAssetImage(api.requestDataBy(this))
-
-    override fun cancel(reason: Throwable?) {
-        sourceBot.close()
-    }
-
-    @JvmSynthetic
-    override suspend fun join() {
-        sourceBot.join()
-    }
 
     /**
      * 与 [KookGuild] 相关的行为关系操作。

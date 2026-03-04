@@ -45,7 +45,7 @@ jobs:
           build-scan-terms-of-use-agree: 'yes'
 
       - name: Build with Gradle
-        run: gradle assemble build -s --warning-mode all
+        run: gradle assemble build -x test -s --warning-mode all
 
   test:
     name: Test on ${{ matrix.os }}

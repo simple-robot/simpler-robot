@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -44,6 +44,7 @@ import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmName
+import kotlinx.coroutines.cancel as cancelJob
 
 /**
  * 一个 `Bot`。
@@ -66,19 +67,18 @@ import kotlin.jvm.JvmName
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(InheritanceBotApi::class)
 public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineScope, BotRelations {
     /**
      * 当前bot的标识。
      *
-     * 此标识可能是 bot 在系统中的 id （例如某种用户ID），
-     * 也可能只是注册此 bot 时使用一种标识
+     * 此标识是 bot 在 BotManager/组件范围中的 唯一标识id，通常是某种用户 ID ，
+     * 也可能只是注册此 bot 时使用的唯一标识
      * （比如向平台申请并下发的某种 `bot_id` 或者 `token` ）。
      *
-     * 通常情况下，它会是注册bot时候使用的某种唯一标识。
-     * 它只能作为 simbot application 中的唯一表示，
-     * 无法确保其代表某种 _用户ID_ 。
-     * 对于不同的平台可能会视情况提供额外的属性来获取其用户ID。
-     *
+     * 它应是注册bot时候使用的唯一标识，它被作为 simbot application 中的唯一表示，
+     * 但无法确保其代表某种 _用户ID_ 因为有些系统或平台中，Bot 或者账号的真正的所谓“用户ID”需要通过调用接口获取。
+     * 对于不同的平台可能会视情况提供额外的属性来获取其真正的“用户ID”。
      */
     public override val id: ID
 
@@ -120,12 +120,35 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
     public suspend fun start()
 
     /**
+     * Bot 是否处于活跃状态。
+     *
+     * @see kotlinx.coroutines.Job.isActive
+     */
+    override val isActive: Boolean
+
+    /**
+     * Bot 是否已经彻底完成。
+     *
+     * @since 5.0
+     */
+    override val isCompleted: Boolean
+
+    /**
      * 是否 **启动过**。
      *
      * 当调用过至少一次 [start] 且未产生异常后 [isStarted] 将会得到 `true`。
      * [isStarted] 与当前 [Bot] 是否被关闭无关，也不会被其影响。
      */
     public val isStarted: Boolean
+
+
+    /**
+     * 当前 [Bot] 是否已经通过调用 [close] 而关闭了。
+     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表当前 [Bot] 已经 [彻底完成][isCompleted]。
+     *
+     * @since 5.0
+     */
+    public val isClosed: Boolean
 
     // abilities
 
@@ -181,10 +204,10 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
     public suspend fun messageFromId(id: ID): MessageContent =
         throw UnsupportedOperationException()
 
-    // join & cancel
+    // join & cancel/close
 
     /**
-     * 挂起 [Bot] 直到它完成其生命周期。
+     * 挂起 [Bot] 直到它 [彻底完成][isCompleted]。
      */
     @ST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
@@ -195,7 +218,14 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * 当 [Bot] 被完全关闭时，[join] 会结束挂起。
      * 效果与 [CoroutineScope.cancel] 类似。
      */
-    public fun cancel(reason: Throwable?)
+    @Deprecated(
+        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
+            "则直接使用 Job.cancel",
+        replaceWith = ReplaceWith("close()")
+    )
+    public fun cancel(reason: Throwable?) {
+        cancelJob(reason?.let { kotlinx.coroutines.CancellationException(it.message, it) })
+    }
 
     /**
      * 关闭当前 [Bot]。
@@ -203,10 +233,30 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * 当 [Bot] 被完全关闭时，[join] 会结束挂起。
      * 效果与 [CoroutineScope.cancel] 类似。
      */
+    @Deprecated(
+        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
+            "则直接使用 Job.cancel",
+        replaceWith = ReplaceWith("close()")
+    )
     public fun cancel() {
-        cancel(null)
+        cancelJob()
     }
 
+    /**
+     * 完成并关闭此 bot 。
+     *
+     * 当调用 [close] 后，[isClosed] 的值立即变为 `true`，
+     * 当取消流程完全结束后，[isCompleted] 的值将会变为 `true`。
+     *
+     *
+     * [close] 会将 [Bot] 视为常规完成任务，
+     * 它不会强制终止所有子任务，而是会持续等待它们直到所有子任务**自然完成**。
+     * 这行为近似于 [kotlinx.coroutines.CompletableJob.complete]。
+     *
+     * @since 5.0
+     * @see kotlinx.coroutines.CompletableJob.complete
+     */
+    public fun close()
 }
 
 /**
@@ -368,3 +418,15 @@ public suspend fun Bot.startAndJoin() {
  */
 public fun Bot.startIn(scope: CoroutineScope): Job =
     scope.launch { start() }
+
+/**
+ * 如果尝试在 [Bot.close] 之后继续调用具有副作用的函数或行为，抛出此异常。
+ *
+ * @since 5.0
+ */
+public open class BotAlreadyClosedException : IllegalStateException {
+    public constructor() : super()
+    public constructor(cause: Throwable?) : super(cause)
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+}

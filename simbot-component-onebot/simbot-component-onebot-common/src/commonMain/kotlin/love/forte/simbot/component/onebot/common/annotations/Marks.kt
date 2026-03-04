@@ -28,10 +28,13 @@ package love.forte.simbot.component.onebot.common.annotations
  * 或函数应当仅由**内部实现**，
  * 对外实现不稳定且不保证兼容性。
  *
+ * 现在此注解的标注能力由
+ * [SubclassOptInRequired] + [InternalForInheritanceOneBotBotApi] 提供更好地支持。
+ *
+ * @see InternalForInheritanceOneBotBotApi
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @MustBeDocumented
 public annotation class OneBotInternalImplementationsOnly
 
-// TODO be SubclassOptInRequired ?

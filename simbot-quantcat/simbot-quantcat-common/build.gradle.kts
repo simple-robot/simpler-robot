@@ -63,8 +63,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":simbot-commons:simbot-common-annotations"))
-                implementation(project(":simbot-api"))
-                implementation(project(":simbot-logger"))
+                api(project(":simbot-api"))
+                api(project(":simbot-logger"))
 
             }
         }

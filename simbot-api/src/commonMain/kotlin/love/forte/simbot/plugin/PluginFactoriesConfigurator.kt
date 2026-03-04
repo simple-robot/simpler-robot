@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,27 +21,15 @@
  *
  */
 
-package love.forte.simbot.ability
+package love.forte.simbot.plugin
+
+import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.function.MergeableFactoriesConfigurator
 
 /**
- * 提供一些可以获取到当前状态的感知类型。
- *
- * 通常情况下会配合 [kotlinx.coroutines.Job] 实现。
- *
- * @author ForteScarlet
+ * 用于对 [PluginFactory] 进行聚合组装的配置器。
  */
-public interface LifecycleAware {
-    /**
-     * 当前是否处于活跃、运行或尚未结束的状态。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isActive]。
-     */
-    public val isActive: Boolean
-
-    /**
-     * 当前是否已经彻底完成。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isCompleted]。
-     */
-    public val isCompleted: Boolean
-}
+public class PluginFactoriesConfigurator(
+    configurators: Map<PluginFactory.Key, ConfigurerFunction<Any>> = emptyMap(),
+    factories: Map<PluginFactory.Key, (PluginConfigureContext) -> Plugin> = emptyMap(),
+) : MergeableFactoriesConfigurator<PluginConfigureContext, Plugin, PluginFactory.Key>(configurators, factories)

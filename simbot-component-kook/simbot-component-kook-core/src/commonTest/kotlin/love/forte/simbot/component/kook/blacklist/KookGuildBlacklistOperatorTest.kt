@@ -34,6 +34,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.kook.blacklist.internal.KookGuildBlacklistOperatorImpl
+import love.forte.simbot.component.kook.bot.InternalForInheritanceKookBotApi
 import love.forte.simbot.component.kook.bot.KookBot
 import love.forte.simbot.kook.stdlib.BotFactory
 import love.forte.simbot.kook.stdlib.BotFactory.create
@@ -57,6 +58,7 @@ class KookGuildBlacklistOperatorTest {
     /**
      * 创建一个用于测试的 mock KookBot
      */
+    @OptIn(InternalForInheritanceKookBotApi::class)
     private fun createMockBot(client: HttpClientEngine): KookBot {
         val sourceBot = BotFactory.create(Ticket.botWsTicket("test_client_id", "test_token")) {
             clientEngine = client
@@ -77,12 +79,12 @@ class KookGuildBlacklistOperatorTest {
             override val coroutineContext get() = error("Not implemented for test")
             override val guildRelation get() = error("Not implemented for test")
             override val contactRelation get() = error("Not implemented for test")
-            override suspend fun join() = error("Not implemented for test")
-            override fun cancel(reason: Throwable?): Unit = error("Not implemented for test")
+            override suspend fun join(): Unit = sourceBot.join()
+            override fun close(): Unit = Unit
+
+            override val isClosed: Boolean = false
             override suspend fun start() = error("Not implemented for test")
-            override fun onCompletion(handle: OnCompletion) {
-                TODO("Not yet implemented")
-            }
+            override fun onCompletion(handle: OnCompletion): Unit = Unit
         }
     }
 

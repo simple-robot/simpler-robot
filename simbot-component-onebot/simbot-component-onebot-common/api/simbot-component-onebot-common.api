@@ -4,6 +4,9 @@ public abstract interface annotation class love/forte/simbot/component/onebot/co
 public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/ExperimentalOneBotAPI : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/InternalForInheritanceOneBotBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class love/forte/simbot/component/onebot/common/annotations/InternalOneBotAPI : java/lang/annotation/Annotation {
 }
 

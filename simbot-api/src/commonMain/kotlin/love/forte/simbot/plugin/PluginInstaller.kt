@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,27 +21,26 @@
  *
  */
 
-package love.forte.simbot.ability
+package love.forte.simbot.plugin
+
+import love.forte.simbot.common.function.ConfigurerFunction
 
 /**
- * 提供一些可以获取到当前状态的感知类型。
- *
- * 通常情况下会配合 [kotlinx.coroutines.Job] 实现。
- *
- * @author ForteScarlet
+ * 一个 [Plugin] 的安装器接口，
+ * 提供用于安装 [Plugin] 的能力。
  */
-public interface LifecycleAware {
+public interface PluginInstaller {
     /**
-     * 当前是否处于活跃、运行或尚未结束的状态。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isActive]。
+     * 注册安装一个插件 [Plugin] 类型，并为其添加一个对应的配置。
      */
-    public val isActive: Boolean
+    public fun <P : Plugin, CONF : Any> install(
+        pluginFactory: PluginFactory<P, CONF>, configurer: ConfigurerFunction<CONF>
+    )
 
     /**
-     * 当前是否已经彻底完成。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isCompleted]。
+     * 注册安装一个插件 [Plugin] 类型。
      */
-    public val isCompleted: Boolean
+    public fun <P : Plugin, CONF : Any> install(pluginFactory: PluginFactory<P, CONF>) {
+        install(pluginFactory) {}
+    }
 }

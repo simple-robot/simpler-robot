@@ -72,6 +72,9 @@ public abstract interface class love/forte/simbot/component/qguild/QQGuildUsageB
 	public abstract fun component (Llove/forte/simbot/common/function/ConfigurerFunction;)V
 }
 
+public abstract interface annotation class love/forte/simbot/component/qguild/bot/InternalForInheritanceQGBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/component/qguild/bot/QGBot : love/forte/simbot/ability/EventMentionAware, love/forte/simbot/bot/Bot {
 	public synthetic fun emitEvent (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun emitEvent (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

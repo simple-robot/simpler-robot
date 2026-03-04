@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,27 +21,16 @@
  *
  */
 
-package love.forte.simbot.ability
+package love.forte.simbot.bot
 
 /**
- * 提供一些可以获取到当前状态的感知类型。
- *
- * 通常情况下会配合 [kotlinx.coroutines.Job] 实现。
- *
- * @author ForteScarlet
+ * 为 [Bot] 及其相关接口的实现提供警告信息。
  */
-public interface LifecycleAware {
-    /**
-     * 当前是否处于活跃、运行或尚未结束的状态。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isActive]。
-     */
-    public val isActive: Boolean
-
-    /**
-     * 当前是否已经彻底完成。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isCompleted]。
-     */
-    public val isCompleted: Boolean
-}
+@Target(AnnotationTarget.CLASS)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "Bot 及其相关接口是面向组件库实现的类型。它的兼容性保障会更弱、通常只确保在相同 major 内的二进制兼容，" +
+        "且可能随时会添加新的、需要被明确继承/重写的API。因此对 Bot 及其相关接口的实现需要更频繁的关注它的变更，" +
+        "这通常由组件库实现，而不应该由用户随意实现。"
+)
+public annotation class InheritanceBotApi

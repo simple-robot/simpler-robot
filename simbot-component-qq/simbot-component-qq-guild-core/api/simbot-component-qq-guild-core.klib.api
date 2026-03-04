@@ -10,6 +10,10 @@ open annotation class love.forte.simbot.component.qguild.bot.config/UsedOnlyForC
     constructor <init>() // love.forte.simbot.component.qguild.bot.config/UsedOnlyForConfigSerialization.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.component.qguild.bot/InternalForInheritanceQGBotApi : kotlin/Annotation { // love.forte.simbot.component.qguild.bot/InternalForInheritanceQGBotApi|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.bot/InternalForInheritanceQGBotApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.component.qguild.bot/QGBotManagerConfigurationDsl : kotlin/Annotation { // love.forte.simbot.component.qguild.bot/QGBotManagerConfigurationDsl|null[0]
     constructor <init>() // love.forte.simbot.component.qguild.bot/QGBotManagerConfigurationDsl.<init>|<init>(){}[0]
 }

@@ -48,7 +48,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":simbot-logger"))
+            api(project(":simbot-logger"))
         }
 
         commonTest.dependencies {

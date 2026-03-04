@@ -49,8 +49,7 @@ import love.forte.simbot.kook.stdlib.requestDataBy
 import love.forte.simbot.logger.Logger
 import kotlin.math.max
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.CancellationException as CoroutineCancellationException
-import kotlinx.coroutines.CancellationException as CreateCancellationException
+import kotlinx.coroutines.CancellationException as KtxCancellationException
 
 
 internal sealed class State : love.forte.simbot.common.stageloop.State<State>() {
@@ -447,7 +446,7 @@ private class Client(
     val heartbeatJob: HeartbeatJob,
     val eventProcessJob: EventProcessJob
 ) {
-    fun cancel(sessionCause: CoroutineCancellationException? = null) {
+    fun cancel(sessionCause: KtxCancellationException? = null) {
         session.cancel(sessionCause)
         heartbeatJob.cancel()
         eventProcessJob.cancel()
@@ -473,10 +472,10 @@ private class Receiving(
     @Suppress("ReturnCount")
     override suspend fun invoke(): State? {
         val session = client.session
-        if (!session.isActive) {
-            // 会话不再活跃。
+        if (!session.isActive || !bot.isAlive) {
+            // 会话不再活跃，或 bot 已经结束
             val reason = session.closeReason.await()
-            return if (!bot.isActive) {
+            return if (!bot.isAlive) {
                 botLogger.error("The session [{}] (and bot) is no longer active. reason: {}", session, reason)
                 client.cancel()
                 null
@@ -496,7 +495,7 @@ private class Receiving(
                     cause?.message,
                     cause
                 )
-                val cancelException = CreateCancellationException(
+                val cancelException = KtxCancellationException(
                     "Receiving next frame on failure,, close current session and try to reconnect",
                     cause
                 )
@@ -509,7 +508,7 @@ private class Receiving(
                     cause?.message,
                     cause
                 )
-                val cancelException = CreateCancellationException(
+                val cancelException = KtxCancellationException(
                     "Receiving next frame on failure,, close current session and try to reconnect",
                     cause
                 )
@@ -534,7 +533,7 @@ private class Receiving(
             }
 
             return this
-        } catch (cancellation: CreateCancellationException) {
+        } catch (cancellation: KtxCancellationException) {
             // 似乎不会到这儿来？
             client.cancel()
             return if (!bot.isActive) {
@@ -550,7 +549,7 @@ private class Receiving(
 
         } catch (e: Throwable) {
             botLogger.error("Session received frame failed: {}, cancel current session and try reconnect", e.message, e)
-            client.cancel(sessionCause = CreateCancellationException("unexpected exception was received", e))
+            client.cancel(sessionCause = KtxCancellationException("unexpected exception was received", e))
             // next: Reconnect
             return Reconnect(bot, botLogger, client.isCompress, client.sn.value, hello.d.sessionId)
         }
@@ -666,7 +665,7 @@ private class Receiving(
                     try {
                         // push event
                         client.eventProcessJob.apply {
-                            for (i in 1..3) {
+                            repeat(3) {
                                 val sendResult = trySendEvent(eventData)
                                 if (sendResult.isSuccess) {
                                     return@apply
@@ -674,7 +673,7 @@ private class Receiving(
 
                                 if (sendResult.isFailure && !sendResult.isClosed) {
                                     // retry
-                                    continue
+                                    return@repeat
                                 }
 
                                 if (sendResult.isClosed) {
