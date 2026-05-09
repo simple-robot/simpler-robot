@@ -31,13 +31,11 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.serialization.json.Json
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.ContactRelation
-import love.forte.simbot.bot.GroupRelation
-import love.forte.simbot.bot.GuildRelation
+import love.forte.simbot.bot.*
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.common.annotations.InternalForInheritanceOneBotBotApi
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.common.annotations.OneBotInternalImplementationsOnly
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
@@ -73,8 +71,10 @@ import kotlin.jvm.JvmSynthetic
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
 @OneBotInternalImplementationsOnly
-public interface OneBotBot : Bot, OneBotApiExecutable {
+@SubclassOptInRequired(InternalForInheritanceOneBotBotApi::class)
+public interface OneBotBot : Bot, InitializableBot, OneBotApiExecutable {
     override val coroutineContext: CoroutineContext
 
     /**
@@ -88,7 +88,7 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
      *
      * 配置信息在 [initConfiguration] 或 [start] 调用后的修改无效。
      */
-    public val configuration: OneBotBotConfiguration
+    override val configuration: OneBotBotConfiguration
 
     /**
      * 根据 [configuration] 初始化部分配置信息。
@@ -126,6 +126,9 @@ public interface OneBotBot : Bot, OneBotApiExecutable {
      */
     @ExperimentalOneBotAPI
     public suspend fun initConfiguration(): Boolean
+
+    override suspend fun init(): Boolean =
+        initConfiguration()
 
     /**
      * 获取是否已经执行过 [initConfiguration]。

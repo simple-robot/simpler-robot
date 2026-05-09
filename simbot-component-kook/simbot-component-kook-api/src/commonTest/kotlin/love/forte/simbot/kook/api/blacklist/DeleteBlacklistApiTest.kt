@@ -54,8 +54,8 @@ class DeleteBlacklistApiTest {
         
         // Test URL path segments
         val url = api.url
-        assertTrue(url.pathSegments.contains("blacklist"))
-        assertTrue(url.pathSegments.contains("delete"))
+        assertTrue(url.segments.contains("blacklist"))
+        assertTrue(url.segments.contains("delete"))
         
         // Test body is not null
         assertNotNull(api.body)

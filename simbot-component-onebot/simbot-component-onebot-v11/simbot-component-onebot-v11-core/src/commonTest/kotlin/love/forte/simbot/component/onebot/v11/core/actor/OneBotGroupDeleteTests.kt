@@ -25,7 +25,6 @@ package love.forte.simbot.component.onebot.v11.core.actor
 
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
-import io.ktor.utils.io.core.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject

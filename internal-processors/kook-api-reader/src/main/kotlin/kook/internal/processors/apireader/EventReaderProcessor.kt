@@ -47,7 +47,7 @@ private const val EVENT_READ_TARGET_FILE_OPTION_KEY = "kook.api.finder.event.out
  * @author ForteScarlet
  */
 class EventReaderProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
-    private val EXPECT_VISIBILITY = setOf(Visibility.PUBLIC, Visibility.PROTECTED)
+    private val expectVisibility = setOf(Visibility.PUBLIC, Visibility.PROTECTED)
 
     private val targetClassName = environment.options[EVENT_READ_TARGET_CLASS_OPTION_KEY]
         ?: KOOK_EVENT_CLASS_NAME
@@ -78,11 +78,13 @@ class EventReaderProcessor(private val environment: SymbolProcessorEnvironment) 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val targetFilePath: String? = environment.options[EVENT_READ_TARGET_FILE_OPTION_KEY]
 
-        val targetFile = File(targetFilePath ?: run {
-            val msg = "target output file option ['$EVENT_READ_TARGET_FILE_OPTION_KEY'] is null!"
-            environment.logger.warn(msg)
-            return emptyList()
-        })
+        val targetFile = File(
+            targetFilePath ?: run {
+                val msg = "target output file option ['$EVENT_READ_TARGET_FILE_OPTION_KEY'] is null!"
+                environment.logger.warn(msg)
+                return emptyList()
+            }
+        )
         this.targetFile = targetFile
 
         environment.logger.info("Target class name: $targetClassName")
@@ -97,7 +99,7 @@ class EventReaderProcessor(private val environment: SymbolProcessorEnvironment) 
                 targetClass.asStarProjectedType().isAssignableFrom(it.asStarProjectedType())
             }
 //            .filter { !it.isAbstract() }
-            .filter { it.getVisibility() in EXPECT_VISIBILITY }
+            .filter { it.getVisibility() in expectVisibility }
             .toCollection(targetClasses)
 
         return emptyList()

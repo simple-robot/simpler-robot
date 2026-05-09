@@ -21,7 +21,7 @@
  *
  */
 
-@file:Suppress("UnnecessaryOptInAnnotation")
+@file:Suppress("UnnecessaryOptInAnnotation", "ConstructorParameterNaming")
 
 package love.forte.simbot.component.kook.event.internal
 

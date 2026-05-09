@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -56,11 +56,3 @@ public interface AcceptSupport {
         accept()
     }
 }
-
-/**
- * [AcceptSupport.accept] 的可选项。
- * [AcceptOption] 可以自由扩展，且如果遇到不支持的实现则会将其忽略。
- *
- * @see AcceptSupport.accept
- */
-public interface AcceptOption

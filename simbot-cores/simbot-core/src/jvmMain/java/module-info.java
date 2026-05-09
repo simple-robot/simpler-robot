@@ -5,6 +5,7 @@ module simbot.core {
     requires transitive simbot.common.collection;
     requires kotlinx.coroutines.core;
     requires kotlinx.serialization.core;
+    requires simbot.logger;
 
     exports love.forte.simbot.core.application;
     exports love.forte.simbot.core.event;

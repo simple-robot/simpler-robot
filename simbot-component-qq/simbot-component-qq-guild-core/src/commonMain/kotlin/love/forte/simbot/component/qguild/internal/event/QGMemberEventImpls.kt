@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.event
@@ -37,10 +43,10 @@ internal class QGMemberAddEventImpl(
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventMember,
-    private val _member: QGMemberImpl,
+    private val memberValue: QGMemberImpl,
 ) : QGMemberAddEvent() {
     override val id: ID get() = memberEventId(0, bot.id, sourceEventEntity.user.id, hashCode())
-    override suspend fun member(): QGMemberImpl = _member
+    override suspend fun member(): QGMemberImpl = memberValue
 
     override suspend fun operator(): QGMemberImpl? {
         return with(sourceEventEntity) {
@@ -48,7 +54,11 @@ internal class QGMemberAddEventImpl(
                 bot.queryMember(guildId, opUserId)
             } catch (apiEx: QQGuildApiException) {
                 // process no auth
-                if (apiEx.isUnauthorized) null else throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                if (apiEx.isUnauthorized) {
+                    null
+                } else {
+                    throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                }
             }
         }
     }
@@ -64,7 +74,7 @@ internal class QGMemberUpdateEventImpl(
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventMember,
-    private val _member: QGMemberImpl,
+    private val memberValue: QGMemberImpl,
 ) : QGMemberUpdateEvent() {
     override val id: ID get() = memberEventId(1, bot.id, sourceEventEntity.user.id, hashCode())
 
@@ -80,22 +90,26 @@ internal class QGMemberUpdateEventImpl(
                 bot.queryMember(guildId, opUserId)
             } catch (apiEx: QQGuildApiException) {
                 // process no auth
-                if (apiEx.isUnauthorized) null else throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                if (apiEx.isUnauthorized) {
+                    null
+                } else {
+                    throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                }
             }
         }
     }
 
-    override suspend fun content(): QGMember = _member
+    override suspend fun content(): QGMember = memberValue
 }
 
 internal class QGMemberRemoveEventImpl(
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventMember,
-    private val _member: QGMemberImpl,
+    private val memberValue: QGMemberImpl,
 ) : QGMemberRemoveEvent() {
     override val id: ID get() = memberEventId(2, bot.id, sourceEventEntity.user.id, hashCode())
-    override suspend fun member(): QGMemberImpl = _member
+    override suspend fun member(): QGMemberImpl = memberValue
 
     override suspend fun operator(): QGMemberImpl? {
         return with(sourceEventEntity) {
@@ -103,7 +117,11 @@ internal class QGMemberRemoveEventImpl(
                 bot.queryMember(guildId, opUserId)
             } catch (apiEx: QQGuildApiException) {
                 // process no auth
-                if (apiEx.isUnauthorized) null else throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                if (apiEx.isUnauthorized) {
+                    null
+                } else {
+                    throw apiEx.addStackTrace { "QGMemberAddEvent.operator(opUserId=$opUserId)" }
+                }
             }
         }
     }

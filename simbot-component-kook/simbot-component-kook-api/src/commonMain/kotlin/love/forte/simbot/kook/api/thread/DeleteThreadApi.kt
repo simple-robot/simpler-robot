@@ -58,9 +58,9 @@ public class DeleteThreadApi private constructor(public override val body: Body)
     ) {
         override fun toString(): String {
             return "DeleteThreadApi.Body(" +
-                    "channelId='$channelId', " +
-                    "threadId=$threadId, " +
-                    "postId=$postId)"
+                "channelId='$channelId', " +
+                "threadId=$threadId, " +
+                "postId=$postId)"
         }
 
         override fun equals(other: Any?): Boolean {
@@ -131,7 +131,7 @@ public class DeleteThreadApi private constructor(public override val body: Body)
 
         /**
          * 构造 [DeleteThreadApi] 请求。
-         * 
+         *
          * 如果同时提供 threadId 和 postId，只会删除对应的 post。
          *
          * @param channelId 频道 id

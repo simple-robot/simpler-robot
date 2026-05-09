@@ -24,7 +24,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm")
+    id("simbot.kotlin-jvm")
 }
 
 repositories {

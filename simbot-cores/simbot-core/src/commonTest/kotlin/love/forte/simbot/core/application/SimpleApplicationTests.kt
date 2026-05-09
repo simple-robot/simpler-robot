@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -179,14 +179,14 @@ class SimpleApplicationTests {
                 println("EventResult: $it")
             }
 
-            app.cancel()
+            app.close()
             app.join()
 
             assertEquals(app.isActive, false)
 
-            assertEquals(launched, true)
-            assertEquals(requestCancel, true)
-            assertEquals(cancelled, true)
+            assertEquals(launched, true, "expected `launched` is true, but false.")
+            assertEquals(requestCancel, true, "expected `requestCancel` is true, but false.")
+            assertEquals(cancelled, true, "expected `cancelled` is true, but false.")
         }
 
     }
@@ -215,10 +215,10 @@ private val TestPlugin = createPlugin("TestPlugin", ::TestPluginConf) {
         println("Launch!")
     }
     applicationEventRegistrar.onCancelled {
-        assertEquals(it.isActive, false)
+        assertEquals(it.isActive, false, "Expect application's in onCancelled active is false, but true")
     }
     applicationEventRegistrar.onRequestCancel {
-        assertEquals(it.isActive, true)
+        assertEquals(it.isActive, true, "Expect application's in onRequestCancel active is true, but false")
     }
 
 }

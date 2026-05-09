@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.guild
@@ -108,7 +114,8 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
     @STP
     public suspend fun permissions(): ApiPermissions
 
-    //region channels
+    // region channels
+
     /**
      * 得到此频道服务器下的所有子频道。
      *
@@ -132,7 +139,12 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
      *
      * @throws QQGuildApiException 请求失败，例如没有权限
      */
-    @ST(blockingBaseName = "getChannel", blockingSuffix = "", asyncBaseName = "getChannel", reserveBaseName = "getChannel")
+    @ST(
+        blockingBaseName = "getChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChannel",
+        reserveBaseName = "getChannel",
+    )
     override suspend fun channel(id: ID): QGChannel?
 
     /**
@@ -149,7 +161,12 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
      * @throws IllegalStateException 当目标子频道的类型不属于 [分组类型][ChannelType.CATEGORY] 时
      *
      */
-    @ST(blockingBaseName = "getCategory", blockingSuffix = "", asyncBaseName = "getCategory", reserveBaseName = "getCategory")
+    @ST(
+        blockingBaseName = "getCategory",
+        blockingSuffix = "",
+        asyncBaseName = "getCategory",
+        reserveBaseName = "getCategory",
+    )
     public suspend fun category(id: ID): QGCategoryChannel?
 
     /**
@@ -160,7 +177,12 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
     /**
      * 获取指定ID的文字频道。
      */
-    @ST(blockingBaseName = "getChatChannel", blockingSuffix = "", asyncBaseName = "getChatChannel", reserveBaseName = "getChatChannel")
+    @ST(
+        blockingBaseName = "getChatChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChatChannel",
+        reserveBaseName = "getChatChannel",
+    )
     override suspend fun chatChannel(id: ID): QGTextChannel?
 
     /**
@@ -179,17 +201,29 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
      * @throws QQGuildApiException API请求过程中出现的异常
      * @throws IllegalStateException 当目标子频道类型不是 [ChannelType.FORUM] 时
      */
-    @ST(blockingBaseName = "getForum", blockingSuffix = "", asyncBaseName = "getForum", reserveBaseName = "getForum")
+    @ST(
+        blockingBaseName = "getForum",
+        blockingSuffix = "",
+        asyncBaseName = "getForum",
+        reserveBaseName = "getForum",
+    )
     public suspend fun forum(id: ID): QGForumChannel?
-    //endregion
 
-    //region members
+    // endregion
+
+    // region members
+
     /**
      * 获取指定成员的信息。
      *
      * @throws QQGuildApiException 请求失败，例如没有权限
      */
-    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
+    @ST(
+        blockingBaseName = "getMember",
+        blockingSuffix = "",
+        asyncBaseName = "getMember",
+        reserveBaseName = "getMember",
+    )
     override suspend fun member(id: ID): QGMember?
 
     /**
@@ -223,7 +257,8 @@ public interface QGGuild : SimbotGuild, CoroutineScope, QGObjectiveContainer<QGS
      * @throws QQGuildApiException 请求失败，例如没有权限
      */
     override suspend fun botAsMember(): QGMember
-    //endregion
+
+    // endregion
 
     /**
      * 当前频道中的角色。

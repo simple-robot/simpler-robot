@@ -24,11 +24,11 @@
 package love.forte.simbot.kook.api
 
 //
-///**
+// /**
 // * 用于提供给 [KookApi] 作为请求器使用。
 // * @author ForteScarlet
 // */
-//public interface KookApiRequestor : ApiDefinition<Any> {
+// public interface KookApiRequestor : ApiDefinition<Any> {
 //    /**
 //     * 用于进行请求的 [HttpClient]
 //     */
@@ -41,4 +41,4 @@ package love.forte.simbot.kook.api
 //     * 例如 `Bot aaaabbbbccccdddd`
 //     */
 //    public val authorization: String
-//}
+// }

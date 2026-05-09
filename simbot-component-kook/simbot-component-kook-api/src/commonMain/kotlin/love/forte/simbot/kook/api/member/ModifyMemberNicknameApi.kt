@@ -38,7 +38,10 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
-public class ModifyMemberNicknameApi private constructor(private val _body: Body) : KookPostApi<Unit>() {
+public class ModifyMemberNicknameApi private constructor(
+    @Suppress("ConstructorParameterNaming")
+    private val _body: Body
+) : KookPostApi<Unit>() {
     public companion object Factory {
         private val PATH = ApiPath.create("guild", "nickname")
 

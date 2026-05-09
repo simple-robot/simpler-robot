@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.event
@@ -30,32 +36,32 @@ import love.forte.simbot.qguild.event.C2CManagementData
 
 
 internal class QGFriendAddEventImpl(
-    private val _id: String?,
+    private val idValue: String?,
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: C2CManagementData,
 ) : QGFriendAddEvent() {
     override val id: ID
-        get() = _id?.ID ?: sourceEventEntity.computeId()
+        get() = idValue?.ID ?: sourceEventEntity.computeId()
 
     override suspend fun content(): QGFriend {
         return idFriend(
             bot = bot,
             id = sourceEventEntity.openid.ID,
-            eventId = _id,
+            eventId = idValue,
             seq = null,
         )
     }
 }
 
 internal class QGFriendDelEventImpl(
-    private val _id: String?,
+    private val idValue: String?,
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: C2CManagementData,
 ) : QGFriendDelEvent() {
     override val id: ID
-        get() = _id?.ID ?: sourceEventEntity.computeId()
+        get() = idValue?.ID ?: sourceEventEntity.computeId()
 
     override suspend fun content(): QGFriend {
         return idFriend(
@@ -68,13 +74,13 @@ internal class QGFriendDelEventImpl(
 }
 
 internal class QGC2CMsgRejectEventImpl(
-    private val _id: String?,
+    private val idValue: String?,
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: C2CManagementData,
 ) : QGC2CMsgRejectEvent() {
     override val id: ID
-        get() = _id?.ID ?: sourceEventEntity.computeId()
+        get() = idValue?.ID ?: sourceEventEntity.computeId()
 
     override suspend fun content(): QGFriend {
         return idFriend(
@@ -87,13 +93,13 @@ internal class QGC2CMsgRejectEventImpl(
 }
 
 internal class QGC2CMsgReceiveEventImpl(
-    private val _id: String?,
+    private val idValue: String?,
     override val bot: QGBotImpl,
     override val sourceEventRaw: String,
     override val sourceEventEntity: C2CManagementData,
 ) : QGC2CMsgReceiveEvent() {
     override val id: ID
-        get() = _id?.ID ?: sourceEventEntity.computeId()
+        get() = idValue?.ID ?: sourceEventEntity.computeId()
 
     override suspend fun content(): QGFriend {
         return idFriend(

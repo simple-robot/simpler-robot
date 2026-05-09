@@ -26,7 +26,8 @@ package love.forte.simbot.component.kook.bot
 import java.util.*
 import kotlin.streams.asSequence
 
-internal actual fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders(): Sequence<KookBotManagerFactoryConfigurerProvider> {
+internal actual fun KookBotManagerFactoryProvider.loadJvmConfigurerProviders():
+    Sequence<KookBotManagerFactoryConfigurerProvider> {
     return ServiceLoader.load(KookBotManagerFactoryConfigurerProvider::class.java, this::class.java.classLoader)
         .stream().map { it.get() }.asSequence()
 }

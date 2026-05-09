@@ -176,14 +176,16 @@ public class ApiResult @ApiResultType constructor(
      */
     @Transient
     public lateinit var raw: String
-        @JvmSynthetic @InternalKookApi internal set // hide from Java, warning to Kt
+        @JvmSynthetic @InternalKookApi
+        internal set // hide from Java, warning to Kt
 
     /**
      * 当前api响应值的 [速率限制][RateLimit] 信息。
      */
     @Transient
     public lateinit var rateLimit: RateLimit
-        @JvmSynthetic @InternalKookApi internal set // hide from Java, warning to Kt
+        @JvmSynthetic @InternalKookApi
+        internal set // hide from Java, warning to Kt
 
     /**
      * 此API的HTTP响应状态码
@@ -192,7 +194,8 @@ public class ApiResult @ApiResultType constructor(
      */
     @Transient
     public lateinit var httpStatus: HttpStatusCode
-        @JvmSynthetic @InternalKookApi internal set // hide from Java, warning to Kt
+        @JvmSynthetic @InternalKookApi
+        internal set // hide from Java, warning to Kt
 
     /**
      * http响应状态码
@@ -261,12 +264,12 @@ public class ApiResult @ApiResultType constructor(
 
     override fun toString(): String =
         "ApiResult(" +
-                "code=$code, " +
-                "message=$message, " +
-                "data=$data, " +
-                "httpStatus=${httpStatusOrNull ?: "<Not Initialized>"}, " +
-                "rateLimit=${rateLimitOrNull ?: "<Not Initialized>"}, " +
-                "raw=${rawOrNull ?: "<Not Initialized>"})"
+            "code=$code, " +
+            "message=$message, " +
+            "data=$data, " +
+            "httpStatus=${httpStatusOrNull ?: "<Not Initialized>"}, " +
+            "rateLimit=${rateLimitOrNull ?: "<Not Initialized>"}, " +
+            "raw=${rawOrNull ?: "<Not Initialized>"})"
 
     private val httpStatusOrNull
         get() = if (::httpStatus.isInitialized) httpStatus else null
@@ -332,7 +335,7 @@ public data class RateLimit(
      */
     public val isGlobalLimit: Boolean,
 
-    ) {
+) {
     public companion object {
         public const val X_RATE_LIMIT_LIMIT: String = ApiRateLimits.RATE_LIMIT_LIMIT_HEAD // "X-Rate-Limit-Limit"
         public const val X_RATE_LIMIT_REMAINING: String =

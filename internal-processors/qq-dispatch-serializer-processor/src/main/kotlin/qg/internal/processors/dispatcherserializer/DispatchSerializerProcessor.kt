@@ -86,7 +86,7 @@ internal class DispatchSerializerProcessor(
                 it.annotations.any { anno ->
                     with(anno.annotationType.resolve().declaration) {
                         packageName.asString() == "kotlinx.serialization" &&
-                                simpleName.asString() == "Serializable"
+                            simpleName.asString() == "Serializable"
                     }
                 }
             }
@@ -95,7 +95,7 @@ internal class DispatchSerializerProcessor(
                 val typeNameAnnotation = it.annotations.find { anno ->
                     with(anno.annotationType.resolve().declaration) {
                         packageName.asString() == "love.forte.simbot.qguild.event" &&
-                                simpleName.asString() == "DispatchTypeName"
+                            simpleName.asString() == "DispatchTypeName"
                     }
                 } ?: return@mapNotNull null
 

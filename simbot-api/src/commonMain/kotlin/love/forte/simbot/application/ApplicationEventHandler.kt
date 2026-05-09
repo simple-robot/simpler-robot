@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -107,15 +107,13 @@ public sealed class ApplicationLaunchStage<H : ApplicationEventHandler> {
     public data object Launch : ApplicationLaunchStage<SuspendApplicationEventHandler<Application>>()
 
     /**
-     * 在 [ApplicationLauncher] 被要求关闭时。
+     * 在 [ApplicationLauncher] 通过 [Application.close] 被要求关闭时。
      *
      * 此时的 [Application] 尚未关闭 [Job]，`Application.isActive` 仍将返回 `true`。
      *
      * [RequestCancel] 中的操作应当迅速且安全，避免抛出异常，也不应长时间阻塞。
      *
-     * 在这过程中可以通过抛出异常或提前手动关闭 [Job]，但是这些行为都是**不推荐**的。
-     * 这可能会导致无法预知的问题进而引发灾难。
-     *
+     * 注意：如果直接通过 [Job.cancel] 关闭任务，则不会发出 [RequestCancel] 事件。
      */
     public data object RequestCancel : ApplicationLaunchStage<NormalApplicationEventHandler<Application>>()
 
@@ -125,9 +123,6 @@ public sealed class ApplicationLaunchStage<H : ApplicationEventHandler> {
      * 此时的 `Application.isActive` 将返回 `false`，[Application.join] 也不会再被挂起。
      *
      * [Cancelled] 中的操作应当迅速且安全，避免抛出异常，也不应长时间阻塞。
-     *
-     * 但是这些行为都是**不推荐**的。
-     * 这可能会导致无法预知的问题进而引发灾难。
      */
     public data object Cancelled : ApplicationLaunchStage<NormalApplicationEventHandler<Application>>()
 }

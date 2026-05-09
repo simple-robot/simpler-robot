@@ -72,6 +72,9 @@ public abstract interface class love/forte/simbot/component/qguild/QQGuildUsageB
 	public abstract fun component (Llove/forte/simbot/common/function/ConfigurerFunction;)V
 }
 
+public abstract interface annotation class love/forte/simbot/component/qguild/bot/InternalForInheritanceQGBotApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/component/qguild/bot/QGBot : love/forte/simbot/ability/EventMentionAware, love/forte/simbot/bot/Bot {
 	public synthetic fun emitEvent (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun emitEvent (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -219,7 +222,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Cache
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/CacheConfig$Companion {
@@ -272,7 +274,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Dynam
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/DynamicCacheConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/DynamicCacheConfig$Companion {
@@ -307,7 +308,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Inten
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Bits;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Bits$Companion {
@@ -339,7 +339,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Inten
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Names;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Names$Companion {
@@ -366,7 +365,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Inten
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig$Raw;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/IntentsConfig$Raw$Companion {
@@ -405,7 +403,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBot
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Companion {
@@ -448,7 +445,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBot
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$Companion {
@@ -479,7 +475,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBot
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Ticket$Companion {
@@ -512,7 +507,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBot
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig$Companion {
@@ -562,7 +556,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Shard
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/ShardConfig$Simple;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/ShardConfig$Simple$Companion {
@@ -609,7 +602,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Ticke
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/TicketConfiguration$Env;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Env$Companion {
@@ -642,7 +634,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Ticke
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/TicketConfiguration$Plain;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/TicketConfiguration$Plain$Companion {
@@ -671,7 +662,6 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/Trans
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/TransmitCacheConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/TransmitCacheConfig$Companion {
@@ -1888,7 +1878,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGArk$$s
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGArk;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGArk$Companion {
@@ -1923,7 +1912,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGAtChan
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGAtChannel;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGAtChannel$Companion {
@@ -1958,7 +1946,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGAttach
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGAttachmentMessage;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGAttachmentMessage$Companion {
@@ -2012,7 +1999,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGConten
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGContentText;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGContentText$Companion {
@@ -2037,7 +2023,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGEmbed$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGEmbed;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGEmbed$Companion {
@@ -2076,7 +2061,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGKeyboa
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGKeyboard;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGKeyboard$Companion {
@@ -2112,7 +2096,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGMarkdo
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGMarkdown;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGMarkdown$Companion {
@@ -2155,7 +2138,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGMedia$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGMedia;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGMedia$Companion {
@@ -2209,7 +2191,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGRefere
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGReference;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGReference$Companion {
@@ -2247,7 +2228,6 @@ public final synthetic class love/forte/simbot/component/qguild/message/QGReplyT
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/message/QGReplyTo;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/qguild/message/QGReplyTo$Companion {

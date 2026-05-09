@@ -98,7 +98,9 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
         return send(
             MessageType.TEXT.type,
             text,
-            quote, null, tempTargetId
+            quote,
+            null,
+            tempTargetId
         )
     }
 
@@ -133,7 +135,9 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
         send(
             MessageType.TEXT.type,
             text,
-            null, null, null
+            null,
+            null,
+            null
         )
 
     /**

@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -818,8 +818,8 @@ final class love.forte.simbot.kook.api.asset/CreateAssetApi : love.forte.simbot.
     final object Factory { // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory|null[0]
         final fun create(io.ktor.client.request.forms/ChannelProvider, kotlin/String? = ...): love.forte.simbot.kook.api.asset/CreateAssetApi // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory.create|create(io.ktor.client.request.forms.ChannelProvider;kotlin.String?){}[0]
         final fun create(io.ktor.client.request.forms/InputProvider, kotlin/String? = ...): love.forte.simbot.kook.api.asset/CreateAssetApi // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory.create|create(io.ktor.client.request.forms.InputProvider;kotlin.String?){}[0]
-        final fun create(io.ktor.utils.io.core/ByteReadPacket, kotlin/String? = ...): love.forte.simbot.kook.api.asset/CreateAssetApi // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory.create|create(io.ktor.utils.io.core.ByteReadPacket;kotlin.String?){}[0]
         final fun create(kotlin/ByteArray, kotlin/String? = ...): love.forte.simbot.kook.api.asset/CreateAssetApi // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory.create|create(kotlin.ByteArray;kotlin.String?){}[0]
+        final fun create(kotlinx.io/Source, kotlin/String? = ...): love.forte.simbot.kook.api.asset/CreateAssetApi // love.forte.simbot.kook.api.asset/CreateAssetApi.Factory.create|create(kotlinx.io.Source;kotlin.String?){}[0]
     }
 }
 

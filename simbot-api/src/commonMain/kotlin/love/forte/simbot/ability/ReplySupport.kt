@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -73,5 +73,60 @@ public interface ReplySupport {
      * @throws Exception 可能产生任何异常
      */
     public suspend fun reply(messageContent: MessageContent): MessageReceipt
+
+    /**
+     * 发送一段纯文本消息。
+     *
+     * 带 [ReplyOption] 的重载函数由版本 5.0 后添加，为确保兼容性提供默认的 `reply(text)` 实现。
+     * 实现方应当明确重写此函数。
+     *
+     * @param text 要发送的消息
+     * @param options 额外提供用于消息回复的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
+     * 详见 [ReplyOption] 的说明。
+     * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * @since 5.0
+     */
+    public suspend fun reply(text: String, vararg options: ReplyOption): MessageReceipt = reply(text)
+
+    /**
+     * 发送一个消息 [Message]。
+     *
+     * 带 [ReplyOption] 的重载函数由版本 5.0 后添加，为确保兼容性提供默认的 `reply(message)` 实现。
+     * 实现方应当明确重写此函数。
+     *
+     * @param message 要发送的消息
+     * @param options 额外提供用于消息回复的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
+     * 详见 [ReplyOption] 的说明。
+     * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * @since 5.0
+     */
+    public suspend fun reply(message: Message, vararg options: ReplyOption): MessageReceipt = reply(message)
+
+    /**
+     * 使用 [MessageContent] 作为消息发送。
+     *
+     * [MessageContent] 通常来自消息事件，不同的组件可能会根据 [MessageContent] 的具体类型做针对性的优化，
+     * 并在不支持的情况下降级为使用 [MessageContent.messages]。
+     *
+     * 带 [ReplyOption] 的重载函数由版本 5.0 后添加，为确保兼容性提供默认的 `reply(message)` 实现。
+     * 实现方应当明确重写此函数。
+     *
+     * @param messageContent 要发送的消息。
+     * @param options 额外提供用于消息回复的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
+     * 详见 [ReplyOption] 的说明。
+     * @return 消息发送成功后的回执
+     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
+     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * @since 5.0
+     */
+    public suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): MessageReceipt =
+        reply(messageContent)
 
 }

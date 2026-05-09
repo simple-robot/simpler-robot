@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -33,11 +33,15 @@ package love.forte.simbot.ability
 public interface LifecycleAware {
     /**
      * 当前是否处于活跃、运行或尚未结束的状态。
+     *
+     * 近似于 [kotlinx.coroutines.Job.isActive]。
      */
     public val isActive: Boolean
 
     /**
-     * 当前是否已经完成、已经结束。
+     * 当前是否已经彻底完成。
+     *
+     * 近似于 [kotlinx.coroutines.Job.isCompleted]。
      */
     public val isCompleted: Boolean
 }

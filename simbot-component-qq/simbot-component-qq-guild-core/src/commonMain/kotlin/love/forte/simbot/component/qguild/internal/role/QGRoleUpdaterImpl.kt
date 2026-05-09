@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.role
@@ -37,16 +43,14 @@ internal class QGRoleUpdaterImpl(private val role: BaseQGRole) : QGRoleUpdater {
     override var isHoist: Boolean? = null
 
     override suspend fun update() {
-        if (name == null && color == null && isHoist == null) {
-            throw IllegalArgumentException("No parameters are set")
-        }
+        require(name != null || color != null || isHoist != null) { "No parameters are set" }
         val modified = ModifyGuildRoleApi.create(
             role.guildId.literal,
             role.source.id,
             name,
             color,
-            isHoist?.let { if (it) 1 else 0 })
-            .requestDataBy(role.bot.source)
+            isHoist?.let { if (it) 1 else 0 },
+        ).requestDataBy(role.bot.source)
 
         // update value
         role.source = modified.role

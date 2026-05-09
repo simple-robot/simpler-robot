@@ -34,9 +34,9 @@ import kotlin.test.assertNotNull
 
 /**
  * Tests for guild API responses serialization/deserialization.
- * 
+ *
  * Reference: https://developer.kookapp.cn/doc/http/guild
- * 
+ *
  * @author ForteScarlet
  */
 class GuildApiResponseTests {
@@ -46,35 +46,6 @@ class GuildApiResponseTests {
 
     @Test
     fun testDeserializeGuildListResponse() {
-        //language=json
-        val rawJson = """{
-  "code": 0,
-  "message": "操作成功",
-  "data": {
-    "items": [
-      {
-        "id": "6016389000000",
-        "name": "测试频道",
-        "topic": "",
-        "user_id": "2418000000",
-        "icon": "https://img.kookapp.cn/icons/2021-01/xxxx.jpg/icon",
-        "notify_type": 2,
-        "region": "beijing",
-        "enable_open": 1,
-        "open_id": "17811111",
-        "default_channel_id": "6016400000000000",
-        "welcome_channel_id": "6016400000000000"
-      }
-    ],
-    "meta": {
-      "page": 1,
-      "page_total": 1,
-      "page_size": 50,
-      "total": 1
-    }
-  }
-}"""
-
         // Extract just the data portion for ListData deserialization
         val dataJson = """{
     "items": [
@@ -99,10 +70,10 @@ class GuildApiResponseTests {
       "total": 1
     }
   }"""
-        
+
         val listDataDeserializer = ListData.serializer(SimpleGuild.serializer())
         val response = json.decodeFromString(listDataDeserializer, dataJson)
-        
+
         assertNotNull(response)
         assertEquals(1, response.items.size)
         assertEquals("6016389000000", response.items[0].id)
@@ -160,7 +131,7 @@ class GuildApiResponseTests {
 }"""
 
         val guild = json.decodeFromString(SimpleGuildWithRolesAndChannels.serializer(), rawJson)
-        
+
         assertNotNull(guild)
         assertEquals("6016389000000", guild.id)
         assertEquals("测试频道", guild.name)

@@ -25,7 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }
@@ -63,8 +63,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":simbot-commons:simbot-common-annotations"))
-                implementation(project(":simbot-api"))
-                implementation(project(":simbot-logger"))
+                api(project(":simbot-api"))
+                api(project(":simbot-logger"))
 
             }
         }

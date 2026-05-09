@@ -72,7 +72,8 @@ class MessageElementProcessor(environment: SymbolProcessorEnvironment) : SymbolP
         val newFun = resolve(elementDeclarations)
 
         val fileSpec = FileSpec.Companion.builder(
-            OUTPUT_PACKAGE, OUTPUT_FILE
+            OUTPUT_PACKAGE,
+            OUTPUT_FILE
         )
             .addFunction(newFun)
             .addFileComment("\nAuto-Generated at ${Instant.now().atOffset(ZoneOffset.ofHours(8))}\n")

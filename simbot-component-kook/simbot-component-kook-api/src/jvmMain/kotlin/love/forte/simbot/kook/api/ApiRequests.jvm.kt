@@ -21,7 +21,8 @@
  *
  */
 
-@file:JvmName("ApiRequests") @file:JvmMultifileClass
+@file:JvmName("ApiRequests")
+@file:JvmMultifileClass
 
 package love.forte.simbot.kook.api
 
@@ -41,6 +42,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 
 //region HttpClients
+
 /**
  * 直接构建一个 [HttpClient]. 需要环境中存在可用的引擎。
  *
@@ -74,6 +76,7 @@ public fun <T : HttpClientEngineConfig> createHttpClient(
 //endregion
 
 //region block
+
 /**
  * 通过一个 [HttpClient] 和校验信息 [authorization] 对当前API发起请求，并得到一个 [ApiResult]。
  *
@@ -113,6 +116,7 @@ public fun <T : Any> KookApi<T>.requestDataBlocking(client: HttpClient, authoriz
 //endregion
 
 //region async
+
 /**
  * 通过一个 [HttpClient] 和校验信息 [authorization] 对当前API发起请求，并得到一个 [ApiResult]。
  *
@@ -121,7 +125,11 @@ public fun <T : Any> KookApi<T>.requestDataBlocking(client: HttpClient, authoriz
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestAsync(client: HttpClient, authorization: String, scope: CoroutineScope? = null): CompletableFuture<HttpResponse> =
+public fun KookApi<*>.requestAsync(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): CompletableFuture<HttpResponse> =
     runInAsync(scope ?: client) { request(client, authorization) }
 
 /**
@@ -132,7 +140,11 @@ public fun KookApi<*>.requestAsync(client: HttpClient, authorization: String, sc
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestTextAsync(client: HttpClient, authorization: String, scope: CoroutineScope? = null): CompletableFuture<String> =
+public fun KookApi<*>.requestTextAsync(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): CompletableFuture<String> =
     runInAsync(scope ?: client) { requestText(client, authorization) }
 
 /**
@@ -143,7 +155,11 @@ public fun KookApi<*>.requestTextAsync(client: HttpClient, authorization: String
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestResultAsync(client: HttpClient, authorization: String, scope: CoroutineScope? = null): CompletableFuture<ApiResult> =
+public fun KookApi<*>.requestResultAsync(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): CompletableFuture<ApiResult> =
     runInAsync(scope ?: client) { requestResult(client, authorization) }
 
 /**
@@ -155,11 +171,16 @@ public fun KookApi<*>.requestResultAsync(client: HttpClient, authorization: Stri
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun <T : Any> KookApi<T>.requestDataAsync(client: HttpClient, authorization: String, scope: CoroutineScope? = null): CompletableFuture<T> =
+public fun <T : Any> KookApi<T>.requestDataAsync(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): CompletableFuture<T> =
     runInAsync(scope ?: client) { requestData(client, authorization) }
 //endregion
 
 //region reserve
+
 /**
  * 通过一个 [HttpClient] 和校验信息 [authorization] 对当前API发起请求，并得到一个 [ApiResult]。
  *
@@ -168,7 +189,11 @@ public fun <T : Any> KookApi<T>.requestDataAsync(client: HttpClient, authorizati
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestReserve(client: HttpClient, authorization: String, scope: CoroutineScope? = null): SuspendReserve<HttpResponse> =
+public fun KookApi<*>.requestReserve(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): SuspendReserve<HttpResponse> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) { request(client, authorization) }
 
 /**
@@ -179,7 +204,11 @@ public fun KookApi<*>.requestReserve(client: HttpClient, authorization: String, 
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestTextReserve(client: HttpClient, authorization: String, scope: CoroutineScope? = null): SuspendReserve<String> =
+public fun KookApi<*>.requestTextReserve(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): SuspendReserve<String> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) { requestText(client, authorization) }
 
 /**
@@ -190,7 +219,11 @@ public fun KookApi<*>.requestTextReserve(client: HttpClient, authorization: Stri
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun KookApi<*>.requestResultReserve(client: HttpClient, authorization: String, scope: CoroutineScope? = null): SuspendReserve<ApiResult> =
+public fun KookApi<*>.requestResultReserve(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): SuspendReserve<ApiResult> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) { requestResult(client, authorization) }
 
 /**
@@ -202,11 +235,13 @@ public fun KookApi<*>.requestResultReserve(client: HttpClient, authorization: St
 @Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
-public fun <T : Any> KookApi<T>.requestDataReserve(client: HttpClient, authorization: String, scope: CoroutineScope? = null): SuspendReserve<T> =
+public fun <T : Any> KookApi<T>.requestDataReserve(
+    client: HttpClient,
+    authorization: String,
+    scope: CoroutineScope? = null
+): SuspendReserve<T> =
     suspendReserve(scope ?: client, EmptyCoroutineContext) { requestData(client, authorization) }
 //endregion
-
-
 
 
 

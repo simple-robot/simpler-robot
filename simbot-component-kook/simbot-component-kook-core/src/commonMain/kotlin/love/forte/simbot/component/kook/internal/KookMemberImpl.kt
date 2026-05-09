@@ -124,7 +124,10 @@ internal class KookMemberImpl(
                     return
                 }
 
-                throw NoSuchElementException("Kick member(id=${source.id}) on failure. Http status is ${HttpStatusCode.NotFound}: ${respEx.response.status}").also {
+                throw NoSuchElementException(
+                    "Kick member(id=${source.id}) on failure. Http status is ${HttpStatusCode.NotFound}: " +
+                        "${respEx.response.status}"
+                ).also {
                     it.initExceptionCause(respEx)
                 }
             }
@@ -133,7 +136,8 @@ internal class KookMemberImpl(
             }
 
             throw DeleteFailureException(
-                "Kick member(id=${source.id}) on failure. HTTP status: ${respEx.response.status.value}): ${respEx.message}",
+                "Kick member(id=${source.id}) on failure. " +
+                    "HTTP status: ${respEx.response.status.value}): ${respEx.message}",
                 respEx
             )
         }
@@ -143,7 +147,9 @@ internal class KookMemberImpl(
                 return
             }
 
-            throw DeleteFailureException("Kick member(id=${source.id}) on failure. result.code is not successful: ${result})")
+            throw DeleteFailureException(
+                "Kick member(id=${source.id}) on failure. result.code is not successful: $result)"
+            )
         }
     }
 

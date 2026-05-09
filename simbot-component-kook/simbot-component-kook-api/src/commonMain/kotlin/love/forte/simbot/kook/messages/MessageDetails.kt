@@ -197,7 +197,7 @@ public data class DirectMessageDetails(
 ) {
     val quote: Quote?
         get() {
-            val obj = (sourceQuote as? JsonObject?) ?: return null
+            val obj = sourceQuote as? JsonObject? ?: return null
             return Kook.DEFAULT_JSON.decodeFromJsonElement(Quote.serializer(), obj)
         }
 

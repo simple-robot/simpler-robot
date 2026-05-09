@@ -114,8 +114,9 @@ internal class KookUserChatImpl(
                 }
 
                 throw NoSuchElementException(
-                    "Delete user chat(code=${source.code}, target=${source.targetInfo.id}, ${source.targetInfo.username})" +
-                            " on failure: response status is 404: ${respEx.message}"
+                    "Delete user chat(code=${source.code}, " +
+                        "target=${source.targetInfo.id}, ${source.targetInfo.username}) " +
+                        "on failure: response status is 404: ${respEx.message}"
                 ).also {
                     it.initExceptionCause(respEx)
                 }
@@ -127,7 +128,8 @@ internal class KookUserChatImpl(
 
             throw DeleteFailureException(
                 "Delete user chat(code=${source.code}, target=${source.targetInfo.id}, ${source.targetInfo.username})" +
-                        " on failure: response status is not successful: ${response.status}", respEx
+                    " on failure: response status is not successful: ${response.status}",
+                respEx
             )
         }
 
@@ -138,7 +140,7 @@ internal class KookUserChatImpl(
 
             throw DeleteFailureException(
                 "Delete user chat(code=${source.code}, target=${source.targetInfo.id}, ${source.targetInfo.username})" +
-                        " on failure: result code is not successful: $result"
+                    " on failure: result code is not successful: $result"
             )
         }
     }

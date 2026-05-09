@@ -32,7 +32,6 @@ import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.event.EventResult
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -42,10 +41,11 @@ import kotlin.test.assertTrue
  * @author ForteScarlet
  */
 class BotInitializationTests {
+    val job = SupervisorJob()
     private fun bot() = OneBotBotImpl(
         uniqueId = "UNIQUE_ID",
-        coroutineContext = EmptyCoroutineContext,
-        job = SupervisorJob(),
+        coroutineContext = job,
+        job = job,
         configuration = OneBotBotConfiguration(),
         component = OneBot11Component(),
         eventProcessor = object : EventProcessor {
@@ -68,7 +68,7 @@ class BotInitializationTests {
         assertFalse(bot.initConfiguration())
 
         assertTrue(bot.isConfigurationInitialized)
-        bot.cancel()
+        bot.close()
     }
 
     @Test
@@ -85,7 +85,7 @@ class BotInitializationTests {
 
         assertTrue(bot.isConfigurationInitialized)
 
-        bot.cancel()
+        bot.close()
     }
 
 

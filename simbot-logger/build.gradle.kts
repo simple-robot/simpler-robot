@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
  */
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 
@@ -79,6 +79,9 @@ kotlin {
             dependencies {
                 api(libs.slf4j.api)
             }
+        }
+        webMain.dependencies {
+            api(kotlinWrappers.web)
         }
     }
 }

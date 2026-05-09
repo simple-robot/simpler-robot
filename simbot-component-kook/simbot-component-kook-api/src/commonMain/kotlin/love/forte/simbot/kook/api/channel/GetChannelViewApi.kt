@@ -201,7 +201,8 @@ private class ChannelViewChannel(
         get() = channelView.permissionOverwrites
 
     override fun toString(): String {
-        return "ChannelViewChannel(channelView=$channelView, permissionOverwrites=$permissionOverwrites, permissionUsers=$permissionUsers)"
+        return "ChannelViewChannel(channelView=$channelView, permissionOverwrites=$permissionOverwrites, " +
+            "permissionUsers=$permissionUsers)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -222,4 +223,3 @@ private class ChannelViewChannel(
         return result
     }
 }
-

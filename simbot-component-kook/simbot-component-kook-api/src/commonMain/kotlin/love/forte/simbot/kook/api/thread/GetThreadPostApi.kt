@@ -129,7 +129,7 @@ public enum class PostOrderType(public val value: String) {
      * 升序
      */
     ASC("asc"),
-    
+
     /**
      * 降序
      */

@@ -27,7 +27,6 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotVideo
 import love.forte.simbot.resource.toResource
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -45,7 +44,6 @@ class ResourceMessageBase64Tests {
         private val original = "AABE9FF639D778CFF7B717691BDE0E40".hexToByteArray()
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
     @Test
     fun imageBase64DefaultTest() {
         assertEquals(
@@ -66,7 +64,6 @@ class ResourceMessageBase64Tests {
         )
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
     @Test
     fun videoBase64DefaultTest() {
         assertEquals(
@@ -87,7 +84,6 @@ class ResourceMessageBase64Tests {
         )
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
     @Test
     fun recordBase64DefaultTest() {
         assertEquals(

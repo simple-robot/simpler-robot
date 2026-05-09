@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -30,6 +36,7 @@ import love.forte.simbot.resource.FileResource
 import love.forte.simbot.resource.PathResource
 import love.forte.simbot.resource.URIResource
 
+@Suppress("ReturnCount")
 internal actual fun processOfflineImage0(
     index: Int,
     element: OfflineImage,
@@ -141,6 +148,6 @@ internal actual suspend fun processOfflineImage0(
     return true
 }
 
-internal actual val base64UploadWarnInitialValue: Boolean by lazy {
+internal actual val BASE64_UPLOAD_WARN_INITIAL_VALUE: Boolean by lazy {
     !System.getProperty(JVM_DISABLE_BASE64_UPLOAD_WARN).toBoolean()
 }

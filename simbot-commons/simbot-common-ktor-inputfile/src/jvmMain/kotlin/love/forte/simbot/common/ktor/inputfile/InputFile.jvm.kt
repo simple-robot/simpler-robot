@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -30,11 +30,9 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
-import io.ktor.utils.io.nio.*
+import kotlinx.io.buffered
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.fileSize
 
@@ -65,8 +63,7 @@ private class FileInputFile(private val file: File, private val defaultHeaders: 
  * Create an instance of [InputFile] from [Path].
  *
  * This [InputFile] will use [Path.fileSize] in [InputFile.includeTo], [InputFile.toFormPart],
- * and use [Files.newByteChannel], [asInput] in [ChannelProvider].
- *
+ * and use [Path.readChannel], [ByteReadChannel.asSource] in [InputProvider].
  */
 @JvmName("of")
 @JvmOverloads
@@ -85,5 +82,6 @@ private class PathInputFile(private val path: Path, private val defaultHeaders: 
         FormPart(key, pathInput(), defaultHeaders + headers)
 
     @Throws(IOException::class)
-    private fun pathInput(): InputProvider = InputProvider(path.fileSize()) { Files.newByteChannel(path).asInput() }
+    private fun pathInput(): InputProvider =
+        InputProvider(path.fileSize()) { path.readChannel().asSource().buffered() }
 }

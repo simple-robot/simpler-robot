@@ -63,7 +63,7 @@ public data class CategoryRole @ApiResultType constructor(
     @SerialName("role_id")
     public val roleId: Long,
     /** 用户ID，type为user时有值 */
-    @SerialName("user_id") 
+    @SerialName("user_id")
     public val userId: String,
     /** 允许权限值 */
     public val allow: Int

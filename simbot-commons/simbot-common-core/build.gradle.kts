@@ -24,7 +24,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
 //    id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -65,6 +65,7 @@ kotlin {
                 api(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))
                 api(project(":simbot-commons:simbot-common-collection"))
+                api(project(":simbot-commons:simbot-common-time"))
                 api(libs.kotlinx.serialization.core)
             }
         }

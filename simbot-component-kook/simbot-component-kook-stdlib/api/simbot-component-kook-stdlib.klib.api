@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -43,6 +43,10 @@ abstract interface love.forte.simbot.kook.stdlib/Bot : kotlinx.coroutines/Corout
         abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.kook.stdlib/Bot.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
     abstract val isActive // love.forte.simbot.kook.stdlib/Bot.isActive|{}isActive[0]
         abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isActive.<get-isActive>|<get-isActive>(){}[0]
+    abstract val isClosed // love.forte.simbot.kook.stdlib/Bot.isClosed|{}isClosed[0]
+        abstract fun <get-isClosed>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
+    abstract val isCompleted // love.forte.simbot.kook.stdlib/Bot.isCompleted|{}isCompleted[0]
+        abstract fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
     abstract val isStarted // love.forte.simbot.kook.stdlib/Bot.isStarted|{}isStarted[0]
         abstract fun <get-isStarted>(): kotlin/Boolean // love.forte.simbot.kook.stdlib/Bot.isStarted.<get-isStarted>|<get-isStarted>(){}[0]
     abstract val ticket // love.forte.simbot.kook.stdlib/Bot.ticket|{}ticket[0]

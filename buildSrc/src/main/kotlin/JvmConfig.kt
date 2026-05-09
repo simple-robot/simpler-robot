@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -22,12 +22,14 @@
  */
 
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import org.gradle.process.CommandLineArgumentProvider
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -38,9 +40,8 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> Unit = {}) {
     compilerOptions {
         javaParameters.set(true)
-        freeCompilerArgs.addAll(
-            "-Xjvm-default=all"
-        )
+        freeCompilerArgs.add("-Xjsr305=strict")
+        jvmDefault.set(JvmDefaultMode.NO_COMPATIBILITY)
     }
 
     testRuns["test"].executionTask.configure {
@@ -80,16 +81,24 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
                 else -> JvmTarget.fromTarget(jdkVersion.toString())
             }
         )
-        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
-        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
+        freeCompilerArgs.add("-Xjsr305=strict")
     }
     block()
 }
 
-inline fun Project.configJavaCompileWithModule(
+class PatchModuleArgumentProvider(
+    private val moduleName: String,
+    private val patchedOutput: FileCollection,
+) : CommandLineArgumentProvider {
+    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+    override fun asArguments(): Iterable<String> =
+        listOf("--patch-module", "$moduleName=${patchedOutput.asPath}")
+}
+
+fun Project.configJavaCompileWithModule(
     moduleName: String? = null,
     jvmVersion: String = JVMConstants.KT_JVM_TARGET,
-    crossinline block: JavaCompile.() -> Unit = {}
+    block: JavaCompile.() -> Unit = {}
 ) {
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
@@ -98,19 +107,14 @@ inline fun Project.configJavaCompileWithModule(
 
         // see https://kotlinlang.org/docs/gradle-configure-project.html#configure-with-java-modules-jpms-enabled
         if (moduleName != null) {
-            options.compilerArgumentProviders.add(
-                CommandLineArgumentProvider {
-                    // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-                    val sourceSet = sourceSets.findByName("main") ?: sourceSets.findByName("jvmMain")
-                    if (sourceSet != null) {
-                        listOf("--patch-module", "$moduleName=${sourceSet.output.asPath}")
-                    } else {
-                        emptyList()
-                    }
-                    // listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-                }
-            )
+            // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
+            val sourceSet = sourceSets.findByName("main") ?: sourceSets.findByName("jvmMain")
+            val patchModuleOutput = sourceSet?.output
+            if (patchModuleOutput != null) {
+                options.compilerArgumentProviders.add(
+                    PatchModuleArgumentProvider(moduleName, patchModuleOutput)
+                )
+            }
         }
 
         block()

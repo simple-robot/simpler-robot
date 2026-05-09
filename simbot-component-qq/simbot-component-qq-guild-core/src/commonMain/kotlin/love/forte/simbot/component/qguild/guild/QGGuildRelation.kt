@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.guild
@@ -83,7 +89,12 @@ public interface QGGuildRelation : GuildRelation {
      *
      * @throws QQGuildApiException 请求失败，例如没有权限
      */
-    @ST(blockingBaseName = "getChannel", blockingSuffix = "", asyncBaseName = "getChannel", reserveBaseName = "getChannel")
+    @ST(
+        blockingBaseName = "getChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChannel",
+        reserveBaseName = "getChannel",
+    )
     public suspend fun channel(channelId: ID): QGChannel?
 
     /**
@@ -94,7 +105,12 @@ public interface QGGuildRelation : GuildRelation {
      * @throws QQGuildApiException 请求失败，例如没有权限
      * @throws IllegalStateException 当目标子频道的类型不属于 [文字类型][ChannelType.TEXT] 时
      */
-    @ST(blockingBaseName = "getChatChannel", blockingSuffix = "", asyncBaseName = "getChatChannel", reserveBaseName = "getChatChannel")
+    @ST(
+        blockingBaseName = "getChatChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getChatChannel",
+        reserveBaseName = "getChatChannel",
+    )
     public suspend fun chatChannel(channelId: ID): QGTextChannel?
 
 
@@ -105,7 +121,12 @@ public interface QGGuildRelation : GuildRelation {
      * @throws IllegalStateException 当目标子频道的类型不属于 [分组类型][ChannelType.CATEGORY] 时
      *
      */
-    @ST(blockingBaseName = "getCategory", blockingSuffix = "", asyncBaseName = "getCategory", reserveBaseName = "getCategory")
+    @ST(
+        blockingBaseName = "getCategory",
+        blockingSuffix = "",
+        asyncBaseName = "getCategory",
+        reserveBaseName = "getCategory",
+    )
     public suspend fun category(channelId: ID): QGCategoryChannel?
 
     /**
@@ -114,7 +135,12 @@ public interface QGGuildRelation : GuildRelation {
      * @throws QQGuildApiException API请求过程中出现的异常
      * @throws IllegalStateException 当目标子频道类型不是 [ChannelType.FORUM] 时
      */
-    @ST(blockingBaseName = "getForumChannel", blockingSuffix = "", asyncBaseName = "getForumChannel", reserveBaseName = "getForumChannel")
+    @ST(
+        blockingBaseName = "getForumChannel",
+        blockingSuffix = "",
+        asyncBaseName = "getForumChannel",
+        reserveBaseName = "getForumChannel",
+    )
     public suspend fun forumChannel(id: ID): QGForumChannel?
 }
 

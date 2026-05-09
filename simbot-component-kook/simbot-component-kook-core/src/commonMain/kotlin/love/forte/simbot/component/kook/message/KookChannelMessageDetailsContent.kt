@@ -130,7 +130,9 @@ public data class KookChannelMessageDetailsContent internal constructor(
                     return
                 }
 
-                throw NoSuchElementException("Delete channel message (details.id=${details.id}) not found: HTTP response status 404").also {
+                throw NoSuchElementException(
+                    "Delete channel message (details.id=${details.id}) not found: HTTP response status 404"
+                ).also {
                     it.initExceptionCause(respEx)
                 }
             }
@@ -140,7 +142,10 @@ public data class KookChannelMessageDetailsContent internal constructor(
                 return
             }
 
-            throw DeleteFailureException("Delete channel message(details.id=${details.id}) on failure: ${respEx.message}", respEx)
+            throw DeleteFailureException(
+                "Delete channel message(details.id=${details.id}) on failure: ${respEx.message}",
+                respEx
+            )
         }
 
         if (result.isSuccess || stdOpts.isIgnoreOnFailure) {
@@ -178,7 +183,10 @@ public data class KookChannelMessageDetailsContent internal constructor(
 
             return toMessages(
                 initialList,
-                mention, mentionRoles, isMentionAll, isMentionHere
+                mention,
+                mentionRoles,
+                isMentionAll,
+                isMentionHere
             )
         }
 

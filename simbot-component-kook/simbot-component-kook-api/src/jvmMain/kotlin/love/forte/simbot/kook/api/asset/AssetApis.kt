@@ -31,7 +31,6 @@ import io.ktor.http.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.nio.*
 import io.ktor.utils.io.streams.*
 import java.io.File
 import java.io.InputStream
@@ -40,7 +39,6 @@ import java.net.URI
 import java.net.URL
 import java.nio.channels.FileChannel
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import kotlin.io.path.name
 
 /**
@@ -65,7 +63,7 @@ public fun createCreateAssetApi(file: File, filename: String? = null): CreateAss
 /**
  * 提供文件的 [Path] 作为上传API。
  *
- * 文件在上传时会通过 [FileChannel.open] 将 [Path] 打开并通过 [FileChannel.asInput] 转化为 [Input]。
+ * 文件在上传时会通过 [Path.readChannel] 转化为 [ByteReadChannel]。
  *
  * [Path] 不会被立即读取，而是在实际发起请求时被读取。
  * API 进行请求时，可能会因 [Path] 而导致产生各种异常，比如 [IOException][java.io.IOException]。
@@ -80,7 +78,7 @@ public fun createCreateAssetApi(file: File, filename: String? = null): CreateAss
 @JvmName("create")
 public fun createCreateAssetApi(path: Path, filename: String? = null): CreateAssetApi =
     CreateAssetApi.create(
-        InputProvider { FileChannel.open(path, StandardOpenOption.READ).asInput() },
+        ChannelProvider { path.readChannel() },
         filename = filename ?: path.name
     )
 

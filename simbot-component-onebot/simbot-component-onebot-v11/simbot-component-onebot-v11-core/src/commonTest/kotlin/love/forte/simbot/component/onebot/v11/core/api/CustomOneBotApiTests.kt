@@ -68,7 +68,7 @@ class CustomOneBotApiTests {
         }
 
         val mockEngine = MockEngine { requestData ->
-            val action = requestData.url.pathSegments.last()
+            val action = requestData.url.segments.last()
             assertEquals("get_msg", action, "action must be `get_msg`, but $action")
 
             val body = requestData.body.toByteArray().decodeToString()
@@ -146,7 +146,7 @@ class CustomOneBotApiTests {
             .build()
 
         val mockEngine = MockEngine { requestData ->
-            val action = requestData.url.pathSegments.last()
+            val action = requestData.url.segments.last()
             assertEquals("get_msg", action, "action must be `get_msg`, but $action")
 
             val body = requestData.body.toByteArray().decodeToString()

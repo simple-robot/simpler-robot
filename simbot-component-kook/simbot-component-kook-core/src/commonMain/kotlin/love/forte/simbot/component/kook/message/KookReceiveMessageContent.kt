@@ -431,7 +431,11 @@ public fun Event<TextExtra>.toMessages(): Messages {
 
 private inline fun TextExtra.toMessages(contentElement: () -> List<Message.Element>): Messages {
     return toMessages(
-        contentElement(), mention, mentionRoles, isMentionAll, isMentionHere
+        contentElement(),
+        mention,
+        mentionRoles,
+        isMentionAll,
+        isMentionHere
     )
 }
 

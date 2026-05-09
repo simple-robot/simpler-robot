@@ -54,7 +54,7 @@ public class ChannelMoveUserApi private constructor(
          * @param userIds 用户 id 的数组
          */
         @JvmStatic
-        public fun create(targetId: String, userIds: List<String>): ChannelMoveUserApi = 
+        public fun create(targetId: String, userIds: List<String>): ChannelMoveUserApi =
             ChannelMoveUserApi(targetId, userIds)
 
         /**
@@ -64,7 +64,7 @@ public class ChannelMoveUserApi private constructor(
          * @param userIds 用户 id 的数组
          */
         @JvmStatic
-        public fun create(targetId: String, vararg userIds: String): ChannelMoveUserApi = 
+        public fun create(targetId: String, vararg userIds: String): ChannelMoveUserApi =
             ChannelMoveUserApi(targetId, userIds.asList())
     }
 
@@ -78,9 +78,9 @@ public class ChannelMoveUserApi private constructor(
 
     @Serializable
     private data class Body(
-        @SerialName("target_id") 
+        @SerialName("target_id")
         val targetId: String,
-        @SerialName("user_ids") 
+        @SerialName("user_ids")
         val userIds: List<String>
     )
 }

@@ -22,9 +22,10 @@
  */
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 
@@ -51,6 +52,11 @@ kotlin {
 
     js(IR) {
         configJs()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
     }
 
     applyTier123()

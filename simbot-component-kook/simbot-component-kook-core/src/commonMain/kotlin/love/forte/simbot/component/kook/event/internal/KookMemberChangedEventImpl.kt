@@ -21,6 +21,8 @@
  *
  */
 
+@file:Suppress("ConstructorParameterNaming")
+
 package love.forte.simbot.component.kook.event.internal
 
 import love.forte.simbot.common.collectable.Collectable

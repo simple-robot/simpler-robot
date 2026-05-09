@@ -24,7 +24,7 @@
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 
@@ -60,7 +60,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":simbot-logger"))
+                api(project(":simbot-logger"))
 
                 api(project(":simbot-commons:simbot-common-annotations"))
                 api(libs.kotlinx.coroutines.core)

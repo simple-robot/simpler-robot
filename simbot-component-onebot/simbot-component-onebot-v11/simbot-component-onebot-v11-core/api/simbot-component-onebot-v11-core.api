@@ -284,7 +284,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Can
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/CanSendImageResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/CanSendImageResult$Companion {
@@ -323,7 +322,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Can
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/CanSendRecordResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/CanSendRecordResult$Companion {
@@ -402,7 +400,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetCookiesResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetCookiesResult$Companion {
@@ -447,7 +444,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult$Companion {
@@ -486,7 +482,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult$Companion {
@@ -524,7 +519,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetForwardMsgResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetForwardMsgResult$Companion {
@@ -567,7 +561,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetFriendListResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetFriendListResult$Companion {
@@ -627,7 +620,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$Companion {
@@ -661,7 +653,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$CurrentTalkative;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$CurrentTalkative$Companion {
@@ -695,7 +686,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$HonorInfo;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult$HonorInfo$Companion {
@@ -744,7 +734,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetGroupInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupInfoResult$Companion {
@@ -828,7 +817,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult$Companion {
@@ -882,7 +870,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetImageResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetImageResult$Companion {
@@ -923,7 +910,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult$Companion {
@@ -972,7 +958,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetMsgResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetMsgResult$Companion {
@@ -1012,7 +997,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetRecordResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetRecordResult$Companion {
@@ -1074,7 +1058,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetStrangerInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetStrangerInfoResult$Companion {
@@ -1117,7 +1100,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Get
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/GetVersionInfoResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/GetVersionInfoResult$Companion {
@@ -1427,7 +1409,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$SegmentsValue;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$SegmentsValue$Companion {
@@ -1454,7 +1435,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$StringValue;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/OneBotMessageOutgoing$StringValue$Companion {
@@ -1552,7 +1532,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/Sen
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/SendMsgResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/SendMsgResult$Companion {
@@ -1815,7 +1794,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/api/non
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/SendGroupForwardMsgResult$Companion {
@@ -1826,7 +1804,7 @@ public final class love/forte/simbot/component/onebot/v11/core/api/nonstandard/S
 	public final fun create (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/component/onebot/v11/core/api/nonstandard/SendPrivateForwardMsgApi;
 }
 
-public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/OneBotBot : love/forte/simbot/bot/Bot, love/forte/simbot/component/onebot/v11/core/api/OneBotApiExecutable {
+public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/OneBotBot : love/forte/simbot/bot/Bot, love/forte/simbot/bot/InitializableBot, love/forte/simbot/component/onebot/v11/core/api/OneBotApiExecutable {
 	public synthetic fun getAccessToken ()Ljava/lang/String;
 	public abstract fun getApiAccessToken ()Ljava/lang/String;
 	public abstract fun getApiClient ()Lio/ktor/client/HttpClient;
@@ -1861,6 +1839,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getUserId ()Llove/forte/simbot/common/id/ID;
+	public fun init (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
 	public synthetic fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
 	public synthetic fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
@@ -2019,7 +1998,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams {
@@ -2052,7 +2030,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$AdditionalParams$Companion {
@@ -2090,7 +2067,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Authorization;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Authorization$Companion {
@@ -2133,7 +2109,6 @@ public final synthetic class love/forte/simbot/component/onebot/v11/core/bot/One
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotSerializableConfiguration$Config$Companion {

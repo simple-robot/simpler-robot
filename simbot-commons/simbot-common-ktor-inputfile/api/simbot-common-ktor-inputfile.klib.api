@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -13,5 +13,5 @@ abstract interface love.forte.simbot.common.ktor.inputfile/InputFile { // love.f
 
 final fun love.forte.simbot.common.ktor.inputfile/InputFile(io.ktor.client.request.forms/ChannelProvider, io.ktor.http/Headers = ...): love.forte.simbot.common.ktor.inputfile/InputFile // love.forte.simbot.common.ktor.inputfile/InputFile|InputFile(io.ktor.client.request.forms.ChannelProvider;io.ktor.http.Headers){}[0]
 final fun love.forte.simbot.common.ktor.inputfile/InputFile(io.ktor.client.request.forms/InputProvider, io.ktor.http/Headers = ...): love.forte.simbot.common.ktor.inputfile/InputFile // love.forte.simbot.common.ktor.inputfile/InputFile|InputFile(io.ktor.client.request.forms.InputProvider;io.ktor.http.Headers){}[0]
-final fun love.forte.simbot.common.ktor.inputfile/InputFile(io.ktor.utils.io.core/ByteReadPacket, io.ktor.http/Headers = ...): love.forte.simbot.common.ktor.inputfile/InputFile // love.forte.simbot.common.ktor.inputfile/InputFile|InputFile(io.ktor.utils.io.core.ByteReadPacket;io.ktor.http.Headers){}[0]
 final fun love.forte.simbot.common.ktor.inputfile/InputFile(kotlin/ByteArray, io.ktor.http/Headers = ...): love.forte.simbot.common.ktor.inputfile/InputFile // love.forte.simbot.common.ktor.inputfile/InputFile|InputFile(kotlin.ByteArray;io.ktor.http.Headers){}[0]
+final fun love.forte.simbot.common.ktor.inputfile/InputFile(kotlinx.io/Source, io.ktor.http/Headers = ...): love.forte.simbot.common.ktor.inputfile/InputFile // love.forte.simbot.common.ktor.inputfile/InputFile|InputFile(kotlinx.io.Source;io.ktor.http.Headers){}[0]

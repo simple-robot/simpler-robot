@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.model
@@ -61,7 +67,7 @@ public value class Permissions(public val value: Long) {
     /**
      * 判断是否包含 [permission] 权限。
      */
-    public operator fun contains(permission: Long): Boolean = (value and permission) != 0L
+    public operator fun contains(permission: Long): Boolean = value and permission != 0L
 
     public companion object {
         /**
@@ -99,7 +105,8 @@ public value class Permissions(public val value: Long) {
      * @suppress 直接使用 [Permissions.contains] .
      */
     @Deprecated(
-        "use contains", ReplaceWith(
+        "use contains",
+        ReplaceWith(
             "contains(CHANNEL_VIEWABLE)",
             "love.forte.simbot.qguild.model.Permissions.Companion.CHANNEL_VIEWABLE"
         )
@@ -110,7 +117,8 @@ public value class Permissions(public val value: Long) {
      * @suppress 直接使用 [Permissions.contains] .
      */
     @Deprecated(
-        "use contains", ReplaceWith(
+        "use contains",
+        ReplaceWith(
             "contains(CHANNEL_MANAGEABLE)",
             "love.forte.simbot.qguild.model.Permissions.Companion.CHANNEL_MANAGEABLE"
         )

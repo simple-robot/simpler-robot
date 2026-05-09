@@ -23,6 +23,7 @@
 
 @file:JvmName("EventProcessors")
 @file:JvmMultifileClass
+
 package love.forte.simbot.kook.stdlib
 
 import love.forte.simbot.kook.event.Event

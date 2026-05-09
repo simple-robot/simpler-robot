@@ -76,12 +76,12 @@ public class CreateBlacklistApi private constructor(
 
     @Serializable
     private data class Body(
-        @SerialName("guild_id") 
+        @SerialName("guild_id")
         val guildId: String,
-        @SerialName("target_id") 
+        @SerialName("target_id")
         val targetId: String,
         val remark: String? = null,
-        @SerialName("del_msg_days") 
+        @SerialName("del_msg_days")
         val delMsgDays: Int? = null,
     )
 }

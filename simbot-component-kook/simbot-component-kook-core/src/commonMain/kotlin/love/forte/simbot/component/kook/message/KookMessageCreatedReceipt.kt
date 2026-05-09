@@ -97,8 +97,11 @@ public class KookMessageCreatedReceipt(
     @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption) {
         val api =
-            if (isDirect) DeleteDirectMessageApi.create(result.msgId)
-            else DeleteChannelMessageApi.create(result.msgId)
+            if (isDirect) {
+                DeleteDirectMessageApi.create(result.msgId)
+            } else {
+                DeleteChannelMessageApi.create(result.msgId)
+            }
 
         val stdOpts = options.standardAnalysis()
 
@@ -114,14 +117,18 @@ public class KookMessageCreatedReceipt(
                 return
             }
 
-            throw NoSuchElementException("Delete target (msgId=${result.msgId}) not found: HTTP code 404 with result $apiResult")
+            throw NoSuchElementException(
+                "Delete target (msgId=${result.msgId}) not found: HTTP code 404 with result $apiResult"
+            )
         }
 
         if (stdOpts.isIgnoreOnFailure) {
             return
         }
 
-        throw DeleteFailureException("Delete message (msgId=${result.msgId}) failed. HTTP status: $httpStatus, result: $apiResult")
+        throw DeleteFailureException(
+            "Delete message (msgId=${result.msgId}) failed. HTTP status: $httpStatus, result: $apiResult"
+        )
     }
 
     public companion object {
@@ -158,11 +165,13 @@ public class KookApiRequestedReceipt(
             return
         }
 
-        throw UnsupportedOperationException(buildString {
-            append("KookApiRequestedReceipt.delete(")
-            options.joinTo(buffer = this, separator = ",", prefix = "[", postfix = "]")
-            append(")")
-        })
+        throw UnsupportedOperationException(
+            buildString {
+                append("KookApiRequestedReceipt.delete(")
+                options.joinTo(buffer = this, separator = ",", prefix = "[", postfix = "]")
+                append(")")
+            }
+        )
     }
 }
 

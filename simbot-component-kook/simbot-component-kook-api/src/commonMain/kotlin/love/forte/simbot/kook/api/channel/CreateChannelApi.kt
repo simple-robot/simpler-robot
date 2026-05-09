@@ -69,7 +69,7 @@ public class CreateChannelApi private constructor(
             /**
              * 语音品质：高品质
              */
-            HIGH(3);
+            HIGH(3)
         }
 
 

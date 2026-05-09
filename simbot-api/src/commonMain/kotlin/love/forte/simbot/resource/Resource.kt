@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -35,7 +35,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -117,7 +116,6 @@ public interface ByteArrayResource : Resource, SourceResource {
  * - 序列化时会读取数据、产生读取开销。
  * - 反序列化后的类型可能与原本的类型不一致。
  */
-@ExperimentalEncodingApi
 public object ResourceBase64Serializer : KSerializer<Resource> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("B64Resource", PrimitiveKind.STRING)
 

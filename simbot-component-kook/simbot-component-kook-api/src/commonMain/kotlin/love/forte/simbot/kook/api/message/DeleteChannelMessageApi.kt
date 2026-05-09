@@ -60,7 +60,7 @@ public class DeleteChannelMessageApi private constructor(
 
     override fun createBody(): Any = Body(msgId)
 
-    //msg_id	string	是	POST	消息 id
+    // msg_id	string	是	POST	消息 id
     @Serializable
     private data class Body(@SerialName("msg_id") val msgId: String)
 

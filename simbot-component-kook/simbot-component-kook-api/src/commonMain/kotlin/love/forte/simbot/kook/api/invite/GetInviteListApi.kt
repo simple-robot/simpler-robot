@@ -62,8 +62,11 @@ public class GetInviteListApi private constructor(
             page: Int? = null,
             pageSize: Int? = null,
         ): GetInviteListApi =
-            if (guildId == null && channelId == null && page == null && pageSize == null) EMPTY
-            else GetInviteListApi(guildId, channelId, page, pageSize)
+            if (guildId == null && channelId == null && page == null && pageSize == null) {
+                EMPTY
+            } else {
+                GetInviteListApi(guildId, channelId, page, pageSize)
+            }
 
     }
 

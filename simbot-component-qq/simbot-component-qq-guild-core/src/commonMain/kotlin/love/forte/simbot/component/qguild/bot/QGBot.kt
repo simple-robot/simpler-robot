@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2021-2024. ForteScarlet.
+ *     Copyright (c) 2021-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.bot
@@ -23,13 +29,13 @@ import io.ktor.client.statement.*
 import love.forte.simbot.ability.EventMentionAware
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
+import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.QQGuildComponent
 import love.forte.simbot.component.qguild.channel.QGTextChannel
-import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.event.QGAtMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGGroupAtMessageCreateEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
@@ -70,6 +76,8 @@ import love.forte.simbot.qguild.stdlib.Bot as QGSourceBot
  *
  * @author ForteScarlet
  */
+@OptIn(InheritanceBotApi::class)
+@SubclassOptInRequired(InternalForInheritanceQGBotApi::class)
 public interface QGBot : Bot, EventMentionAware {
     /**
      * QQ频道的 [组件][QQGuildComponent] 对象实例。
@@ -232,8 +240,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。
@@ -250,8 +258,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。
@@ -268,8 +276,8 @@ public interface QGBot : Bot, EventMentionAware {
     /**
      * 直接向目标DMS(频道私聊会话)发送消息。
      *
-     * [sendDmsTo] 相对于 [QGDmsContact.send] 而言更加“不可靠”
-     * —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
+     * [sendDmsTo] 相对于 [QGDmsContact.send][love.forte.simbot.component.qguild.dms.QGDmsContact.send]
+     * 而言更加“不可靠” —— 因为它失去了在消息中自动填充 `msgId` 等透明行为，
      * 且直接使用ID也会存在一些细微的隐患。
      *
      * 如有必要，请不要忘记添加 [QGReplyTo] 来指定一个用于回复标记的 `msgId`。
@@ -439,7 +447,7 @@ public interface QGBot : Bot, EventMentionAware {
     override suspend fun messageFromId(id: ID): QGMessageContent {
         throw UnsupportedOperationException(
             "Cannot query message from `messageId` only. " +
-                    "Use the QGBot.messageFromId(channelId, messageId) or QGBot.messageFromReference(QGReference) plz."
+                "Use the QGBot.messageFromId(channelId, messageId) or QGBot.messageFromReference(QGReference) plz."
         )
     }
 
@@ -457,7 +465,7 @@ public interface QGBot : Bot, EventMentionAware {
         if (reference !is QGReference) {
             throw UnsupportedOperationException(
                 "Cannot query message use a reference that type is not QGReference. " +
-                        "Use `reference` type of QGReference or use messageFromId(channelId, messageId) plz."
+                    "Use `reference` type of QGReference or use messageFromId(channelId, messageId) plz."
             )
         }
 

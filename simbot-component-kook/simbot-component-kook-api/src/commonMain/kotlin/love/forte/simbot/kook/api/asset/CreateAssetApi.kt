@@ -26,6 +26,7 @@ package love.forte.simbot.kook.api.asset
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.io.Source
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import love.forte.simbot.kook.api.ApiResultType
@@ -70,9 +71,11 @@ public class CreateAssetApi private constructor(
             fileBytes: ByteArray,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileBytes, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileBytes, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -88,9 +91,11 @@ public class CreateAssetApi private constructor(
             fileProvider: InputProvider,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileProvider, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileProvider, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -98,19 +103,21 @@ public class CreateAssetApi private constructor(
          *
          * *Note: 需要注意 [ByteReadPacket] 中的数据只能被使用一次。*
          *
-         * @param fileByteReadPacket 文件数据 [ByteReadPacket]
+         * @param source 文件数据 [ByteReadPacket]
          * @param filename 使用在表单数据中 [HttpHeaders.ContentDisposition] 的 `filename` 属性，
          * 如果为 `null` 则会提供一个默认的文件名称 `unknown-file`。
          */
         @JvmStatic
         @JvmOverloads
         public fun create(
-            fileByteReadPacket: ByteReadPacket,
+            source: Source,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileByteReadPacket, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, source, fileHeaders(filename))
+                }
+            )
         }
 
         /**
@@ -126,9 +133,11 @@ public class CreateAssetApi private constructor(
             fileChannelProvider: ChannelProvider,
             filename: String? = null
         ): CreateAssetApi = CreateAssetApi {
-            MultiPartFormDataContent(formData {
-                append(key = ASSET_API_FORM_PROPERTY_NAME, fileChannelProvider, fileHeaders(filename))
-            })
+            MultiPartFormDataContent(
+                formData {
+                    append(key = ASSET_API_FORM_PROPERTY_NAME, fileChannelProvider, fileHeaders(filename))
+                }
+            )
         }
 
         private fun fileHeaders(filename: String?): Headers = Headers.build {

@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -113,6 +119,7 @@ internal object FaceParser : SendingMessageParser {
 internal object QGMessageParser : ReceivingMessageParser {
     private const val AT_USER_VALUE = "uv"
     private const val AT_EVERYONE_GROUP = "all"
+
     // 2024-07-13 兼容之前的两个写法解析：因为好像内容还没变
     private const val AT_USER_OLD_VALUE = "uvold"
     private const val AT_EVERYONE_OLD_GROUP = "allold"
@@ -140,20 +147,20 @@ internal object QGMessageParser : ReceivingMessageParser {
 
     private val replaceRegex = Regex(
         "<qqbot-at-user +id=\"(?<$AT_USER_VALUE>[.a-zA-Z0-9_-]+)\" */>" +
-                "|(?<$AT_EVERYONE_GROUP><qqbot-at-everyone */>)" +
-                "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
-                "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
-                // 兼容之前的两个写法解析
-                "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>" +
-                "|(?<$AT_EVERYONE_OLD_GROUP>@everyone)"
+            "|(?<$AT_EVERYONE_GROUP><qqbot-at-everyone */>)" +
+            "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
+            "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
+            // 兼容之前的两个写法解析
+            "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>" +
+            "|(?<$AT_EVERYONE_OLD_GROUP>@everyone)"
     )
 
     private val replaceWithoutMentionAllRegex = Regex(
         "<qqbot-at-user +id=\"(?<$AT_USER_VALUE>[.a-zA-Z0-9_-]+)\" */>" +
-                "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
-                "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
-                // 兼容之前的两个写法解析
-                "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>"
+            "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
+            "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
+            // 兼容之前的两个写法解析
+            "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>"
     )
 
     override fun invoke(qgContent: String, context: ReceivingMessageParser.Context): ReceivingMessageParser.Context {
@@ -201,22 +208,27 @@ internal object QGMessageParser : ReceivingMessageParser {
         val textBuilder = StringBuilder()
 
         fun appendText(value: String, startIndex: Int, endIndex: Int) {
-            ContentTextDecoder.decodeTo(value, startIndex, endIndex, object : Appendable {
-                override fun append(value: CharSequence?): Appendable = also {
-                    textBuilder.append(value)
-                    context.plainTextBuilder.append(value)
-                }
+            ContentTextDecoder.decodeTo(
+                value,
+                startIndex,
+                endIndex,
+                object : Appendable {
+                    override fun append(value: CharSequence?): Appendable = also {
+                        textBuilder.append(value)
+                        context.plainTextBuilder.append(value)
+                    }
 
-                override fun append(value: CharSequence?, startIndex: Int, endIndex: Int): Appendable = also {
-                    textBuilder.append(value, startIndex, endIndex)
-                    context.plainTextBuilder.append(value, startIndex, endIndex)
-                }
+                    override fun append(value: CharSequence?, startIndex: Int, endIndex: Int): Appendable = also {
+                        textBuilder.append(value, startIndex, endIndex)
+                        context.plainTextBuilder.append(value, startIndex, endIndex)
+                    }
 
-                override fun append(value: Char): Appendable = also {
-                    textBuilder.append(value)
-                    context.plainTextBuilder.append(value)
+                    override fun append(value: Char): Appendable = also {
+                        textBuilder.append(value)
+                        context.plainTextBuilder.append(value)
+                    }
                 }
-            })
+            )
         }
 
         fun flushText() {

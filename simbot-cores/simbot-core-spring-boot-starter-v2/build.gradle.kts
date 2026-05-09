@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,7 +23,7 @@
 
 
 plugins {
-    kotlin("jvm")
+    id("simbot.kotlin-jvm")
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("org.jetbrains.dokka")

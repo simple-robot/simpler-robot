@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.internal.event
@@ -33,12 +39,12 @@ internal class QGChannelCreateEventImpl(
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventChannel,
     override val bot: QGBotImpl,
-    private val _channel: QGTextChannelImpl,
+    private val channelValue: QGTextChannelImpl,
 ) : QGChannelCreateEvent() {
     override val id: ID get() = tcgChannelModifyId(0, bot.id, sourceEventEntity.id, hashCode())
-    override suspend fun channel(): QGTextChannel = _channel
+    override suspend fun channel(): QGTextChannel = channelValue
     override suspend fun content(): QGGuild = with(sourceEventEntity) {
-        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=${guildId})")
+        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=$guildId)")
     }
 }
 
@@ -46,12 +52,12 @@ internal class QGChannelUpdateEventImpl(
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventChannel,
     override val bot: QGBotImpl,
-    private val _channel: QGTextChannelImpl,
+    private val channelValue: QGTextChannelImpl,
 ) : QGChannelUpdateEvent() {
     override val id: ID get() = tcgChannelModifyId(1, bot.id, sourceEventEntity.id, hashCode())
-    override suspend fun content(): QGTextChannel = _channel
+    override suspend fun content(): QGTextChannel = channelValue
     override suspend fun source(): QGGuild = with(sourceEventEntity) {
-        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=${guildId})")
+        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=$guildId)")
     }
 }
 
@@ -59,12 +65,12 @@ internal class QGChannelDeleteEventImpl(
     override val sourceEventRaw: String,
     override val sourceEventEntity: EventChannel,
     override val bot: QGBotImpl,
-    private val _channel: QGTextChannelImpl
+    private val channelValue: QGTextChannelImpl
 ) : QGChannelDeleteEvent() {
     override val id: ID get() = tcgChannelModifyId(2, bot.id, sourceEventEntity.id, hashCode())
-    override suspend fun channel(): QGTextChannel = _channel
+    override suspend fun channel(): QGTextChannel = channelValue
     override suspend fun content(): QGGuild = with(sourceEventEntity) {
-        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=${guildId})")
+        bot.queryGuild(guildId) ?: throw NoSuchElementException("guild(id=$guildId)")
     }
 }
 

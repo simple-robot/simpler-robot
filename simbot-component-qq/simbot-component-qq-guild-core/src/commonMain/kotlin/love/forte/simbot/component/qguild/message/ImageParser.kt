@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2025. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -38,7 +44,7 @@ import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmStatic
 
 internal const val JVM_DISABLE_BASE64_UPLOAD_WARN = "simbot.qqguild.media.disableBase64UploadWarn"
-internal expect val base64UploadWarnInitialValue: Boolean
+internal expect val BASE64_UPLOAD_WARN_INITIAL_VALUE: Boolean
 
 /**
  *
@@ -48,7 +54,7 @@ public object ImageParser : SendingMessageParser {
     internal val logger = LoggerFactory.getLogger("love.forte.simbot.component.qguild.message.ImageParser")
 
     @Volatile
-    internal var base64UploadWarn = base64UploadWarnInitialValue
+    internal var base64UploadWarn = BASE64_UPLOAD_WARN_INITIAL_VALUE
 
     /**
      * 关闭针对 base64 上传文件的警告。
@@ -195,11 +201,11 @@ internal suspend fun processBase64OfflineImage(
     if (ImageParser.base64UploadWarn) {
         ImageParser.logger.warn(
             "Uploading media to QQGroup or C2C using base64 is still experimental now. " +
-                    "(for index={}, type={}, element={})" +
-                    "The official documentation does not describe this capability and is therefore unstable. " +
-                    "Please give preference to using `URIResource`, `OfflineURIImage` " +
-                    "or `QGMedia` instance " +
-                    "or see `ImageParser.disableBase64UploadWarn()` to disable this warn log.",
+                "(for index={}, type={}, element={})" +
+                "The official documentation does not describe this capability and is therefore unstable. " +
+                "Please give preference to using `URIResource`, `OfflineURIImage` " +
+                "or `QGMedia` instance " +
+                "or see `ImageParser.disableBase64UploadWarn()` to disable this warn log.",
             element::class,
             index,
             element,

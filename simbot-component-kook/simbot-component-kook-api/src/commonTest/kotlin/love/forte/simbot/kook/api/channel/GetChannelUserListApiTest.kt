@@ -62,8 +62,8 @@ class GetChannelUserListApiTest {
         
         // Test URL path segments
         val url = api.url
-        assertTrue(url.pathSegments.contains("channel"))
-        assertTrue(url.pathSegments.contains("user-list"))
+        assertTrue(url.segments.contains("channel"))
+        assertTrue(url.segments.contains("user-list"))
     }
     
     @Test

@@ -39,6 +39,7 @@ import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
 
 //region request
+
 /**
  * 使用 [KookBot] 对 [api] 发起请求。
  * @see KookBot.request
@@ -157,6 +158,7 @@ public fun KookBot.requestResultReserve(api: KookApi<*>): SuspendReserve<ApiResu
 //endregion
 
 //region requestBy
+
 /**
  * 使用 [KookApi] 通过 [bot] 发起请求。
  * @see KookApi.requestBy

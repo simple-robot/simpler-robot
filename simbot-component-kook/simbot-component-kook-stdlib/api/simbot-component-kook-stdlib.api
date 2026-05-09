@@ -10,6 +10,8 @@ public abstract interface class love/forte/simbot/kook/stdlib/Bot : kotlinx/coro
 	public fun getMeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getTicket ()Llove/forte/simbot/kook/stdlib/Ticket;
 	public abstract fun isActive ()Z
+	public abstract fun isClosed ()Z
+	public abstract fun isCompleted ()Z
 	public abstract fun isStarted ()Z
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
@@ -94,7 +96,6 @@ public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$Engi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/kook/stdlib/BotConfiguration$EngineConfiguration$Companion {
@@ -130,7 +131,6 @@ public final synthetic class love/forte/simbot/kook/stdlib/BotConfiguration$Time
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/kook/stdlib/BotConfiguration$TimeoutConfiguration$Companion {

@@ -113,7 +113,7 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
     // var mentionRolePart: MutableList<Role> = LinkedList()
 
 
-    //********************************//
+    // ********************************//
 
     /**
      * 拼接一个文本
@@ -270,7 +270,7 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
         also { KookMarkdownGrammar.CodeBlock.appendTo(language, code, appender) }
 
 
-    //********************************//
+    // ********************************//
 
     /**
      * 一个空格。
@@ -430,7 +430,7 @@ public interface KookMarkdownGrammar<P> {
     }
 
 
-    //**************** 已定义语法 ****************//
+    // **************** 已定义语法 ****************//
 
     /**
      * 追加一段原始字符串。即没有任何操作。
@@ -674,7 +674,7 @@ public fun <P> KookMarkdownGrammar<P>.build(param: P): String =
 public abstract class BaseKookMarkdownGrammar<P>(override val grammarSource: KookMarkdownGrammar.Source) :
     KookMarkdownGrammar<P>
 
-//**************** 基于 source 的部分整合 ****************//
+// **************** 基于 source 的部分整合 ****************//
 
 public abstract class BaseMarkdownKookMarkdownGrammar<P> :
     BaseKookMarkdownGrammar<P>(KookMarkdownGrammar.Source.Markdown)

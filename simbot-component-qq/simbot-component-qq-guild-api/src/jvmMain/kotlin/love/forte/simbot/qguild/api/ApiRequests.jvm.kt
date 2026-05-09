@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 @file:JvmName("ApiRequests")
@@ -166,7 +172,7 @@ public fun QQGuildApi<*>.requestReserve(
     server: Url = QQGuild.URL,
     scope: CoroutineScope? = null,
     appId: String? = null,
-): SuspendReserve<HttpResponse> = suspendReserve(scope = (scope ?: client), context = EmptyCoroutineContext) {
+): SuspendReserve<HttpResponse> = suspendReserve(scope = scope ?: client, context = EmptyCoroutineContext) {
     request(client = client, token = token, server = server, appId = appId)
 }
 
@@ -184,7 +190,7 @@ public fun QQGuildApi<*>.requestTextReserve(
     server: Url = QQGuild.URL,
     scope: CoroutineScope? = null,
     appId: String? = null,
-): SuspendReserve<String> = suspendReserve(scope = (scope ?: client), context = EmptyCoroutineContext) {
+): SuspendReserve<String> = suspendReserve(scope = scope ?: client, context = EmptyCoroutineContext) {
     requestText(client = client, token = token, server = server, appId = appId)
 }
 
@@ -202,6 +208,6 @@ public fun <R : Any> QQGuildApi<R>.requestDataReserve(
     server: Url = QQGuild.URL,
     scope: CoroutineScope? = null,
     appId: String? = null,
-): SuspendReserve<R> = suspendReserve(scope = (scope ?: client), context = EmptyCoroutineContext) {
+): SuspendReserve<R> = suspendReserve(scope = scope ?: client, context = EmptyCoroutineContext) {
     requestData(client = client, token = token, server = server, appId = appId)
 }

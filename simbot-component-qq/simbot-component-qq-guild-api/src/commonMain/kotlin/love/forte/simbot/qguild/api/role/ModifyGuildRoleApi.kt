@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.api.role
@@ -39,11 +45,13 @@ import kotlin.jvm.JvmStatic
  * @author ForteScarlet
  */
 public class ModifyGuildRoleApi private constructor(
-    guildId: String, roleId: String,
-    private val _body: Body,
+    guildId: String,
+    roleId: String,
+    private val body0: Body,
 ) : PatchQQGuildApi<GuildRoleModified>() {
     public companion object Factory : SimpleApiDescription(
-        HttpMethod.Patch, "/guilds/{guild_id}/roles/{role_id}"
+        HttpMethod.Patch,
+        "/guilds/{guild_id}/roles/{role_id}"
     ) {
 
         /**
@@ -68,7 +76,7 @@ public class ModifyGuildRoleApi private constructor(
     override val resultDeserializationStrategy: DeserializationStrategy<GuildRoleModified>
         get() = GuildRoleModified.serializer()
 
-    override fun createBody(): Any = _body
+    override fun createBody(): Any = body0
 
     @Serializable
     private data class Body(

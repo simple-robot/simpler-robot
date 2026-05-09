@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.api.message
@@ -20,14 +26,11 @@ package love.forte.simbot.qguild.api.message
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.cio.*
-import io.ktor.utils.io.nio.*
 import io.ktor.utils.io.streams.*
 import java.io.File
 import java.net.URI
 import java.net.URL
-import java.nio.channels.FileChannel
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import kotlin.io.path.name
 
 /**
@@ -56,11 +59,8 @@ public actual fun FormBuilder.resolveOther(fileImage: Any?) {
             val imgHeaders = Headers.build {
                 append(HttpHeaders.ContentDisposition, "filename=\"${fileImage.name}\"")
             }
-            append(
-                key = "file_image",
-                InputProvider { FileChannel.open(fileImage, StandardOpenOption.READ).asInput() },
-                imgHeaders
-            )
+
+            append(key = "file_image", ChannelProvider { fileImage.readChannel() }, imgHeaders)
         }
 
         is URL -> {
@@ -81,10 +81,10 @@ public actual fun FormBuilder.resolveOther(fileImage: Any?) {
 
 internal actual fun checkFileImage(fileImage: Any) {
     when (fileImage) {
-        is File -> {}
-        is Path -> {}
-        is URL -> {}
-        is URI -> {}
+        // Supported types
+        is File, is Path, is URL, is URI -> {
+            // Nothing.
+        }
         else -> {
             throw IllegalArgumentException("Unsupported fileImage type: $fileImage (${fileImage::class.java})")
         }

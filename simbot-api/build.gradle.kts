@@ -27,7 +27,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.time.Instant
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
@@ -77,7 +77,7 @@ kotlin {
             dependencies {
                 api(project(":simbot-commons:simbot-common-annotations"))
                 implementation(libs.jetbrains.annotations)
-                implementation(project(":simbot-logger"))
+                api(project(":simbot-logger"))
 
                 api(project(":simbot-commons:simbot-common-streamable"))
                 api(project(":simbot-commons:simbot-common-suspend-runner"))

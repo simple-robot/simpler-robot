@@ -22,7 +22,7 @@
  */
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
     id("org.jetbrains.dokka")
 }
 
@@ -42,23 +42,13 @@ kotlin {
     }
 
     applyTier1()
-    applyTier2(
-        supportKtorClient = true,
-        // multiplatform-crypto-libsodium 不支持 watchosX64 target.
-        watchosX64 = false,
-    )
-    applyTier3(
-        supportKtorClient = true,
-        androidNativeArm32 = false,
-        androidNativeArm64 = false,
-        androidNativeX64 = false,
-        androidNativeX86 = false,
-        watchosDeviceArm64 = false,
-    )
+    applyTier2()
+    // TODO multiplatform-crypto-libsodium 不支持 watchosX64 target 和 android native targets
+    applyTier3(supportKtorClient = true, watchosX64 = false, androidNative = false, watchosDeviceArm64 = false)
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":simbot-logger"))
+            api(project(":simbot-logger"))
         }
 
         commonTest.dependencies {

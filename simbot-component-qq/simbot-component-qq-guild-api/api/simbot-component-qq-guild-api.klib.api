@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -1592,8 +1592,8 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
             final fun fromMessage(love.forte.simbot.qguild.model/Message) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.fromMessage|fromMessage(love.forte.simbot.qguild.model.Message){}[0]
             final fun setFileImage(io.ktor.client.request.forms/ChannelProvider) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.client.request.forms.ChannelProvider){}[0]
             final fun setFileImage(io.ktor.client.request.forms/InputProvider) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.client.request.forms.InputProvider){}[0]
-            final fun setFileImage(io.ktor.utils.io.core/ByteReadPacket) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.utils.io.core.ByteReadPacket){}[0]
             final fun setFileImage(kotlin/ByteArray) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(kotlin.ByteArray){}[0]
+            final fun setFileImage(kotlinx.io/RawSource) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(kotlinx.io.RawSource){}[0]
         }
 
         final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.api.message/MessageSendApi.Body> { // love.forte.simbot.qguild.api.message/MessageSendApi.Body.$serializer|null[0]

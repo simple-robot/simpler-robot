@@ -171,7 +171,6 @@ public data class Event<out E : EventExtra>(
          * 系统消息
          */
         SYSTEM(255),
-        ;
 
     }
 
@@ -560,10 +559,7 @@ public class UnknownExtra : EventExtra() {
     @InternalKookApi
     @JvmSynthetic
     public fun initSource(source: String) {
-        if (sourceInitialized) {
-            throw IllegalStateException("'source' has already initialized")
-        }
-
+        check(!sourceInitialized) { "'source' has already initialized" }
         _source = source
     }
 

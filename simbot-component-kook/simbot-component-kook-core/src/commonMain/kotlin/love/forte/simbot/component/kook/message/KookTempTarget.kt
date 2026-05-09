@@ -89,6 +89,7 @@ public sealed class KookTempTarget : KookMessageElement {
     @SerialName("kook.temp.target.curr")
     internal object Current : KookTempTarget() {
         override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "Current"
     }
 }

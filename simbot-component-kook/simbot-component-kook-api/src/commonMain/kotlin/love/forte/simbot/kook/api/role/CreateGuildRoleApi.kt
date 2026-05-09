@@ -73,11 +73,11 @@ public class CreateGuildRoleApi private constructor(
     )
 }
 //
-///**
+// /**
 // * API [CreateGuildRoleApi] 的响应值.
 // */
-//@Serializable
-//public data class CreatedGuildRole @ApiResultType constructor(
+// @Serializable
+// public data class CreatedGuildRole @ApiResultType constructor(
 //    /**
 //     * 角色的id
 //     */
@@ -111,12 +111,12 @@ public class CreateGuildRoleApi private constructor(
 //    @SerialName("permissions")
 //    @get:JvmSynthetic
 //    public val permissions: Permissions,
-//) : Role {
+// ) : Role {
 //
 //    /**
 //     * 权限信息的数值
 //     */
 //    @Api4J
 //    public val permissionsValue: Int get() = permissions.perm.toInt()
-//}
+// }
 //

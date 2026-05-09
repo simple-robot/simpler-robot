@@ -61,8 +61,8 @@ class GetBlacklistListApiTest {
         
         // Test URL path segments
         val url = api.url
-        assertTrue(url.pathSegments.contains("blacklist"))
-        assertTrue(url.pathSegments.contains("list"))
+        assertTrue(url.segments.contains("blacklist"))
+        assertTrue(url.segments.contains("list"))
     }
     
     @Test

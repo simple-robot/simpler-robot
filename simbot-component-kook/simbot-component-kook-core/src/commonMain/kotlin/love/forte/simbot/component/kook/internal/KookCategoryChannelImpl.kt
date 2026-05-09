@@ -69,5 +69,8 @@ internal class KookCategoryChannelImpl(
 internal fun Channel.toCategory(bot: KookBotImpl, sourceChannel: KookCategoryChannel? = null): KookCategoryImpl =
     KookCategoryImpl(bot, source = this, sourceChannel)
 
-internal fun Channel.toCategoryChannel(bot: KookBotImpl, sourceCategory: KookCategory? = null): KookCategoryChannelImpl =
+internal fun Channel.toCategoryChannel(
+    bot: KookBotImpl,
+    sourceCategory: KookCategory? = null
+): KookCategoryChannelImpl =
     KookCategoryChannelImpl(bot, source = this, sourceCategory)

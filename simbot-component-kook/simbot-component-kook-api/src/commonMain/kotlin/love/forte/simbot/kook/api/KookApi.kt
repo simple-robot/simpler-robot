@@ -210,7 +210,9 @@ public abstract class KookPostApi<T : Any> : BaseKookApi<T>() {
      *
      */
     override val body: Any?
-        get() = if (::_body.isInitialized) _body.takeIf { it !is NULL } else {
+        get() = if (::_body.isInitialized) {
+            _body.takeIf { it !is NULL }
+        } else {
             createBody().also {
                 _body = it ?: NULL
             }

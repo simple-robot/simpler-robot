@@ -24,7 +24,7 @@
 import love.forte.gradle.common.core.project.setup
 
 plugins {
-    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
 }
 
 setup(P.SimbotBenchmark)
