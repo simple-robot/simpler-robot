@@ -29,4 +29,4 @@ projectJDK: azul-21 #(Applied in CI/CD pipeline)
 
 # Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 # https://www.jetbrains.com/help/qodana/linters.html
-linter: jetbrains/qodana-jvm-community:2024.2
+linter: jetbrains/qodana-jvm-community:2025.2
