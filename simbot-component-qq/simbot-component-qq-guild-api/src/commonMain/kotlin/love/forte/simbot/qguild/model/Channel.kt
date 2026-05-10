@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.model
@@ -26,6 +32,17 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
+import love.forte.simbot.qguild.model.ChannelSubType.Companion.ANNOUNCEMENT
+import love.forte.simbot.qguild.model.ChannelSubType.Companion.PLAY_TOGETHER
+import love.forte.simbot.qguild.model.ChannelSubType.Companion.SMALL_TALK
+import love.forte.simbot.qguild.model.ChannelSubType.Companion.STRATEGY
+import love.forte.simbot.qguild.model.ChannelType.Companion.APP
+import love.forte.simbot.qguild.model.ChannelType.Companion.CATEGORY
+import love.forte.simbot.qguild.model.ChannelType.Companion.FORUM
+import love.forte.simbot.qguild.model.ChannelType.Companion.LIVE
+import love.forte.simbot.qguild.model.ChannelType.Companion.TEXT
+import love.forte.simbot.qguild.model.ChannelType.Companion.VOICE
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -101,7 +118,7 @@ public interface Channel : Comparable<Channel> {
  */
 @ApiModel
 @Serializable
-public data class SimpleChannel(
+public data class SimpleChannel @ApiModelConstructor constructor(
     /** 子频道 id */
     override val id: String,
     /** 频道 id */

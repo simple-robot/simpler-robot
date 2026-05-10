@@ -17,6 +17,10 @@ open annotation class love.forte.simbot.qguild/ApiModel : kotlin/Annotation { //
     constructor <init>() // love.forte.simbot.qguild/ApiModel.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.qguild/ApiModelConstructor : kotlin/Annotation { // love.forte.simbot.qguild/ApiModelConstructor|null[0]
+    constructor <init>() // love.forte.simbot.qguild/ApiModelConstructor.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.qguild/ExperimentalQGMediaApi : kotlin/Annotation { // love.forte.simbot.qguild/ExperimentalQGMediaApi|null[0]
     constructor <init>() // love.forte.simbot.qguild/ExperimentalQGMediaApi.<init>|<init>(){}[0]
 }
@@ -5435,6 +5439,8 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
             final fun <get-permission>(): love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? // love.forte.simbot.qguild.model/MessageKeyboard.Action.permission.<get-permission>|<get-permission>(){}[0]
         final val reply // love.forte.simbot.qguild.model/MessageKeyboard.Action.reply|{}reply[0]
             final fun <get-reply>(): kotlin/Boolean? // love.forte.simbot.qguild.model/MessageKeyboard.Action.reply.<get-reply>|<get-reply>(){}[0]
+        final val type // love.forte.simbot.qguild.model/MessageKeyboard.Action.type|{}type[0]
+            final fun <get-type>(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboard.Action.type.<get-type>|<get-type>(){}[0]
         final val unsupportTips // love.forte.simbot.qguild.model/MessageKeyboard.Action.unsupportTips|{}unsupportTips[0]
             final fun <get-unsupportTips>(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.Action.unsupportTips.<get-unsupportTips>|<get-unsupportTips>(){}[0]
 
@@ -5444,6 +5450,7 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
         final fun component4(): kotlin/Boolean? // love.forte.simbot.qguild.model/MessageKeyboard.Action.component4|component4(){}[0]
         final fun component5(): kotlin/Int? // love.forte.simbot.qguild.model/MessageKeyboard.Action.component5|component5(){}[0]
         final fun component6(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.Action.component6|component6(){}[0]
+        final fun component7(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboard.Action.component7|component7(){}[0]
         final fun copy(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/String? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ..., kotlin/String = ...): love.forte.simbot.qguild.model/MessageKeyboard.Action // love.forte.simbot.qguild.model/MessageKeyboard.Action.copy|copy(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?;kotlin.String){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model/MessageKeyboard.Action.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboard.Action.hashCode|hashCode(){}[0]
@@ -5539,9 +5546,116 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
     }
 
     final object Companion { // love.forte.simbot.qguild.model/MessageKeyboard.Companion|null[0]
+        final fun builder(kotlin/String? = ...): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboard.Companion.builder|builder(kotlin.String?){}[0]
         final fun create(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/MessageKeyboard.Companion.create|create(kotlin.String){}[0]
+        final fun parse(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/MessageKeyboard.Companion.parse|parse(kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/MessageKeyboard> // love.forte.simbot.qguild.model/MessageKeyboard.Companion.serializer|serializer(){}[0]
     }
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardActionBuilder { // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.<init>|<init>(){}[0]
+
+    final var anchor // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.anchor|{}anchor[0]
+        final fun <get-anchor>(): kotlin/Int? // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.anchor.<get-anchor>|<get-anchor>(){}[0]
+        final fun <set-anchor>(kotlin/Int?) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.anchor.<set-anchor>|<set-anchor>(kotlin.Int?){}[0]
+    final var data // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.data|{}data[0]
+        final fun <get-data>(): kotlin/String? // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.data.<get-data>|<get-data>(){}[0]
+        final fun <set-data>(kotlin/String?) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.data.<set-data>|<set-data>(kotlin.String?){}[0]
+    final var enter // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.enter|{}enter[0]
+        final fun <get-enter>(): kotlin/Boolean? // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.enter.<get-enter>|<get-enter>(){}[0]
+        final fun <set-enter>(kotlin/Boolean?) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.enter.<set-enter>|<set-enter>(kotlin.Boolean?){}[0]
+    final var permission // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission|{}permission[0]
+        final fun <get-permission>(): love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission.<get-permission>|<get-permission>(){}[0]
+        final fun <set-permission>(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission?) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission.<set-permission>|<set-permission>(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?){}[0]
+    final var reply // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.reply|{}reply[0]
+        final fun <get-reply>(): kotlin/Boolean? // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.reply.<get-reply>|<get-reply>(){}[0]
+        final fun <set-reply>(kotlin/Boolean?) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.reply.<set-reply>|<set-reply>(kotlin.Boolean?){}[0]
+    final var type // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.type.<get-type>|<get-type>(){}[0]
+        final fun <set-type>(kotlin/Int) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.type.<set-type>|<set-type>(kotlin.Int){}[0]
+    final var unsupportTips // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.unsupportTips|{}unsupportTips[0]
+        final fun <get-unsupportTips>(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.unsupportTips.<get-unsupportTips>|<get-unsupportTips>(){}[0]
+        final fun <set-unsupportTips>(kotlin/String) // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.unsupportTips.<set-unsupportTips>|<set-unsupportTips>(kotlin.String){}[0]
+
+    final fun anchor(kotlin/Int?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.anchor|anchor(kotlin.Int?){}[0]
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboard.Action // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.build|build(){}[0]
+    final fun data(kotlin/String?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.data|data(kotlin.String?){}[0]
+    final fun enter(kotlin/Boolean?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.enter|enter(kotlin.Boolean?){}[0]
+    final fun from(love.forte.simbot.qguild.model/MessageKeyboard.Action): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.from|from(love.forte.simbot.qguild.model.MessageKeyboard.Action){}[0]
+    final fun permission(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder>): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission|permission(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.model.MessageKeyboardActionPermissionBuilder>){}[0]
+    final fun permission(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission|permission(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?){}[0]
+    final fun reply(kotlin/Boolean?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.reply|reply(kotlin.Boolean?){}[0]
+    final fun type(kotlin/Int): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.type|type(kotlin.Int){}[0]
+    final fun unsupportTips(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.unsupportTips|unsupportTips(kotlin.String){}[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder { // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.<init>|<init>(){}[0]
+
+    final var specifyRoleIds // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyRoleIds|{}specifyRoleIds[0]
+        final fun <get-specifyRoleIds>(): kotlin.collections/MutableList<kotlin/String> // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyRoleIds.<get-specifyRoleIds>|<get-specifyRoleIds>(){}[0]
+        final fun <set-specifyRoleIds>(kotlin.collections/MutableList<kotlin/String>) // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyRoleIds.<set-specifyRoleIds>|<set-specifyRoleIds>(kotlin.collections.MutableList<kotlin.String>){}[0]
+    final var specifyUserIds // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyUserIds|{}specifyUserIds[0]
+        final fun <get-specifyUserIds>(): kotlin.collections/MutableList<kotlin/String> // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyUserIds.<get-specifyUserIds>|<get-specifyUserIds>(){}[0]
+        final fun <set-specifyUserIds>(kotlin.collections/MutableList<kotlin/String>) // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.specifyUserIds.<set-specifyUserIds>|<set-specifyUserIds>(kotlin.collections.MutableList<kotlin.String>){}[0]
+    final var type // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.type.<get-type>|<get-type>(){}[0]
+        final fun <set-type>(kotlin/Int) // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.type.<set-type>|<set-type>(kotlin.Int){}[0]
+
+    final fun addSpecifyRoleId(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyRoleId|addSpecifyRoleId(kotlin.String){}[0]
+    final fun addSpecifyRoleIds(kotlin.collections/List<kotlin/String>): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyRoleIds|addSpecifyRoleIds(kotlin.collections.List<kotlin.String>){}[0]
+    final fun addSpecifyRoleIds(kotlin/Array<out kotlin/String>...): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyRoleIds|addSpecifyRoleIds(kotlin.Array<out|kotlin.String>...){}[0]
+    final fun addSpecifyUserId(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyUserId|addSpecifyUserId(kotlin.String){}[0]
+    final fun addSpecifyUserIds(kotlin.collections/List<kotlin/String>): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyUserIds|addSpecifyUserIds(kotlin.collections.List<kotlin.String>){}[0]
+    final fun addSpecifyUserIds(kotlin/Array<out kotlin/String>...): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.addSpecifyUserIds|addSpecifyUserIds(kotlin.Array<out|kotlin.String>...){}[0]
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.build|build(){}[0]
+    final fun from(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.from|from(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission){}[0]
+    final fun type(kotlin/Int): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder.type|type(kotlin.Int){}[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardBuilder { // love.forte.simbot.qguild.model/MessageKeyboardBuilder|null[0]
+    constructor <init>(kotlin/String? = ...) // love.forte.simbot.qguild.model/MessageKeyboardBuilder.<init>|<init>(kotlin.String?){}[0]
+
+    final var action // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action|{}action[0]
+        final fun <get-action>(): love.forte.simbot.qguild.model/MessageKeyboard.Action? // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action.<get-action>|<get-action>(){}[0]
+        final fun <set-action>(love.forte.simbot.qguild.model/MessageKeyboard.Action?) // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action.<set-action>|<set-action>(love.forte.simbot.qguild.model.MessageKeyboard.Action?){}[0]
+    final var id // love.forte.simbot.qguild.model/MessageKeyboardBuilder.id|{}id[0]
+        final fun <get-id>(): kotlin/String? // love.forte.simbot.qguild.model/MessageKeyboardBuilder.id.<get-id>|<get-id>(){}[0]
+        final fun <set-id>(kotlin/String?) // love.forte.simbot.qguild.model/MessageKeyboardBuilder.id.<set-id>|<set-id>(kotlin.String?){}[0]
+    final var renderData // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData|{}renderData[0]
+        final fun <get-renderData>(): love.forte.simbot.qguild.model/MessageKeyboard.RenderData? // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData.<get-renderData>|<get-renderData>(){}[0]
+        final fun <set-renderData>(love.forte.simbot.qguild.model/MessageKeyboard.RenderData?) // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData.<set-renderData>|<set-renderData>(love.forte.simbot.qguild.model.MessageKeyboard.RenderData?){}[0]
+
+    final fun action(kotlin/String? = ..., kotlin/String = ..., kotlin/Int = ..., love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ...): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action|action(kotlin.String?;kotlin.String;kotlin.Int;love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?){}[0]
+    final fun action(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.model/MessageKeyboardActionBuilder>): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action|action(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.model.MessageKeyboardActionBuilder>){}[0]
+    final fun action(love.forte.simbot.qguild.model/MessageKeyboard.Action?): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.action|action(love.forte.simbot.qguild.model.MessageKeyboard.Action?){}[0]
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/MessageKeyboardBuilder.build|build(){}[0]
+    final fun from(love.forte.simbot.qguild.model/MessageKeyboard): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.from|from(love.forte.simbot.qguild.model.MessageKeyboard){}[0]
+    final fun id(kotlin/String?): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.id|id(kotlin.String?){}[0]
+    final fun renderData(kotlin/String, kotlin/String = ..., kotlin/Int = ...): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData|renderData(kotlin.String;kotlin.String;kotlin.Int){}[0]
+    final fun renderData(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder>): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData|renderData(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.model.MessageKeyboardRenderDataBuilder>){}[0]
+    final fun renderData(love.forte.simbot.qguild.model/MessageKeyboard.RenderData?): love.forte.simbot.qguild.model/MessageKeyboardBuilder // love.forte.simbot.qguild.model/MessageKeyboardBuilder.renderData|renderData(love.forte.simbot.qguild.model.MessageKeyboard.RenderData?){}[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder { // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.<init>|<init>(){}[0]
+
+    final var label // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.label|{}label[0]
+        final fun <get-label>(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.label.<get-label>|<get-label>(){}[0]
+        final fun <set-label>(kotlin/String) // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.label.<set-label>|<set-label>(kotlin.String){}[0]
+    final var style // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.style|{}style[0]
+        final fun <get-style>(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.style.<get-style>|<get-style>(){}[0]
+        final fun <set-style>(kotlin/Int) // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.style.<set-style>|<set-style>(kotlin.Int){}[0]
+    final var visitedLabel // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.visitedLabel|{}visitedLabel[0]
+        final fun <get-visitedLabel>(): kotlin/String? // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.visitedLabel.<get-visitedLabel>|<get-visitedLabel>(){}[0]
+        final fun <set-visitedLabel>(kotlin/String?) // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.visitedLabel.<set-visitedLabel>|<set-visitedLabel>(kotlin.String?){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboard.RenderData // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.build|build(){}[0]
+    final fun from(love.forte.simbot.qguild.model/MessageKeyboard.RenderData): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.from|from(love.forte.simbot.qguild.model.MessageKeyboard.RenderData){}[0]
+    final fun label(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.label|label(kotlin.String){}[0]
+    final fun style(kotlin/Int): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.style|style(kotlin.Int){}[0]
+    final fun visitedLabel(kotlin/String?): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.visitedLabel|visitedLabel(kotlin.String?){}[0]
 }
 
 final class love.forte.simbot.qguild.model/MessageMedia { // love.forte.simbot.qguild.model/MessageMedia|null[0]
@@ -7302,6 +7416,7 @@ final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiE
 final inline fun <#A: reified kotlin/Throwable> (#A).love.forte.simbot.qguild/initCause0(kotlin/Throwable): #A // love.forte.simbot.qguild/initCause0|initCause0@0:0(kotlin.Throwable){0§<kotlin.Throwable>}[0]
 final inline fun love.forte.simbot.qguild.event/Intents(kotlin/Function1<love.forte.simbot.qguild.event/IntentsAppenderOp, kotlin/Unit>): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/Intents|Intents(kotlin.Function1<love.forte.simbot.qguild.event.IntentsAppenderOp,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.message/buildArk(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.message/ArkBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.message.ArkBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model/buildMessageKeyboard(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/buildMessageKeyboard|buildMessageKeyboard(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardBuilder,kotlin.Unit>){}[0]
 final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/request(io.ktor.client/HttpClient, kotlin/String? = ..., io.ktor.http/Url? = ..., kotlin/String? = ...): io.ktor.client.statement/HttpResponse // love.forte.simbot.qguild.api/request|request@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlin.String?){0§<kotlin.Any>}[0]
 final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/requestData(io.ktor.client/HttpClient, kotlin/String?, io.ktor.http/Url? = ..., kotlinx.serialization.json/Json = ..., kotlin/String? = ...): #A // love.forte.simbot.qguild.api/requestData|requestData@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlinx.serialization.json.Json;kotlin.String?){0§<kotlin.Any>}[0]
 final suspend inline fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/requestText(io.ktor.client/HttpClient, kotlin/String?, io.ktor.http/Url? = ..., kotlin/String? = ..., kotlin/Function1<io.ktor.client.statement/HttpResponse, kotlin/Unit> = ...): kotlin/String // love.forte.simbot.qguild.api/requestText|requestText@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlin.String?;kotlin.Function1<io.ktor.client.statement.HttpResponse,kotlin.Unit>){0§<kotlin.Any>}[0]

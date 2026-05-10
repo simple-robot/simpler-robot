@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.event
@@ -20,6 +26,7 @@ package love.forte.simbot.qguild.event
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.model.forum.ForumSourceInfo
 
 /**
@@ -165,7 +172,7 @@ public data class OpenForumThreadDelete(
  */
 @Serializable
 @ApiModel
-public data class OpenForumThreadData(
+public data class OpenForumThreadData @ApiModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
@@ -221,7 +228,7 @@ public data class OpenForumPostDelete(
  */
 @Serializable
 @ApiModel
-public data class OpenForumPostData(
+public data class OpenForumPostData @ApiModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
@@ -276,7 +283,7 @@ public data class OpenForumReplyDelete(
  */
 @Serializable
 @ApiModel
-public data class OpenForumReplyData(
+public data class OpenForumReplyData @ApiModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,

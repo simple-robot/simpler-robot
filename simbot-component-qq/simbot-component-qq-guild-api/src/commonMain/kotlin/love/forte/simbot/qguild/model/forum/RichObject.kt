@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.model.forum
@@ -20,6 +26,7 @@ package love.forte.simbot.qguild.model.forum
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
 
 /**
  *
@@ -30,7 +37,7 @@ import love.forte.simbot.qguild.ApiModel
  */
 @ApiModel
 @Serializable
-public data class RichObject(
+public data class RichObject @ApiModelConstructor constructor(
     /**
      * 富文本类型
      *
@@ -117,7 +124,7 @@ public object RichTypes {
  */
 @ApiModel
 @Serializable
-public data class TextInfo(val text: String)
+public data class TextInfo @ApiModelConstructor constructor(val text: String)
 
 /**
  * 富文本 - @内容
@@ -127,7 +134,7 @@ public data class TextInfo(val text: String)
  */
 @ApiModel
 @Serializable
-public data class AtInfo(
+public data class AtInfo @ApiModelConstructor constructor(
     /**
      * at类型
      *
@@ -188,7 +195,7 @@ public object AtTypes {
  */
 @ApiModel
 @Serializable
-public data class AtUserInfo(
+public data class AtUserInfo @ApiModelConstructor constructor(
     /**
      * 身份组ID
      */
@@ -207,7 +214,7 @@ public data class AtUserInfo(
  */
 @ApiModel
 @Serializable
-public data class AtRoleInfo(
+public data class AtRoleInfo @ApiModelConstructor constructor(
     /**
      * 身份组ID
      */
@@ -230,7 +237,7 @@ public data class AtRoleInfo(
  */
 @ApiModel
 @Serializable
-public data class AtGuildInfo(
+public data class AtGuildInfo @ApiModelConstructor constructor(
     /**
      * 频道ID
      */
@@ -251,7 +258,7 @@ public data class AtGuildInfo(
  */
 @ApiModel
 @Serializable
-public data class URLInfo(
+public data class URLInfo @ApiModelConstructor constructor(
     /**
      * 链接地址
      */
@@ -272,7 +279,7 @@ public data class URLInfo(
  */
 @ApiModel
 @Serializable
-public data class EmojiInfo(
+public data class EmojiInfo @ApiModelConstructor constructor(
     /**
      * 表情id
      */
@@ -300,7 +307,7 @@ public data class EmojiInfo(
  */
 @ApiModel
 @Serializable
-public data class ChannelInfo(
+public data class ChannelInfo @ApiModelConstructor constructor(
     /**
      * 子频道id
      */
@@ -321,7 +328,7 @@ public data class ChannelInfo(
  */
 @ApiModel
 @Serializable
-public data class RichText(
+public data class RichText @ApiModelConstructor constructor(
     /**
      * 段落，一段落一行，段落内无元素的为空行
      */
@@ -336,7 +343,7 @@ public data class RichText(
  */
 @ApiModel
 @Serializable
-public data class Paragraph(
+public data class Paragraph @ApiModelConstructor constructor(
     /**
      * 元素列表
      */
@@ -355,7 +362,7 @@ public data class Paragraph(
  */
 @ApiModel
 @Serializable
-public data class Elem(
+public data class Elem @ApiModelConstructor constructor(
     /**
      * 文本元素
      */
@@ -415,7 +422,7 @@ public object ElemTypes {
  */
 @ApiModel
 @Serializable
-public data class TextElem(
+public data class TextElem @ApiModelConstructor constructor(
     /**
      * 正文
      */
@@ -436,7 +443,7 @@ public data class TextElem(
  */
 @ApiModel
 @Serializable
-public data class TextProps(
+public data class TextProps @ApiModelConstructor constructor(
     /**
      * 加粗
      */
@@ -460,7 +467,7 @@ public data class TextProps(
  */
 @ApiModel
 @Serializable
-public data class ImageElem(
+public data class ImageElem @ApiModelConstructor constructor(
     /**
      * 第三方图片链接
      */
@@ -481,7 +488,7 @@ public data class ImageElem(
  */
 @ApiModel
 @Serializable
-public data class PlatImage(
+public data class PlatImage @ApiModelConstructor constructor(
     /**
      * 架平图片链接
      */
@@ -510,7 +517,7 @@ public data class PlatImage(
  */
 @ApiModel
 @Serializable
-public data class VideoElem(
+public data class VideoElem @ApiModelConstructor constructor(
     /**
      * 第三方视频文件链接
      */
@@ -526,7 +533,7 @@ public data class VideoElem(
  */
 @ApiModel
 @Serializable
-public data class PlatVideo(
+public data class PlatVideo @ApiModelConstructor constructor(
     /**
      * 架平图片链接
      */
@@ -562,7 +569,7 @@ public data class PlatVideo(
  */
 @ApiModel
 @Serializable
-public data class URLElem(
+public data class URLElem @ApiModelConstructor constructor(
     /**
      * URL链接
      */
@@ -582,7 +589,7 @@ public data class URLElem(
  */
 @ApiModel
 @Serializable
-public data class ParagraphProps(
+public data class ParagraphProps @ApiModelConstructor constructor(
     /**
      * 段落对齐方向属性，数值可以参考 [Alignments]
      *

@@ -41,6 +41,7 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
+        optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
     }
 
     configKotlinJvm()
