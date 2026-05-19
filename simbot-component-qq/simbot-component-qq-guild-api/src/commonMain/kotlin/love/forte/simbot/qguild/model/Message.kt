@@ -30,6 +30,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.message.EmbedBuilder
 import love.forte.simbot.qguild.time.ZERO_ISO_INSTANT
 import kotlin.jvm.JvmOverloads
@@ -44,7 +45,7 @@ import kotlin.jvm.JvmSynthetic
  */
 @ApiModel
 @Serializable
-public data class Message(
+public data class Message @ApiModelConstructor constructor(
     /**
      * 消息 id
      */
@@ -464,7 +465,7 @@ public data class Message(
  */
 @ApiModel
 @Serializable
-public data class MessageMember(
+public data class MessageMember @ApiModelConstructor constructor(
     override val nick: String = "",
     override val roles: List<String> = emptyList(),
     @SerialName("joined_at")

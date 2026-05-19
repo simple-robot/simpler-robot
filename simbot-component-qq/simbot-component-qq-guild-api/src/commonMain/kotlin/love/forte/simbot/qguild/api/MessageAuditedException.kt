@@ -25,10 +25,7 @@ package love.forte.simbot.qguild.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ErrInfo
-import love.forte.simbot.qguild.QGInternalApi
-import love.forte.simbot.qguild.QQGuildApiException
+import love.forte.simbot.qguild.*
 import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.api.message.direct.DmsSendApi
 
@@ -118,4 +115,4 @@ internal data class MessageAudit(@SerialName("message_audit") val messageAudit: 
  */
 @ApiModel
 @Serializable
-public data class MessageAuditedId(@SerialName("audit_id") val auditId: String)
+public data class MessageAuditedId @ApiModelConstructor constructor(@SerialName("audit_id") val auditId: String)
