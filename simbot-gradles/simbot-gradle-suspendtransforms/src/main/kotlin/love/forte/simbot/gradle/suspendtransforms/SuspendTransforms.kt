@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -43,11 +43,13 @@ import love.forte.plugin.suspendtrans.*
  *         SuspendTransforms.suspendTransTransformerForJvmBlocking,
  *         SuspendTransforms.suspendTransTransformerForJvmAsync,
  *         SuspendTransforms.suspendTransTransformerForJvmReserve,
+ *         SuspendTransforms.suspendTransTransformerForJvmReactive,
  *
  *         // @JvmSuspendTransProperty
  *         SuspendTransforms.jvmSuspendTransPropTransformerForBlocking,
  *         SuspendTransforms.jvmSuspendTransPropTransformerForAsync,
  *         SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
+ *         SuspendTransforms.jvmSuspendTransPropTransformerForReactive,
  *     )
  * }
  *
@@ -81,6 +83,11 @@ public object SuspendTransforms {
         className = "SuspendReserve",
     )
 
+    private val PublisherClassInfo = ClassInfo(
+        packageName = "org.reactivestreams",
+        className = "Publisher",
+    )
+
     /**
      * JvmBlocking
      */
@@ -110,6 +117,18 @@ public object SuspendTransforms {
         copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes +
             SuspendTransformConfiguration.jvmAsyncTransformer.markAnnotation.classInfo,
         transformReturnType = SuspendReserveClassInfo,
+        transformReturnTypeGeneric = true,
+    )
+
+    /**
+     * JvmReactive
+     */
+    public val jvmReactiveTransformer: Transformer = SuspendTransformConfiguration.jvmAsyncTransformer.copy(
+        syntheticFunctionIncludeAnnotations = javaIncludeAnnotations,
+        transformFunctionInfo = FunctionInfo("love.forte.simbot.suspendrunner", null, "$\$asPublisher"),
+        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes +
+            SuspendTransformConfiguration.jvmAsyncTransformer.markAnnotation.classInfo,
+        transformReturnType = PublisherClassInfo,
         transformReturnTypeGeneric = true,
     )
 
@@ -147,6 +166,13 @@ public object SuspendTransforms {
         asPropertyProperty = "reserveAsProperty",
         defaultSuffix = "Reserve",
     )
+    private val jvmSuspendTransMarkAnnotationForReactive = MarkAnnotation(
+        suspendTransMarkAnnotationClassInfo,
+        baseNameProperty = "reactiveBaseName",
+        suffixProperty = "reactiveSuffix",
+        asPropertyProperty = "reactiveAsProperty",
+        defaultSuffix = "Reactive",
+    )
     private val jsSuspendTransMarkAnnotationForPromise = MarkAnnotation(
         suspendTransMarkAnnotationClassInfo,
         baseNameProperty = "jsPromiseBaseName",
@@ -171,6 +197,12 @@ public object SuspendTransforms {
         markAnnotation = jvmSuspendTransMarkAnnotationForReserve,
         copyAnnotationExcludes = jvmReserveTransformer.copyAnnotationExcludes +
             jvmSuspendTransMarkAnnotationForReserve.classInfo,
+    )
+
+    public val suspendTransTransformerForJvmReactive: Transformer = jvmReactiveTransformer.copy(
+        markAnnotation = jvmSuspendTransMarkAnnotationForReactive,
+        copyAnnotationExcludes = jvmReactiveTransformer.copyAnnotationExcludes +
+            jvmSuspendTransMarkAnnotationForReactive.classInfo,
     )
 
     public val suspendTransTransformerForJsPromise: Transformer = jsPromiseTransformer.copy(
@@ -208,6 +240,14 @@ public object SuspendTransforms {
         defaultSuffix = "Reserve",
         defaultAsProperty = true
     )
+    private val jvmSuspendTransPropMarkAnnotationForReactive = MarkAnnotation(
+        jvmSuspendTransPropMarkAnnotationClassInfo,
+        baseNameProperty = "reactiveBaseName",
+        suffixProperty = "reactiveSuffix",
+        asPropertyProperty = "reactiveAsProperty",
+        defaultSuffix = "Reactive",
+        defaultAsProperty = true
+    )
 
     public val jvmSuspendTransPropTransformerForBlocking: Transformer = jvmBlockingTransformer.copy(
         markAnnotation = jvmSuspendTransPropMarkAnnotationForBlocking,
@@ -226,6 +266,12 @@ public object SuspendTransforms {
         copyAnnotationExcludes = jvmReserveTransformer.copyAnnotationExcludes +
             jvmSuspendTransPropMarkAnnotationForReserve.classInfo
     )
+
+    public val jvmSuspendTransPropTransformerForReactive: Transformer = jvmReactiveTransformer.copy(
+        markAnnotation = jvmSuspendTransPropMarkAnnotationForReactive,
+        copyAnnotationExcludes = jvmReactiveTransformer.copyAnnotationExcludes +
+            jvmSuspendTransPropMarkAnnotationForReactive.classInfo
+    )
     //endregion
 }
 
@@ -236,9 +282,11 @@ public object SuspendTransforms {
  * - [SuspendTransforms.suspendTransTransformerForJvmBlocking]
  * - [SuspendTransforms.suspendTransTransformerForJvmAsync]
  * - [SuspendTransforms.suspendTransTransformerForJvmReserve]
+ * - [SuspendTransforms.suspendTransTransformerForJvmReactive]
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForBlocking]
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForAsync]
  * - [SuspendTransforms.jvmSuspendTransPropTransformerForReserve]
+ * - [SuspendTransforms.jvmSuspendTransPropTransformerForReactive]
  *
  * @param useTargetMarker
  * 如果为 `true`, 则会将 [SuspendTransformConfiguration.targetMarker] 设置为
@@ -268,13 +316,14 @@ public fun SuspendTransformConfiguration.addSimbotJvmTransformers(
         SuspendTransforms.suspendTransTransformerForJvmBlocking,
         SuspendTransforms.suspendTransTransformerForJvmAsync,
         SuspendTransforms.suspendTransTransformerForJvmReserve,
+        SuspendTransforms.suspendTransTransformerForJvmReactive,
 
         // @JvmSuspendTransProperty
         SuspendTransforms.jvmSuspendTransPropTransformerForBlocking,
         SuspendTransforms.jvmSuspendTransPropTransformerForAsync,
         SuspendTransforms.jvmSuspendTransPropTransformerForReserve,
+        SuspendTransforms.jvmSuspendTransPropTransformerForReactive,
     )
 }
-
 
 

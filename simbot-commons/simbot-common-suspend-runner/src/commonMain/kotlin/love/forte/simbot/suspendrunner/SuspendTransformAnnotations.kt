@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2025. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -40,6 +40,10 @@ public annotation class SuspendTrans(
     val reserveBaseName: String = "",
     val reserveSuffix: String = "Reserve",
     val reserveAsProperty: Boolean = false,
+
+    val reactiveBaseName: String = "",
+    val reactiveSuffix: String = "Reactive",
+    val reactiveAsProperty: Boolean = false,
 )
 
 /**
@@ -74,6 +78,10 @@ public annotation class SuspendTransProperty(
     val reserveBaseName: String = "",
     val reserveSuffix: String = "Reserve",
     val reserveAsProperty: Boolean = false,
+
+    val reactiveBaseName: String = "",
+    val reactiveSuffix: String = "Reactive",
+    val reactiveAsProperty: Boolean = true,
 
     // for JS
     val jsPromiseBaseName: String = "",

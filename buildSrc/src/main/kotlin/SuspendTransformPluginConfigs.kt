@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -45,6 +45,7 @@ object SuspendTransformPlugins {
     const val RUN_IN_BLOCKING_FUN_NAME: String = "$\$runInBlocking"
     const val RUN_IN_ASYNC_FUN_NAME: String = "$\$runInAsyncNullable"
     const val AS_RESERVE_FUN_NAME: String = "$\$asReserve"
+    const val AS_PUBLISHER_FUN_NAME: String = "$\$asPublisher"
 
     const val SUSPEND_TRANS_ANNO_NAME: String = "SuspendTrans"
     const val SUSPEND_TRANS_PROPERTY_ANNO_NAME: String = "SuspendTransProperty"
@@ -103,6 +104,13 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformFunctionInfo {
                 packageName.set(SuspendTransformPlugins.SUSPEND_RUNNER_PACKAGE)
                 functionName.set(SuspendTransformPlugins.AS_RESERVE_FUN_NAME)
+            }
+        }
+
+        fun TransformerSpec.publisherFunction() {
+            transformFunctionInfo {
+                packageName.set(SuspendTransformPlugins.SUSPEND_RUNNER_PACKAGE)
+                functionName.set(SuspendTransformPlugins.AS_PUBLISHER_FUN_NAME)
             }
         }
 
@@ -280,6 +288,21 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
         )
 
+        // @SuspendTrans for Reactive
+        addJvmSuspendTrans(
+            baseNameProperty = "reactiveBaseName",
+            suffixProperty = "reactiveSuffix",
+            asPropertyProperty = "reactiveAsProperty",
+            defaultSuffix = "Reactive",
+            function = { publisherFunction() },
+            transformReturnType = {
+                packageName.set("org.reactivestreams")
+                className.set("Publisher")
+            },
+            transformReturnTypeGeneric = true,
+            copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+        )
+
         // @SuspendTrans for blocking
         addJvmSuspendTransProperty(
             baseNameProperty = "blockingBaseName",
@@ -318,6 +341,21 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnType = {
                 packageName.set("love.forte.simbot.suspendrunner.reserve")
                 className.set("SuspendReserve")
+            },
+            transformReturnTypeGeneric = true,
+            copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+        )
+
+        // @SuspendTrans for Reactive
+        addJvmSuspendTransProperty(
+            baseNameProperty = "reactiveBaseName",
+            suffixProperty = "reactiveSuffix",
+            asPropertyProperty = "reactiveAsProperty",
+            defaultSuffix = "Reactive",
+            function = { publisherFunction() },
+            transformReturnType = {
+                packageName.set("org.reactivestreams")
+                className.set("Publisher")
             },
             transformReturnTypeGeneric = true,
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,

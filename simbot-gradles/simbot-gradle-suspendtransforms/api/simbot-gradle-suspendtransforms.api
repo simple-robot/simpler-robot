@@ -1,6 +1,7 @@
 public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransformPlugins {
 	public static final field API4JS_NAME Ljava/lang/String;
 	public static final field API4J_NAME Ljava/lang/String;
+	public static final field AS_PUBLISHER_FUN_NAME Ljava/lang/String;
 	public static final field AS_RESERVE_FUN_NAME Ljava/lang/String;
 	public static final field INSTANCE Llove/forte/simbot/gradle/suspendtransforms/SuspendTransformPlugins;
 	public static final field JB_BLOCKING_ANNOTATION_NAME Ljava/lang/String;
@@ -22,13 +23,16 @@ public final class love/forte/simbot/gradle/suspendtransforms/SuspendTransforms 
 	public final fun getJsPromiseTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmAsyncTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmBlockingTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmReactiveTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmReserveTransformer ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmSuspendTransPropTransformerForAsync ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmSuspendTransPropTransformerForBlocking ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getJvmSuspendTransPropTransformerForReactive ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getJvmSuspendTransPropTransformerForReserve ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getSuspendTransTransformerForJsPromise ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getSuspendTransTransformerForJvmAsync ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getSuspendTransTransformerForJvmBlocking ()Llove/forte/plugin/suspendtrans/Transformer;
+	public final fun getSuspendTransTransformerForJvmReactive ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getSuspendTransTransformerForJvmReserve ()Llove/forte/plugin/suspendtrans/Transformer;
 	public final fun getTargetMarker ()Llove/forte/plugin/suspendtrans/ClassInfo;
 }
