@@ -472,10 +472,10 @@ private class Receiving(
     @Suppress("ReturnCount")
     override suspend fun invoke(): State? {
         val session = client.session
-        if (!session.isActive || !bot.isAlive) {
-            // 会话不再活跃，或 bot 已经结束
+        if (!session.isActive) {
+            // 会话不再活跃。
             val reason = session.closeReason.await()
-            return if (!bot.isAlive) {
+            return if (!bot.isActive) {
                 botLogger.error("The session [{}] (and bot) is no longer active. reason: {}", session, reason)
                 client.cancel()
                 null

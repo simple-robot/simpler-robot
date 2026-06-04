@@ -35,21 +35,15 @@ import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.EventListenerRegistrar
-import love.forte.simbot.plugin.CloseablePlugin
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-import kotlinx.coroutines.cancel as cancelJob
 
 /**
  * 一个 simbot application.
  * [Application] 可以代表为一个或一组组件、插件在一起运行的单位。
- *
- * ## 生命周期
- * [Application] 的生命周期（[coroutineContext] 中的 [Job]）不会**直接**关联下述其他 Plugin，
- * 但是当任务被终止 [cancel] 时，[Application] 会尝试关闭其拥有的全部 [CloseablePlugin]。这个过程是 O(n) 的。
  *
  * @author ForteScarlet
  */
@@ -89,73 +83,22 @@ public interface Application : CoroutineScope, LifecycleAware, CompletionAware {
     /**
      * 终止当前 [Application]。
      *
-     * Deprecated: 请直接使用 [close]。如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，
-     * 则直接使用 [Job.cancel][kotlinx.coroutines.cancel]。
+     * 在真正关闭 [coroutineContext] 中的 [Job] 之前，
+     * 会先通过 [ApplicationLaunchStage.RequestCancel] 触发，
+     * 结束后会再通过 [ApplicationLaunchStage.Cancelled] 触发。
      */
-    @Deprecated(
-        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
-            "则直接使用 Job.cancel",
-        replaceWith = ReplaceWith("close()")
-    )
-    public fun cancel(reason: Throwable?) {
-        cancelJob(reason?.let { kotlinx.coroutines.CancellationException(it.message, it) })
-    }
+    public fun cancel(reason: Throwable?)
 
     /**
      * 终止当前 [Application]。
      *
      * 在真正关闭 [coroutineContext] 中的 [Job] 之前，
-     * 会通过 [ApplicationLaunchStage.Cancelled] 触发。
-     *
-     * Deprecated: 请直接使用 [close]，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，
-     * 则直接使用 [Job.cancel][kotlinx.coroutines.cancel]。
+     * 会先通过 [ApplicationLaunchStage.RequestCancel] 触发，
+     * 结束后会再通过 [ApplicationLaunchStage.Cancelled] 触发。
      */
-    @Deprecated(
-        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
-            "则直接使用 Job.cancel",
-        replaceWith = ReplaceWith("close()")
-    )
     public fun cancel() {
-        cancelJob()
+        cancel(null)
     }
-
-    /**
-     * 是否处于活跃状态。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isActive]。
-     *
-     * 属性值的变化规则参考 [close] 说明。
-     */
-    override val isActive: Boolean
-
-    /**
-     * 是否已经彻底完成。
-     *
-     * 近似于 [kotlinx.coroutines.Job.isCompleted]。
-     */
-    override val isCompleted: Boolean
-
-    /**
-     * 当前 [Application] 是否已经通过调用 [close] 而关闭了。
-     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表当前 [Application] 已经 [彻底完成][isCompleted]。
-     *
-     * @since 5.0
-     */
-    public val isClosed: Boolean
-
-    /**
-     * 申请关闭当前 [Application]。
-     *
-     * 会依次：触发事件 [ApplicationLaunchStage.RequestCancel]、完成任务和所有子任务/子插件、
-     * 触发事件 [ApplicationLaunchStage.Cancelled]。
-     *
-     * [close] 会将任务视为常规完成，不会强制所有子任务被迫终止，而是会等待它们**自然完成**。
-     * 这行为近似于 [Job.complete][kotlinx.coroutines.CompletableJob.complete]。
-     *
-     * @since 5.0
-     * @see kotlinx.coroutines.CompletableJob.complete
-     */
-    public fun close()
 
     /**
      * 挂起 [Application] 直到最终 [彻底完成][isCompleted]。

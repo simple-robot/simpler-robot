@@ -100,11 +100,13 @@ public interface KookBot : Bot, CoroutineScope {
      * bot 是否处于活跃状态
      */
     override val isActive: Boolean
+        get() = sourceBot.isActive
 
     /**
      * bot 是否已经被启动过
      */
     override val isStarted: Boolean
+        get() = sourceBot.isStarted
 
     /**
      * 头像信息
@@ -144,6 +146,15 @@ public interface KookBot : Bot, CoroutineScope {
     @ST
     public suspend fun uploadAssetImage(api: CreateAssetApi): KookAssetImage =
         KookAssetImage(api.requestDataBy(this))
+
+    override fun cancel(reason: Throwable?) {
+        sourceBot.cancel(reason)
+    }
+
+    @JvmSynthetic
+    override suspend fun join() {
+        sourceBot.join()
+    }
 
     /**
      * 与 [KookGuild] 相关的行为关系操作。

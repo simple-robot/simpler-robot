@@ -23,7 +23,7 @@
 
 package love.forte.simbot.core.application
 
-import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.modules.SerializersModule
@@ -43,9 +43,7 @@ import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.plugin.*
-import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import love.forte.simbot.plugin.Plugins
 import kotlin.coroutines.CoroutineContext
 
 
@@ -54,7 +52,6 @@ import kotlin.coroutines.CoroutineContext
  * @see Simple
  *
  */
-@OptIn(ExperimentalAtomicApi::class)
 private class SimpleApplicationImpl(
     override val configuration: SimpleApplicationConfiguration,
     override val eventDispatcher: SimpleEventDispatcher,
@@ -67,23 +64,12 @@ private class SimpleApplicationImpl(
         val logger = LoggerFactory.logger<SimpleApplicationImpl>()
     }
 
-    private val closed = AtomicBoolean(false)
-
-    private val job: CompletableJob
+    private val job: Job
     override val coroutineContext: CoroutineContext
 
     init {
         val newJob = SupervisorJob(configuration.coroutineContext[Job])
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
-
-        newJob.invokeOnCompletion {
-            if (closed.compareAndSet(expectedValue = false, newValue = true)) {
-                // 之前没关闭过，说明这是首次关闭，说明是直接通过 cancel 关的。
-                cancelPlugins()
-            }
-
-            invokeCancelledEvent()
-        }
 
         this.job = newJob
         this.coroutineContext = newCoroutineContext
@@ -103,14 +89,10 @@ private class SimpleApplicationImpl(
         }
     }
 
-    override fun close() {
-        if (!closed.compareAndSet(expectedValue = false, newValue = true)) {
-            return
-        }
-
+    override fun cancel(reason: Throwable?) {
         invokeRequestCancelEvent()
-        cancelPlugins()
-        job.complete()
+        job.cancel(reason?.let { CancellationException(reason.message, it) })
+        invokeCancelledEvent()
     }
 
     private fun invokeCancelledEvent() {
@@ -126,18 +108,6 @@ private class SimpleApplicationImpl(
         }
     }
 
-    private fun cancelPlugins() {
-        for (plugin in plugins) {
-            if (plugin is CloseablePlugin) {
-                runCatching {
-                    plugin.close()
-                }.onFailure { e ->
-                    logger.error("Close plugin {} failed: {}", plugin, e.message, e)
-                }
-            }
-        }
-    }
-
     override suspend fun join() {
         job.join()
     }
@@ -147,9 +117,6 @@ private class SimpleApplicationImpl(
 
     override val isCompleted: Boolean
         get() = job.isCompleted
-
-    override val isClosed: Boolean
-        get() = closed.load()
 
     override fun onCompletion(handle: OnCompletion) {
         job.invokeOnCompletion { handle.invoke(it) }

@@ -81,10 +81,7 @@ internal class KookBotImpl(
 ) : KookBot, JobBasedBot() {
     override val coroutineContext: CoroutineContext = sourceBot.coroutineContext
     internal val subContext: CoroutineContext = coroutineContext.minusKey(Job)
-    override val job = SupervisorJob(coroutineContext[Job])
-
-    override val isCompleted: Boolean
-        get() = job.isCompleted
+    override val job: Job = coroutineContext[Job]!!
 
     override val logger =
         LoggerFactory.getLogger("love.forte.simbot.component.kook.bot.${sourceBot.ticket.clientId}")
@@ -247,15 +244,10 @@ internal class KookBotImpl(
         }
     }
 
-
-    override fun beforeJobComplete() {
-        sourceBot.close()
-    }
-
     private fun guildDataSyncJob(syncPeriod: Long, batchDelay: Long): Job {
         if (syncPeriod > 0) {
             return launch {
-                while (isActive && this@KookBotImpl.isAlive) {
+                while (isActive && this@KookBotImpl.isActive) {
                     delay(syncPeriod)
                     dataSync(batchDelay)
                 }
@@ -263,6 +255,10 @@ internal class KookBotImpl(
         }
 
         return Job().apply { complete() }
+    }
+
+    override fun cancel(reason: Throwable?) {
+        sourceBot.cancel(reason)
     }
 
     private suspend fun dataSync(batchDelay: Long) {

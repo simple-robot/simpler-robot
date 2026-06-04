@@ -91,21 +91,6 @@ public interface Bot : CoroutineScope {
     public val isStarted: Boolean
 
     /**
-     * Bot 是否已经 [关闭][close] 并彻底完成。
-     *
-     * @since 5.0
-     */
-    public val isCompleted: Boolean
-
-    /**
-     * 当前 [Bot] 是否已经通过调用 [close] 而关闭了。
-     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表当前 [Bot] 已经 [彻底完成][isCompleted]。
-     *
-     * @since 5.0
-     */
-    public val isClosed: Boolean
-
-    /**
      * 当前bot作为用户时的信息。
      *
      * bot必须至少启动一次或执行过一次 [me] 才能获取到此信息。
@@ -217,33 +202,38 @@ public interface Bot : CoroutineScope {
      *
      * [start] 会由 [Mutex] 进行同步，同一时间只会有一个启动流程在执行。
      *
-     * 当 [closeBotOnFailure] 为 true 时，如果启动过程中出现任何异常则会关闭当前 Bot。
+     * 当 [cancelBotOnFailure] 为 true 时，如果启动过程中出现任何异常则会终止当前 Bot。
      *
      * @see start
-     * @param closeBotOnFailure 为 true 时，如果启动过程中出现任何异常则会关闭当前 Bot。
+     * @param cancelBotOnFailure 为 true 时，如果启动过程中出现任何异常则会终止当前 Bot。
      * @throws kotlinx.coroutines.CancellationException Bot 已经被关闭时 ([isActive] == false)
      * @throws IllegalStateException bot 启动失败
      *
      */
     @ST
-    public suspend fun start(closeBotOnFailure: Boolean)
+    public suspend fun start(cancelBotOnFailure: Boolean)
 
     /**
-     * 挂起 bot 直到其被 [关闭][close] 并 [彻底完成][isCompleted]。
+     * 挂起 bot 直到其被 [取消][cancel]。
      */
     @ST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
 
     /**
-     * 完成并关闭此 bot 。
+     * 取消此 bot 。
      *
-     * [close] 会将 [Bot] 视为常规完成任务，
-     * 它不会强制终止所有子任务，而是会持续等待它们直到所有子任务**自然完成**。
-     * 这行为近似于 [kotlinx.coroutines.CompletableJob.complete]。
-     *
-     * @see kotlinx.coroutines.CompletableJob.complete
+     * @see kotlinx.coroutines.Job.cancel
      */
-    public fun close()
+    public fun cancel(reason: Throwable?)
+
+    /**
+     * 取消此 bot 。
+     *
+     * @see kotlinx.coroutines.Job.cancel
+     */
+    public fun cancel() {
+        cancel(null)
+    }
 }
 
 /**
@@ -254,13 +244,13 @@ public interface Bot : CoroutineScope {
 public suspend fun Bot.alsoStart(): Bot = also { start() }
 
 /**
- * Close bot and join.
+ * Cancel bot and join.
  *
- * @see Bot.close
+ * @see Bot.cancel
  * @see Bot.join
  */
-public suspend fun Bot.closeAndJoin() {
-    close()
+public suspend fun Bot.cancelAndJoin() {
+    cancel()
     join()
 }
 
