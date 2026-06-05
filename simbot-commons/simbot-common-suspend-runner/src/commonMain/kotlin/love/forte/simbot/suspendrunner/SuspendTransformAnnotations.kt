@@ -25,7 +25,10 @@
 
 package love.forte.simbot.suspendrunner
 
-
+/**
+ * 用于代表同时标记 `@JvmBlocking` 和 `@JvmAsync` 的整合性注解。
+ *
+ */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 public annotation class SuspendTrans(
@@ -55,10 +58,7 @@ public typealias ST = SuspendTrans
 
 
 /**
- * 用于代表同时标记
- * [@JvmBlocking][love.forte.plugin.suspendtrans.annotation.JvmBlocking] 和
- * [@JvmAsync][love.forte.plugin.suspendtrans.annotation.JvmAsync]
- * 的整合性注解。
+ * 用于代表同时标记 `@JvmBlocking` 和 `@JvmAsync` 的整合性注解。
  *
  * [SuspendTransProperty] 默认转化为属性类型，且 blocking 的转化默认没有后缀。
  *

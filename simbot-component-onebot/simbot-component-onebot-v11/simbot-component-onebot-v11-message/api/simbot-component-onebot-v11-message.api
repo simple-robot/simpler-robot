@@ -20,7 +20,9 @@ public abstract interface class love/forte/simbot/component/onebot/v11/message/O
 	public fun getReferenceMessage ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 	public synthetic fun getReferenceMessage ()Llove/forte/simbot/message/MessageContent;
 	public fun getReferenceMessageAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessageReactive ()Lorg/reactivestreams/Publisher;
 	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getReferenceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceSegments ()Ljava/util/List;
 	public synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -753,7 +753,8 @@ public fun <T> asPublisher(
     context: CoroutineContext? = null,
     block: suspend () -> T
 ): Publisher<T & Any> {
-    return publish(context?.minusKey(Job) ?: EmptyCoroutineContext) {
+    // 响应式实际调度上下文由调用处控制，此处无所谓，不是用 context.
+    return publish {
         block()?.also { send(it) }
     }
 }

@@ -30,6 +30,7 @@ public abstract interface class love/forte/simbot/component/kook/KookChannel : l
 	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun deleteAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
 	public fun deleteBlocking ([Llove/forte/simbot/ability/DeleteOption;)V
+	public fun deleteReactive ([Llove/forte/simbot/ability/DeleteOption;)Lorg/reactivestreams/Publisher;
 	public fun deleteReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getBot ()Llove/forte/simbot/component/kook/bot/KookBot;
 	public abstract fun getCategory ()Llove/forte/simbot/component/kook/KookCategory;
@@ -58,6 +59,7 @@ public abstract interface class love/forte/simbot/component/kook/KookChannelUpda
 	public abstract synthetic fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun executeAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun executeBlocking ()Llove/forte/simbot/component/kook/KookChannel;
+	public fun executeReactive ()Lorg/reactivestreams/Publisher;
 	public fun executeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getBuilder ()Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Builder;
 	public abstract fun getChannel ()Llove/forte/simbot/component/kook/KookChannel;
@@ -104,6 +106,17 @@ public abstract interface class love/forte/simbot/component/kook/KookChatCapable
 	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public static synthetic fun sendBlocking$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public fun sendReactive (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun sendReactive$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun sendReactive$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/Message;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun sendReactive$default (Llove/forte/simbot/component/kook/KookChatCapableChannel;Llove/forte/simbot/message/MessageContent;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (ILjava/lang/String;Llove/forte/simbot/common/id/ID;Ljava/lang/String;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Ljava/lang/String;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -165,10 +178,13 @@ public final class love/forte/simbot/component/kook/KookComponentUsageKt {
 public abstract interface class love/forte/simbot/component/kook/KookGuild : kotlinx/coroutines/CoroutineScope, love/forte/simbot/component/kook/role/KookRoleOperator, love/forte/simbot/definition/Guild {
 	public abstract synthetic fun botAsMember (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun channel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun channelReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public abstract synthetic fun chatChannel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun chatChannelReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun getBotAsMember ()Llove/forte/simbot/component/kook/KookMember;
 	public synthetic fun getBotAsMember ()Llove/forte/simbot/definition/Member;
 	public fun getBotAsMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBotAsMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getBotAsMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookChannel;
 	public synthetic fun getChannel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Channel;
@@ -192,6 +208,7 @@ public abstract interface class love/forte/simbot/component/kook/KookGuild : kot
 	public fun getOwner ()Llove/forte/simbot/component/kook/KookMember;
 	public fun getOwnerAsync ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun getOwnerId ()Llove/forte/simbot/common/id/ID;
+	public fun getOwnerReactive ()Lorg/reactivestreams/Publisher;
 	public fun getOwnerReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSource ()Llove/forte/simbot/kook/objects/Guild;
 	public fun getTopic ()Ljava/lang/String;
@@ -200,8 +217,10 @@ public abstract interface class love/forte/simbot/component/kook/KookGuild : kot
 	public fun getVoiceChannelReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getVoiceChannels ()Llove/forte/simbot/common/collectable/Collectable;
 	public abstract synthetic fun member (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public abstract synthetic fun owner (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun voiceChannel (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun voiceChannelReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 }
 
 public final class love/forte/simbot/component/kook/KookGuildNotExistsException : java/util/NoSuchElementException {
@@ -227,6 +246,8 @@ public abstract interface class love/forte/simbot/component/kook/KookMember : ko
 	public fun muteAsync (Llove/forte/simbot/kook/api/guild/MuteType;)Ljava/util/concurrent/CompletableFuture;
 	public fun muteBlocking (I)Z
 	public fun muteBlocking (Llove/forte/simbot/kook/api/guild/MuteType;)Z
+	public fun muteReactive (I)Lorg/reactivestreams/Publisher;
+	public fun muteReactive (Llove/forte/simbot/kook/api/guild/MuteType;)Lorg/reactivestreams/Publisher;
 	public fun muteReserve (I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun muteReserve (Llove/forte/simbot/kook/api/guild/MuteType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -241,6 +262,9 @@ public abstract interface class love/forte/simbot/component/kook/KookMember : ko
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -253,6 +277,9 @@ public abstract interface class love/forte/simbot/component/kook/KookMember : ko
 	public fun unmuteBlocking ()Z
 	public fun unmuteBlocking (I)Z
 	public fun unmuteBlocking (Llove/forte/simbot/kook/api/guild/MuteType;)Z
+	public fun unmuteReactive ()Lorg/reactivestreams/Publisher;
+	public fun unmuteReactive (I)Lorg/reactivestreams/Publisher;
+	public fun unmuteReactive (Llove/forte/simbot/kook/api/guild/MuteType;)Lorg/reactivestreams/Publisher;
 	public fun unmuteReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun unmuteReserve (I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun unmuteReserve (Llove/forte/simbot/kook/api/guild/MuteType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -286,6 +313,9 @@ public abstract interface class love/forte/simbot/component/kook/KookUserChat : 
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -296,6 +326,7 @@ public abstract interface class love/forte/simbot/component/kook/KookVoiceChanne
 	public abstract synthetic fun kickoutMember (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun kickoutMemberAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun kickoutMemberBlocking (Llove/forte/simbot/common/id/ID;)V
+	public fun kickoutMemberReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun kickoutMemberReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun moveMember (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun moveMember (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -303,6 +334,8 @@ public abstract interface class love/forte/simbot/component/kook/KookVoiceChanne
 	public fun moveMemberAsync (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun moveMemberBlocking (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)V
 	public fun moveMemberBlocking (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)V
+	public fun moveMemberReactive (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)Lorg/reactivestreams/Publisher;
+	public fun moveMemberReactive (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun moveMemberReserve (Llove/forte/simbot/common/id/ID;Ljava/lang/Iterable;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun moveMemberReserve (Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
@@ -311,10 +344,12 @@ public abstract interface class love/forte/simbot/component/kook/KookVoiceMember
 	public abstract synthetic fun kickout (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun kickoutAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun kickoutBlocking ()V
+	public fun kickoutReactive ()Lorg/reactivestreams/Publisher;
 	public fun kickoutReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun move (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun moveAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun moveBlocking (Llove/forte/simbot/common/id/ID;)V
+	public fun moveReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun moveReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -325,6 +360,7 @@ public abstract interface annotation class love/forte/simbot/component/kook/bot/
 }
 
 public abstract interface class love/forte/simbot/component/kook/bot/KookBot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/bot/Bot {
+	public fun cancel (Ljava/lang/Throwable;)V
 	public fun getAvatar ()Ljava/lang/String;
 	public abstract fun getComponent ()Llove/forte/simbot/component/kook/KookComponent;
 	public abstract fun getContactRelation ()Llove/forte/simbot/component/kook/bot/KookContactRelation;
@@ -335,18 +371,18 @@ public abstract interface class love/forte/simbot/component/kook/bot/KookBot : k
 	public abstract fun getLogger ()Lorg/slf4j/Logger;
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getSourceBot ()Llove/forte/simbot/kook/stdlib/Bot;
-	public abstract fun isActive ()Z
 	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
-	public abstract fun isStarted ()Z
 	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageContent;
 	public synthetic fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromIdReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun messageFromIdReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun messageFromReference (Llove/forte/simbot/message/MessageReference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromReferenceAsync (Llove/forte/simbot/message/MessageReference;)Ljava/util/concurrent/CompletableFuture;
 	public fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/component/kook/message/KookMessageContent;
 	public synthetic fun messageFromReferenceBlocking (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/message/MessageContent;
+	public fun messageFromReferenceReactive (Llove/forte/simbot/message/MessageReference;)Lorg/reactivestreams/Publisher;
 	public fun messageFromReferenceReserve (Llove/forte/simbot/message/MessageReference;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun uploadAsset (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uploadAssetAsync (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Ljava/util/concurrent/CompletableFuture;
@@ -354,7 +390,9 @@ public abstract interface class love/forte/simbot/component/kook/bot/KookBot : k
 	public synthetic fun uploadAssetImage (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uploadAssetImageAsync (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Ljava/util/concurrent/CompletableFuture;
 	public fun uploadAssetImageBlocking (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Llove/forte/simbot/component/kook/message/KookAssetImage;
+	public fun uploadAssetImageReactive (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Lorg/reactivestreams/Publisher;
 	public fun uploadAssetImageReserve (Llove/forte/simbot/kook/api/asset/CreateAssetApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun uploadAssetReactive (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Lorg/reactivestreams/Publisher;
 	public fun uploadAssetReserve (Llove/forte/simbot/kook/api/asset/CreateAssetApi;Llove/forte/simbot/kook/messages/MessageType;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -575,6 +613,7 @@ public final class love/forte/simbot/component/kook/bot/KookBotVerifyInfoConfigu
 public abstract interface class love/forte/simbot/component/kook/bot/KookContactRelation : love/forte/simbot/bot/ContactRelation {
 	public abstract synthetic fun contact (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun contactCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun contactReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/KookUserChat;
 	public synthetic fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Contact;
 	public fun getContactAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
@@ -589,11 +628,13 @@ public abstract interface class love/forte/simbot/component/kook/bot/KookGuildRe
 	public fun getGuildAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun getGuildCount ()I
 	public fun getGuildCountAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getGuildCountReactive ()Lorg/reactivestreams/Publisher;
 	public fun getGuildCountReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGuildReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
 	public abstract synthetic fun guild (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun guildCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun guildReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 }
 
 public abstract class love/forte/simbot/component/kook/event/KookAddedCategoryEvent : love/forte/simbot/component/kook/event/KookCategoryChangedEvent {
@@ -602,6 +643,7 @@ public abstract class love/forte/simbot/component/kook/event/KookAddedCategoryEv
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookCategoryChannel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
@@ -617,6 +659,7 @@ public abstract class love/forte/simbot/component/kook/event/KookAddedChannelEve
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
 	public synthetic fun getSource ()Ljava/lang/Object;
@@ -627,6 +670,7 @@ public abstract class love/forte/simbot/component/kook/event/KookAddedChannelEve
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -648,6 +692,7 @@ public abstract class love/forte/simbot/component/kook/event/KookBotMemberChange
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceBody ()Llove/forte/simbot/kook/event/BotSelfGuildEventBody;
 }
@@ -666,12 +711,14 @@ public abstract class love/forte/simbot/component/kook/event/KookBotSelfChannelM
 	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getAuthor ()Llove/forte/simbot/component/kook/KookMember;
 	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReactive ()Lorg/reactivestreams/Publisher;
 	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -697,6 +744,7 @@ public abstract class love/forte/simbot/component/kook/event/KookBotSelfMessageE
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -714,6 +762,7 @@ public abstract class love/forte/simbot/component/kook/event/KookCategoryChanged
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -725,6 +774,7 @@ public abstract class love/forte/simbot/component/kook/event/KookChannelChangedE
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -739,6 +789,7 @@ public abstract class love/forte/simbot/component/kook/event/KookChannelMessageE
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Member;
 	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReactive ()Lorg/reactivestreams/Publisher;
 	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
@@ -747,12 +798,14 @@ public abstract class love/forte/simbot/component/kook/event/KookChannelMessageE
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatChannel;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -765,6 +818,7 @@ public abstract class love/forte/simbot/component/kook/event/KookContactMessageE
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -776,6 +830,7 @@ public abstract class love/forte/simbot/component/kook/event/KookDeletedCategory
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
@@ -785,6 +840,7 @@ public abstract class love/forte/simbot/component/kook/event/KookDeletedCategory
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedChannelEventBody;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -797,6 +853,7 @@ public abstract class love/forte/simbot/component/kook/event/KookDeletedChannelE
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
@@ -806,6 +863,7 @@ public abstract class love/forte/simbot/component/kook/event/KookDeletedChannelE
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/DeletedChannelEventBody;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -855,15 +913,18 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberChannelCh
 	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getChannel ()Llove/forte/simbot/component/kook/KookChatChannel;
 	public fun getChannelAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getChannelReactive ()Lorg/reactivestreams/Publisher;
 	public fun getChannelReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookMember;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -884,10 +945,12 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberExitedGui
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getMember ()Llove/forte/simbot/component/kook/KookMember;
 	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/ExitedGuildEventBody;
@@ -901,6 +964,7 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberGuildChan
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookGuild;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -920,10 +984,12 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberJoinedGui
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getMember ()Llove/forte/simbot/component/kook/KookMember;
 	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/JoinedGuildEventBody;
@@ -956,6 +1022,7 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberUpdatedEv
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
@@ -964,6 +1031,7 @@ public abstract class love/forte/simbot/component/kook/event/KookMemberUpdatedEv
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/UpdatedGuildMemberEventBody;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/kook/event/Event;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -994,6 +1062,9 @@ public abstract class love/forte/simbot/component/kook/event/KookMessageEvent : 
 	public synthetic fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public synthetic fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun replyReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun replyReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -1007,12 +1078,14 @@ public abstract class love/forte/simbot/component/kook/event/KookMessageEvent$Ch
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/kook/KookGuild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1030,6 +1103,7 @@ public abstract class love/forte/simbot/component/kook/event/KookMessagePinEvent
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Channel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMsgId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getOperator ()Llove/forte/simbot/component/kook/KookMember;
@@ -1039,10 +1113,12 @@ public abstract class love/forte/simbot/component/kook/event/KookMessagePinEvent
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Guild;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun queryMsg (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun queryMsgAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun queryMsgBlocking ()Llove/forte/simbot/message/MessageContent;
+	public fun queryMsgReactive ()Lorg/reactivestreams/Publisher;
 	public fun queryMsgReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1080,6 +1156,7 @@ public abstract class love/forte/simbot/component/kook/event/KookUpdatedCategory
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookCategoryChannel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
@@ -1092,6 +1169,7 @@ public abstract class love/forte/simbot/component/kook/event/KookUpdatedChannelE
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/kook/KookChatChannel;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/objects/SimpleChannel;
@@ -1138,6 +1216,7 @@ public abstract class love/forte/simbot/component/kook/event/KookUserOnlineStatu
 	public fun getContent ()Ljava/lang/Boolean;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public final fun getGuildIds ()Ljava/util/List;
 	public abstract fun getGuilds ()Llove/forte/simbot/common/collectable/Collectable;
@@ -1153,6 +1232,7 @@ public abstract class love/forte/simbot/component/kook/event/KookUserUpdatedEven
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/kook/event/UserUpdatedEventBody;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getSourceBody ()Ljava/lang/Object;
 	public fun getSourceBody ()Llove/forte/simbot/kook/event/UserUpdatedEventBody;
@@ -1435,7 +1515,9 @@ public abstract interface class love/forte/simbot/component/kook/message/KookMes
 	public fun getReferenceMessage ()Llove/forte/simbot/component/kook/message/KookMessageContent;
 	public synthetic fun getReferenceMessage ()Llove/forte/simbot/message/MessageContent;
 	public fun getReferenceMessageAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getReferenceMessageReactive ()Lorg/reactivestreams/Publisher;
 	public fun getReferenceMessageReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun getReferenceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getReferenceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun reference (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun referenceMessage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

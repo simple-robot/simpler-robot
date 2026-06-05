@@ -32,6 +32,9 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/onebot/v11/message/OneBotMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -41,21 +44,25 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract synthetic fun ban (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun banAsync (Z)Ljava/util/concurrent/CompletableFuture;
 	public fun banBlocking (Z)V
+	public fun banReactive (Z)Lorg/reactivestreams/Publisher;
 	public fun banReserve (Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun botAsMember (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun getAllHonorInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getAllHonorInfoAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun getAllHonorInfoBlocking ()Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult;
+	public fun getAllHonorInfoReactive ()Lorg/reactivestreams/Publisher;
 	public fun getAllHonorInfoReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getBotAsMember ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getBotAsMember ()Llove/forte/simbot/definition/Member;
 	public fun getBotAsMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBotAsMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getBotAsMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract synthetic fun getHonorInfo (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getHonorInfoAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
 	public fun getHonorInfoBlocking (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/GetGroupHonorInfoResult;
+	public fun getHonorInfoReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
 	public fun getHonorInfoReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getMaxMemberCount ()I
@@ -68,6 +75,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract fun getName ()Ljava/lang/String;
 	public fun getRoles ()Llove/forte/simbot/common/collectable/Collectable;
 	public abstract synthetic fun member (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun send (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -80,24 +88,31 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/onebot/v11/message/OneBotMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setAdmin (Llove/forte/simbot/common/id/ID;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setAdminAsync (Llove/forte/simbot/common/id/ID;Z)Ljava/util/concurrent/CompletableFuture;
 	public fun setAdminBlocking (Llove/forte/simbot/common/id/ID;Z)V
+	public fun setAdminReactive (Llove/forte/simbot/common/id/ID;Z)Lorg/reactivestreams/Publisher;
 	public fun setAdminReserve (Llove/forte/simbot/common/id/ID;Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setAnonymous (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setAnonymousAsync (Z)Ljava/util/concurrent/CompletableFuture;
 	public fun setAnonymousBlocking (Z)V
+	public fun setAnonymousReactive (Z)Lorg/reactivestreams/Publisher;
 	public fun setAnonymousReserve (Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setBotGroupNick (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setBotGroupNickAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
 	public fun setBotGroupNickBlocking (Ljava/lang/String;)V
+	public fun setBotGroupNickReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
 	public fun setBotGroupNickReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setName (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setNameAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
 	public fun setNameBlocking (Ljava/lang/String;)V
+	public fun setNameReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
 	public fun setNameReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -127,6 +142,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract synthetic fun ban-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun banAsync (JLjava/util/concurrent/TimeUnit;)Ljava/util/concurrent/CompletableFuture;
 	public fun banBlocking (JLjava/util/concurrent/TimeUnit;)V
+	public fun banReactive (JLjava/util/concurrent/TimeUnit;)Lorg/reactivestreams/Publisher;
 	public fun banReserve (JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getAvatar ()Ljava/lang/String;
@@ -138,6 +154,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract synthetic fun getSourceMemberInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getSourceMemberInfoAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun getSourceMemberInfoBlocking ()Llove/forte/simbot/component/onebot/v11/core/api/GetGroupMemberInfoResult;
+	public fun getSourceMemberInfoReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceMemberInfoReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun send (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun send (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -151,16 +168,21 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/onebot/v11/message/OneBotMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun sendReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun sendReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun sendReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun sendReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setAdmin (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setAdminAsync (Z)Ljava/util/concurrent/CompletableFuture;
 	public fun setAdminBlocking (Z)V
+	public fun setAdminReactive (Z)Lorg/reactivestreams/Publisher;
 	public fun setAdminReserve (Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setNick (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setNickAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
 	public fun setNickBlocking (Ljava/lang/String;)V
+	public fun setNickReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
 	public fun setNickReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setSpecialTitle (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun setSpecialTitle (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -172,12 +194,16 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public fun setSpecialTitleBlocking (Ljava/lang/String;)V
 	public fun setSpecialTitleBlocking (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)V
 	public static synthetic fun setSpecialTitleBlocking$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)V
+	public fun setSpecialTitleReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun setSpecialTitleReactive (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun setSpecialTitleReactive$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
 	public fun setSpecialTitleReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun setSpecialTitleReserve (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun setSpecialTitleReserve$default (Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun unban (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun unbanAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun unbanBlocking ()V
+	public fun unbanReactive ()Lorg/reactivestreams/Publisher;
 	public fun unbanReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -227,6 +253,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract synthetic fun toStranger (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun toStrangerAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun toStrangerBlocking ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotStranger;
+	public fun toStrangerReactive ()Lorg/reactivestreams/Publisher;
 	public fun toStrangerReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -234,6 +261,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/acto
 	public abstract synthetic fun sendLike (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun sendLikeAsync (I)Ljava/util/concurrent/CompletableFuture;
 	public fun sendLikeBlocking (I)V
+	public fun sendLikeReactive (I)Lorg/reactivestreams/Publisher;
 	public fun sendLikeReserve (I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -1133,15 +1161,19 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/api/
 	public abstract synthetic fun executeData (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun executeDataAsync (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Ljava/util/concurrent/CompletableFuture;
 	public fun executeDataBlocking (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Ljava/lang/Object;
+	public fun executeDataReactive (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Lorg/reactivestreams/Publisher;
 	public fun executeDataReserve (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun executeRaw (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun executeRawAsync (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Ljava/util/concurrent/CompletableFuture;
 	public fun executeRawBlocking (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Ljava/lang/String;
+	public fun executeRawReactive (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Lorg/reactivestreams/Publisher;
 	public fun executeRawReserve (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun executeReactive (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Lorg/reactivestreams/Publisher;
 	public fun executeReserve (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun executeResult (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun executeResultAsync (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Ljava/util/concurrent/CompletableFuture;
 	public fun executeResultBlocking (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Llove/forte/simbot/component/onebot/v11/core/api/OneBotApiResult;
+	public fun executeResultReactive (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Lorg/reactivestreams/Publisher;
 	public fun executeResultReserve (Llove/forte/simbot/component/onebot/v11/core/api/BasicOneBotApi;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
@@ -1817,6 +1849,8 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public static synthetic fun getCookiesAsync$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
 	public fun getCookiesBlocking (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/GetCookiesResult;
 	public static synthetic fun getCookiesBlocking$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/GetCookiesResult;
+	public fun getCookiesReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun getCookiesReactive$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
 	public fun getCookiesReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun getCookiesReserve$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -1826,11 +1860,14 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public static synthetic fun getCredentialsAsync$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
 	public fun getCredentialsBlocking (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult;
 	public static synthetic fun getCredentialsBlocking$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/api/GetCredentialsResult;
+	public fun getCredentialsReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun getCredentialsReactive$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
 	public fun getCredentialsReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun getCredentialsReserve$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun getCsrfToken (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCsrfTokenAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun getCsrfTokenBlocking ()Llove/forte/simbot/component/onebot/v11/core/api/GetCsrfTokenResult;
+	public fun getCsrfTokenReactive ()Lorg/reactivestreams/Publisher;
 	public fun getCsrfTokenReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getDecoderJson ()Lkotlinx/serialization/json/Json;
 	public abstract fun getEventAccessToken ()Ljava/lang/String;
@@ -1848,6 +1885,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public abstract synthetic fun queryLoginInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun queryLoginInfoAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun queryLoginInfoBlocking ()Llove/forte/simbot/component/onebot/v11/core/api/GetLoginInfoResult;
+	public fun queryLoginInfoReactive ()Lorg/reactivestreams/Publisher;
 	public fun queryLoginInfoReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -1899,6 +1937,7 @@ public final class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotConf
 public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotFriendRelation : love/forte/simbot/bot/ContactRelation {
 	public synthetic fun contact (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun contactCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun contactReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public synthetic fun getContact (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Contact;
 	public fun getContactAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
@@ -1908,6 +1947,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public fun getStrangerAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun getStrangerReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun stranger (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun strangerReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 }
 
 public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotGroupRelation : love/forte/simbot/bot/GroupRelation {
@@ -1921,7 +1961,9 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/bot/
 	public fun getMemberReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun group (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun groupCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun groupReactive (Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 	public abstract synthetic fun member (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberReactive (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Lorg/reactivestreams/Publisher;
 }
 
 public abstract class love/forte/simbot/component/onebot/v11/core/bot/OneBotBotManager : love/forte/simbot/bot/JobBasedBotManager, love/forte/simbot/bot/BotManager {
@@ -2234,6 +2276,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Member;
 	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReactive ()Lorg/reactivestreams/Publisher;
 	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
@@ -2242,6 +2285,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 }
@@ -2253,6 +2297,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 }
@@ -2266,6 +2311,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
@@ -2283,12 +2329,14 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2308,6 +2356,9 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
 	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/component/onebot/v11/message/OneBotMessageReceipt;
 	public synthetic fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun replyReactive (Llove/forte/simbot/message/Message;)Lorg/reactivestreams/Publisher;
+	public fun replyReactive (Llove/forte/simbot/message/MessageContent;)Lorg/reactivestreams/Publisher;
 	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -2321,6 +2372,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Member;
 	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorReactive ()Lorg/reactivestreams/Publisher;
 	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun getContent ()Ljava/lang/Object;
 	public fun getContent ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
@@ -2329,6 +2381,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 }
@@ -2342,6 +2395,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/onebot/v11/message/OneBotMessageContent;
 }
@@ -2360,6 +2414,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2372,6 +2427,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2383,6 +2439,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2394,6 +2451,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Contact;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2403,6 +2461,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2413,6 +2472,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2422,6 +2482,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2434,6 +2495,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Contact;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2447,6 +2509,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotFriend;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Contact;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun setCurrentMessage (Llove/forte/simbot/event/InteractionMessage;)V
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2460,6 +2523,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2469,6 +2533,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2479,6 +2544,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2488,6 +2554,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2501,6 +2568,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2515,6 +2583,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun setCurrentMessage (Llove/forte/simbot/event/InteractionMessage;)V
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2525,6 +2594,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2535,6 +2605,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2544,6 +2615,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2565,6 +2637,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Member;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2577,6 +2650,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Member;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2590,6 +2664,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/Member;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun setCurrentMessage (Llove/forte/simbot/event/InteractionMessage;)V
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2616,6 +2691,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2628,6 +2704,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2639,6 +2716,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatGroup;
 	public synthetic fun getTarget ()Llove/forte/simbot/definition/ChatRoom;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2648,6 +2726,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2658,6 +2737,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2667,6 +2747,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getTarget ()Ljava/lang/Object;
 	public fun getTarget ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReactive ()Lorg/reactivestreams/Publisher;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2747,6 +2828,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Contact;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getMessageId ()Llove/forte/simbot/common/id/ID;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/notice/RawFriendRecallEvent;
@@ -2759,6 +2841,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public synthetic fun getSource ()Ljava/lang/Object;
@@ -2766,6 +2849,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupAdminEvent;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getSubType ()Ljava/lang/String;
 	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
@@ -2784,6 +2868,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getDurationSeconds ()J
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
@@ -2793,6 +2878,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupBanEvent;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getSubType ()Ljava/lang/String;
 	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
@@ -2812,11 +2898,13 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public fun getMember ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getUserId ()Llove/forte/simbot/common/id/LongID;
 	public abstract synthetic fun member (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2829,11 +2917,13 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public fun getMember ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupDecreaseEvent;
 	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
@@ -2847,11 +2937,13 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public fun getMember ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotMember;
 	public synthetic fun getMember ()Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMemberReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMemberReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupIncreaseEvent;
 	public fun getUserId ()Llove/forte/simbot/common/id/LongID;
@@ -2865,12 +2957,14 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Member;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/component/onebot/v11/core/actor/OneBotGroup;
 	public synthetic fun getSource ()Llove/forte/simbot/definition/Organization;
 	public fun getSourceAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getSourceReactive ()Lorg/reactivestreams/Publisher;
 	public fun getSourceReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2885,6 +2979,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
 	public fun getMessageId ()Llove/forte/simbot/common/id/ID;
@@ -2901,6 +2996,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getFileInfo ()Llove/forte/simbot/component/onebot/v11/event/notice/RawGroupUploadEvent$FileInfo;
 	public fun getGroupId ()Llove/forte/simbot/common/id/LongID;
@@ -2973,6 +3069,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
 	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
 	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReactive ()Lorg/reactivestreams/Publisher;
 	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun getFlag ()Ljava/lang/String;
 	public fun getMessage ()Ljava/lang/String;
@@ -2981,6 +3078,7 @@ public abstract interface class love/forte/simbot/component/onebot/v11/core/even
 	public fun getRequesterAsync ()Ljava/util/concurrent/CompletableFuture;
 	public synthetic fun getRequesterId ()Llove/forte/simbot/common/id/ID;
 	public fun getRequesterId ()Llove/forte/simbot/common/id/LongID;
+	public fun getRequesterReactive ()Lorg/reactivestreams/Publisher;
 	public fun getRequesterReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getSourceEvent ()Llove/forte/simbot/component/onebot/v11/event/request/RawGroupRequestEvent;
 	public fun getType ()Llove/forte/simbot/event/RequestEvent$Type;

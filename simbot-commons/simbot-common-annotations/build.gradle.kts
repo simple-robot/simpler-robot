@@ -49,6 +49,12 @@ kotlin {
     }
 
     sourceSets {
+        commonMain {
+            dependencies {
+                api(libs.jetbrains.annotations)
+            }
+        }
+
         commonTest {
             dependencies {
                 implementation(kotlin("test"))

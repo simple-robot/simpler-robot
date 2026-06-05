@@ -43,7 +43,11 @@ import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
+import love.forte.simbot.plugin.Plugin
+import love.forte.simbot.plugin.PluginConfigureContext
+import love.forte.simbot.plugin.PluginFactoriesConfigurator
 import love.forte.simbot.plugin.Plugins
+import love.forte.simbot.plugin.toPlugins
 import kotlin.coroutines.CoroutineContext
 
 
@@ -237,7 +241,6 @@ public object Simple :
     }
 }
 
-@Suppress("RedundantVisibilityModifier")
 private class SimpleApplicationFactoryConfigurer(
     public override val configConfigurers: MutableList<ConfigurerFunction<SimpleApplicationBuilder>> = mutableListOf(),
     public override val applicationEventRegistrarConfigurations:

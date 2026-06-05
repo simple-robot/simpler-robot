@@ -75,8 +75,8 @@ public abstract interface class love/forte/simbot/spring/common/application/Spri
 public final class love/forte/simbot/spring/common/application/SpringApplication$DefaultImpls {
 	public static fun asFuture (Llove/forte/simbot/spring/common/application/SpringApplication;)Ljava/util/concurrent/CompletableFuture;
 	public static fun cancel (Llove/forte/simbot/spring/common/application/SpringApplication;)V
-	public static fun cancel (Llove/forte/simbot/spring/common/application/SpringApplication;Ljava/lang/Throwable;)V
 	public static fun joinBlocking (Llove/forte/simbot/spring/common/application/SpringApplication;)V
+	public static fun joinReactive (Llove/forte/simbot/spring/common/application/SpringApplication;)Lorg/reactivestreams/Publisher;
 	public static fun joinReserve (Llove/forte/simbot/spring/common/application/SpringApplication;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 

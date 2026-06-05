@@ -154,6 +154,7 @@ internal class KookBotImpl(
     internal fun internalVoiceChannel(channelId: String): KookVoiceChannel? = internalChatChannel(
         channelId
     ) as? KookVoiceChannel?
+
     internal fun internalCategory(categoryId: String): KookCategoryChannelImpl? = internalCache.categories[categoryId]
     internal fun internalChatChannels(guildId: String): Sequence<KookChatChannel> =
         internalCache.channels.values.asSequence().filter { it.source.guildId == guildId }

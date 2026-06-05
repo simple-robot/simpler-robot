@@ -50,6 +50,7 @@ public object SuspendTransformPlugins {
     public const val SUSPEND_RUNNER_PACKAGE: String = "love.forte.simbot.suspendrunner"
 
     public const val API4J_NAME: String = "Api4J"
+    public const val EXPERIMENTAL_REACTIVE_API_NAME: String = "ExperimentalReactiveBridgingApi"
     public const val API4JS_NAME: String = "Api4Js"
 
     public const val JB_BLOCKING_ANNOTATION_PACKAGE: String = "org.jetbrains.annotations"
@@ -180,6 +181,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
             blocking: Boolean = false,
+            block: TransformerSpec.() -> Unit = {}
         ) {
             addJvm {
                 markSuspendTrans(
@@ -212,6 +214,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                     }
                 }
                 excludeTransMarks()
+                block()
             }
         }
 
@@ -225,6 +228,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
             blocking: Boolean = false,
+            block: TransformerSpec.() -> Unit = {}
         ) {
             addJvm {
                 markSuspendTransProperty(
@@ -258,6 +262,7 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                     }
                 }
                 excludeTransMarks()
+                block()
             }
         }
 
@@ -317,7 +322,16 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             },
             transformReturnTypeGeneric = true,
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
-        )
+        ) {
+            // 额外添加 reactive 实验性地 opt-in 注解
+            addSyntheticFunctionIncludeAnnotation {
+                classInfo {
+                    packageName.set(OPT_ANNOTATION_PACKAGE)
+                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
+                }
+                includeProperty.set(true)
+            }
+        }
 
         // @SuspendTrans for blocking
         addJvmSuspendTransProperty(
@@ -375,7 +389,16 @@ public fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             },
             transformReturnTypeGeneric = true,
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
-        )
+        ) {
+            // 额外添加 reactive 实验性地 opt-in 注解
+            addSyntheticFunctionIncludeAnnotation {
+                classInfo {
+                    packageName.set(SuspendTransformPlugins.OPT_ANNOTATION_PACKAGE)
+                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
+                }
+                includeProperty.set(true)
+            }
+        }
 
         // @JvmAsync
         addJvmAsync {

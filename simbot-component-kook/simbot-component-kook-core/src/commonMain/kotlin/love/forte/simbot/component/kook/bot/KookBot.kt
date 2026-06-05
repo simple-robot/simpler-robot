@@ -97,18 +97,6 @@ public interface KookBot : Bot, CoroutineScope {
     override val component: KookComponent
 
     /**
-     * bot 是否处于活跃状态
-     */
-    override val isActive: Boolean
-        get() = sourceBot.isActive
-
-    /**
-     * bot 是否已经被启动过
-     */
-    override val isStarted: Boolean
-        get() = sourceBot.isStarted
-
-    /**
      * 头像信息
      *
      * 需要至少启动过一次（执行过 [start]）后才可获取。
@@ -149,11 +137,6 @@ public interface KookBot : Bot, CoroutineScope {
 
     override fun cancel(reason: Throwable?) {
         sourceBot.cancel(reason)
-    }
-
-    @JvmSynthetic
-    override suspend fun join() {
-        sourceBot.join()
     }
 
     /**

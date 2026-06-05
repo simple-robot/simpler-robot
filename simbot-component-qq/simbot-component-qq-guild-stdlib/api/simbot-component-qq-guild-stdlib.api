@@ -11,6 +11,9 @@ public abstract interface class love/forte/simbot/qguild/stdlib/Bot : kotlinx/co
 	public fun emitEventBlocking (Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/EmitResult;
 	public fun emitEventBlocking (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Llove/forte/simbot/qguild/stdlib/EmitResult;
 	public static synthetic fun emitEventBlocking$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/EmitResult;
+	public fun emitEventReactive (Ljava/lang/String;)Lorg/reactivestreams/Publisher;
+	public fun emitEventReactive (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Lorg/reactivestreams/Publisher;
+	public static synthetic fun emitEventReactive$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Lorg/reactivestreams/Publisher;
 	public fun emitEventReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun emitEventReserve (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun emitEventReserve$default (Llove/forte/simbot/qguild/stdlib/Bot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
@@ -23,11 +26,13 @@ public abstract interface class love/forte/simbot/qguild/stdlib/Bot : kotlinx/co
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getMe ()Llove/forte/simbot/qguild/model/User;
 	public fun getMeAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getMeReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getShard ()Llove/forte/simbot/qguild/event/Shard;
 	public abstract fun getTicket ()Llove/forte/simbot/qguild/stdlib/Bot$Ticket;
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
+	public fun joinReactive ()Lorg/reactivestreams/Publisher;
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun me (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun registerPreProcessor (Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
@@ -38,6 +43,8 @@ public abstract interface class love/forte/simbot/qguild/stdlib/Bot : kotlinx/co
 	public fun startAsync (Llove/forte/simbot/qguild/api/GatewayInfo;)Ljava/util/concurrent/CompletableFuture;
 	public fun startBlocking ()V
 	public fun startBlocking (Llove/forte/simbot/qguild/api/GatewayInfo;)V
+	public fun startReactive ()Lorg/reactivestreams/Publisher;
+	public fun startReactive (Llove/forte/simbot/qguild/api/GatewayInfo;)Lorg/reactivestreams/Publisher;
 	public fun startReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun startReserve (Llove/forte/simbot/qguild/api/GatewayInfo;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun subscribe (Llove/forte/simbot/qguild/stdlib/EventProcessor;)Llove/forte/simbot/qguild/stdlib/DisposableHandle;
