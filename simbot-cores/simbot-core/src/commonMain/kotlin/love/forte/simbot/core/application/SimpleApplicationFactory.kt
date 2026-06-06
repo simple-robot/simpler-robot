@@ -100,7 +100,6 @@ private class SimpleApplicationImpl(
     }
 
     private fun invokeCancelledEvent() {
-        println("invokeCancelledEvent: 111")
         invokeNormalHandler(ApplicationLaunchStage.Cancelled) {
             invoke(this@SimpleApplicationImpl)
         }

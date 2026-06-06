@@ -328,16 +328,7 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric = false,
             copyExcludes = jvmBlockingTransformer.copyAnnotationExcludes,
             blocking = true,
-        ) {
-            // 额外添加 reactive 实验性地 opt-in 注解
-            addSyntheticFunctionIncludeAnnotation {
-                classInfo {
-                    packageName.set(SuspendTransformPlugins.OPT_ANNOTATION_PACKAGE)
-                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
-                }
-                includeProperty.set(true)
-            }
-        }
+        )
 
         // @SuspendTrans for Async
         addJvmSuspendTransProperty(
@@ -382,7 +373,16 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             },
             transformReturnTypeGeneric = true,
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
-        )
+        ) {
+            // 额外添加 reactive 实验性地 opt-in 注解
+            addSyntheticFunctionIncludeAnnotation {
+                classInfo {
+                    packageName.set(SuspendTransformPlugins.OPT_ANNOTATION_PACKAGE)
+                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
+                }
+                includeProperty.set(true)
+            }
+        }
 
         // @JvmAsync
         addJvmAsync {
