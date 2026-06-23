@@ -214,7 +214,7 @@ internal class BotImpl(
         try {
             startLock.withLock {
                 if (job.isCancelled) {
-                    throw CancellationException("Bot has bean cancelled.")
+                    throw CancellationException("Bot has been cancelled.")
                 }
                 if (currentClientJob != null) {
                     botLogger.debug("Cancel current client: {}", currentClientJob)
