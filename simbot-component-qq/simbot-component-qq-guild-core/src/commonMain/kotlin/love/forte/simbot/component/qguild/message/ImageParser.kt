@@ -23,10 +23,7 @@
 
 package love.forte.simbot.component.qguild.message
 
-import io.ktor.client.request.forms.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import kotlinx.io.readByteArray
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.message.SendingMessageParser.GroupBuilderType.C2C
 import love.forte.simbot.component.qguild.message.SendingMessageParser.GroupBuilderType.GROUP
@@ -126,12 +123,7 @@ internal fun processOfflineImage(
                 }
 
                 is SourceResource -> {
-                    builderContext.builderOrNew { it.fileImage == null }.setFileImage(
-                        ChannelProvider {
-                            // TODO 等待更新到 Ktor 3.x，现在性能略差
-                            resource.source().use { ByteReadChannel(it.readByteArray()) }
-                        }
-                    )
+                    builderContext.builderOrNew { it.fileImage == null }.setFileImage(resource.source())
                 }
             }
         }
