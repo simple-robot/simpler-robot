@@ -8,20 +8,17 @@ public abstract interface class love/forte/simbot/kook/stdlib/Bot : kotlinx/coro
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getMe ()Llove/forte/simbot/kook/api/user/Me;
 	public fun getMeAsync ()Ljava/util/concurrent/CompletableFuture;
-	public fun getMeReactive ()Lorg/reactivestreams/Publisher;
 	public fun getMeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getTicket ()Llove/forte/simbot/kook/stdlib/Ticket;
 	public abstract fun isActive ()Z
 	public abstract fun isStarted ()Z
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
-	public fun joinReactive ()Lorg/reactivestreams/Publisher;
 	public fun joinReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun me (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun offline (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun offlineAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun offlineBlocking ()V
-	public fun offlineReactive ()Lorg/reactivestreams/Publisher;
 	public fun offlineReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun processor (Llove/forte/simbot/kook/stdlib/EventProcessor;)V
 	public fun processor (Llove/forte/simbot/kook/stdlib/ProcessorType;Llove/forte/simbot/kook/stdlib/EventProcessor;)V
@@ -31,8 +28,6 @@ public abstract interface class love/forte/simbot/kook/stdlib/Bot : kotlinx/coro
 	public fun startAsync (Z)Ljava/util/concurrent/CompletableFuture;
 	public fun startBlocking ()V
 	public fun startBlocking (Z)V
-	public fun startReactive ()Lorg/reactivestreams/Publisher;
-	public fun startReactive (Z)Lorg/reactivestreams/Publisher;
 	public fun startReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun startReserve (Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun subscribe (Llove/forte/simbot/kook/stdlib/EventProcessor;)V

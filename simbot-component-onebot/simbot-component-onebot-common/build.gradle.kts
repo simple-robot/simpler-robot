@@ -36,10 +36,6 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    abiValidation {
-
-    }
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         optIn.addAll(
