@@ -26,8 +26,7 @@
 package love.forte.simbot.suspendrunner
 
 /**
- * 用于代表同时标记 `@JvmBlocking` 和 `@JvmAsync` 的整合性注解。
- *
+ * 用于为同一个 `suspend` 声明同时生成 blocking / async / reserve / reactive 等多种桥接 API 的整合性注解。
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
