@@ -51,6 +51,6 @@ public class StandardInstantTimestamp(private val instant: Instant) : Timestamp 
     }
 
     override fun toString(): String {
-        return "InstantTimestamp(instant=$instant)"
+        return "StandardInstantTimestamp($instant)"
     }
 }

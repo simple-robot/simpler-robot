@@ -2371,3 +2371,7 @@ public abstract interface class love/forte/simbot/component/qguild/role/QGRoleUp
 	public fun updateReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
+public final class love/forte/simbot/component/qguild/utils/TimestampUtilKt {
+	public static final fun toTimestamp (Ljava/lang/String;)Llove/forte/simbot/common/time/Timestamp;
+}
+
