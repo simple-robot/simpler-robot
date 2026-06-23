@@ -48,6 +48,8 @@ import love.forte.simbot.kook.stdlib.KookBotConnectException
 import love.forte.simbot.kook.stdlib.requestDataBy
 import love.forte.simbot.logger.Logger
 import kotlin.math.max
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CancellationException as KtxCancellationException
 
@@ -195,11 +197,10 @@ private class WaitingHello(
         val wsConnectTimeout = bot.configuration.wsConnectTimeout
 
         val hello = try {
-            withTimeout(wsConnectTimeout) {
+            withTimeout(wsConnectTimeout.milliseconds) {
                 wsSession.waitHello()
             }
         } catch (timeout: TimeoutCancellationException) {
-            // TODO: timeout
             botLogger.error("Connect to gateway for waiting hello timeout in {}ms. retry.", wsConnectTimeout)
             botLogger.debug("Connect to gateway for waiting hello timeout in {}ms. retry.", wsConnectTimeout, timeout)
             wsSession.cancel("Connect to gateway for waiting hello timeout in ${wsConnectTimeout}ms.")
@@ -264,6 +265,10 @@ private class CreateHeartbeatJob(
     val session: DefaultClientWebSocketSession,
     val hello: Signal.Hello,
 ) : State() {
+    companion object {
+        private val DEFAULT_HEARTBEAT_INTERVAL = 30_000.milliseconds
+    }
+
     override suspend fun invoke(): State {
         val sn = atomic(0L)
         botLogger.debug("Creating heartbeat job for session: {}", session)
@@ -276,9 +281,13 @@ private class CreateHeartbeatJob(
     }
 
     private fun DefaultClientWebSocketSession.heartbeatJob(sn: AtomicLong): HeartbeatJob {
-        fun helloInterval(): Long {
-            val r = kotlin.random.Random.nextLong(5000)
-            return if (kotlin.random.Random.nextBoolean()) 30_000 + r else 30_000 - r
+        fun helloInterval(): Duration {
+            val r = kotlin.random.Random.nextLong(5000).milliseconds
+            return if (kotlin.random.Random.nextBoolean()) {
+                DEFAULT_HEARTBEAT_INTERVAL + r
+            } else {
+                DEFAULT_HEARTBEAT_INTERVAL - r
+            }
         }
 
         val pongChannel = Channel<Signal.Pong>(1, BufferOverflow.DROP_OLDEST)
@@ -286,7 +295,7 @@ private class CreateHeartbeatJob(
         // heartbeat Job
         val heartbeatLaunchJob = launch {
             suspend fun waitForPong(timeout: Long): Signal.Pong {
-                return withTimeout(timeout) {
+                return withTimeout(timeout.milliseconds) {
                     pongChannel.receive()
                 }
             }
@@ -472,10 +481,10 @@ private class Receiving(
     @Suppress("ReturnCount")
     override suspend fun invoke(): State? {
         val session = client.session
-        if (!session.isActive || !bot.isAlive) {
-            // 会话不再活跃，或 bot 已经结束
+        if (!session.isActive) {
+            // 会话不再活跃。
             val reason = session.closeReason.await()
-            return if (!bot.isAlive) {
+            return if (!bot.isActive) {
                 botLogger.error("The session [{}] (and bot) is no longer active. reason: {}", session, reason)
                 client.cancel()
                 null

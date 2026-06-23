@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -37,6 +37,7 @@ object SuspendTransformPlugins {
     const val SUSPEND_RUNNER_PACKAGE: String = "love.forte.simbot.suspendrunner"
 
     const val API4J_NAME: String = "Api4J"
+    const val EXPERIMENTAL_REACTIVE_API_NAME: String = "ExperimentalReactiveBridgingApi"
     const val API4JS_NAME: String = "Api4Js"
 
     const val JB_BLOCKING_ANNOTATION_PACKAGE = "org.jetbrains.annotations"
@@ -45,6 +46,7 @@ object SuspendTransformPlugins {
     const val RUN_IN_BLOCKING_FUN_NAME: String = "$\$runInBlocking"
     const val RUN_IN_ASYNC_FUN_NAME: String = "$\$runInAsyncNullable"
     const val AS_RESERVE_FUN_NAME: String = "$\$asReserve"
+    const val AS_PUBLISHER_FUN_NAME: String = "$\$asPublisher"
 
     const val SUSPEND_TRANS_ANNO_NAME: String = "SuspendTrans"
     const val SUSPEND_TRANS_PROPERTY_ANNO_NAME: String = "SuspendTransProperty"
@@ -106,6 +108,13 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             }
         }
 
+        fun TransformerSpec.publisherFunction() {
+            transformFunctionInfo {
+                packageName.set(SuspendTransformPlugins.SUSPEND_RUNNER_PACKAGE)
+                functionName.set(SuspendTransformPlugins.AS_PUBLISHER_FUN_NAME)
+            }
+        }
+
         fun TransformerSpec.markSuspendTrans(
             baseNameProperty: String,
             suffixProperty: String,
@@ -156,6 +165,7 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
             blocking: Boolean = false,
+            block: TransformerSpec.() -> Unit = {}
         ) {
             addJvm {
                 markSuspendTrans(
@@ -188,6 +198,7 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                     }
                 }
                 excludeTransMarks()
+                block()
             }
         }
 
@@ -201,6 +212,7 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric: Boolean,
             copyExcludes: List<ClassInfo>,
             blocking: Boolean = false,
+            block: TransformerSpec.() -> Unit = {}
         ) {
             addJvm {
                 markSuspendTransProperty(
@@ -234,6 +246,7 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
                     }
                 }
                 excludeTransMarks()
+                block()
             }
         }
 
@@ -280,6 +293,30 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
         )
 
+        // @SuspendTrans for Reactive
+        addJvmSuspendTrans(
+            baseNameProperty = "reactiveBaseName",
+            suffixProperty = "reactiveSuffix",
+            asPropertyProperty = "reactiveAsProperty",
+            defaultSuffix = "Reactive",
+            function = { publisherFunction() },
+            transformReturnType = {
+                packageName.set("org.reactivestreams")
+                className.set("Publisher")
+            },
+            transformReturnTypeGeneric = true,
+            copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+        ) {
+            // 额外添加 reactive 实验性地 opt-in 注解
+            addSyntheticFunctionIncludeAnnotation {
+                classInfo {
+                    packageName.set(SuspendTransformPlugins.OPT_ANNOTATION_PACKAGE)
+                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
+                }
+                includeProperty.set(true)
+            }
+        }
+
         // @SuspendTrans for blocking
         addJvmSuspendTransProperty(
             baseNameProperty = "blockingBaseName",
@@ -322,6 +359,30 @@ fun SuspendTransformPluginExtension.addSimbotJvmTransforms() {
             transformReturnTypeGeneric = true,
             copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
         )
+
+        // @SuspendTrans for Reactive
+        addJvmSuspendTransProperty(
+            baseNameProperty = "reactiveBaseName",
+            suffixProperty = "reactiveSuffix",
+            asPropertyProperty = "reactiveAsProperty",
+            defaultSuffix = "Reactive",
+            function = { publisherFunction() },
+            transformReturnType = {
+                packageName.set("org.reactivestreams")
+                className.set("Publisher")
+            },
+            transformReturnTypeGeneric = true,
+            copyExcludes = jvmAsyncTransformer.copyAnnotationExcludes,
+        ) {
+            // 额外添加 reactive 实验性地 opt-in 注解
+            addSyntheticFunctionIncludeAnnotation {
+                classInfo {
+                    packageName.set(SuspendTransformPlugins.OPT_ANNOTATION_PACKAGE)
+                    className.set(SuspendTransformPlugins.EXPERIMENTAL_REACTIVE_API_NAME)
+                }
+                includeProperty.set(true)
+            }
+        }
 
         // @JvmAsync
         addJvmAsync {

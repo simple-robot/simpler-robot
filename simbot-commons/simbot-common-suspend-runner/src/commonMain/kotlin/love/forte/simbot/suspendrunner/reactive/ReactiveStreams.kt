@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,53 +21,11 @@
  *
  */
 
+@file:JvmName("ReactiveStreams")
+@file:JvmMultifileClass
 
-plugins {
-    id("simbot.kotlin-multiplatform")
-    id("org.jetbrains.dokka")
-}
+package love.forte.simbot.suspendrunner.reactive
 
-configJavaCompileWithModule("simbot.common.annotations")
-apply(plugin = "simbot-maven-publish")
-
-kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-
-    js(IR) {
-        configJs()
-    }
-
-    applyTier123()
-
-    // wasm
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-        configWasmJs()
-    }
-
-    sourceSets {
-        commonMain {
-            dependencies {
-                api(libs.jetbrains.annotations)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-            }
-        }
-    }
-
-}
-
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 

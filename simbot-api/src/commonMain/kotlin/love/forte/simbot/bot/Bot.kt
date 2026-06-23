@@ -27,7 +27,6 @@ package love.forte.simbot.bot
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import love.forte.simbot.ability.CompletionAware
 import love.forte.simbot.ability.LifecycleAware
@@ -44,7 +43,6 @@ import love.forte.simbot.message.MessageReference
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import kotlin.jvm.JvmName
-import kotlinx.coroutines.cancel as cancelJob
 
 /**
  * 一个 `Bot`。
@@ -120,35 +118,12 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
     public suspend fun start()
 
     /**
-     * Bot 是否处于活跃状态。
-     *
-     * @see kotlinx.coroutines.Job.isActive
-     */
-    override val isActive: Boolean
-
-    /**
-     * Bot 是否已经彻底完成。
-     *
-     * @since 5.0
-     */
-    override val isCompleted: Boolean
-
-    /**
      * 是否 **启动过**。
      *
      * 当调用过至少一次 [start] 且未产生异常后 [isStarted] 将会得到 `true`。
      * [isStarted] 与当前 [Bot] 是否被关闭无关，也不会被其影响。
      */
     public val isStarted: Boolean
-
-
-    /**
-     * 当前 [Bot] 是否已经通过调用 [close] 而关闭了。
-     * 这是一个原子属性，调用 [close] 后的瞬间被关闭，但这不代表当前 [Bot] 已经 [彻底完成][isCompleted]。
-     *
-     * @since 5.0
-     */
-    public val isClosed: Boolean
 
     // abilities
 
@@ -204,7 +179,7 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
     public suspend fun messageFromId(id: ID): MessageContent =
         throw UnsupportedOperationException()
 
-    // join & cancel/close
+    // join & cancel
 
     /**
      * 挂起 [Bot] 直到它 [彻底完成][isCompleted]。
@@ -218,14 +193,7 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * 当 [Bot] 被完全关闭时，[join] 会结束挂起。
      * 效果与 [CoroutineScope.cancel] 类似。
      */
-    @Deprecated(
-        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
-            "则直接使用 Job.cancel",
-        replaceWith = ReplaceWith("close()")
-    )
-    public fun cancel(reason: Throwable?) {
-        cancelJob(reason?.let { kotlinx.coroutines.CancellationException(it.message, it) })
-    }
+    public fun cancel(reason: Throwable?)
 
     /**
      * 关闭当前 [Bot]。
@@ -233,30 +201,9 @@ public interface Bot : IDContainer, LifecycleAware, CompletionAware, CoroutineSc
      * 当 [Bot] 被完全关闭时，[join] 会结束挂起。
      * 效果与 [CoroutineScope.cancel] 类似。
      */
-    @Deprecated(
-        message = "请直接使用 `close`，如果你希望在不传递 `reason` 的前提下终止所有任务和子任务，" +
-            "则直接使用 Job.cancel",
-        replaceWith = ReplaceWith("close()")
-    )
     public fun cancel() {
-        cancelJob()
+        cancel(null)
     }
-
-    /**
-     * 完成并关闭此 bot 。
-     *
-     * 当调用 [close] 后，[isClosed] 的值立即变为 `true`，
-     * 当取消流程完全结束后，[isCompleted] 的值将会变为 `true`。
-     *
-     *
-     * [close] 会将 [Bot] 视为常规完成任务，
-     * 它不会强制终止所有子任务，而是会持续等待它们直到所有子任务**自然完成**。
-     * 这行为近似于 [kotlinx.coroutines.CompletableJob.complete]。
-     *
-     * @since 5.0
-     * @see kotlinx.coroutines.CompletableJob.complete
-     */
-    public fun close()
 }
 
 /**
@@ -418,15 +365,3 @@ public suspend fun Bot.startAndJoin() {
  */
 public fun Bot.startIn(scope: CoroutineScope): Job =
     scope.launch { start() }
-
-/**
- * 如果尝试在 [Bot.close] 之后继续调用具有副作用的函数或行为，抛出此异常。
- *
- * @since 5.0
- */
-public open class BotAlreadyClosedException : IllegalStateException {
-    public constructor() : super()
-    public constructor(cause: Throwable?) : super(cause)
-    public constructor(message: String?) : super(message)
-    public constructor(message: String?, cause: Throwable?) : super(message, cause)
-}

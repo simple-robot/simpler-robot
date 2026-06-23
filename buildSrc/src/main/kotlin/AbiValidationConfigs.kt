@@ -32,7 +32,9 @@ fun AbiValidationVariantSpec.configAbiValidation() {
         "love.forte.simbot.annotations.ExperimentalSimbotAPI",
         "love.forte.simbot.annotations.InternalSimbotAPI",
         "love.forte.simbot.resource.ExperimentalIOResourceAPI",
-        "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI"
+        "love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI",
+        // Experimental Reactive
+        "love.forte.simbot.annotations.ExperimentalReactiveBridgingApi"
     )
 }
 

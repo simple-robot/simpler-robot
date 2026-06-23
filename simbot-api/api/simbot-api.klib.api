@@ -282,19 +282,12 @@ abstract interface love.forte.simbot.application/Application : kotlinx.coroutine
         abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.application/Application.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
     abstract val eventDispatcher // love.forte.simbot.application/Application.eventDispatcher|{}eventDispatcher[0]
         abstract fun <get-eventDispatcher>(): love.forte.simbot.event/EventDispatcher // love.forte.simbot.application/Application.eventDispatcher.<get-eventDispatcher>|<get-eventDispatcher>(){}[0]
-    abstract val isActive // love.forte.simbot.application/Application.isActive|{}isActive[0]
-        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.application/Application.isActive.<get-isActive>|<get-isActive>(){}[0]
-    abstract val isClosed // love.forte.simbot.application/Application.isClosed|{}isClosed[0]
-        abstract fun <get-isClosed>(): kotlin/Boolean // love.forte.simbot.application/Application.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
-    abstract val isCompleted // love.forte.simbot.application/Application.isCompleted|{}isCompleted[0]
-        abstract fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.application/Application.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
     abstract val plugins // love.forte.simbot.application/Application.plugins|{}plugins[0]
         abstract fun <get-plugins>(): love.forte.simbot.plugin/Plugins // love.forte.simbot.application/Application.plugins.<get-plugins>|<get-plugins>(){}[0]
 
-    abstract fun close() // love.forte.simbot.application/Application.close|close(){}[0]
+    abstract fun cancel(kotlin/Throwable?) // love.forte.simbot.application/Application.cancel|cancel(kotlin.Throwable?){}[0]
     abstract suspend fun join() // love.forte.simbot.application/Application.join|join(){}[0]
     open fun cancel() // love.forte.simbot.application/Application.cancel|cancel(){}[0]
-    open fun cancel(kotlin/Throwable?) // love.forte.simbot.application/Application.cancel|cancel(kotlin.Throwable?){}[0]
 }
 
 abstract interface love.forte.simbot.application/ApplicationBuilder { // love.forte.simbot.application/ApplicationBuilder|null[0]
@@ -331,23 +324,16 @@ abstract interface love.forte.simbot.bot/Bot : kotlinx.coroutines/CoroutineScope
         abstract fun <get-component>(): love.forte.simbot.component/Component // love.forte.simbot.bot/Bot.component.<get-component>|<get-component>(){}[0]
     abstract val id // love.forte.simbot.bot/Bot.id|{}id[0]
         abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.bot/Bot.id.<get-id>|<get-id>(){}[0]
-    abstract val isActive // love.forte.simbot.bot/Bot.isActive|{}isActive[0]
-        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.bot/Bot.isActive.<get-isActive>|<get-isActive>(){}[0]
-    abstract val isClosed // love.forte.simbot.bot/Bot.isClosed|{}isClosed[0]
-        abstract fun <get-isClosed>(): kotlin/Boolean // love.forte.simbot.bot/Bot.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
-    abstract val isCompleted // love.forte.simbot.bot/Bot.isCompleted|{}isCompleted[0]
-        abstract fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.bot/Bot.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
     abstract val isStarted // love.forte.simbot.bot/Bot.isStarted|{}isStarted[0]
         abstract fun <get-isStarted>(): kotlin/Boolean // love.forte.simbot.bot/Bot.isStarted.<get-isStarted>|<get-isStarted>(){}[0]
     abstract val name // love.forte.simbot.bot/Bot.name|{}name[0]
         abstract fun <get-name>(): kotlin/String // love.forte.simbot.bot/Bot.name.<get-name>|<get-name>(){}[0]
 
-    abstract fun close() // love.forte.simbot.bot/Bot.close|close(){}[0]
+    abstract fun cancel(kotlin/Throwable?) // love.forte.simbot.bot/Bot.cancel|cancel(kotlin.Throwable?){}[0]
     abstract fun isMe(love.forte.simbot.common.id/ID): kotlin/Boolean // love.forte.simbot.bot/Bot.isMe|isMe(love.forte.simbot.common.id.ID){}[0]
     abstract suspend fun join() // love.forte.simbot.bot/Bot.join|join(){}[0]
     abstract suspend fun start() // love.forte.simbot.bot/Bot.start|start(){}[0]
     open fun cancel() // love.forte.simbot.bot/Bot.cancel|cancel(){}[0]
-    open fun cancel(kotlin/Throwable?) // love.forte.simbot.bot/Bot.cancel|cancel(kotlin.Throwable?){}[0]
     open suspend fun messageFromId(love.forte.simbot.common.id/ID): love.forte.simbot.message/MessageContent // love.forte.simbot.bot/Bot.messageFromId|messageFromId(love.forte.simbot.common.id.ID){}[0]
     open suspend fun messageFromReference(love.forte.simbot.message/MessageReference): love.forte.simbot.message/MessageContent // love.forte.simbot.bot/Bot.messageFromReference|messageFromReference(love.forte.simbot.message.MessageReference){}[0]
 }
@@ -1251,15 +1237,13 @@ abstract interface love.forte.simbot.message/UrlAwareMessage { // love.forte.sim
     abstract suspend fun url(): kotlin/String // love.forte.simbot.message/UrlAwareMessage.url|url(){}[0]
 }
 
-abstract interface love.forte.simbot.plugin/CloseablePlugin : love.forte.simbot.ability/LifecycleAware, love.forte.simbot.plugin/Plugin { // love.forte.simbot.plugin/CloseablePlugin|null[0]
-    abstract val isActive // love.forte.simbot.plugin/CloseablePlugin.isActive|{}isActive[0]
-        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.plugin/CloseablePlugin.isActive.<get-isActive>|<get-isActive>(){}[0]
-    abstract val isClosed // love.forte.simbot.plugin/CloseablePlugin.isClosed|{}isClosed[0]
-        abstract fun <get-isClosed>(): kotlin/Boolean // love.forte.simbot.plugin/CloseablePlugin.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
-    abstract val isCompleted // love.forte.simbot.plugin/CloseablePlugin.isCompleted|{}isCompleted[0]
-        abstract fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.plugin/CloseablePlugin.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
+abstract interface love.forte.simbot.plugin/CancellablePlugin : love.forte.simbot.plugin/Plugin { // love.forte.simbot.plugin/CancellablePlugin|null[0]
+    abstract val isActive // love.forte.simbot.plugin/CancellablePlugin.isActive|{}isActive[0]
+        abstract fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.plugin/CancellablePlugin.isActive.<get-isActive>|<get-isActive>(){}[0]
+    abstract val isCanceled // love.forte.simbot.plugin/CancellablePlugin.isCanceled|{}isCanceled[0]
+        abstract fun <get-isCanceled>(): kotlin/Boolean // love.forte.simbot.plugin/CancellablePlugin.isCanceled.<get-isCanceled>|<get-isCanceled>(){}[0]
 
-    abstract fun close() // love.forte.simbot.plugin/CloseablePlugin.close|close(){}[0]
+    abstract fun cancel(kotlin/Throwable?) // love.forte.simbot.plugin/CancellablePlugin.cancel|cancel(kotlin.Throwable?){}[0]
 }
 
 abstract interface love.forte.simbot.plugin/Plugin // love.forte.simbot.plugin/Plugin|null[0]
@@ -1410,15 +1394,11 @@ abstract class love.forte.simbot.bot/JobBasedBot : love.forte.simbot.bot/Bot { /
     constructor <init>() // love.forte.simbot.bot/JobBasedBot.<init>|<init>(){}[0]
 
     abstract val job // love.forte.simbot.bot/JobBasedBot.job|{}job[0]
-        abstract fun <get-job>(): kotlinx.coroutines/CompletableJob // love.forte.simbot.bot/JobBasedBot.job.<get-job>|<get-job>(){}[0]
+        abstract fun <get-job>(): kotlinx.coroutines/Job // love.forte.simbot.bot/JobBasedBot.job.<get-job>|<get-job>(){}[0]
     final val onJoin // love.forte.simbot.bot/JobBasedBot.onJoin|{}onJoin[0]
         final fun <get-onJoin>(): kotlinx.coroutines.selects/SelectClause0 // love.forte.simbot.bot/JobBasedBot.onJoin.<get-onJoin>|<get-onJoin>(){}[0]
     open val isActive // love.forte.simbot.bot/JobBasedBot.isActive|{}isActive[0]
         open fun <get-isActive>(): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.isActive.<get-isActive>|<get-isActive>(){}[0]
-    open val isAlive // love.forte.simbot.bot/JobBasedBot.isAlive|{}isAlive[0]
-        open fun <get-isAlive>(): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.isAlive.<get-isAlive>|<get-isAlive>(){}[0]
-    open val isClosed // love.forte.simbot.bot/JobBasedBot.isClosed|{}isClosed[0]
-        open fun <get-isClosed>(): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
     open val isCompleted // love.forte.simbot.bot/JobBasedBot.isCompleted|{}isCompleted[0]
         open fun <get-isCompleted>(): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.isCompleted.<get-isCompleted>|<get-isCompleted>(){}[0]
 
@@ -1426,12 +1406,8 @@ abstract class love.forte.simbot.bot/JobBasedBot : love.forte.simbot.bot/Bot { /
         open fun <get-isStarted>(): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.isStarted.<get-isStarted>|<get-isStarted>(){}[0]
         open fun <set-isStarted>(kotlin/Boolean) // love.forte.simbot.bot/JobBasedBot.isStarted.<set-isStarted>|<set-isStarted>(kotlin.Boolean){}[0]
 
-    open fun afterJobComplete() // love.forte.simbot.bot/JobBasedBot.afterJobComplete|afterJobComplete(){}[0]
-    open fun beforeJobComplete() // love.forte.simbot.bot/JobBasedBot.beforeJobComplete|beforeJobComplete(){}[0]
-    open fun close() // love.forte.simbot.bot/JobBasedBot.close|close(){}[0]
-    open fun compareAndSetClosed(kotlin/Boolean, kotlin/Boolean): kotlin/Boolean // love.forte.simbot.bot/JobBasedBot.compareAndSetClosed|compareAndSetClosed(kotlin.Boolean;kotlin.Boolean){}[0]
+    open fun cancel(kotlin/Throwable?) // love.forte.simbot.bot/JobBasedBot.cancel|cancel(kotlin.Throwable?){}[0]
     open fun ensureAlive() // love.forte.simbot.bot/JobBasedBot.ensureAlive|ensureAlive(){}[0]
-    open fun ensureNotClosed() // love.forte.simbot.bot/JobBasedBot.ensureNotClosed|ensureNotClosed(){}[0]
     open fun onCompletion(love.forte.simbot.ability/OnCompletion) // love.forte.simbot.bot/JobBasedBot.onCompletion|onCompletion(love.forte.simbot.ability.OnCompletion){}[0]
     open suspend fun join() // love.forte.simbot.bot/JobBasedBot.join|join(){}[0]
 }
@@ -1769,13 +1745,6 @@ open class love.forte.simbot.ability/DeleteFailureException : kotlin/IllegalStat
     constructor <init>(kotlin/String?) // love.forte.simbot.ability/DeleteFailureException.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.ability/DeleteFailureException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
     constructor <init>(kotlin/Throwable?) // love.forte.simbot.ability/DeleteFailureException.<init>|<init>(kotlin.Throwable?){}[0]
-}
-
-open class love.forte.simbot.bot/BotAlreadyClosedException : kotlin/IllegalStateException { // love.forte.simbot.bot/BotAlreadyClosedException|null[0]
-    constructor <init>() // love.forte.simbot.bot/BotAlreadyClosedException.<init>|<init>(){}[0]
-    constructor <init>(kotlin/String?) // love.forte.simbot.bot/BotAlreadyClosedException.<init>|<init>(kotlin.String?){}[0]
-    constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.bot/BotAlreadyClosedException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
-    constructor <init>(kotlin/Throwable?) // love.forte.simbot.bot/BotAlreadyClosedException.<init>|<init>(kotlin.Throwable?){}[0]
 }
 
 open class love.forte.simbot.bot/BotException : kotlin/RuntimeException { // love.forte.simbot.bot/BotException|null[0]

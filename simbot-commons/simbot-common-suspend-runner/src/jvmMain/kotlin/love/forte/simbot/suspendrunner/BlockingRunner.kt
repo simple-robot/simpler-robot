@@ -29,11 +29,13 @@ package love.forte.simbot.suspendrunner
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.reactive.publish
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
+import org.reactivestreams.Publisher
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 import java.util.*
@@ -742,6 +744,28 @@ public fun <T> asReserve(
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$asReserve`(block: suspend () -> T, scope: CoroutineScope? = null): SuspendReserve<T> =
     asReserve(scope = scope, context = EmptyCoroutineContext, block = block)
+
+/**
+ * 将 [block] 包装为 [org.reactivestreams.Publisher].
+ */
+@InternalSimbotAPI
+public fun <T> asPublisher(
+    context: CoroutineContext? = null,
+    block: suspend () -> T
+): Publisher<T & Any> {
+    // 响应式实际调度上下文由调用处控制，此处无所谓，不是用 context.
+    return publish {
+        block()?.also { send(it) }
+    }
+}
+
+/**
+ * @see asPublisher
+ */
+@InternalSimbotAPI
+@Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
+public fun <T> `$$asPublisher`(block: suspend () -> T, scope: CoroutineScope? = null): Publisher<T & Any> =
+    asPublisher(context = scope?.coroutineContext, block = block)
 
 
 @InternalSimbotAPI

@@ -3357,7 +3357,7 @@ final class love.forte.simbot.qguild.event/MessageCreate : love.forte.simbot.qgu
 }
 
 final class love.forte.simbot.qguild.event/MessageDelete : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/MessageDelete|null[0]
-    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., kotlin/Unit) // love.forte.simbot.qguild.event/MessageDelete.<init>|<init>(kotlin.String?;kotlin.Long;kotlin.Unit){}[0]
+    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., kotlin/Unit = ...) // love.forte.simbot.qguild.event/MessageDelete.<init>|<init>(kotlin.String?;kotlin.Long;kotlin.Unit){}[0]
 
     final val data // love.forte.simbot.qguild.event/MessageDelete.data|{}data[0]
         final fun <get-data>() // love.forte.simbot.qguild.event/MessageDelete.data.<get-data>|<get-data>(){}[0]
@@ -3685,7 +3685,7 @@ final class love.forte.simbot.qguild.event/OpenForumThreadUpdate : love.forte.si
 }
 
 final class love.forte.simbot.qguild.event/PublicMessageDeleteCreate : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/PublicMessageDeleteCreate|null[0]
-    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., kotlin/Unit) // love.forte.simbot.qguild.event/PublicMessageDeleteCreate.<init>|<init>(kotlin.String?;kotlin.Long;kotlin.Unit){}[0]
+    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., kotlin/Unit = ...) // love.forte.simbot.qguild.event/PublicMessageDeleteCreate.<init>|<init>(kotlin.String?;kotlin.Long;kotlin.Unit){}[0]
 
     final val data // love.forte.simbot.qguild.event/PublicMessageDeleteCreate.data|{}data[0]
         final fun <get-data>() // love.forte.simbot.qguild.event/PublicMessageDeleteCreate.data.<get-data>|<get-data>(){}[0]

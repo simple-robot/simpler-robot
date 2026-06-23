@@ -102,8 +102,11 @@ internal class QGBotImpl(
     internal val logger =
         LoggerFactory.getLogger("love.forte.simbot.component.qguild.bot.${source.ticket.secret}")
 
-    override val job: CompletableJob = SupervisorJob(source.coroutineContext[Job])
-    override val coroutineContext: CoroutineContext = source.coroutineContext + job
+    override val job: Job
+        get() = source.coroutineContext[Job]!!
+
+    override val coroutineContext: CoroutineContext
+        get() = source.coroutineContext
 
     private val cacheConfig = configuration.cacheConfig
     private val cacheable = cacheConfig?.enable == true
@@ -526,10 +529,6 @@ internal class QGBotImpl(
             logger.error("Internal message pre send event process failed", ex)
             throw ex
         }
-    }
-
-    override fun beforeJobComplete() {
-        source.cancel()
     }
 
     override fun toString(): String {

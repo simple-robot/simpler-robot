@@ -325,6 +325,7 @@ public abstract interface annotation class love/forte/simbot/component/kook/bot/
 }
 
 public abstract interface class love/forte/simbot/component/kook/bot/KookBot : kotlinx/coroutines/CoroutineScope, love/forte/simbot/bot/Bot {
+	public fun cancel (Ljava/lang/Throwable;)V
 	public fun getAvatar ()Ljava/lang/String;
 	public abstract fun getComponent ()Llove/forte/simbot/component/kook/KookComponent;
 	public abstract fun getContactRelation ()Llove/forte/simbot/component/kook/bot/KookContactRelation;
@@ -335,9 +336,7 @@ public abstract interface class love/forte/simbot/component/kook/bot/KookBot : k
 	public abstract fun getLogger ()Lorg/slf4j/Logger;
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getSourceBot ()Llove/forte/simbot/kook/stdlib/Bot;
-	public abstract fun isActive ()Z
 	public abstract fun isMe (Llove/forte/simbot/common/id/ID;)Z
-	public abstract fun isStarted ()Z
 	public synthetic fun messageFromId (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun messageFromIdAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun messageFromIdBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookMessageContent;

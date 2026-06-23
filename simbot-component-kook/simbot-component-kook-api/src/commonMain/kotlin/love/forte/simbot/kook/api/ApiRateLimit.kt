@@ -27,9 +27,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import love.forte.simbot.kook.KookException
 
-
-// TODO
-
 /**
  * Kook  [超速限制](https://developer.kaiheila.cn/doc/rate-limit) 异常。
  *

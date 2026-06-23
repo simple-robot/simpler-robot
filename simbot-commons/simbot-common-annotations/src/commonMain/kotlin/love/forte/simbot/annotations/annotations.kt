@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -82,6 +82,29 @@ public annotation class FragileSimbotAPI
 )
 @MustBeDocumented
 public annotation class Api4J
+
+/**
+ * 实验性的响应式桥接 API。使用编译器插件为 `suspend` 函数生成返回值为
+ * `org.reactivestreams.Publisher` 的响应式类型来提供对响应式类型更直接的支持。
+ *
+ * 响应式桥接函数的生成仍是实验性的，它可能会在未来被修改或删除，而不保证任何兼容性。
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    "试验性的响应式桥接 API。" +
+        "响应式桥接函数的生成仍是实验性的，它可能会在未来被修改或删除，而不保证任何兼容性。"
+)
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@MustBeDocumented
+public annotation class ExperimentalReactiveBridgingApi
 
 /**
  * 一个设计为仅供 JS 用户使用的API

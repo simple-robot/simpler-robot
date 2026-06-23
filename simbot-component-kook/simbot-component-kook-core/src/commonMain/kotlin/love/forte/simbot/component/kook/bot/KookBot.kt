@@ -97,16 +97,6 @@ public interface KookBot : Bot, CoroutineScope {
     override val component: KookComponent
 
     /**
-     * bot 是否处于活跃状态
-     */
-    override val isActive: Boolean
-
-    /**
-     * bot 是否已经被启动过
-     */
-    override val isStarted: Boolean
-
-    /**
      * 头像信息
      *
      * 需要至少启动过一次（执行过 [start]）后才可获取。
@@ -144,6 +134,10 @@ public interface KookBot : Bot, CoroutineScope {
     @ST
     public suspend fun uploadAssetImage(api: CreateAssetApi): KookAssetImage =
         KookAssetImage(api.requestDataBy(this))
+
+    override fun cancel(reason: Throwable?) {
+        sourceBot.cancel(reason)
+    }
 
     /**
      * 与 [KookGuild] 相关的行为关系操作。
