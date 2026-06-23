@@ -168,6 +168,9 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             is GroupAtMessageCreate -> {
                 pushEvent { QGGroupAtMessageCreateEventImpl(bot, raw, event, event.id) }
             }
+            is GroupMessageCreate -> {
+                pushEvent { QGGroupMessageCreateEventImpl(bot, raw, event, event.id) }
+            }
 
             is C2CMessageCreate -> {
                 pushEvent { QGC2CMessageCreateEventImpl(bot, raw, event, event.id) }

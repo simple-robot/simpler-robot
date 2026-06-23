@@ -301,6 +301,15 @@ abstract interface love.forte.simbot.component.qguild.event/QGGroupAtMessageCrea
 
 abstract interface love.forte.simbot.component.qguild.event/QGGroupAtMessageCreateEventPreReplyEvent : love.forte.simbot.component.qguild.event/QGGroupAtMessageCreateEventInteractionEvent, love.forte.simbot.component.qguild.event/QGMessageEventPreReplyEvent, love.forte.simbot.event/ChatGroupMessageEventPreReplyEvent // love.forte.simbot.component.qguild.event/QGGroupAtMessageCreateEventPreReplyEvent|null[0]
 
+abstract interface love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent : love.forte.simbot.component.qguild.event/QGMessageEventInteractionEvent, love.forte.simbot.event/ChatGroupMessageEventInteractionEvent { // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent|null[0]
+    abstract val content // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent.content|{}content[0]
+        abstract fun <get-content>(): love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent.content.<get-content>|<get-content>(){}[0]
+}
+
+abstract interface love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventPostReplyEvent : love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent, love.forte.simbot.component.qguild.event/QGMessageEventPostReplyEvent, love.forte.simbot.event/ChatGroupMessageEventPostReplyEvent // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventPostReplyEvent|null[0]
+
+abstract interface love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventPreReplyEvent : love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventInteractionEvent, love.forte.simbot.component.qguild.event/QGMessageEventPreReplyEvent, love.forte.simbot.event/ChatGroupMessageEventPreReplyEvent // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEventPreReplyEvent|null[0]
+
 abstract interface love.forte.simbot.component.qguild.event/QGGroupSendSupportInteractionEvent : love.forte.simbot.component.qguild.event/QGSendSupportInteractionEvent { // love.forte.simbot.component.qguild.event/QGGroupSendSupportInteractionEvent|null[0]
     abstract val content // love.forte.simbot.component.qguild.event/QGGroupSendSupportInteractionEvent.content|{}content[0]
         abstract fun <get-content>(): love.forte.simbot.component.qguild.group/QGGroup // love.forte.simbot.component.qguild.event/QGGroupSendSupportInteractionEvent.content.<get-content>|<get-content>(){}[0]
@@ -980,6 +989,27 @@ abstract class love.forte.simbot.component.qguild.event/QGGroupManagementEvent :
     abstract suspend fun content(): love.forte.simbot.component.qguild.group/QGGroup // love.forte.simbot.component.qguild.event/QGGroupManagementEvent.content|content(){}[0]
     abstract suspend fun operator(): love.forte.simbot.component.qguild.group/QGGroupMember // love.forte.simbot.component.qguild.event/QGGroupManagementEvent.operator|operator(){}[0]
     final fun (love.forte.simbot.qguild.event/GroupRobotManagementData).computeId(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGGroupManagementEvent.computeId|computeId@love.forte.simbot.qguild.event.GroupRobotManagementData(){}[0]
+}
+
+abstract class love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent : love.forte.simbot.component.qguild.event/QGBaseMessageEvent<love.forte.simbot.qguild.event/GroupMessageCreate>, love.forte.simbot.event/ChatGroupMessageEvent { // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.<init>|<init>(){}[0]
+
+    abstract val bot // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.bot|{}bot[0]
+        abstract fun <get-bot>(): love.forte.simbot.component.qguild.bot/QGBot // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.bot.<get-bot>|<get-bot>(){}[0]
+    abstract val id // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.id.<get-id>|<get-id>(){}[0]
+    abstract val messageContent // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.messageContent|{}messageContent[0]
+        abstract fun <get-messageContent>(): love.forte.simbot.component.qguild.message/QGGroupAndC2CMessageContent // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.messageContent.<get-messageContent>|<get-messageContent>(){}[0]
+    open val authorId // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.authorId|{}authorId[0]
+        open fun <get-authorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.authorId.<get-authorId>|<get-authorId>(){}[0]
+    open val time // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.time|{}time[0]
+        open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.time.<get-time>|<get-time>(){}[0]
+
+    abstract suspend fun author(): love.forte.simbot.component.qguild.group/QGGroupMember // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.author|author(){}[0]
+    abstract suspend fun content(): love.forte.simbot.component.qguild.group/QGGroup // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.content|content(){}[0]
+    abstract suspend fun reply(kotlin/String): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.reply|reply(kotlin.String){}[0]
+    abstract suspend fun reply(love.forte.simbot.message/Message): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.reply|reply(love.forte.simbot.message.Message){}[0]
+    abstract suspend fun reply(love.forte.simbot.message/MessageContent): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.event/QGGroupMessageCreateEvent.reply|reply(love.forte.simbot.message.MessageContent){}[0]
 }
 
 abstract class love.forte.simbot.component.qguild.event/QGGroupMsgReceiveEvent : love.forte.simbot.component.qguild.event/QGGroupManagementEvent { // love.forte.simbot.component.qguild.event/QGGroupMsgReceiveEvent|null[0]

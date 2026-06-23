@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. ForteScarlet.
+ * Copyright (c) 2025-2026. ForteScarlet.
  *
  * This file is part of simbot-component-qq-guild.
  *
@@ -24,6 +24,7 @@ import love.forte.simbot.component.qguild.event.QGAtMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGC2CMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGDirectMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGGroupAtMessageCreateEvent
+import love.forte.simbot.component.qguild.event.QGGroupMessageCreateEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.guild.QGMember
@@ -175,6 +176,24 @@ internal fun QGMessageReceipt.alsoEmitPostReplyEvent(
     message: InteractionMessage,
 ): QGMessageReceipt {
     val event = QGGroupAtMessageCreateEventPostReplyEventImpl(
+        bot = bot,
+        content = content,
+        message = message,
+        receipt = this
+    )
+    bot.pushEventAndCollectAsync(event)
+    return this
+}
+
+/**
+ * @since 4.3.0
+ */
+internal fun QGMessageReceipt.alsoEmitPostReplyEvent(
+    bot: QGBotImpl,
+    content: QGGroupMessageCreateEvent,
+    message: InteractionMessage,
+): QGMessageReceipt {
+    val event = QGGroupMessageCreateEventPostReplyEventImpl(
         bot = bot,
         content = content,
         message = message,

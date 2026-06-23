@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. ForteScarlet.
+ * Copyright (c) 2025-2026. ForteScarlet.
  *
  * This file is part of simbot-component-qq-guild.
  *
@@ -103,6 +103,31 @@ internal class QGAtMessageCreateEventPostReplyEventImpl(
     receipt: QGMessageReceipt,
 ) : QGMessageEventPostReplyEventImpl(bot, content, message, receipt),
     QGAtMessageCreateEventPostReplyEvent
+
+/**
+ * @see QGGroupMessageCreateEventPreReplyEvent
+ * @since 4.3.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+internal class QGGroupMessageCreateEventPreReplyEventImpl(
+    bot: QGBot,
+    override val content: QGGroupMessageCreateEvent,
+    message: InteractionMessage,
+) : QGMessageEventPreReplyEventImpl(bot, content, message),
+    QGGroupMessageCreateEventPreReplyEvent
+
+/**
+ * @see QGGroupMessageCreateEventPostReplyEvent
+ * @since 4.3.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+internal class QGGroupMessageCreateEventPostReplyEventImpl(
+    bot: QGBot,
+    override val content: QGGroupMessageCreateEvent,
+    message: InteractionMessage,
+    receipt: QGMessageReceipt,
+) : QGMessageEventPostReplyEventImpl(bot, content, message, receipt),
+    QGGroupMessageCreateEventPostReplyEvent
 
 
 // QGDirectMessageCreateEvent implementations

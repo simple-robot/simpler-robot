@@ -101,6 +101,37 @@ public interface QGAtMessageCreateEventPostReplyEvent :
     ChatChannelMessageEventPostReplyEvent
 
 /**
+ * QG组件中针对 [QGGroupMessageCreateEvent.reply] 的拦截事件。
+ * @since 4.3.0
+ */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+public interface QGGroupMessageCreateEventInteractionEvent :
+    QGMessageEventInteractionEvent,
+    ChatGroupMessageEventInteractionEvent {
+    override val content: QGGroupMessageCreateEvent
+}
+
+/**
+ * 针对 [ChatGroupMessageEvent.reply] 的发送前拦截事件。
+ * @since 4.3.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface QGGroupMessageCreateEventPreReplyEvent :
+    QGGroupMessageCreateEventInteractionEvent,
+    QGMessageEventPreReplyEvent,
+    ChatGroupMessageEventPreReplyEvent
+
+/**
+ * 针对 [ChatGroupMessageEvent.reply] 的发送后通知事件。
+ * @since 4.3.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public interface QGGroupMessageCreateEventPostReplyEvent :
+    QGGroupMessageCreateEventInteractionEvent,
+    QGMessageEventPostReplyEvent,
+    ChatGroupMessageEventPostReplyEvent
+
+/**
  * QG组件中针对 [QGDirectMessageCreateEvent.reply] 的拦截事件。
  * @since 4.2.0
  */
