@@ -23,30 +23,31 @@
 
 package love.forte.simbot.component.qguild.utils
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toInstant
+import love.forte.simbot.common.time.StandardInstantTimestamp
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.qguild.ExperimentalQGApi
+import kotlin.time.Instant
 
 /**
  * Parse iso 8601 datetime string to [Timestamp]
  *
- * @see String.toInstant
+ * @see Instant.parse
  */
-@ExperimentalQGApi
-public fun String.toTimestamp(): Timestamp = KxInstantTimestamp(Instant.parse(this))
+public fun String.toTimestamp(): Timestamp = StandardInstantTimestamp(Instant.parse(this))
+// @ExperimentalQGApi
 
+@Deprecated("Use [StandardInstantTimestamp] instead.")
 private class KxInstantTimestamp(private val instant: Instant) : Timestamp {
     override val milliseconds: Long = instant.toEpochMilliseconds()
     override fun timeAs(unit: TimeUnit): Long {
         return when (unit) {
             TimeUnit.SECONDS -> instant.epochSeconds
             TimeUnit.MILLISECONDS -> milliseconds
-            else -> return unit.convert(milliseconds, TimeUnit.MILLISECONDS)
+            else -> unit.convert(milliseconds, TimeUnit.MILLISECONDS)
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Timestamp) return false
