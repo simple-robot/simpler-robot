@@ -1186,6 +1186,53 @@ public abstract class love/forte/simbot/component/qguild/event/QGGroupManagement
 	public abstract synthetic fun operator (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract class love/forte/simbot/component/qguild/event/QGGroupMessageCreateEvent : love/forte/simbot/component/qguild/event/QGBaseMessageEvent, love/forte/simbot/event/ChatGroupMessageEvent {
+	public fun <init> ()V
+	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
+	public fun getAuthor ()Llove/forte/simbot/component/qguild/group/QGGroupMember;
+	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getAuthor ()Llove/forte/simbot/definition/Member;
+	public fun getAuthorAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getAuthorId ()Llove/forte/simbot/common/id/ID;
+	public fun getAuthorReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getBot ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public synthetic fun getContent ()Ljava/lang/Object;
+	public fun getContent ()Llove/forte/simbot/component/qguild/group/QGGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Actor;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatGroup;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/ChatRoom;
+	public synthetic fun getContent ()Llove/forte/simbot/definition/Organization;
+	public fun getContentAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getContentReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract fun getMessageContent ()Llove/forte/simbot/component/qguild/message/QGGroupAndC2CMessageContent;
+	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
+	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun reply (Llove/forte/simbot/message/MessageContent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun replyAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
+	public fun replyBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyBlocking (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/message/MessageReceipt;
+	public fun replyReserve (Ljava/lang/String;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/Message;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun replyReserve (Llove/forte/simbot/message/MessageContent;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/component/qguild/event/QGGroupMessageCreateEventInteractionEvent : love/forte/simbot/component/qguild/event/QGMessageEventInteractionEvent, love/forte/simbot/event/ChatGroupMessageEventInteractionEvent {
+	public abstract fun getContent ()Llove/forte/simbot/component/qguild/event/QGGroupMessageCreateEvent;
+}
+
+public abstract interface class love/forte/simbot/component/qguild/event/QGGroupMessageCreateEventPostReplyEvent : love/forte/simbot/component/qguild/event/QGGroupMessageCreateEventInteractionEvent, love/forte/simbot/component/qguild/event/QGMessageEventPostReplyEvent, love/forte/simbot/event/ChatGroupMessageEventPostReplyEvent {
+}
+
+public abstract interface class love/forte/simbot/component/qguild/event/QGGroupMessageCreateEventPreReplyEvent : love/forte/simbot/component/qguild/event/QGGroupMessageCreateEventInteractionEvent, love/forte/simbot/component/qguild/event/QGMessageEventPreReplyEvent, love/forte/simbot/event/ChatGroupMessageEventPreReplyEvent {
+}
+
 public abstract class love/forte/simbot/component/qguild/event/QGGroupMsgReceiveEvent : love/forte/simbot/component/qguild/event/QGGroupManagementEvent {
 	public fun <init> ()V
 }
