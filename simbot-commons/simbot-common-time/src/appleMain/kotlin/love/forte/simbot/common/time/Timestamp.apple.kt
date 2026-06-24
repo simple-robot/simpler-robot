@@ -28,6 +28,12 @@ import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import platform.Foundation.NSDate
 import platform.Foundation.compare
 import platform.Foundation.timeIntervalSince1970
+import kotlin.math.floor
+import kotlin.math.roundToLong
+import kotlin.time.Instant
+
+private const val SECONDS_BETWEEN_1970_AND_2001 = 978_307_200L
+private const val NANOS_PER_SECOND = 1_000_000_000L
 
 
 /**
@@ -49,12 +55,32 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
     override val milliseconds: Long
         get() = (date.timeIntervalSince1970() * 1000).toLong()
 
+    /**
+     * 将 [NSDate] 尽可能无损地转化为 [Instant]。
+     *
+     * 使用 [NSDate.timeIntervalSinceReferenceDate] 先按 Apple reference epoch 拆分整数秒与小数秒，
+     * 再只把固定偏移加到整数秒上，避免把大数秒值放大后再取小数而额外损失精度。
+     *
+     * 纳秒调整值使用 [Long] 传给 [Instant.fromEpochSeconds]，由标准库负责处理四舍五入后的进位归一化。
+     */
+    override fun toInstant(): Instant {
+        val referenceSeconds = date.timeIntervalSinceReferenceDate()
+        val referenceEpochSeconds = floor(referenceSeconds).toLong()
+        val fraction = referenceSeconds - referenceEpochSeconds.toDouble()
+        val nanosecondAdjustment = (fraction * NANOS_PER_SECOND).roundToLong()
+
+        return Instant.fromEpochSeconds(
+            referenceEpochSeconds + SECONDS_BETWEEN_1970_AND_2001,
+            nanosecondAdjustment
+        )
+    }
+
     @OptIn(UnsafeNumber::class)
     override fun compareTo(other: Timestamp): Int {
         if (other is NSDateTimestamp) {
             @Suppress("REDUNDANT_CALL_OF_CONVERSION_METHOD")
             // 如果不转化，编译器报错：
-            // e: file:///Users/forte/IdeaProjects/simply-robot/simbot-commons/simbot-common-core/src/appleMain/kotlin/love/forte/simbot/common/time/Timestamp.apple.kt:57:20 Return type mismatch: expected 'Int', actual 'Long'.
+            // e: file:///simbot-commons/simbot-common-core/src/appleMain/kotlin/love/forte/simbot/common/time/Timestamp.apple.kt:57:20 Return type mismatch: expected 'Int', actual 'Long'.
             return date.compare(other.date).toInt()
         }
 
@@ -83,4 +109,3 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
 
     }
 }
-

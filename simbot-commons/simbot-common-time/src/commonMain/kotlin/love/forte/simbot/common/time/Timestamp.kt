@@ -26,11 +26,14 @@ package love.forte.simbot.common.time
 import love.forte.simbot.common.time.Timestamp.Companion.now
 import kotlin.jvm.JvmStatic
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * 一个用于表示 Unix 时间戳的类型。
  * 是从 `UTC 1970.01.01T00:00:00Z` 直至现在所经过的时间，
  * 常见的时间单位有秒或毫秒。
+ *
+ * [Timestamp] 是线程安全的**不可变**对象。
  *
  * [Timestamp] **不是日期API** ，而仅是一种忽略时间单位的时间戳包装体。
  * 因此 [Timestamp] 本身不提供例如解析某格式的日期（例如 ISO-8601）或进行日期格式化等功能。
@@ -78,7 +81,7 @@ import kotlin.time.Clock
  */
 public interface Timestamp : Comparable<Timestamp> {
     /**
-     * 毫秒级时间戳结果。
+     * 毫秒级时间戳，代表从 `UTC 1970.01.01T00:00:00Z` 直至现在所经过的时间。
      */
     public val milliseconds: Long
 
@@ -91,6 +94,14 @@ public interface Timestamp : Comparable<Timestamp> {
      * 默认情况下，[Timestamp] 通过 [milliseconds] 进行顺序比较。
      */
     override fun compareTo(other: Timestamp): Int = milliseconds.compareTo(other.milliseconds)
+
+    /**
+     * 根据当前的毫秒时间戳信息，转化为一个 [Instant]。
+     *
+     * @since 5.0
+     * @see Instant.fromEpochMilliseconds
+     */
+    public fun toInstant(): Instant = Instant.fromEpochMilliseconds(milliseconds)
 
     public companion object {
         /**

@@ -241,10 +241,21 @@ fun Project.configureSuspendTransform() {
 // endregion
 
 // region Dokka
+val dokkaExcludedProjectPaths = setOf(
+    ":simbot-test",
+)
+
+fun Project.shouldIncludeInRootDokka(): Boolean {
+    return path !in dokkaExcludedProjectPaths &&
+        !path.startsWith(":internal-processors:") &&
+        !path.startsWith(":samples:") &&
+        !path.startsWith(":tests:")
+}
+
 subprojects {
     afterEvaluate {
         val p = this
-        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId) && p.shouldIncludeInRootDokka()) {
             p.dokka {
                 dokkaPublications.all {
                     if (isSimbotLocal()) {
