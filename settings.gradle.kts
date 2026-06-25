@@ -32,7 +32,7 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    id("com.gradle.develocity") version "4.3"
+    id("com.gradle.develocity") version "4.4.3"
 }
 
 // https://docs.gradle.com/develocity/intellij-plugin/current/#troubleshooting
