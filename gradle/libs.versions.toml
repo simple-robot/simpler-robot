@@ -7,7 +7,7 @@ kotlinx-io = "0.8.2"
 kotlinx-datetime = "0.8.0"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
-ktor = "3.3.3"
+ktor = "3.5.0"
 slf4j = "2.0.17"
 log4j = "2.24.3"
 # https://kotlinlang.org/docs/ksp-quickstart.html
