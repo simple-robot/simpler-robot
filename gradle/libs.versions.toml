@@ -8,13 +8,12 @@ kotlinx-datetime = "0.8.0"
 kotlinx-cover = "0.9.2"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
+spring-boot-v4 = "4.1.0"
 ktor = "3.3.3"
 slf4j = "2.0.17"
 log4j = "2.24.3"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-#ksp = "2.3.0-2.0.3"
-#ksp = "2.3.3-2.3.3"
 ksp = "2.3.4"
 # https://square.github.io/kotlinpoet/
 # TODO to codeGentle
@@ -167,12 +166,14 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinxKover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-cover" }
 
 spring = { id = "org.springframework.boot", version.ref = "spring-boot-v3" }
+spring4 = { id = "org.springframework.boot", version.ref = "spring-boot-v4" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.7" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
 suspendTransform = { id = "love.forte.plugin.suspend-transform" } # , version.ref = "suspendTransform" } # version built in buildSrc
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

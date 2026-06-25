@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("simbot.kotlin-jvm")
     alias(libs.plugins.kotlin.plugin.spring)
-    alias(libs.plugins.spring)
+    alias(libs.plugins.spring4)
     alias(libs.plugins.spring.dependencyManagement)
 }
 

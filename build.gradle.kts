@@ -21,8 +21,6 @@
  *
  */
 
-import changelog.GenerateChangelogTask
-import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
@@ -218,17 +216,6 @@ idea {
 //     }
 //     // "true" for default behavior
 // }
-
-// Changelog
-
-tasks.register<GenerateSubChangelogTask>("createChangelog") {
-    tag = "v${P.VERSION}"
-    versions.put("Kotlin", libs.versions.kotlin.get())
-}
-
-tasks.register<GenerateChangelogTask>("updateChangelog") {
-    newestTag = "v${P.VERSION}"
-}
 
 // region Suspend Transform configs
 fun Project.configureSuspendTransform() {

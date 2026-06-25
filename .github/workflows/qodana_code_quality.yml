@@ -10,7 +10,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.10.2
+  GRADLE_VERSION: 9.6.0
 
 jobs:
   qodana:
