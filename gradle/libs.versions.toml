@@ -20,7 +20,7 @@ ksp = "2.3.4"
 kotlinPoet = "2.1.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
-reactor = "3.7.11"
+reactor = "3.8.6"
 # simbots
 # https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin
 suspendTransform = "2.3.0-0.13.2"
