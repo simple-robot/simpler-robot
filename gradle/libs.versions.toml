@@ -128,7 +128,8 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = 
 # https://square.github.io/kotlinpoet/interop-ksp/
 kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
 
-reactor-core = { group = "io.projectreactor", name = "reactor-core", version.ref = "reactor" }
+reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
 
 # suspend transform
 suspend-transform-gradle = { module = "love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle", version.ref = "suspendTransform" }

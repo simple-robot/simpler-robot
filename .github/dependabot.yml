@@ -2,9 +2,10 @@ version: 2
 updates:
   - package-ecosystem: gradle
     directory: /
-    target-branch: "v4-dev"
+    target-branch: "dev"
     schedule:
       interval: daily
     assignees:
       - ForteScarlet
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
+    
