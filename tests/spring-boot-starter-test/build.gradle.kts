@@ -73,11 +73,6 @@ dependencies {
 }
 
 kotlin {
-    @OptIn(ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = false
-    }
-
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }

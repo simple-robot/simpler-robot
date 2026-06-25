@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }
@@ -33,9 +34,6 @@ configJavaCompileWithModule("simbot.common.streamable")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {

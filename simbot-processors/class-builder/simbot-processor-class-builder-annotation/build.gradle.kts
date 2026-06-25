@@ -23,6 +23,7 @@
 
 plugins {
     id("simbot.kotlin-jvm")
+    id("simbot.kotlin-jvm-abi-convention")
     id("org.jetbrains.dokka")
 }
 
@@ -33,7 +34,6 @@ configJavaCompileWithModule(
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 }
 

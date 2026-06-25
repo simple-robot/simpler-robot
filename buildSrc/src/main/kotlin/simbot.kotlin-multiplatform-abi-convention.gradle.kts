@@ -22,9 +22,16 @@
  */
 
 plugins {
-    kotlin("jvm")
+    kotlin("multiplatform")
 }
 
+/*
+ * 多平台基础的 ABI 配置逻辑共享
+ */
+
 kotlin {
-    explicitApi()
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        configAbiValidation()
+    }
 }

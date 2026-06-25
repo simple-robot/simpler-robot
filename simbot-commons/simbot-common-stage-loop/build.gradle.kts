@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
 }
 
@@ -34,9 +35,6 @@ apply(plugin = "simbot-maven-publish")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     configKotlinJvm()
 
     js(IR) {

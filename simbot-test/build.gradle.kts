@@ -22,28 +22,19 @@
  */
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
-    // id("org.jetbrains.dokka")
 }
 
 configJavaCompileWithModule("simbot.test")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    @OptIn(ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = false
-    }
-
     compilerOptions {
         optIn.addAll(
             "love.forte.simbot.resource.ResourceImplementation",

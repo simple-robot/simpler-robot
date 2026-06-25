@@ -24,7 +24,6 @@
 import love.forte.gradle.common.core.project.setup
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
@@ -49,9 +48,10 @@ subprojects {
 
             plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
                 extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-                    extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
-                        configKookAbiValidation()
-                    }
+                    // TODO
+                    // extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
+                    //     configKookAbiValidation()
+                    // }
                 }
             }
         }

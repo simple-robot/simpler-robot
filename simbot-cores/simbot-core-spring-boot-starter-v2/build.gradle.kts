@@ -24,6 +24,7 @@
 
 plugins {
     id("simbot.kotlin-jvm")
+    id("simbot.kotlin-jvm-abi-convention")
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("org.jetbrains.dokka")
@@ -33,7 +34,6 @@ configJavaCompileWithModule("simbot.spring2boot.starter")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 }
 

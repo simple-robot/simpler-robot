@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
 }
 
@@ -33,9 +34,6 @@ configJavaCompileWithModule("simbot.common.apidefinition")
 apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {

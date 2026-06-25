@@ -55,10 +55,11 @@ plugins {
 configJavaCompileWithModule(jvmVersion = JVMConstants.KT_JVM_TARGET)
 
 kotlin {
-    @OptIn(ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = false
-    }
+    // TODO
+    // @OptIn(ExperimentalAbiValidation::class)
+    // abiValidation {
+    //     enabled = false
+    // }
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 }

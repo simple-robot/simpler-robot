@@ -21,13 +21,17 @@
  *
  */
 
+@file:OptIn(ExperimentalAbiValidation::class)
+
 import com.google.devtools.ksp.gradle.KspAATask
 import love.forte.plugin.suspendtrans.gradle.SuspendTransPluginConstants
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import java.time.Instant
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
@@ -41,9 +45,6 @@ configJavaCompileWithModule("simbot.api")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
