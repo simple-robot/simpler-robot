@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,23 +21,3 @@
  *
  */
 
-plugins {
-    id("simbot.kotlin-jvm")
-    alias(libs.plugins.ksp)
-}
-
-configJavaCompileWithModule(jvmVersion = JVMConstants.KT_JVM_TARGET)
-
-kotlin {
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    testImplementation(kotlin("test-junit5"))
-    testImplementation(project(":simbot-processors:class-builder:simbot-processor-class-builder-annotation"))
-    kspTest(project(":simbot-processors:class-builder:simbot-processor-class-builder"))
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}

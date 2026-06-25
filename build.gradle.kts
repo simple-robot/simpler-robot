@@ -23,8 +23,6 @@
 
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
@@ -152,19 +150,20 @@ fun Project.configKotlinAbiValidation() {
     when {
         plugins.hasPlugin("org.jetbrains.kotlin.jvm") -> {
             extensions.configure<KotlinJvmProjectExtension>("kotlin") {
-                extensions.configure<AbiValidationExtension>("abiValidation") {
-                    enabled.convention(true)
-                    configAbiValidation()
-                }
+                // extensions.configure<AbiValidationExtension>("abiValidation") {
+                //     // enabled.convention(true)
+                //     configAbiValidation()
+                // }
             }
         }
 
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-                extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
-                    enabled.convention(true)
-                    configAbiValidation()
-                }
+                //
+                // extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
+                //     enabled.convention(true)
+                //     configAbiValidation()
+                // }
             }
         }
     }

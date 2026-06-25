@@ -26,7 +26,5 @@ plugins {
 }
 
 kotlin {
-    compilerOptions {
-        // extraWarnings.set(true)
-    }
+    explicitApi()
 }

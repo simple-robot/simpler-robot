@@ -21,26 +21,18 @@
  *
  */
 
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
-
 plugins {
     id("simbot.kotlin-multiplatform")
     id("love.forte.plugin.suspend-transform")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
-    // 实验性模块，暂时不保证ABI
-    @OptIn(ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = false
-    }
+    // TODO 实验性模块，暂时不保证ABI
+    // abiValidation()
 
     compilerOptions {
         optIn.add("love.forte.simbot.extension.continuous.session.ExperimentalContinuousSessionAPI")
@@ -48,7 +40,7 @@ kotlin {
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 

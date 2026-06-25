@@ -25,20 +25,17 @@ import com.google.devtools.ksp.gradle.KspAATask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("simbot.kotlin-multiplatform")
+    id("simbot.kook.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.component.kook.core")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     compilerOptions {
         optIn.addAll(
             "love.forte.simbot.kook.ExperimentalKookApi",
@@ -49,7 +46,7 @@ kotlin {
 
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 

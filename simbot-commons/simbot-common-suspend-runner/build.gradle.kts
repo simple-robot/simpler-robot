@@ -25,19 +25,17 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.common.suspendrunner")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation {
-        filters.excluded.byNames.addAll(
+        filters.exclude.byNames.addAll(
             "love.forte.simbot.suspendrunner.SuspendMarker",
             "love.forte.simbot.suspendrunner.SuspendMarker.Container",
             "love.forte.simbot.suspendrunner.SuspendMarker\$Container",
@@ -46,7 +44,7 @@ kotlin {
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 
