@@ -36,7 +36,7 @@ gradleNexusPublishPlugin = "2.0.0"
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
 # https://github.com/vanniktech/gradle-maven-publish-plugin
 # https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
-maven-publish-plugin = "0.34.0"
+maven-publish-plugin = "0.37.0"
 
 # ed25519 crypto
 bouncycastle = "1.81"
