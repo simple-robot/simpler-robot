@@ -9,7 +9,11 @@ updates:
       - ForteScarlet
     open-pull-requests-limit: 20
     ignore:
-      - dependency-name: "*spring*"
+      - dependency-name: "org.springframework.*"
+      - dependency-name: "io.spring.dependency-management"
+      - dependency-name: "kotlin"
+      - dependency-name: "org.jetbrains.kotlin.plugin.spring"
+      - dependency-name: "love.forte.plugin.suspend-transform:*"
 
 
   # Enable version updates for GitHub Actions
