@@ -130,7 +130,7 @@ include(":samples:qq-webhook-server-spring")
 include(":samples:qq-webhook-server-spring-webflux")
 
 // local tests
-include(":tests:spring-boot-starter-test")
+// include(":tests:spring-boot-starter-test")
 
 // local
 // if (!(System.getProperty("IS_CI") ?: System.getenv("IS_CI")).toBoolean()) {

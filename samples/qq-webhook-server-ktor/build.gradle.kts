@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("simbot.kotlin-jvm")
-    id("io.ktor.plugin") version "2.3.12"
+    alias(libs.plugins.ktor)
 }
 
 repositories {
