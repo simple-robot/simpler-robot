@@ -17,7 +17,7 @@ log4j = "2.24.3"
 ksp = "2.3.4"
 # https://square.github.io/kotlinpoet/
 # TODO to codeGentle
-kotlinPoet = "2.1.0"
+kotlinPoet = "2.3.0"
 # https://github.com/Kotlin/kotlinx-benchmark
 #kotlinxBenchmark = "0.4.11"
 reactor = "3.7.11"
