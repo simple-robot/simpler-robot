@@ -39,7 +39,7 @@ gradleNexusPublishPlugin = "2.0.0"
 maven-publish-plugin = "0.34.0"
 
 # ed25519 crypto
-bouncycastle = "1.81"
+bouncycastle = "1.84"
 eddsa = "0.3.0"
 # https://github.com/ionspin/kotlin-multiplatform-libsodium
 libsodium-bindings = "0.9.5"
