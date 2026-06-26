@@ -28,18 +28,18 @@ plugins {
     id("simbot.kotlin-jvm")
     id("simbot.kotlin-jvm-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.gradle.suspendtransforms")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
     // Gradle BuildSrc 友好
-    coreLibrariesVersion = "1.9.0"
+    coreLibrariesVersion = "2.0.0"
     compilerOptions {
-        apiVersion = KotlinVersion.KOTLIN_1_9
-        languageVersion = KotlinVersion.KOTLIN_1_9
+        apiVersion = KotlinVersion.KOTLIN_2_0
+        languageVersion = KotlinVersion.KOTLIN_2_0
     }
 }
 

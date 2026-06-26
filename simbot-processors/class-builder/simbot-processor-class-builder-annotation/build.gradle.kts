@@ -25,13 +25,13 @@ plugins {
     id("simbot.kotlin-jvm")
     id("simbot.kotlin-jvm-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule(
     moduleName = "simbot.processor.classbuilder.annotation",
     jvmVersion = JVMConstants.KT_JVM_TARGET
 )
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)

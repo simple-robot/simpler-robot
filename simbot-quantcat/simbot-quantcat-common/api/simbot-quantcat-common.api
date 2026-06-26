@@ -125,6 +125,7 @@ public final class love/forte/simbot/quantcat/common/binder/ParameterBinder$Igno
 
 public abstract interface class love/forte/simbot/quantcat/common/binder/ParameterBinderFactory : love/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory {
 	public fun getPriority ()I
+	public synthetic fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/BaseParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
 	public abstract fun resolveToBinder (Llove/forte/simbot/quantcat/common/binder/ParameterBinderFactory$Context;)Llove/forte/simbot/quantcat/common/binder/ParameterBinderResult;
 }
 

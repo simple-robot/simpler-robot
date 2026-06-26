@@ -1,6 +1,5 @@
 public final class love/forte/simbot/common/time/InstantTimestamp : java/io/Serializable, love/forte/simbot/common/time/Timestamp {
 	public static final field Companion Llove/forte/simbot/common/time/InstantTimestamp$Companion;
-	public synthetic fun <init> (Ljava/time/Instant;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getInstant ()Ljava/time/Instant;
 	public fun getMilliseconds ()J

@@ -26,10 +26,10 @@ plugins {
     id("simbot.kotlin-jvm-abi-convention")
     id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)

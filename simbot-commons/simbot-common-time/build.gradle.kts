@@ -28,15 +28,15 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.common.time")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 

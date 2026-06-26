@@ -27,14 +27,15 @@ plugins {
     id("simbot.kotlin-jvm-abi-convention")
     id("com.github.gmazzo.buildconfig")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 group = P.GROUP_LOGGER
 
 configJavaCompileWithModule("simbot.logger.slf4j2impl")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
+    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
 }
 
 dependencies {

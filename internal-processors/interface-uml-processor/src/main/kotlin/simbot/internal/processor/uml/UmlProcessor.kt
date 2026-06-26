@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -37,7 +37,7 @@ import kotlin.io.path.*
 private const val TARGET_CLASS_OPTION = "simbot.internal.processor.uml.target"
 private const val OUTPUT_OPTION = "simbot.internal.processor.uml.output"
 
-class UmlProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
+public class UmlProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val output = environment.options[OUTPUT_OPTION] ?: throw NullPointerException("Output option is null")
 

@@ -41,13 +41,12 @@ plugins {
 }
 
 configJavaCompileWithModule("simbot.api")
-// apply(plugin = "simbot-maven-publish")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 

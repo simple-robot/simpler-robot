@@ -28,15 +28,15 @@ plugins {
     id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.common.core")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 

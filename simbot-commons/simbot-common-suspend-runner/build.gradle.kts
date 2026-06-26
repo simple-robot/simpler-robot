@@ -27,10 +27,10 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.common.suspendrunner")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     @OptIn(ExperimentalAbiValidation::class)
@@ -44,7 +44,7 @@ kotlin {
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 

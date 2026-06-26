@@ -212,11 +212,9 @@ public abstract class love/forte/simbot/kook/api/GetGatewayApi : love/forte/simb
 	public static final field Factory Llove/forte/simbot/kook/api/GetGatewayApi$Factory;
 	public synthetic fun <init> (ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Z)Llove/forte/simbot/kook/api/GetGatewayApi;
-	protected fun getApiPath ()Llove/forte/simbot/kook/api/BaseKookApi$ApiPath;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 	public static final fun resume (Llove/forte/simbot/kook/api/GetGatewayApi;JLjava/lang/String;)Llove/forte/simbot/kook/api/GetGatewayApi$Resume;
 	public static final fun resume (ZJLjava/lang/String;)Llove/forte/simbot/kook/api/GetGatewayApi$Resume;
-	protected fun urlBuild (Lio/ktor/http/URLBuilder;)V
 }
 
 public final class love/forte/simbot/kook/api/GetGatewayApi$Compress : love/forte/simbot/kook/api/GetGatewayApi {
@@ -430,7 +428,6 @@ public final class love/forte/simbot/kook/api/asset/AssetApis {
 
 public final class love/forte/simbot/kook/api/asset/CreateAssetApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/asset/CreateAssetApi$Factory;
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Lio/ktor/client/request/forms/ChannelProvider;)Llove/forte/simbot/kook/api/asset/CreateAssetApi;
 	public static final fun create (Lio/ktor/client/request/forms/ChannelProvider;Ljava/lang/String;)Llove/forte/simbot/kook/api/asset/CreateAssetApi;
 	public static final fun create (Lio/ktor/client/request/forms/InputProvider;)Llove/forte/simbot/kook/api/asset/CreateAssetApi;
@@ -493,7 +490,6 @@ public final class love/forte/simbot/kook/api/blacklist/BlacklistItem$Companion 
 
 public final class love/forte/simbot/kook/api/blacklist/CreateBlacklistApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/blacklist/CreateBlacklistApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/blacklist/CreateBlacklistApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/blacklist/CreateBlacklistApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/blacklist/CreateBlacklistApi;
@@ -509,7 +505,6 @@ public final class love/forte/simbot/kook/api/blacklist/CreateBlacklistApi$Facto
 
 public final class love/forte/simbot/kook/api/blacklist/DeleteBlacklistApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/blacklist/DeleteBlacklistApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/blacklist/DeleteBlacklistApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -520,7 +515,6 @@ public final class love/forte/simbot/kook/api/blacklist/DeleteBlacklistApi$Facto
 
 public final class love/forte/simbot/kook/api/blacklist/GetBlacklistListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/blacklist/GetBlacklistListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/blacklist/GetBlacklistListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/blacklist/GetBlacklistListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/blacklist/GetBlacklistListApi;
@@ -567,7 +561,6 @@ public final class love/forte/simbot/kook/api/category/CategoryListData$Companio
 
 public final class love/forte/simbot/kook/api/category/GetCategoryListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/category/GetCategoryListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/category/GetCategoryListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -631,7 +624,6 @@ public final class love/forte/simbot/kook/api/channel/ChannelInfo$Companion {
 
 public final class love/forte/simbot/kook/api/channel/ChannelKickoutApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/ChannelKickoutApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/ChannelKickoutApi;
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -643,7 +635,6 @@ public final class love/forte/simbot/kook/api/channel/ChannelKickoutApi$Factory 
 
 public final class love/forte/simbot/kook/api/channel/ChannelMoveUserApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/ChannelMoveUserApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/util/List;)Llove/forte/simbot/kook/api/channel/ChannelMoveUserApi;
 	public static final fun create (Ljava/lang/String;[Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/ChannelMoveUserApi;
 	public fun getBody ()Ljava/lang/Object;
@@ -716,7 +707,6 @@ public final class love/forte/simbot/kook/api/channel/ChannelView$Companion {
 
 public final class love/forte/simbot/kook/api/channel/CreateChannelApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/CreateChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/CreateChannelApi$Builder;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/CreateChannelApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/channel/CreateChannelApi;
@@ -769,7 +759,6 @@ public final class love/forte/simbot/kook/api/channel/CreateChannelApi$Factory$V
 
 public final class love/forte/simbot/kook/api/channel/DeleteChannelApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/DeleteChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/DeleteChannelApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -780,7 +769,6 @@ public final class love/forte/simbot/kook/api/channel/DeleteChannelApi$Factory {
 
 public final class love/forte/simbot/kook/api/channel/GetChannelListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/GetChannelListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/GetChannelListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/channel/GetChannelListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/channel/GetChannelListApi;
@@ -805,7 +793,6 @@ public final class love/forte/simbot/kook/api/channel/GetChannelListApiKt {
 
 public final class love/forte/simbot/kook/api/channel/GetChannelUserListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/GetChannelUserListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/GetChannelUserListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -816,7 +803,6 @@ public final class love/forte/simbot/kook/api/channel/GetChannelUserListApi$Fact
 
 public final class love/forte/simbot/kook/api/channel/GetChannelViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/GetChannelViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/GetChannelViewApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/kook/api/channel/GetChannelViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -864,7 +850,6 @@ public final class love/forte/simbot/kook/api/channel/LiveInfo$Companion {
 
 public final class love/forte/simbot/kook/api/channel/UpdateChannelApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Factory;
-	public synthetic fun <init> (Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/UpdateChannelApi$Builder;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/UpdateChannelApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/channel/UpdateChannelApi;
@@ -1072,7 +1057,6 @@ public final class love/forte/simbot/kook/api/guild/BoostData$Companion {
 
 public final class love/forte/simbot/kook/api/guild/CreateGuildMuteApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/guild/CreateGuildMuteApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1084,7 +1068,6 @@ public final class love/forte/simbot/kook/api/guild/CreateGuildMuteApi$Factory {
 
 public final class love/forte/simbot/kook/api/guild/DeleteGuildMuteApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/guild/DeleteGuildMuteApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1096,7 +1079,6 @@ public final class love/forte/simbot/kook/api/guild/DeleteGuildMuteApi$Factory {
 
 public final class love/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi;
@@ -1113,7 +1095,6 @@ public final class love/forte/simbot/kook/api/guild/GetGuildBoostHistoryListApi$
 public final class love/forte/simbot/kook/api/guild/GetGuildListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field FIRST_PAGE Llove/forte/simbot/kook/api/guild/GetGuildListApi;
 	public static final field Factory Llove/forte/simbot/kook/api/guild/GetGuildListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/kook/api/guild/GetGuildListApi;
 	public static final fun create (Ljava/lang/Integer;)Llove/forte/simbot/kook/api/guild/GetGuildListApi;
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/guild/GetGuildListApi;
@@ -1149,7 +1130,6 @@ public final class love/forte/simbot/kook/api/guild/GetGuildMuteListApi$Factory 
 
 public final class love/forte/simbot/kook/api/guild/GetGuildViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/guild/GetGuildViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/guild/GetGuildViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1237,7 +1217,6 @@ public final class love/forte/simbot/kook/api/guild/MuteType : java/lang/Enum {
 
 public final class love/forte/simbot/kook/api/invite/CreateInviteApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/invite/CreateInviteApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builderByChannelId (Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/CreateInviteApi$Builder;
 	public static final fun builderByGuildId (Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/CreateInviteApi$Builder;
 	public static final fun createByChannelId (Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/CreateInviteApi;
@@ -1246,7 +1225,6 @@ public final class love/forte/simbot/kook/api/invite/CreateInviteApi : love/fort
 }
 
 public final class love/forte/simbot/kook/api/invite/CreateInviteApi$Builder {
-	public fun <init> ()V
 	public final fun build ()Llove/forte/simbot/kook/api/invite/CreateInviteApi;
 	public final fun duration (I)Llove/forte/simbot/kook/api/invite/CreateInviteApi$Builder;
 	public final fun duration12Hour ()Llove/forte/simbot/kook/api/invite/CreateInviteApi$Builder;
@@ -1312,7 +1290,6 @@ public final class love/forte/simbot/kook/api/invite/CreatedInvite$Companion {
 
 public final class love/forte/simbot/kook/api/invite/DeleteInviteApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/invite/DeleteInviteApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/DeleteInviteApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/DeleteInviteApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/DeleteInviteApi;
@@ -1328,7 +1305,6 @@ public final class love/forte/simbot/kook/api/invite/DeleteInviteApi$Factory {
 
 public final class love/forte/simbot/kook/api/invite/GetInviteListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/invite/GetInviteListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/kook/api/invite/GetInviteListApi;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/GetInviteListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/invite/GetInviteListApi;
@@ -1382,7 +1358,6 @@ public final class love/forte/simbot/kook/api/invite/InviteInfo$Companion {
 
 public final class love/forte/simbot/kook/api/member/GetGuildMemberListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/member/GetGuildMemberListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;)Llove/forte/simbot/kook/api/member/GetGuildMemberListApi$Factory$Builder;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/member/GetGuildMemberListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/member/GetGuildMemberListApi;
@@ -1487,7 +1462,6 @@ public final class love/forte/simbot/kook/api/member/GuildMemberList$Companion {
 
 public final class love/forte/simbot/kook/api/member/KickoutMemberApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/member/KickoutMemberApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/member/KickoutMemberApi;
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1499,7 +1473,6 @@ public final class love/forte/simbot/kook/api/member/KickoutMemberApi$Factory {
 
 public final class love/forte/simbot/kook/api/member/ModifyMemberNicknameApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/member/ModifyMemberNicknameApi$Factory;
-	public synthetic fun <init> (Llove/forte/simbot/kook/api/member/ModifyMemberNicknameApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/member/ModifyMemberNicknameApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/member/ModifyMemberNicknameApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/member/ModifyMemberNicknameApi;
@@ -1516,7 +1489,6 @@ public final class love/forte/simbot/kook/api/member/ModifyMemberNicknameApi$Fac
 
 public final class love/forte/simbot/kook/api/message/AddChannelReactionApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/AddChannelReactionApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/AddChannelReactionApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1555,7 +1527,6 @@ public final class love/forte/simbot/kook/api/message/ChannelMessageList$Compani
 
 public final class love/forte/simbot/kook/api/message/DeleteChannelMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/DeleteChannelMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/DeleteChannelMessageApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1566,7 +1537,6 @@ public final class love/forte/simbot/kook/api/message/DeleteChannelMessageApi$Fa
 
 public final class love/forte/simbot/kook/api/message/DeleteChannelReactionApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/DeleteChannelReactionApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/DeleteChannelReactionApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/DeleteChannelReactionApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1580,7 +1550,6 @@ public final class love/forte/simbot/kook/api/message/DeleteChannelReactionApi$F
 
 public final class love/forte/simbot/kook/api/message/DeleteDirectMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/DeleteDirectMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/kook/api/message/DeleteDirectMessageApi;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/DeleteDirectMessageApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1622,7 +1591,6 @@ public final class love/forte/simbot/kook/api/message/DirectMessageList$Companio
 
 public final class love/forte/simbot/kook/api/message/GetChannelMessageListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/GetChannelMessageListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetChannelMessageListApi$Builder;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetChannelMessageListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/message/GetChannelMessageListApi;
@@ -1660,7 +1628,6 @@ public final class love/forte/simbot/kook/api/message/GetChannelMessageListApi$F
 
 public final class love/forte/simbot/kook/api/message/GetChannelMessageReactorListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/GetChannelMessageReactorListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetChannelMessageReactorListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1671,7 +1638,6 @@ public final class love/forte/simbot/kook/api/message/GetChannelMessageReactorLi
 
 public final class love/forte/simbot/kook/api/message/GetChannelMessageViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/GetChannelMessageViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetChannelMessageViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1682,7 +1648,6 @@ public final class love/forte/simbot/kook/api/message/GetChannelMessageViewApi$F
 
 public final class love/forte/simbot/kook/api/message/GetDirectMessageListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/GetDirectMessageListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builderByChatCode (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetDirectMessageListApi$Builder;
 	public static final fun builderByTargetId (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetDirectMessageListApi$Builder;
 	public static final fun createByChatCode (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetDirectMessageListApi;
@@ -1695,7 +1660,6 @@ public final class love/forte/simbot/kook/api/message/GetDirectMessageListApi : 
 }
 
 public final class love/forte/simbot/kook/api/message/GetDirectMessageListApi$Builder {
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun build ()Llove/forte/simbot/kook/api/message/GetDirectMessageListApi;
 	public final fun flag (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetDirectMessageListApi$Builder;
 	public final fun flag (Llove/forte/simbot/kook/api/message/MessageQueryFlag;)Llove/forte/simbot/kook/api/message/GetDirectMessageListApi$Builder;
@@ -1731,7 +1695,6 @@ public final class love/forte/simbot/kook/api/message/GetDirectMessageListApi$Fa
 
 public final class love/forte/simbot/kook/api/message/GetDirectMessageViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/GetDirectMessageViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/GetDirectMessageViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1794,7 +1757,6 @@ public final class love/forte/simbot/kook/api/message/MessageReactor$Companion {
 
 public final class love/forte/simbot/kook/api/message/SendChannelMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/SendChannelMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder ()Llove/forte/simbot/kook/api/message/SendChannelMessageApi$Builder;
 	public static final fun builder (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendChannelMessageApi$Builder;
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendChannelMessageApi;
@@ -1846,7 +1808,6 @@ public final class love/forte/simbot/kook/api/message/SendChannelMessageApi$Fact
 
 public final class love/forte/simbot/kook/api/message/SendDirectMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builderByChatCode (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Builder;
 	public static final fun builderByChatCode (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Builder;
 	public static final fun builderByTargetId (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Builder;
@@ -1936,7 +1897,6 @@ public final class love/forte/simbot/kook/api/message/SendMessageType : java/lan
 
 public final class love/forte/simbot/kook/api/message/UpdateChannelMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/UpdateChannelMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateChannelMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateChannelMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateChannelMessageApi;
@@ -1952,7 +1912,6 @@ public final class love/forte/simbot/kook/api/message/UpdateChannelMessageApi$Fa
 
 public final class love/forte/simbot/kook/api/message/UpdateDirectMessageApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/message/UpdateDirectMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateDirectMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateDirectMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/UpdateDirectMessageApi;
@@ -1968,7 +1927,6 @@ public final class love/forte/simbot/kook/api/message/UpdateDirectMessageApi$Fac
 
 public final class love/forte/simbot/kook/api/role/CreateGuildRoleApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/CreateGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/role/CreateGuildRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/role/CreateGuildRoleApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1982,7 +1940,6 @@ public final class love/forte/simbot/kook/api/role/CreateGuildRoleApi$Factory {
 
 public final class love/forte/simbot/kook/api/role/DeleteGuildRoleApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/DeleteGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;J)Llove/forte/simbot/kook/api/role/DeleteGuildRoleApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1993,7 +1950,6 @@ public final class love/forte/simbot/kook/api/role/DeleteGuildRoleApi$Factory {
 
 public final class love/forte/simbot/kook/api/role/GetGuildRoleListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/GetGuildRoleListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/role/GetGuildRoleListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/role/GetGuildRoleListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/role/GetGuildRoleListApi;
@@ -2009,7 +1965,6 @@ public final class love/forte/simbot/kook/api/role/GetGuildRoleListApi$Factory {
 
 public final class love/forte/simbot/kook/api/role/GrantGuildRoleApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/GrantGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/kook/api/role/GrantGuildRoleApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2020,7 +1975,6 @@ public final class love/forte/simbot/kook/api/role/GrantGuildRoleApi$Factory {
 
 public final class love/forte/simbot/kook/api/role/RevokeGuildRoleApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/RevokeGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/kook/api/role/RevokeGuildRoleApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2031,7 +1985,6 @@ public final class love/forte/simbot/kook/api/role/RevokeGuildRoleApi$Factory {
 
 public final class love/forte/simbot/kook/api/role/UpdateGuildRoleApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/role/UpdateGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;JLjava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Llove/forte/simbot/kook/objects/Permissions;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;J)Llove/forte/simbot/kook/api/role/UpdateGuildRoleApi$Builder;
 	public static final fun create (Ljava/lang/String;J)Llove/forte/simbot/kook/api/role/UpdateGuildRoleApi;
 	public fun getBody ()Ljava/lang/Object;
@@ -2256,7 +2209,6 @@ public final class love/forte/simbot/kook/api/thread/CategoryRole$Companion {
 
 public final class love/forte/simbot/kook/api/thread/CreateThreadApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/CreateThreadApi$Factory;
-	public synthetic fun <init> (Llove/forte/simbot/kook/api/thread/CreateThreadApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/CreateThreadApi$Builder;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/CreateThreadApi;
 	public static final fun create (Llove/forte/simbot/kook/api/thread/CreateThreadApi$Body;)Llove/forte/simbot/kook/api/thread/CreateThreadApi;
@@ -2306,7 +2258,6 @@ public final class love/forte/simbot/kook/api/thread/CreateThreadApi$Factory {
 
 public final class love/forte/simbot/kook/api/thread/DeleteThreadApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/DeleteThreadApi$Factory;
-	public synthetic fun <init> (Llove/forte/simbot/kook/api/thread/DeleteThreadApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/DeleteThreadApi;
 	public static final fun create (Llove/forte/simbot/kook/api/thread/DeleteThreadApi$Body;)Llove/forte/simbot/kook/api/thread/DeleteThreadApi;
 	public static final fun createForPost (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/DeleteThreadApi;
@@ -2350,7 +2301,6 @@ public final class love/forte/simbot/kook/api/thread/DeleteThreadApi$Factory {
 
 public final class love/forte/simbot/kook/api/thread/GetThreadListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/GetThreadListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Long;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/thread/GetThreadListApi;
@@ -2377,7 +2327,6 @@ public final class love/forte/simbot/kook/api/thread/GetThreadListApiKt {
 
 public final class love/forte/simbot/kook/api/thread/GetThreadPostApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/GetThreadPostApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadPostApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadPostApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadPostApi;
@@ -2402,7 +2351,6 @@ public final class love/forte/simbot/kook/api/thread/GetThreadPostApiKt {
 
 public final class love/forte/simbot/kook/api/thread/GetThreadViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/GetThreadViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/GetThreadViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2483,7 +2431,6 @@ public final class love/forte/simbot/kook/api/thread/PostOrderType : java/lang/E
 
 public final class love/forte/simbot/kook/api/thread/ReplyThreadApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/thread/ReplyThreadApi$Factory;
-	public synthetic fun <init> (Llove/forte/simbot/kook/api/thread/ReplyThreadApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/ReplyThreadApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/thread/ReplyThreadApi;
 	public static final fun create (Llove/forte/simbot/kook/api/thread/ReplyThreadApi$Body;)Llove/forte/simbot/kook/api/thread/ReplyThreadApi;
@@ -2735,7 +2682,6 @@ public final class love/forte/simbot/kook/api/user/GetMeApi : love/forte/simbot/
 
 public final class love/forte/simbot/kook/api/user/GetUserViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/user/GetUserViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/user/GetUserViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2798,7 +2744,6 @@ public final class love/forte/simbot/kook/api/user/OfflineApi : love/forte/simbo
 
 public final class love/forte/simbot/kook/api/userchat/CreateUserChatApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/userchat/CreateUserChatApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/userchat/CreateUserChatApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2809,7 +2754,6 @@ public final class love/forte/simbot/kook/api/userchat/CreateUserChatApi$Factory
 
 public final class love/forte/simbot/kook/api/userchat/DeleteUserChatApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/userchat/DeleteUserChatApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/userchat/DeleteUserChatApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2820,7 +2764,6 @@ public final class love/forte/simbot/kook/api/userchat/DeleteUserChatApi$Factory
 
 public final class love/forte/simbot/kook/api/userchat/GetUserChatListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/userchat/GetUserChatListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/kook/api/userchat/GetUserChatListApi;
 	public static final fun create (Ljava/lang/Integer;)Llove/forte/simbot/kook/api/userchat/GetUserChatListApi;
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/userchat/GetUserChatListApi;
@@ -2841,7 +2784,6 @@ public final class love/forte/simbot/kook/api/userchat/GetUserChatListApiKt {
 
 public final class love/forte/simbot/kook/api/userchat/GetUserChatViewApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/userchat/GetUserChatViewApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/userchat/GetUserChatViewApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2958,7 +2900,6 @@ public final class love/forte/simbot/kook/api/userchat/UserChatView$Companion {
 
 public final class love/forte/simbot/kook/api/voice/GetVoiceListApi : love/forte/simbot/kook/api/KookGetApi {
 	public static final field Factory Llove/forte/simbot/kook/api/voice/GetVoiceListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/Integer;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/kook/api/voice/GetVoiceListApi;
 	public static final fun create (Ljava/lang/Integer;)Llove/forte/simbot/kook/api/voice/GetVoiceListApi;
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/Integer;)Llove/forte/simbot/kook/api/voice/GetVoiceListApi;
@@ -3006,7 +2947,6 @@ public final class love/forte/simbot/kook/api/voice/JoinedVoiceChannel$Companion
 
 public final class love/forte/simbot/kook/api/voice/VoiceJoinApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/voice/VoiceJoinApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/voice/VoiceJoinApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/voice/VoiceJoinApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/voice/VoiceJoinApi;
@@ -3066,7 +3006,6 @@ public final class love/forte/simbot/kook/api/voice/VoiceJoinApi$Result$Companio
 
 public final class love/forte/simbot/kook/api/voice/VoiceKeepAliveApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/voice/VoiceKeepAliveApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/voice/VoiceKeepAliveApi;
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -3078,7 +3017,6 @@ public final class love/forte/simbot/kook/api/voice/VoiceKeepAliveApi$Factory {
 
 public final class love/forte/simbot/kook/api/voice/VoiceLeaveApi : love/forte/simbot/kook/api/KookPostApi {
 	public static final field Factory Llove/forte/simbot/kook/api/voice/VoiceLeaveApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/kook/api/voice/VoiceLeaveApi;
 	public fun getBody ()Ljava/lang/Object;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;

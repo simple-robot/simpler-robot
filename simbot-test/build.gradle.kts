@@ -25,14 +25,13 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     id("simbot.kotlin-multiplatform")
-    id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
     id("love.forte.plugin.suspend-transform")
     alias(libs.plugins.ksp)
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.test")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     compilerOptions {
@@ -44,7 +43,7 @@ kotlin {
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 

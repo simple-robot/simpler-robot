@@ -28,16 +28,16 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.common.stageloop")
-apply(plugin = "simbot-maven-publish")
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 

@@ -25,10 +25,10 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("love.forte.plugin.suspend-transform")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
     // TODO 实验性模块，暂时不保证ABI
@@ -40,7 +40,7 @@ kotlin {
 
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
-    js(IR) {
+    js {
         configJs()
     }
 
