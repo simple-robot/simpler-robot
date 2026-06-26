@@ -22,6 +22,8 @@
  */
 
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
+import org.gradle.api.internal.artifacts.dsl.dependencies.DependenciesExtensionModule.module
+import org.gradle.internal.impldep.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
@@ -37,7 +39,8 @@ plugins {
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
-    alias(libs.plugins.kotlinxKover)
+    // alias(libs.plugins.kotlinxKover)
+    //
 }
 
 setupGroup(P.Simbot)
@@ -78,7 +81,7 @@ subprojects {
     }
 
     afterEvaluate {
-        applyKover(root)
+        // applyKover(root)
 
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
             configureSuspendTransform()
@@ -130,19 +133,19 @@ tasks.detekt {
     exclude("**/test/java/")
 }
 
-fun Project.applyKover(rp: Project) {
-    val hasKt =
-        plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
-            plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
-
-
-    if (hasKt) {
-        apply(plugin = "org.jetbrains.kotlinx.kover")
-        rp.dependencies {
-            kover(project(path))
-        }
-    }
-}
+// fun Project.applyKover(rp: Project) {
+//     val hasKt =
+//         plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
+//             plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
+//
+//
+//     if (hasKt) {
+//         apply(plugin = "org.jetbrains.kotlinx.kover")
+//         rp.dependencies {
+//             kover(project(path))
+//         }
+//     }
+// }
 //endregion
 
 @OptIn(ExperimentalAbiValidation::class)
@@ -247,6 +250,9 @@ subprojects {
                     if (isSimbotLocal()) {
                         logger.info("Is 'SIMBOT_LOCAL', offline")
                         offlineMode = true
+                    } else if (isSimbotTest()) {
+                        logger.info("Is 'SIMBOT_TEST', offline")
+                        offlineMode = true
                     }
                 }
                 configSourceSets(p)
@@ -254,8 +260,10 @@ subprojects {
                     configHtmlCustoms(p)
                 }
             }
-            val applied = rootProject.dependencies.dokka(p)
-            logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
+            rootProject.dependencies {
+                val applied = rootProject.dependencies.dokka(project(p.path))
+                logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
+            }
         }
     }
 }
@@ -266,6 +274,9 @@ dokka {
     dokkaPublications.all {
         if (isSimbotLocal()) {
             logger.info("Is 'SIMBOT_LOCAL', offline")
+            offlineMode = true
+        } else if (isSimbotTest()) {
+            logger.info("Is 'SIMBOT_TEST', offline")
             offlineMode = true
         }
     }

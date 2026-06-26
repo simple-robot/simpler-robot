@@ -11,6 +11,7 @@ env:
   GRADLE_VERSION: 9.6.0
   NODE_VERSION: 22
   IS_CI: true
+  SIMBOT_TEST: true
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 concurrency:
