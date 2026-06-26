@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,9 +23,11 @@
 
 package love.forte.simbot.common.async
 
+import js.coroutines.asPromise
 import kotlinx.coroutines.*
 import love.forte.simbot.common.function.Action
 import kotlin.js.Promise
+import kotlinx.coroutines.asPromise as kotlinAsPromise
 
 /**
  * [Async] 类在 JS 平台的具体实现。
@@ -157,8 +159,12 @@ public actual class Async<out T> @PublishedApi internal actual constructor(publi
      * @return 表示同一异步操作的 [Promise] 对象
      * @see Deferred.asPromise
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    @OptIn(ExperimentalWasmJsInterop::class)
-    public fun asPromise(): Promise<JsAny?> = deferred.asPromise()
+    @Suppress("MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
+    @ExperimentalWasmJsInterop
+    @Deprecated(
+        "Kotlin WasmJs 平台下只支持 `T` 类型为 `JsAny` 的对象进行转化，" +
+            "因此直接使用 asPromise 可能会存在问题。"
+    )
+    public fun asPromise(): Promise<JsAny?> = (deferred as Deferred<JsAny?>).kotlinAsPromise()
 
 }

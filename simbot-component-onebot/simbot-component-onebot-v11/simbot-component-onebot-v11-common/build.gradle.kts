@@ -26,18 +26,16 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.onebot.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 
 configJavaCompileWithModule("simbot.component.onebot11v.common")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.addAll(
@@ -47,7 +45,7 @@ kotlin {
 
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 

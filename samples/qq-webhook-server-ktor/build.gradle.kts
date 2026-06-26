@@ -21,6 +21,7 @@
  *
  */
 
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -33,6 +34,7 @@ repositories {
 }
 
 kotlin {
+    explicitApi = ExplicitApiMode.Disabled
     jvmToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
     compilerOptions {
         javaParameters = true

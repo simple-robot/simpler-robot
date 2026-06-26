@@ -68,6 +68,7 @@ fun KotlinTargetContainerWithPresetFunctions.applyTier2(): List<KotlinNativeTarg
  *
  * @see <a href="https://kotlinlang.org/docs/native-target-support.html#tier-3">Kotlin/Native Tier 3</a>
  */
+@Suppress("DEPRECATION")
 fun KotlinTargetContainerWithPresetFunctions.applyTier3(
     supportKtorServer: Boolean = false,
     supportKtorClient: Boolean = false,

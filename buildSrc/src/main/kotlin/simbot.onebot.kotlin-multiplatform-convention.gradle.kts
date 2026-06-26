@@ -21,7 +21,7 @@
  *
  */
 
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 /*
  *     Copyright (c) 2026. ForteScarlet.
@@ -47,27 +47,18 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
  */
 
 plugins {
-    id("simbot.kotlin-jvm")
-    alias(libs.plugins.ksp)
+    kotlin("multiplatform")
+    id("simbot.kotlin-multiplatform")
+    id("simbot.kotlin-multiplatform-abi-convention")
 }
 
-
-configJavaCompileWithModule()
+/*
+ * 多平台基础的 ABI 配置逻辑共享
+ */
 
 kotlin {
-    explicitApi = ExplicitApiMode.Disabled
-    jvmToolchain(11)
-    compilerOptions {
-        javaParameters = true
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        configOneBotAbiValidation()
     }
 }
-
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
-

@@ -67,7 +67,6 @@ public abstract interface class love/forte/simbot/common/async/ErrorHandler {
 
 public final class love/forte/simbot/common/attribute/Attribute {
 	public static final field Companion Llove/forte/simbot/common/attribute/Attribute$Companion;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -362,7 +361,6 @@ public final class love/forte/simbot/common/id/Identifies {
 
 public final class love/forte/simbot/common/id/IntID : love/forte/simbot/common/id/SignedNumericID {
 	public static final field Companion Llove/forte/simbot/common/id/IntID$Companion;
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun copy ()Llove/forte/simbot/common/id/ID;
 	public fun copy ()Llove/forte/simbot/common/id/IntID;
 	public fun equals (Ljava/lang/Object;)Z
@@ -388,7 +386,6 @@ public final class love/forte/simbot/common/id/IntID$Companion {
 
 public final class love/forte/simbot/common/id/LongID : love/forte/simbot/common/id/SignedNumericID {
 	public static final field Companion Llove/forte/simbot/common/id/LongID$Companion;
-	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun copy ()Llove/forte/simbot/common/id/ID;
 	public fun copy ()Llove/forte/simbot/common/id/LongID;
 	public fun equals (Ljava/lang/Object;)Z
@@ -423,7 +420,6 @@ public final class love/forte/simbot/common/id/LongID$Serializer : kotlinx/seria
 
 public abstract class love/forte/simbot/common/id/NumericalID : love/forte/simbot/common/id/ID {
 	public static final field Companion Llove/forte/simbot/common/id/NumericalID$Companion;
-	protected abstract fun compareNumber (Llove/forte/simbot/common/id/NumericalID;)I
 	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public final fun compareTo (Llove/forte/simbot/common/id/ID;)I
 	public abstract fun toByte ()B
@@ -450,7 +446,6 @@ public final class love/forte/simbot/common/id/SignedNumericID$Companion {
 
 public final class love/forte/simbot/common/id/StringID : love/forte/simbot/common/id/ID {
 	public static final field Companion Llove/forte/simbot/common/id/StringID$Companion;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public fun compareTo (Llove/forte/simbot/common/id/ID;)I
 	public synthetic fun copy ()Llove/forte/simbot/common/id/ID;
@@ -481,7 +476,6 @@ public final class love/forte/simbot/common/id/StringID$Serializer : kotlinx/ser
 
 public final class love/forte/simbot/common/id/UIntID : love/forte/simbot/common/id/UnsignedNumericID {
 	public static final field Companion Llove/forte/simbot/common/id/UIntID$Companion;
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun copy ()Llove/forte/simbot/common/id/ID;
 	public fun copy ()Llove/forte/simbot/common/id/UIntID;
 	public fun equals (Ljava/lang/Object;)Z
@@ -508,7 +502,6 @@ public final class love/forte/simbot/common/id/UIntID$Companion {
 
 public final class love/forte/simbot/common/id/ULongID : love/forte/simbot/common/id/UnsignedNumericID {
 	public static final field Companion Llove/forte/simbot/common/id/ULongID$Companion;
-	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun copy ()Llove/forte/simbot/common/id/ID;
 	public fun copy ()Llove/forte/simbot/common/id/ULongID;
 	public fun equals (Ljava/lang/Object;)Z

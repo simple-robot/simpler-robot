@@ -195,7 +195,6 @@ public final class love/forte/simbot/qguild/api/Gateway$Companion {
 
 public abstract class love/forte/simbot/qguild/api/GatewayApis : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public synthetic fun <init> ([Ljava/lang/String;Lkotlinx/serialization/DeserializationStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	protected fun getPath ()[Ljava/lang/String;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
 
@@ -415,7 +414,6 @@ public abstract class love/forte/simbot/qguild/api/SimplePutApiDescription : lov
 
 public final class love/forte/simbot/qguild/api/announces/CreateAnnouncesApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/announces/CreateAnnouncesApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/announces/CreateAnnouncesApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -426,7 +424,6 @@ public final class love/forte/simbot/qguild/api/announces/CreateAnnouncesApi$Fac
 
 public final class love/forte/simbot/qguild/api/announces/DeleteAnnouncesApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/announces/DeleteAnnouncesApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/announces/DeleteAnnouncesApi;
 }
 
@@ -462,7 +459,6 @@ public final class love/forte/simbot/qguild/api/apipermission/ApiPermissions$Com
 
 public final class love/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/ApiDescription;Ljava/lang/String;)Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;Ljava/lang/String;)Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Body;)Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi;
@@ -509,7 +505,6 @@ public final class love/forte/simbot/qguild/api/apipermission/DemandApiPermissio
 
 public final class love/forte/simbot/qguild/api/apipermission/GetApiPermissionListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/apipermission/GetApiPermissionListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/apipermission/GetApiPermissionListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -554,7 +549,6 @@ public final class love/forte/simbot/qguild/api/app/GetAppAccessTokenApi : love/
 	public static final field Factory Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Factory;
 	public static final field HTTP_URL_STRING Ljava/lang/String;
 	public static final field httpUrl Lio/ktor/http/Url;
-	public synthetic fun <init> (Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi;
 	public synthetic fun getBody ()Ljava/lang/Object;
 	public fun getBody ()Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body;
@@ -596,7 +590,6 @@ public final class love/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Factory
 
 public final class love/forte/simbot/qguild/api/channel/CreateChannelApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;)Llove/forte/simbot/qguild/api/channel/CreateChannelApi;
 	public synthetic fun getBody ()Ljava/lang/Object;
 	public fun getBody ()Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;
@@ -687,7 +680,6 @@ public final class love/forte/simbot/qguild/api/channel/CreateChannelApi$Factory
 
 public final class love/forte/simbot/qguild/api/channel/DeleteChannelApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/DeleteChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/DeleteChannelApi;
 }
 
@@ -697,7 +689,6 @@ public final class love/forte/simbot/qguild/api/channel/DeleteChannelApi$Factory
 
 public final class love/forte/simbot/qguild/api/channel/GetChannelApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/GetChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/GetChannelApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -719,7 +710,6 @@ public final class love/forte/simbot/qguild/api/channel/GetChannelOnlineNumsApi$
 
 public final class love/forte/simbot/qguild/api/channel/GetGuildChannelListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/GetGuildChannelListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/GetGuildChannelListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -730,7 +720,6 @@ public final class love/forte/simbot/qguild/api/channel/GetGuildChannelListApi$F
 
 public final class love/forte/simbot/qguild/api/channel/ModifyChannelApi : love/forte/simbot/qguild/api/PatchQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;)Llove/forte/simbot/qguild/api/channel/ModifyChannelApi;
 	public synthetic fun getBody ()Ljava/lang/Object;
 	public fun getBody ()Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;
@@ -828,7 +817,6 @@ public final class love/forte/simbot/qguild/api/channel/OnlineNumsResult$Compani
 
 public final class love/forte/simbot/qguild/api/channel/permissions/GetChannelMemberPermissionsApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/permissions/GetChannelMemberPermissionsApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/permissions/GetChannelMemberPermissionsApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -850,7 +838,6 @@ public final class love/forte/simbot/qguild/api/channel/permissions/GetChannelRo
 
 public final class love/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi : love/forte/simbot/qguild/api/PutQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Permissions;Llove/forte/simbot/qguild/model/Permissions;)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi;
 	public static final fun createForAdd (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi;
 	public static final fun createForRemove (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelMemberPermissionsApi;
@@ -865,7 +852,6 @@ public final class love/forte/simbot/qguild/api/channel/permissions/ModifyChanne
 
 public final class love/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi : love/forte/simbot/qguild/api/PutQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Permissions;Llove/forte/simbot/qguild/model/Permissions;)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi;
 	public static final fun createForAdd (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi;
 	public static final fun createForRemove (Ljava/lang/String;Ljava/lang/String;J)Llove/forte/simbot/qguild/api/channel/permissions/ModifyChannelRolePermissionsApi;
@@ -880,7 +866,6 @@ public final class love/forte/simbot/qguild/api/channel/permissions/ModifyChanne
 
 public final class love/forte/simbot/qguild/api/channel/pins/AddPinsMessageApi : love/forte/simbot/qguild/api/PutQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/pins/AddPinsMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/pins/AddPinsMessageApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -892,7 +877,6 @@ public final class love/forte/simbot/qguild/api/channel/pins/AddPinsMessageApi$F
 public final class love/forte/simbot/qguild/api/channel/pins/DeletePinsMessageApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field DELETE_ALL_MESSAGE_ID Ljava/lang/String;
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/pins/DeletePinsMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/pins/DeletePinsMessageApi;
 	public static final fun createForDeleteAll (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/pins/DeletePinsMessageApi;
 }
@@ -904,7 +888,6 @@ public final class love/forte/simbot/qguild/api/channel/pins/DeletePinsMessageAp
 
 public final class love/forte/simbot/qguild/api/channel/pins/GetPinsMessageApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/pins/GetPinsMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/pins/GetPinsMessageApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -915,7 +898,6 @@ public final class love/forte/simbot/qguild/api/channel/pins/GetPinsMessageApi$F
 
 public final class love/forte/simbot/qguild/api/channel/schedules/CreateScheduleApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/schedules/CreateScheduleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;)Llove/forte/simbot/qguild/api/channel/schedules/CreateScheduleApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/Schedule;)Llove/forte/simbot/qguild/api/channel/schedules/CreateScheduleApi;
 	public synthetic fun getBody ()Ljava/lang/Object;
@@ -930,7 +912,6 @@ public final class love/forte/simbot/qguild/api/channel/schedules/CreateSchedule
 
 public final class love/forte/simbot/qguild/api/channel/schedules/DeleteScheduleApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/schedules/DeleteScheduleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/schedules/DeleteScheduleApi;
 }
 
@@ -940,7 +921,6 @@ public final class love/forte/simbot/qguild/api/channel/schedules/DeleteSchedule
 
 public final class love/forte/simbot/qguild/api/channel/schedules/GetScheduleApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/schedules/GetScheduleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/schedules/GetScheduleApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -951,7 +931,6 @@ public final class love/forte/simbot/qguild/api/channel/schedules/GetScheduleApi
 
 public final class love/forte/simbot/qguild/api/channel/schedules/GetScheduleListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/schedules/GetScheduleListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;JZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/schedules/GetScheduleListApi;
 	public static final fun create (Ljava/lang/String;J)Llove/forte/simbot/qguild/api/channel/schedules/GetScheduleListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -965,7 +944,6 @@ public final class love/forte/simbot/qguild/api/channel/schedules/GetScheduleLis
 
 public final class love/forte/simbot/qguild/api/channel/schedules/ModifyScheduleApi : love/forte/simbot/qguild/api/PatchQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/channel/schedules/ModifyScheduleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;)Llove/forte/simbot/qguild/api/channel/schedules/ModifyScheduleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Schedule;)Llove/forte/simbot/qguild/api/channel/schedules/ModifyScheduleApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/Schedule;)Llove/forte/simbot/qguild/api/channel/schedules/ModifyScheduleApi;
@@ -1025,7 +1003,6 @@ public final class love/forte/simbot/qguild/api/files/UploadGroupFilesApi : love
 	public static final field FILE_TYPE_IMAGE I
 	public static final field FILE_TYPE_VIDEO I
 	public static final field Factory Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi$BodyValue;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;ILjava/lang/String;)Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi;
 	public static final fun create (Ljava/lang/String;ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi$Body;)Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi;
@@ -1103,7 +1080,6 @@ public final class love/forte/simbot/qguild/api/files/UploadUserFilesApi : love/
 	public static final field FILE_TYPE_IMAGE I
 	public static final field FILE_TYPE_VIDEO I
 	public static final field Factory Llove/forte/simbot/qguild/api/files/UploadUserFilesApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/files/UploadUserFilesApi$BodyValue;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;ILjava/lang/String;)Llove/forte/simbot/qguild/api/files/UploadUserFilesApi;
 	public static final fun create (Ljava/lang/String;ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadUserFilesApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/files/UploadUserFilesApi$Body;)Llove/forte/simbot/qguild/api/files/UploadUserFilesApi;
@@ -1198,7 +1174,6 @@ public final class love/forte/simbot/qguild/api/forum/GetThreadApi$Factory : lov
 
 public final class love/forte/simbot/qguild/api/forum/GetThreadListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/forum/GetThreadListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/forum/GetThreadListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1209,7 +1184,6 @@ public final class love/forte/simbot/qguild/api/forum/GetThreadListApi$Factory :
 
 public final class love/forte/simbot/qguild/api/forum/PublishThreadApi : love/forte/simbot/qguild/api/PutQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/forum/PublishThreadApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/forum/PublishThreadApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)Llove/forte/simbot/qguild/api/forum/PublishThreadApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/forum/ThreadPublishFormat;)Llove/forte/simbot/qguild/api/forum/PublishThreadApi;
 	public static final fun createHtml (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/forum/PublishThreadApi;
@@ -1324,7 +1298,6 @@ public final class love/forte/simbot/qguild/api/forum/ThreadPublishResult$Compan
 
 public final class love/forte/simbot/qguild/api/guild/GetGuildApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/guild/GetGuildApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/guild/GetGuildApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1366,7 +1339,6 @@ public final class love/forte/simbot/qguild/api/guild/mute/MultiMuteResult$Compa
 
 public final class love/forte/simbot/qguild/api/guild/mute/MuteAllApi : love/forte/simbot/qguild/api/guild/mute/BaseMuteAllApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/guild/mute/MuteAllApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/guild/mute/MuteBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/qguild/api/guild/mute/MuteAllApi;
 	public static final fun createUnmute (Ljava/lang/String;)Llove/forte/simbot/qguild/api/guild/mute/MuteAllApi;
 }
@@ -1379,7 +1351,6 @@ public final class love/forte/simbot/qguild/api/guild/mute/MuteAllApi$Factory : 
 
 public final class love/forte/simbot/qguild/api/guild/mute/MuteMemberApi : love/forte/simbot/qguild/api/PatchQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/guild/mute/MuteMemberApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/guild/mute/MuteBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/qguild/api/guild/mute/MuteMemberApi;
 	public static final fun createUnmute (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/guild/mute/MuteMemberApi;
 }
@@ -1392,7 +1363,6 @@ public final class love/forte/simbot/qguild/api/guild/mute/MuteMemberApi$Factory
 
 public final class love/forte/simbot/qguild/api/guild/mute/MuteMultiMemberApi : love/forte/simbot/qguild/api/PatchQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/guild/mute/MuteMultiMemberApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/guild/mute/MuteBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;JLjava/util/concurrent/TimeUnit;)Llove/forte/simbot/qguild/api/guild/mute/MuteMultiMemberApi;
 	public static final fun createUnmute (Ljava/lang/String;)Llove/forte/simbot/qguild/api/guild/mute/MuteMultiMemberApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1406,7 +1376,6 @@ public final class love/forte/simbot/qguild/api/guild/mute/MuteMultiMemberApi$Fa
 
 public final class love/forte/simbot/qguild/api/member/DeleteMemberApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/member/DeleteMemberApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/member/DeleteMemberApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/DeleteMemberApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Z)Llove/forte/simbot/qguild/api/member/DeleteMemberApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;ZI)Llove/forte/simbot/qguild/api/member/DeleteMemberApi;
@@ -1423,7 +1392,6 @@ public final class love/forte/simbot/qguild/api/member/DeleteMemberApi$Factory :
 public final class love/forte/simbot/qguild/api/member/GetGuildMemberListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/member/GetGuildMemberListApi$Factory;
 	public static final field MAX_LIMIT I
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/GetGuildMemberListApi;
 	public static final fun create (Ljava/lang/String;I)Llove/forte/simbot/qguild/api/member/GetGuildMemberListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/GetGuildMemberListApi;
@@ -1447,7 +1415,6 @@ public final class love/forte/simbot/qguild/api/member/GetGuildMemberListApiKt {
 public final class love/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi$Factory;
 	public static final field MAX_LIMIT I
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;I)Llove/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi;
@@ -1470,7 +1437,6 @@ public final class love/forte/simbot/qguild/api/member/GetGuildRoleMemberListApi
 
 public final class love/forte/simbot/qguild/api/member/GetMemberApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/member/GetMemberApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/member/GetMemberApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1512,13 +1478,11 @@ public abstract class love/forte/simbot/qguild/api/message/ArkMessageTemplates {
 }
 
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$BigImg : love/forte/simbot/qguild/api/message/ArkMessageTemplates {
-	public static final field ID Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
 }
 
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList : love/forte/simbot/qguild/api/message/ArkMessageTemplates {
-	public static final field ID Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
@@ -1539,14 +1503,12 @@ public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$Text
 }
 
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextThumbnail : love/forte/simbot/qguild/api/message/ArkMessageTemplates {
-	public static final field ID Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
 }
 
 public final class love/forte/simbot/qguild/api/message/DeleteMessageApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/DeleteMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/DeleteMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/qguild/api/message/DeleteMessageApi;
 }
@@ -1559,7 +1521,6 @@ public final class love/forte/simbot/qguild/api/message/DeleteMessageApi$Factory
 
 public final class love/forte/simbot/qguild/api/message/GetMessageApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/GetMessageApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/GetMessageApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1619,7 +1580,6 @@ public final class love/forte/simbot/qguild/api/message/GroupAndC2CSendBody$Comp
 
 public final class love/forte/simbot/qguild/api/message/MessageSendApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/MessageSendApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;)Llove/forte/simbot/qguild/api/message/MessageSendApi;
 	public fun getHeaders ()Lio/ktor/http/Headers;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1710,7 +1670,6 @@ public final class love/forte/simbot/qguild/api/message/ResolveOther_jvmKt {
 
 public final class love/forte/simbot/qguild/api/message/direct/CreateDmsApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/direct/CreateDmsApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/direct/CreateDmsApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1721,7 +1680,6 @@ public final class love/forte/simbot/qguild/api/message/direct/CreateDmsApi$Fact
 
 public final class love/forte/simbot/qguild/api/message/direct/DeleteDmsApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/direct/DeleteDmsApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/direct/DeleteDmsApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/qguild/api/message/direct/DeleteDmsApi;
 }
@@ -1734,7 +1692,6 @@ public final class love/forte/simbot/qguild/api/message/direct/DeleteDmsApi$Fact
 
 public final class love/forte/simbot/qguild/api/message/direct/DmsSendApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/direct/DmsSendApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;)Llove/forte/simbot/qguild/api/message/direct/DmsSendApi;
 	public fun getHeaders ()Lio/ktor/http/Headers;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
@@ -1755,7 +1712,6 @@ public final class love/forte/simbot/qguild/api/message/group/GroupMessageSendAp
 	public static final field MSG_TYPE_MARKDOWN I
 	public static final field MSG_TYPE_MEDIA I
 	public static final field MSG_TYPE_TEXT I
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/GroupAndC2CSendBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;I)Llove/forte/simbot/qguild/api/message/group/GroupMessageSendApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/GroupAndC2CSendBody;)Llove/forte/simbot/qguild/api/message/group/GroupMessageSendApi;
 	public static final fun createMarkdown (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/group/GroupMessageSendApi;
@@ -1803,7 +1759,6 @@ public final class love/forte/simbot/qguild/api/message/group/GroupMessageSendRe
 
 public final class love/forte/simbot/qguild/api/message/setting/GetMessageSettingApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/setting/GetMessageSettingApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/setting/GetMessageSettingApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -1819,7 +1774,6 @@ public final class love/forte/simbot/qguild/api/message/user/UserMessageSendApi 
 	public static final field MSG_TYPE_MARKDOWN I
 	public static final field MSG_TYPE_MEDIA I
 	public static final field MSG_TYPE_TEXT I
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/GroupAndC2CSendBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;I)Llove/forte/simbot/qguild/api/message/user/UserMessageSendApi;
 	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/message/GroupAndC2CSendBody;)Llove/forte/simbot/qguild/api/message/user/UserMessageSendApi;
 	public static final fun createMarkdown (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/user/UserMessageSendApi;
@@ -1904,7 +1858,6 @@ public final class love/forte/simbot/qguild/api/message/user/UserMessageSendResu
 
 public final class love/forte/simbot/qguild/api/role/AddMemberRoleApi : love/forte/simbot/qguild/api/PutQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/role/AddMemberRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/AddMemberRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/AddMemberRoleApi;
 }
@@ -1917,7 +1870,6 @@ public final class love/forte/simbot/qguild/api/role/AddMemberRoleApi$Factory : 
 
 public final class love/forte/simbot/qguild/api/role/CreateGuildRoleApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/role/CreateGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/api/role/CreateGuildRoleApi$NewBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/CreateGuildRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/CreateGuildRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/role/CreateGuildRoleApi;
@@ -1945,7 +1897,6 @@ public final class love/forte/simbot/qguild/api/role/DeleteGuildRoleApi$Factory 
 
 public final class love/forte/simbot/qguild/api/role/GetGuildRoleListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/role/GetGuildRoleListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/GetGuildRoleListApi;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
@@ -2045,7 +1996,6 @@ public final class love/forte/simbot/qguild/api/role/GuildRoleModified$Companion
 
 public final class love/forte/simbot/qguild/api/role/ModifyGuildRoleApi : love/forte/simbot/qguild/api/PatchQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/role/ModifyGuildRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/api/role/ModifyGuildRoleApi$Body;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/ModifyGuildRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/ModifyGuildRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/role/ModifyGuildRoleApi;
@@ -2063,7 +2013,6 @@ public final class love/forte/simbot/qguild/api/role/ModifyGuildRoleApi$Factory 
 
 public final class love/forte/simbot/qguild/api/role/RemoveMemberRoleApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
 	public static final field Factory Llove/forte/simbot/qguild/api/role/RemoveMemberRoleApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/RemoveMemberRoleApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/role/RemoveMemberRoleApi;
 	public fun getBody ()Ljava/lang/Object;
@@ -2078,7 +2027,6 @@ public final class love/forte/simbot/qguild/api/role/RemoveMemberRoleApi$Factory
 public final class love/forte/simbot/qguild/api/user/GetBotGuildListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field DEFAULT_LIMIT I
 	public static final field Factory Llove/forte/simbot/qguild/api/user/GetBotGuildListApi$Factory;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun create ()Llove/forte/simbot/qguild/api/user/GetBotGuildListApi;
 	public static final fun create (I)Llove/forte/simbot/qguild/api/user/GetBotGuildListApi;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/user/GetBotGuildListApi;
@@ -2182,6 +2130,7 @@ public final class love/forte/simbot/qguild/event/C2CManagementData$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/C2CManagementDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/C2CManagementData;
 }
 
@@ -2397,6 +2346,7 @@ public final class love/forte/simbot/qguild/event/ChannelDelete$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/ChannelDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/EventChannel;
 }
 
@@ -2547,6 +2497,7 @@ public final class love/forte/simbot/qguild/event/EventGuild$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/EventGuildDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/EventGuild;
 }
 
@@ -2792,6 +2743,7 @@ public final class love/forte/simbot/qguild/event/EventMember$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/ForumDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/forum/ForumSourceInfo;
 }
 
@@ -2858,6 +2810,8 @@ public final class love/forte/simbot/qguild/event/ForumPostDelete$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/ForumPostDispatch : love/forte/simbot/qguild/event/ForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/model/forum/ForumSourceInfo;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/forum/Post;
 }
 
@@ -2955,6 +2909,8 @@ public final class love/forte/simbot/qguild/event/ForumReplyDelete$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/ForumReplyDispatch : love/forte/simbot/qguild/event/ForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/model/forum/ForumSourceInfo;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/forum/Reply;
 }
 
@@ -3021,6 +2977,8 @@ public final class love/forte/simbot/qguild/event/ForumThreadDelete$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/ForumThreadDispatch : love/forte/simbot/qguild/event/ForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/model/forum/ForumSourceInfo;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/forum/Thread;
 }
 
@@ -3503,6 +3461,7 @@ public final class love/forte/simbot/qguild/event/GroupRobotManagementData$Compa
 }
 
 public abstract class love/forte/simbot/qguild/event/GroupRobotManagementDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/GroupRobotManagementData;
 }
 
@@ -3818,6 +3777,7 @@ public final class love/forte/simbot/qguild/event/MessageAuditReject$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/MessageAuditedDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/MessageAudited;
 }
 
@@ -3883,6 +3843,7 @@ public final class love/forte/simbot/qguild/event/MessageDelete$Companion {
 }
 
 public abstract class love/forte/simbot/qguild/event/MessageDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/model/Message;
 }
 
@@ -3957,6 +3918,7 @@ public final class love/forte/simbot/qguild/event/Opcodes {
 }
 
 public abstract class love/forte/simbot/qguild/event/OpenForumDispatch : love/forte/simbot/qguild/event/Signal$Dispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/OpenForumEventData;
 }
 
@@ -4059,6 +4021,8 @@ public final class love/forte/simbot/qguild/event/OpenForumPostDelete$Companion 
 }
 
 public abstract class love/forte/simbot/qguild/event/OpenForumPostDispatch : love/forte/simbot/qguild/event/OpenForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/event/OpenForumEventData;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/OpenForumPostData;
 }
 
@@ -4155,6 +4119,8 @@ public final class love/forte/simbot/qguild/event/OpenForumReplyDelete$Companion
 }
 
 public abstract class love/forte/simbot/qguild/event/OpenForumReplyDispatch : love/forte/simbot/qguild/event/OpenForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/event/OpenForumEventData;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/OpenForumReplyData;
 }
 
@@ -4251,6 +4217,8 @@ public final class love/forte/simbot/qguild/event/OpenForumThreadDelete$Companio
 }
 
 public abstract class love/forte/simbot/qguild/event/OpenForumThreadDispatch : love/forte/simbot/qguild/event/OpenForumDispatch {
+	public synthetic fun getData ()Ljava/lang/Object;
+	public synthetic fun getData ()Llove/forte/simbot/qguild/event/OpenForumEventData;
 	public abstract fun getData ()Llove/forte/simbot/qguild/event/OpenForumThreadData;
 }
 
@@ -5066,7 +5034,6 @@ public final class love/forte/simbot/qguild/model/ChannelSubType {
 	public static final field PLAY_TOGETHER Llove/forte/simbot/qguild/model/ChannelSubType;
 	public static final field SMALL_TALK Llove/forte/simbot/qguild/model/ChannelSubType;
 	public static final field STRATEGY Llove/forte/simbot/qguild/model/ChannelSubType;
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getValue ()I
 	public static final fun isKnown (Llove/forte/simbot/qguild/model/ChannelSubType;)Z
 	public static final fun valueOf (I)Llove/forte/simbot/qguild/model/ChannelSubType;
@@ -5086,7 +5053,6 @@ public final class love/forte/simbot/qguild/model/ChannelType {
 	public static final field LIVE Llove/forte/simbot/qguild/model/ChannelType;
 	public static final field TEXT Llove/forte/simbot/qguild/model/ChannelType;
 	public static final field VOICE Llove/forte/simbot/qguild/model/ChannelType;
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()I
 	public fun hashCode ()I

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -22,39 +22,16 @@
  */
 
 plugins {
-    `java-library`
-    id("simbot.kotlin-jvm")
-    id("simbot.kotlin-jvm-abi-convention")
-    id("com.github.gmazzo.buildconfig")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    kotlin("multiplatform")
 }
 
-group = P.GROUP_LOGGER
-
-configJavaCompileWithModule("simbot.logger.slf4j2impl")
+/*
+ * 多平台基础的 ABI 配置逻辑共享
+ */
 
 kotlin {
-    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
-}
-
-dependencies {
-    api(project(":simbot-logger"))
-    api(libs.lmax.disruptor)
-}
-
-buildConfig {
-    useKotlinOutput {
-        internalVisibility = true
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        configAbiValidation()
     }
-    packageName.set("love.forte.simbot.logger.slf4j2")
-    className.set("SLF4JInformation")
-    var slf4jVersion = libs.versions.slf4j.get()
-    val last = slf4jVersion.lastIndexOf('.')
-    if (last >= 0) {
-        slf4jVersion = slf4jVersion.replaceRange(last, slf4jVersion.length, ".99")
-    }
-
-    buildConfigField("String", "VERSION", "\"$slf4jVersion\" // auto-generated")
-
 }
