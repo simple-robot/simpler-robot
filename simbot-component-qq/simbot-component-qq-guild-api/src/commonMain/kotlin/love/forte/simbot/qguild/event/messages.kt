@@ -68,9 +68,8 @@ public data class AtMessageCreate(
 public data class PublicMessageDeleteCreate(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
-    @SerialName("d") override val data: Unit // TODO 文档没找到描述。
-) :
-    Signal.Dispatch()
+    @SerialName("d") override val data: Unit = Unit // TODO 文档没找到描述。
+) : Signal.Dispatch()
 
 /**
  * 私信消息事件
@@ -120,7 +119,7 @@ public data class MessageCreate(
 public data class MessageDelete(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
-    @SerialName("d") override val data: Unit // TODO 文档没找到描述。
+    @SerialName("d") override val data: Unit = Unit // TODO 文档没找到描述。
 ) : Signal.Dispatch()
 
 

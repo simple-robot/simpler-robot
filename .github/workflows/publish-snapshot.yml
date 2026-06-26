@@ -19,7 +19,7 @@ on: # push
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.10.2
+  GRADLE_VERSION: 9.6.0
   NODE_VERSION: 22
   IS_CI: true
   SIGNING_KEY_ID: ${{ secrets.GPG_KEY_ID }}
@@ -36,7 +36,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
@@ -63,7 +63,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
@@ -83,7 +83,7 @@ jobs:
         run: gradle allTests -s --warning-mode all -x watchosSimulatorArm64Test -x iosX64Test -x macosX64Test -x watchosX64Test -x tvosX64Test
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-reports-${{ matrix.os }}
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       # setup Java
       - uses: actions/setup-java@v5
         with:
@@ -133,7 +133,7 @@ jobs:
     steps:
       # 检出仓库代码
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -160,7 +160,7 @@ jobs:
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-api-docs

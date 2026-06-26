@@ -4,6 +4,9 @@ public abstract interface annotation class love/forte/simbot/annotations/Api4J :
 public abstract interface annotation class love/forte/simbot/annotations/Api4Js : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class love/forte/simbot/annotations/ExperimentalReactiveBridgingApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class love/forte/simbot/annotations/ExperimentalSimbotAPI : java/lang/annotation/Annotation {
 }
 

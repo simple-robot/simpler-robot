@@ -27,8 +27,10 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.SimplePutApiDescription
+import love.forte.simbot.qguild.api.forum.PublishThreadApi.Factory.create
 import kotlin.jvm.JvmStatic
 
 /**
@@ -179,7 +181,7 @@ public enum class ThreadPublishFormat(public val value: Int) {
  */
 @ApiModel
 @Serializable
-public data class ThreadPublishResult(
+public data class ThreadPublishResult @ApiModelConstructor constructor(
     @SerialName("task_id") val taskId: String,
     @SerialName("create_time") val createTime: String
 )

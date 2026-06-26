@@ -21,12 +21,13 @@
  *
  */
 
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("simbot.kotlin-jvm")
     alias(libs.plugins.kotlin.plugin.spring)
-    alias(libs.plugins.spring)
+    alias(libs.plugins.spring4)
     alias(libs.plugins.spring.dependencyManagement)
 }
 
@@ -35,6 +36,7 @@ repositories {
 }
 
 kotlin {
+    explicitApi = ExplicitApiMode.Disabled
     jvmToolchain(17)
     compilerOptions {
         javaParameters = true

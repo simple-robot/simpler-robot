@@ -179,7 +179,7 @@ class SimpleApplicationTests {
                 println("EventResult: $it")
             }
 
-            app.close()
+            app.cancel()
             app.join()
 
             assertEquals(app.isActive, false)

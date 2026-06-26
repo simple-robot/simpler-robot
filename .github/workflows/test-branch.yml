@@ -8,9 +8,10 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 8.10.2
+  GRADLE_VERSION: 9.6.0
   NODE_VERSION: 22
   IS_CI: true
+  SIMBOT_TEST: true
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 concurrency:
@@ -24,7 +25,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
@@ -55,7 +56,7 @@ jobs:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
@@ -79,7 +80,7 @@ jobs:
         run: gradle checkLegacyAbi allTests -s --warning-mode all -x watchosSimulatorArm64Test -x iosX64Test -x macosX64Test -x watchosX64Test -x tvosX64Test
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-reports-${{ matrix.os }}
@@ -91,7 +92,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
@@ -107,7 +108,7 @@ jobs:
         run: gradle detekt -s --warning-mode all
 
       - name: Upload detekt reports
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: detekt-reports

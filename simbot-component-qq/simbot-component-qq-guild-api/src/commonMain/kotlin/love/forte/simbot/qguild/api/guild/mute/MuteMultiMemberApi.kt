@@ -28,6 +28,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.qguild.ApiModel
+import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimplePatchApiDescription
 import kotlin.jvm.JvmStatic
@@ -108,4 +109,4 @@ public class MuteMultiMemberApi private constructor(
  */
 @ApiModel
 @Serializable
-public data class MultiMuteResult(@SerialName("user_ids") val userIds: List<String>)
+public data class MultiMuteResult @ApiModelConstructor constructor(@SerialName("user_ids") val userIds: List<String>)

@@ -41,10 +41,6 @@ public abstract class love/forte/simbot/suspendrunner/RunInBlockingException : j
 	public synthetic fun <init> (Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
-public abstract interface annotation class love/forte/simbot/suspendrunner/SuspendMarker$Container : java/lang/annotation/Annotation {
-	public abstract fun value ()[Llove/forte/simbot/suspendrunner/SuspendMarker;
-}
-
 public abstract interface annotation class love/forte/simbot/suspendrunner/SuspendTrans : java/lang/annotation/Annotation {
 	public abstract fun asyncAsProperty ()Z
 	public abstract fun asyncBaseName ()Ljava/lang/String;
@@ -52,6 +48,9 @@ public abstract interface annotation class love/forte/simbot/suspendrunner/Suspe
 	public abstract fun blockingAsProperty ()Z
 	public abstract fun blockingBaseName ()Ljava/lang/String;
 	public abstract fun blockingSuffix ()Ljava/lang/String;
+	public abstract fun reactiveAsProperty ()Z
+	public abstract fun reactiveBaseName ()Ljava/lang/String;
+	public abstract fun reactiveSuffix ()Ljava/lang/String;
 	public abstract fun reserveAsProperty ()Z
 	public abstract fun reserveBaseName ()Ljava/lang/String;
 	public abstract fun reserveSuffix ()Ljava/lang/String;
@@ -67,6 +66,9 @@ public abstract interface annotation class love/forte/simbot/suspendrunner/Suspe
 	public abstract fun jsPromiseAsProperty ()Z
 	public abstract fun jsPromiseBaseName ()Ljava/lang/String;
 	public abstract fun jsPromiseSuffix ()Ljava/lang/String;
+	public abstract fun reactiveAsProperty ()Z
+	public abstract fun reactiveBaseName ()Ljava/lang/String;
+	public abstract fun reactiveSuffix ()Ljava/lang/String;
 	public abstract fun reserveAsProperty ()Z
 	public abstract fun reserveBaseName ()Ljava/lang/String;
 	public abstract fun reserveSuffix ()Ljava/lang/String;

@@ -21,11 +21,12 @@
  *
  */
 
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("simbot.kotlin-jvm")
-    id("io.ktor.plugin") version "2.3.12"
+    alias(libs.plugins.ktor)
 }
 
 repositories {
@@ -33,6 +34,7 @@ repositories {
 }
 
 kotlin {
+    explicitApi = ExplicitApiMode.Disabled
     jvmToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
     compilerOptions {
         javaParameters = true

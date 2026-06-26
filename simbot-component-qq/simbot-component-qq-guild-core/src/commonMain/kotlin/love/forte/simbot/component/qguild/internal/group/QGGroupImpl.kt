@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025. ForteScarlet.
+ * Copyright (c) 2024-2026. ForteScarlet.
  *
  * This file is part of simbot-component-qq-guild.
  *
@@ -36,7 +36,7 @@ import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
-import love.forte.simbot.qguild.event.GroupAtMessageCreate
+import love.forte.simbot.qguild.event.GroupMessageData
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 
@@ -48,7 +48,7 @@ import kotlin.coroutines.CoroutineContext
 internal class QGGroupImpl(
     private val bot: QGBotImpl,
     override val id: ID,
-    private val sourceEvent: GroupAtMessageCreate.Data?,
+    private val sourceEvent: GroupMessageData?,
     private val msgSeq: AtomicInt?,
     private val isFake: Boolean,
 ) : QGGroup {
@@ -139,7 +139,7 @@ internal class QGGroupImpl(
     }
 }
 
-internal fun GroupAtMessageCreate.Data.toGroup(bot: QGBotImpl, msgSeq: AtomicInt? = null): QGGroupImpl =
+internal fun GroupMessageData.toGroup(bot: QGBotImpl, msgSeq: AtomicInt? = null): QGGroupImpl =
     QGGroupImpl(bot, groupOpenid.ID, this, msgSeq, false)
 
 internal fun idGroup(bot: QGBotImpl, id: ID, msgSeq: AtomicInt? = null, isFake: Boolean = true): QGGroupImpl =

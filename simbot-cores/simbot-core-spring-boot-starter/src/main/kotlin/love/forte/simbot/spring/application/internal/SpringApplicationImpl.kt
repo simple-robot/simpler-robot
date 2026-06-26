@@ -23,7 +23,7 @@
 
 package love.forte.simbot.spring.application.internal
 
-import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ability.OnCompletion
@@ -36,7 +36,6 @@ import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.plugin.CloseablePlugin
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.spring.common.application.SpringApplication
 import kotlin.coroutines.CoroutineContext
@@ -57,21 +56,12 @@ internal class SpringApplicationImpl(
         val logger = LoggerFactory.logger<SpringApplicationImpl>()
     }
 
-    private val closed = java.util.concurrent.atomic.AtomicBoolean(false)
-    private val job: CompletableJob
+    private val job: Job
     override val coroutineContext: CoroutineContext
 
     init {
         val newJob = SupervisorJob(configuration.coroutineContext[Job])
         val newCoroutineContext = configuration.coroutineContext.minusKey(Job) + newJob
-
-        newJob.invokeOnCompletion {
-            if (closed.compareAndSet(false, true)) {
-                cancelPlugins()
-            }
-
-            invokeCancelledEvent()
-        }
 
         this.job = newJob
         this.coroutineContext = newCoroutineContext
@@ -101,17 +91,10 @@ internal class SpringApplicationImpl(
     override val isCompleted: Boolean
         get() = job.isCompleted
 
-    override val isClosed: Boolean
-        get() = closed.get()
-
-    override fun close() {
-        if (!closed.compareAndSet(false, true)) {
-            return
-        }
-
+    override fun cancel(reason: Throwable?) {
         invokeRequestCancelEvent()
-        cancelPlugins()
-        job.complete()
+        job.cancel(reason?.let { CancellationException(reason.message, it) })
+        invokeCancelledEvent()
     }
 
     private fun invokeCancelledEvent() {
@@ -123,18 +106,6 @@ internal class SpringApplicationImpl(
     private fun invokeRequestCancelEvent() {
         invokeNormalHandler(ApplicationLaunchStage.RequestCancel) {
             invoke(this@SpringApplicationImpl)
-        }
-    }
-
-    private fun cancelPlugins() {
-        for (plugin in plugins) {
-            if (plugin is CloseablePlugin) {
-                runCatching {
-                    plugin.close()
-                }.onFailure { e ->
-                    logger.error("Close plugin {} failed: {}", plugin, e.message, e)
-                }
-            }
         }
     }
 

@@ -14,6 +14,10 @@ open annotation class love.forte.simbot.annotations/Api4Js : kotlin/Annotation {
     constructor <init>() // love.forte.simbot.annotations/Api4Js.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.annotations/ExperimentalReactiveBridgingApi : kotlin/Annotation { // love.forte.simbot.annotations/ExperimentalReactiveBridgingApi|null[0]
+    constructor <init>() // love.forte.simbot.annotations/ExperimentalReactiveBridgingApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.annotations/ExperimentalSimbotAPI : kotlin/Annotation { // love.forte.simbot.annotations/ExperimentalSimbotAPI|null[0]
     constructor <init>() // love.forte.simbot.annotations/ExperimentalSimbotAPI.<init>|<init>(){}[0]
 }

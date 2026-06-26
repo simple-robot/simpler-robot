@@ -22,10 +22,6 @@
  */
 
 import love.forte.gradle.common.core.project.setup
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     kotlin("multiplatform") apply false
@@ -34,25 +30,4 @@ plugins {
 subprojects {
     group = P.GROUP_COMPONENT
     setup(P.SimbotComponent)
-
-    @OptIn(ExperimentalAbiValidation::class)
-    afterEvaluate {
-        when {
-            plugins.hasPlugin("org.jetbrains.kotlin.jvm") -> {
-                extensions.configure<KotlinJvmProjectExtension>("kotlin") {
-                    extensions.configure<AbiValidationExtension>("abiValidation") {
-                        configOneBotAbiValidation()
-                    }
-                }
-            }
-
-            plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
-                extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-                    extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
-                        configOneBotAbiValidation()
-                    }
-                }
-            }
-        }
-    }
 }

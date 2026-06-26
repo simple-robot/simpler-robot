@@ -21,18 +21,16 @@
  *
  */
 
-import changelog.GenerateChangelogTask
-import changelog.GenerateSubChangelogTask
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
+import org.gradle.api.internal.artifacts.dsl.dependencies.DependenciesExtensionModule.module
+import org.gradle.internal.impldep.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     idea
     id("org.jetbrains.dokka")
-    id("com.github.gmazzo.buildconfig") version "5.6.7" apply false
+    id("com.github.gmazzo.buildconfig") version "6.0.7" apply false
     kotlin("multiplatform") apply false
     kotlin("jvm") apply false
     alias(libs.plugins.ksp) apply false
@@ -41,7 +39,8 @@ plugins {
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
-    alias(libs.plugins.kotlinxKover)
+    // alias(libs.plugins.kotlinxKover)
+    //
 }
 
 setupGroup(P.Simbot)
@@ -82,7 +81,7 @@ subprojects {
     }
 
     afterEvaluate {
-        applyKover(root)
+        // applyKover(root)
 
         if (plugins.hasPlugin(libs.plugins.suspendTransform.get().pluginId)) {
             configureSuspendTransform()
@@ -134,19 +133,19 @@ tasks.detekt {
     exclude("**/test/java/")
 }
 
-fun Project.applyKover(rp: Project) {
-    val hasKt =
-        plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
-            plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
-
-
-    if (hasKt) {
-        apply(plugin = "org.jetbrains.kotlinx.kover")
-        rp.dependencies {
-            kover(project(path))
-        }
-    }
-}
+// fun Project.applyKover(rp: Project) {
+//     val hasKt =
+//         plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
+//             plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
+//
+//
+//     if (hasKt) {
+//         apply(plugin = "org.jetbrains.kotlinx.kover")
+//         rp.dependencies {
+//             kover(project(path))
+//         }
+//     }
+// }
 //endregion
 
 @OptIn(ExperimentalAbiValidation::class)
@@ -154,19 +153,20 @@ fun Project.configKotlinAbiValidation() {
     when {
         plugins.hasPlugin("org.jetbrains.kotlin.jvm") -> {
             extensions.configure<KotlinJvmProjectExtension>("kotlin") {
-                extensions.configure<AbiValidationExtension>("abiValidation") {
-                    enabled.convention(true)
-                    configAbiValidation()
-                }
+                // extensions.configure<AbiValidationExtension>("abiValidation") {
+                //     // enabled.convention(true)
+                //     configAbiValidation()
+                // }
             }
         }
 
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-                extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
-                    enabled.convention(true)
-                    configAbiValidation()
-                }
+                //
+                // extensions.configure<AbiValidationMultiplatformExtension>("abiValidation") {
+                //     enabled.convention(true)
+                //     configAbiValidation()
+                // }
             }
         }
     }
@@ -219,17 +219,6 @@ idea {
 //     // "true" for default behavior
 // }
 
-// Changelog
-
-tasks.register<GenerateSubChangelogTask>("createChangelog") {
-    tag = "v${P.VERSION}"
-    versions.put("Kotlin", libs.versions.kotlin.get())
-}
-
-tasks.register<GenerateChangelogTask>("updateChangelog") {
-    newestTag = "v${P.VERSION}"
-}
-
 // region Suspend Transform configs
 fun Project.configureSuspendTransform() {
     extensions.configure<SuspendTransformPluginExtension>("suspendTransformPlugin") {
@@ -241,14 +230,28 @@ fun Project.configureSuspendTransform() {
 // endregion
 
 // region Dokka
+val dokkaExcludedProjectPaths = setOf(
+    ":simbot-test",
+)
+
+fun Project.shouldIncludeInRootDokka(): Boolean {
+    return path !in dokkaExcludedProjectPaths &&
+        !path.startsWith(":internal-processors:") &&
+        !path.startsWith(":samples:") &&
+        !path.startsWith(":tests:")
+}
+
 subprojects {
     afterEvaluate {
         val p = this
-        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId)) {
+        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId) && p.shouldIncludeInRootDokka()) {
             p.dokka {
                 dokkaPublications.all {
                     if (isSimbotLocal()) {
                         logger.info("Is 'SIMBOT_LOCAL', offline")
+                        offlineMode = true
+                    } else if (isSimbotTest()) {
+                        logger.info("Is 'SIMBOT_TEST', offline")
                         offlineMode = true
                     }
                 }
@@ -257,8 +260,10 @@ subprojects {
                     configHtmlCustoms(p)
                 }
             }
-            val applied = rootProject.dependencies.dokka(p)
-            logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
+            rootProject.dependencies {
+                val applied = rootProject.dependencies.dokka(project(p.path))
+                logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
+            }
         }
     }
 }
@@ -269,6 +274,9 @@ dokka {
     dokkaPublications.all {
         if (isSimbotLocal()) {
             logger.info("Is 'SIMBOT_LOCAL', offline")
+            offlineMode = true
+        } else if (isSimbotTest()) {
+            logger.info("Is 'SIMBOT_TEST', offline")
             offlineMode = true
         }
     }

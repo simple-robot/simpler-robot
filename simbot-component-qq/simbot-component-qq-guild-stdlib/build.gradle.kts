@@ -23,25 +23,24 @@
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.qq.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
     id("love.forte.plugin.suspend-transform")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.stdlib")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     compilerOptions {
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
+        optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
     }
 
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 

@@ -80,9 +80,7 @@ class KookGuildBlacklistOperatorTest {
             override val guildRelation get() = error("Not implemented for test")
             override val contactRelation get() = error("Not implemented for test")
             override suspend fun join(): Unit = sourceBot.join()
-            override fun close(): Unit = Unit
-
-            override val isClosed: Boolean = false
+            override fun cancel(reason: Throwable?): Unit = Unit
             override suspend fun start() = error("Not implemented for test")
             override fun onCompletion(handle: OnCompletion): Unit = Unit
         }

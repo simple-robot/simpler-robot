@@ -35,6 +35,13 @@ public class StandardInstantTimestamp(private val instant: Instant) : Timestamp 
     override val milliseconds: Long
         get() = instant.toEpochMilliseconds()
 
+    /**
+     * 直接获取当前对象内包装的 [Instant] 对象实例，不会产生额外的对象创建开销。
+     *
+     * @since 5.0
+     */
+    override fun toInstant(): Instant = instant
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Timestamp) return false
@@ -51,6 +58,6 @@ public class StandardInstantTimestamp(private val instant: Instant) : Timestamp 
     }
 
     override fun toString(): String {
-        return "InstantTimestamp(instant=$instant)"
+        return "StandardInstantTimestamp($instant)"
     }
 }

@@ -37,6 +37,7 @@ abstract interface love.forte.simbot.common.time/Timestamp : kotlin/Comparable<l
 
     open fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/Timestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
     open fun timeAs(love.forte.simbot.common.time/TimeUnit): kotlin/Long // love.forte.simbot.common.time/Timestamp.timeAs|timeAs(love.forte.simbot.common.time.TimeUnit){}[0]
+    open fun toInstant(): kotlin.time/Instant // love.forte.simbot.common.time/Timestamp.toInstant|toInstant(){}[0]
 
     final object Companion { // love.forte.simbot.common.time/Timestamp.Companion|null[0]
         final fun now(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.now|now(){}[0]
@@ -64,6 +65,7 @@ final class love.forte.simbot.common.time/StandardInstantTimestamp : love.forte.
 
     final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/StandardInstantTimestamp.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/StandardInstantTimestamp.hashCode|hashCode(){}[0]
+    final fun toInstant(): kotlin.time/Instant // love.forte.simbot.common.time/StandardInstantTimestamp.toInstant|toInstant(){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.common.time/StandardInstantTimestamp.toString|toString(){}[0]
 }
 
@@ -79,6 +81,7 @@ final class love.forte.simbot.common.time/NSDateTimestamp : love.forte.simbot.co
     final fun compareTo(love.forte.simbot.common.time/Timestamp): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.compareTo|compareTo(love.forte.simbot.common.time.Timestamp){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.common.time/NSDateTimestamp.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // love.forte.simbot.common.time/NSDateTimestamp.hashCode|hashCode(){}[0]
+    final fun toInstant(): kotlin.time/Instant // love.forte.simbot.common.time/NSDateTimestamp.toInstant|toInstant(){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.common.time/NSDateTimestamp.toString|toString(){}[0]
 
     final object Companion // love.forte.simbot.common.time/NSDateTimestamp.Companion|null[0]

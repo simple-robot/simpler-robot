@@ -25,8 +25,11 @@ plugins {
     kotlin("multiplatform")
 }
 
+/*
+ * 最低限度的共享配置
+ */
+
 kotlin {
-    compilerOptions {
-        // extraWarnings.set(true)
-    }
+    explicitApi()
+    applyDefaultHierarchyTemplate()
 }

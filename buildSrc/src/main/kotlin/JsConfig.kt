@@ -24,6 +24,7 @@
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsNodeDsl
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinWasmJsTargetDsl
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink
 
 
 inline fun KotlinJsTargetDsl.configJs(
@@ -44,9 +45,12 @@ inline fun KotlinJsTargetDsl.configJs(
 }
 
 inline fun KotlinWasmJsTargetDsl.configWasmJs(
+    wasmModuleName: String? = null,
     crossinline configNodejs: KotlinJsNodeDsl.() -> Unit = {},
     block: () -> Unit = {}
 ) {
+    val resolvedWasmModuleName = wasmModuleName ?: project.name
+
     nodejs {
         testTask {
             // TODO Mocha test framework for Wasm target is not supported. For KotlinWasmNode used
@@ -57,6 +61,14 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
         configNodejs()
     }
 
+    this.compilerOptions {
+        moduleName.set(resolvedWasmModuleName)
+    }
     binaries.library()
+    project.tasks.withType(KotlinJsIrLink::class.java).configureEach {
+        if (name.endsWith("KotlinWasmJs")) {
+            compilerOptions.moduleName.set(resolvedWasmModuleName)
+        }
+    }
     block()
 }

@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
+import org.reactivestreams.Publisher
 import java.lang.reflect.Modifier
 import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KTypeParameter
@@ -46,18 +47,18 @@ interface STPTrans1 {
 }
 
 interface STTrans2 {
-    @ST(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs")
+    @ST(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs", reactiveSuffix = "Rt")
     suspend fun run1()
 
-    @ST(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs")
+    @ST(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs", reactiveSuffix = "Rt")
     suspend fun run1(value: String): String
 }
 
 interface STPTrans2 {
-    @STP(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs")
+    @STP(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs", reactiveSuffix = "Rt")
     suspend fun run1(): Int
 
-    @STP(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs")
+    @STP(blockingSuffix = "Bk", asyncSuffix = "Ay", reserveSuffix = "Rs", reactiveSuffix = "Rt")
     suspend fun run2(): String
 }
 
@@ -68,7 +69,9 @@ interface STTrans3 {
         asyncBaseName = "apply1",
         asyncSuffix = "Ay",
         reserveBaseName = "apply1",
-        reserveSuffix = "Rs"
+        reserveSuffix = "Rs",
+        reactiveBaseName = "apply1",
+        reactiveSuffix = "Rt"
     )
     suspend fun run1()
 
@@ -78,7 +81,9 @@ interface STTrans3 {
         asyncBaseName = "apply1",
         asyncSuffix = "Ay",
         reserveBaseName = "apply1",
-        reserveSuffix = "Rs"
+        reserveSuffix = "Rs",
+        reactiveBaseName = "apply1",
+        reactiveSuffix = "Rt"
     )
     suspend fun run1(value: String): String
 }
@@ -90,7 +95,9 @@ interface STPTrans3 {
         asyncBaseName = "apply1",
         asyncSuffix = "Ay",
         reserveBaseName = "apply1",
-        reserveSuffix = "Rs"
+        reserveSuffix = "Rs",
+        reactiveBaseName = "apply1",
+        reactiveSuffix = "Rt"
     )
     suspend fun run1(): Int
 
@@ -100,7 +107,9 @@ interface STPTrans3 {
         asyncBaseName = "apply2",
         asyncSuffix = "Ay",
         reserveBaseName = "apply2",
-        reserveSuffix = "Rs"
+        reserveSuffix = "Rs",
+        reactiveBaseName = "apply2",
+        reactiveSuffix = "Rt"
     )
     suspend fun run2(): String
 }
@@ -130,28 +139,34 @@ class SuspendTransformTests {
             val blockingMethod = getMethod("run1Blocking")
             val asyncMethod = getMethod("run1Async")
             val reserveMethod = getMethod("run1Reserve")
+            val reactiveMethod = getMethod("run1Reactive")
 
             assertEquals(Void.TYPE, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
 
         with(STTrans1::class.java) {
             val blockingMethod = getMethod("run1Blocking", String::class.java)
             val asyncMethod = getMethod("run1Async", String::class.java)
             val reserveMethod = getMethod("run1Reserve", String::class.java)
+            val reactiveMethod = getMethod("run1Reactive", String::class.java)
 
             assertEquals(String::class.java, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
     }
 
@@ -160,6 +175,8 @@ class SuspendTransformTests {
         with(STPTrans1::class.memberProperties) {
             assertTrue(any { it.name == "run1" && it.returnType.classifier == Int::class })
             assertTrue(any { it.name == "run2" && it.returnType.classifier == String::class })
+            assertTrue(any { it.name == "run1Reactive" && it.returnType.classifier == Publisher::class })
+            assertTrue(any { it.name == "run2Reactive" && it.returnType.classifier == Publisher::class })
         }
 
         // run1
@@ -167,14 +184,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getRun1")
             val asyncPropertyMethod = getMethod("getRun1Async")
             val reservePropertyMethod = getMethod("getRun1Reserve")
+            val reactivePropertyMethod = getMethod("getRun1Reactive")
 
             assertEquals(Int::class.javaPrimitiveType, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
         // run2
@@ -182,14 +202,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getRun2")
             val asyncPropertyMethod = getMethod("getRun2Async")
             val reservePropertyMethod = getMethod("getRun2Reserve")
+            val reactivePropertyMethod = getMethod("getRun2Reactive")
 
             assertEquals(String::class.java, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
     }
@@ -200,28 +223,34 @@ class SuspendTransformTests {
             val blockingMethod = getMethod("run1Bk")
             val asyncMethod = getMethod("run1Ay")
             val reserveMethod = getMethod("run1Rs")
+            val reactiveMethod = getMethod("run1Rt")
 
             assertEquals(Void.TYPE, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
 
         with(STTrans2::class.java) {
             val blockingMethod = getMethod("run1Bk", String::class.java)
             val asyncMethod = getMethod("run1Ay", String::class.java)
             val reserveMethod = getMethod("run1Rs", String::class.java)
+            val reactiveMethod = getMethod("run1Rt", String::class.java)
 
             assertEquals(String::class.java, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
     }
 
@@ -230,6 +259,8 @@ class SuspendTransformTests {
         with(STPTrans2::class.memberProperties) {
             assertTrue(any { it.name == "run1Bk" && it.returnType.classifier == Int::class })
             assertTrue(any { it.name == "run2Bk" && it.returnType.classifier == String::class })
+            assertTrue(any { it.name == "run1Rt" && it.returnType.classifier == Publisher::class })
+            assertTrue(any { it.name == "run2Rt" && it.returnType.classifier == Publisher::class })
         }
 
         // run1
@@ -237,14 +268,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getRun1Bk")
             val asyncPropertyMethod = getMethod("getRun1Ay")
             val reservePropertyMethod = getMethod("getRun1Rs")
+            val reactivePropertyMethod = getMethod("getRun1Rt")
 
             assertEquals(Int::class.javaPrimitiveType, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
         // run2
@@ -252,14 +286,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getRun2Bk")
             val asyncPropertyMethod = getMethod("getRun2Ay")
             val reservePropertyMethod = getMethod("getRun2Rs")
+            val reactivePropertyMethod = getMethod("getRun2Rt")
 
             assertEquals(String::class.java, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
     }
@@ -270,29 +307,34 @@ class SuspendTransformTests {
             val blockingMethod = getMethod("apply1Bk")
             val asyncMethod = getMethod("apply1Ay")
             val reserveMethod = getMethod("apply1Rs")
+            val reactiveMethod = getMethod("apply1Rt")
 
             assertEquals(Void.TYPE, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
 
         with(STTrans3::class.java) {
-
             val blockingMethod = getMethod("apply1Bk", String::class.java)
             val asyncMethod = getMethod("apply1Ay", String::class.java)
             val reserveMethod = getMethod("apply1Rs", String::class.java)
+            val reactiveMethod = getMethod("apply1Rt", String::class.java)
 
             assertEquals(String::class.java, blockingMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncMethod.returnType)
             assertEquals(SuspendReserve::class.java, reserveMethod.returnType)
+            assertEquals(Publisher::class.java, reactiveMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncMethod.modifiers))
             assertFalse(Modifier.isAbstract(reserveMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactiveMethod.modifiers))
         }
     }
 
@@ -301,6 +343,8 @@ class SuspendTransformTests {
         with(STPTrans3::class.memberProperties) {
             assertTrue(any { it.name == "apply1Bk" && it.returnType.classifier == Int::class })
             assertTrue(any { it.name == "apply2Bk" && it.returnType.classifier == String::class })
+            assertTrue(any { it.name == "apply1Rt" && it.returnType.classifier == Publisher::class })
+            assertTrue(any { it.name == "apply2Rt" && it.returnType.classifier == Publisher::class })
         }
 
         // run1
@@ -308,14 +352,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getApply1Bk")
             val asyncPropertyMethod = getMethod("getApply1Ay")
             val reservePropertyMethod = getMethod("getApply1Rs")
+            val reactivePropertyMethod = getMethod("getApply1Rt")
 
             assertEquals(Int::class.javaPrimitiveType, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
         // run2
@@ -323,14 +370,17 @@ class SuspendTransformTests {
             val blockingPropertyMethod = getMethod("getApply2Bk")
             val asyncPropertyMethod = getMethod("getApply2Ay")
             val reservePropertyMethod = getMethod("getApply2Rs")
+            val reactivePropertyMethod = getMethod("getApply2Rt")
 
             assertEquals(String::class.java, blockingPropertyMethod.returnType)
             assertEquals(CompletableFuture::class.java, asyncPropertyMethod.returnType)
             assertEquals(SuspendReserve::class.java, reservePropertyMethod.returnType)
+            assertEquals(Publisher::class.java, reactivePropertyMethod.returnType)
 
             assertFalse(Modifier.isAbstract(blockingPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(asyncPropertyMethod.modifiers))
             assertFalse(Modifier.isAbstract(reservePropertyMethod.modifiers))
+            assertFalse(Modifier.isAbstract(reactivePropertyMethod.modifiers))
         }
 
     }
@@ -338,30 +388,52 @@ class SuspendTransformTests {
     @Test
     fun `typed interface test`() {
         with(ITypedTrans1::class) {
-            assertTrue(memberProperties.any {
-                it.name == "value" && with(it.returnType.classifier) {
-                    this is KTypeParameter && this.upperBounds.any { b -> b.classifier == Foo::class }
+            assertTrue(
+                memberProperties.any {
+                    it.name == "value" && with(it.returnType.classifier) {
+                        this is KTypeParameter && this.upperBounds.any { b -> b.classifier == Foo::class }
+                    }
                 }
-            })
-            assertTrue(memberProperties.any {
-                it.name == "valueAsync" && it.returnType.classifier == CompletableFuture::class
-            })
-            assertTrue(memberProperties.any {
-                it.name == "valueReserve" && it.returnType.classifier == SuspendReserve::class
-            })
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueAsync" && it.returnType.classifier == CompletableFuture::class
+                }
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueReserve" && it.returnType.classifier == SuspendReserve::class
+                }
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueReactive" && it.returnType.classifier == Publisher::class
+                }
+            )
         }
         with(TypedTrans1Impl::class) {
-            assertTrue(memberProperties.any {
-                it.name == "value" && with(it.returnType.classifier) {
-                    this is KTypeParameter && this.upperBounds.any { b -> b.classifier == Bar::class }
+            assertTrue(
+                memberProperties.any {
+                    it.name == "value" && with(it.returnType.classifier) {
+                        this is KTypeParameter && this.upperBounds.any { b -> b.classifier == Bar::class }
+                    }
                 }
-            })
-            assertTrue(memberProperties.any {
-                it.name == "valueAsync" && it.returnType.classifier == CompletableFuture::class
-            })
-            assertTrue(memberProperties.any {
-                it.name == "valueReserve" && it.returnType.classifier == SuspendReserve::class
-            })
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueAsync" && it.returnType.classifier == CompletableFuture::class
+                }
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueReserve" && it.returnType.classifier == SuspendReserve::class
+                }
+            )
+            assertTrue(
+                memberProperties.any {
+                    it.name == "valueReactive" && it.returnType.classifier == Publisher::class
+                }
+            )
         }
     }
 

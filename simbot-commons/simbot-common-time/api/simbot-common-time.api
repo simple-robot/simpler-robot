@@ -1,6 +1,5 @@
 public final class love/forte/simbot/common/time/InstantTimestamp : java/io/Serializable, love/forte/simbot/common/time/Timestamp {
 	public static final field Companion Llove/forte/simbot/common/time/InstantTimestamp$Companion;
-	public synthetic fun <init> (Ljava/time/Instant;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getInstant ()Ljava/time/Instant;
 	public fun getMilliseconds ()J
@@ -35,6 +34,7 @@ public final class love/forte/simbot/common/time/StandardInstantTimestamp : love
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getMilliseconds ()J
 	public fun hashCode ()I
+	public fun toInstant ()Lkotlin/time/Instant;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -47,6 +47,7 @@ public abstract interface class love/forte/simbot/common/time/Timestamp : java/l
 	public static fun now (Lkotlin/time/Clock;)Llove/forte/simbot/common/time/Timestamp;
 	public static fun ofMilliseconds (J)Llove/forte/simbot/common/time/Timestamp;
 	public fun timeAs (Ljava/util/concurrent/TimeUnit;)J
+	public fun toInstant ()Lkotlin/time/Instant;
 }
 
 public final class love/forte/simbot/common/time/Timestamp$Companion {

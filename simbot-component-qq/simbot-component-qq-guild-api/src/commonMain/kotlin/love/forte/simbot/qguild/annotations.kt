@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild
@@ -32,6 +38,23 @@ package love.forte.simbot.qguild
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 public annotation class ApiModel
+
+/**
+ * 被标记了 [ApiModel] 的数据载体类型的构造函数（以及数据类生成的解构函数、copy 函数），
+ * 为了确保兼容性 **不应** 被直接调用。
+ * 在后续版本和 5.0 版本之后，它们会被过渡为隐藏了构造的数据类或普通类型。
+ *
+ * @since 4.2.3
+ */
+@RequiresOptIn(
+    message = "被标记了 `@ApiModel` 的数据载体类型的构造函数（以及解构函数、copy 函数），" +
+        "为了确保兼容性 **不应** 被直接调用。" +
+        "在后续版本和 5.0 版本之后，它们会被过渡为隐藏了构造的数据类或普通类型。"
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CONSTRUCTOR)
+@MustBeDocumented
+public annotation class ApiModelConstructor
 
 /**
  * 标记一个API类型，代表它是一个在QQ频道API文档中被标记 **仅支持私域机器人** 的API。

@@ -26,26 +26,25 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.qq.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
     alias(libs.plugins.ksp)
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.api")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
+        optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
     }
 
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs()
     }
 
@@ -78,7 +77,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(kotlin("test"))
-            implementation(libs.kotlinx.coroutines.debug)
+            // implementation(libs.kotlinx.coroutines.debug)
             implementation(libs.kotlinx.coroutines.test)
             // https://ktor.io/docs/http-client-testing.html
             implementation(libs.ktor.client.mock)

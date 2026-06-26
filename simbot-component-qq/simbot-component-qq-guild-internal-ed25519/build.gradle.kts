@@ -23,19 +23,17 @@
 
 plugins {
     id("simbot.kotlin-multiplatform")
+    id("simbot.qq.kotlin-multiplatform-convention")
     id("org.jetbrains.dokka")
+    `simbot-maven-publish`
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.internal.ed25519s")
-apply(plugin = "simbot-maven-publish")
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
-
     configKotlinJvm()
 
-    js(IR) {
+    js {
         configJs {
             // useEsModules()
         }

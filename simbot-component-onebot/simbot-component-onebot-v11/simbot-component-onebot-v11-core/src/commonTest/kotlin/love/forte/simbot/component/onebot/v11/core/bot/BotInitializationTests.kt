@@ -68,7 +68,7 @@ class BotInitializationTests {
         assertFalse(bot.initConfiguration())
 
         assertTrue(bot.isConfigurationInitialized)
-        bot.close()
+        bot.cancel()
     }
 
     @Test
@@ -85,7 +85,7 @@ class BotInitializationTests {
 
         assertTrue(bot.isConfigurationInitialized)
 
-        bot.close()
+        bot.cancel()
     }
 
 

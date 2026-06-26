@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2025. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -25,7 +25,9 @@
 
 package love.forte.simbot.suspendrunner
 
-
+/**
+ * 用于为同一个 `suspend` 声明同时生成 blocking / async / reserve / reactive 等多种桥接 API 的整合性注解。
+ */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 public annotation class SuspendTrans(
@@ -40,6 +42,10 @@ public annotation class SuspendTrans(
     val reserveBaseName: String = "",
     val reserveSuffix: String = "Reserve",
     val reserveAsProperty: Boolean = false,
+
+    val reactiveBaseName: String = "",
+    val reactiveSuffix: String = "Reactive",
+    val reactiveAsProperty: Boolean = false,
 )
 
 /**
@@ -51,10 +57,7 @@ public typealias ST = SuspendTrans
 
 
 /**
- * 用于代表同时标记
- * [@JvmBlocking][love.forte.plugin.suspendtrans.annotation.JvmBlocking] 和
- * [@JvmAsync][love.forte.plugin.suspendtrans.annotation.JvmAsync]
- * 的整合性注解。
+ * 用于代表同时标记 `@JvmBlocking` 和 `@JvmAsync` 的整合性注解。
  *
  * [SuspendTransProperty] 默认转化为属性类型，且 blocking 的转化默认没有后缀。
  *
@@ -74,6 +77,10 @@ public annotation class SuspendTransProperty(
     val reserveBaseName: String = "",
     val reserveSuffix: String = "Reserve",
     val reserveAsProperty: Boolean = false,
+
+    val reactiveBaseName: String = "",
+    val reactiveSuffix: String = "Reactive",
+    val reactiveAsProperty: Boolean = true,
 
     // for JS
     val jsPromiseBaseName: String = "",

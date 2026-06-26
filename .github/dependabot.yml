@@ -2,9 +2,24 @@ version: 2
 updates:
   - package-ecosystem: gradle
     directory: /
-    target-branch: "v4-dev"
+    target-branch: "dev"
     schedule:
-      interval: daily
+      interval: weekly
     assignees:
       - ForteScarlet
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
+    ignore:
+      - dependency-name: "org.springframework.*"
+      - dependency-name: "io.spring.dependency-management"
+      - dependency-name: "kotlin"
+      - dependency-name: "org.jetbrains.kotlin.plugin.spring"
+      - dependency-name: "love.forte.plugin.suspend-transform:*"
+
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the default location of `.github/workflows`
+    # You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.
+    directory: "/"
+    schedule:
+      interval: "weekly"

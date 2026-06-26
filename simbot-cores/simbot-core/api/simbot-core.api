@@ -5,6 +5,7 @@ public final class love/forte/simbot/core/application/Simple : love/forte/simbot
 }
 
 public abstract interface class love/forte/simbot/core/application/SimpleApplication : love/forte/simbot/application/Application {
+	public synthetic fun getConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
 	public abstract fun getConfiguration ()Llove/forte/simbot/core/application/SimpleApplicationConfiguration;
 }
 
