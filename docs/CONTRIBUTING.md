@@ -42,7 +42,7 @@ You can read more details in the [Code Contributions](#code-contributions) secti
 **Contributors**
 
 Both the core library and official component repositories have places in the project to configure contributors.
-Taking the simbot core library as an example, add your information in the following code in `buildSrc/src/main/kotlin/P.kt`:
+Taking the simbot core library as an example, add your information in the following code in `build-logic/shared/src/main/kotlin/P.kt`:
 
 ```Kotlin
 override val developers: List<Developer> = developers {

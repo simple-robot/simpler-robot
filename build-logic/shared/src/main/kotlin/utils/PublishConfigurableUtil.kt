@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,27 +21,34 @@
  *
  */
 
-plugins {
-    id("simbot.kotlin-jvm")
-    id("simbot.kotlin-jvm-abi-convention")
-    alias(libs.plugins.dokka)
-    kotlin("plugin.serialization")
-    id("simbot-maven-publish")
+package utils
+
+import Env
+import isSnapshot
+
+data class PublishConfigurableResult(
+    val isSnapshotOnly: Boolean,
+    val isReleaseOnly: Boolean,
+    val isPublishConfigurable: Boolean = when {
+        isSnapshotOnly -> isSnapshot()
+        isReleaseOnly -> !isSnapshot()
+        else -> true
+    },
+)
+
+
+fun checkPublishConfigurable(): PublishConfigurableResult {
+    val isSnapshotOnly =
+        (System.getProperty("snapshotOnly") ?: System.getenv(Env.SNAPSHOT_ONLY))?.equals("true", true) == true
+    val isReleaseOnly =
+        (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY))?.equals("true", true) == true
+
+    return PublishConfigurableResult(isSnapshotOnly, isReleaseOnly)
 }
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
-
-kotlin {
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
-}
-
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-    implementation(libs.kotlinx.serialization.core)
-    implementation(libs.kotlinx.serialization.properties)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+inline fun checkPublishConfigurable(block: PublishConfigurableResult.() -> Unit) {
+    val v = checkPublishConfigurable()
+    if (v.isPublishConfigurable) {
+        v.block()
+    }
 }

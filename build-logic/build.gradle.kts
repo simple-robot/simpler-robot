@@ -22,26 +22,17 @@
  */
 
 plugins {
-    id("simbot.kotlin-jvm")
-    id("simbot.kotlin-jvm-abi-convention")
-    alias(libs.plugins.dokka)
-    kotlin("plugin.serialization")
-    id("simbot-maven-publish")
+    base
 }
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
-
-kotlin {
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
+allprojects {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        // mavenLocal()
+    }
 }
 
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-    implementation(libs.kotlinx.serialization.core)
-    implementation(libs.kotlinx.serialization.properties)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+tasks.named("check") {
+    dependsOn(":shared:check", ":conventions:check")
 }

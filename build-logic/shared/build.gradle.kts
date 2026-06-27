@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -26,34 +26,12 @@ plugins {
     idea
 }
 
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-    // mavenLocal()
-}
-
 val kotlinVersion: String = libs.versions.kotlin.get()
 
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
-    implementation(kotlin("serialization", kotlinVersion))
-    implementation(kotlin("power-assert", kotlinVersion))
-    // compileOnly(kotlin("compiler", kotlinVersion))
-    // compileOnly(kotlin("compiler-embeddable", kotlinVersion))
     implementation(libs.dokka.plugin)
-
-    // see https://github.com/gradle-nexus/publish-plugin
-    implementation(libs.gradleNexusPublishPlugin)
-
-    // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
-    // see https://github.com/vanniktech/gradle-maven-publish-plugin
-    // see https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
-    implementation(libs.maven.publish)
-
-    // suspend transform
     implementation(libs.suspend.transform.gradle)
-
-    // gradle common
     implementation(libs.bundles.gradle.common)
 }
 
@@ -62,4 +40,3 @@ idea {
         isDownloadSources = true
     }
 }
-

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,27 +21,15 @@
  *
  */
 
-plugins {
-    id("simbot.kotlin-jvm")
-    id("simbot.kotlin-jvm-abi-convention")
-    alias(libs.plugins.dokka)
-    kotlin("plugin.serialization")
-    id("simbot-maven-publish")
-}
+rootProject.name = "build-logic"
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
+include(":shared")
+include(":conventions")
 
-kotlin {
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
-}
-
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-    implementation(libs.kotlinx.serialization.core)
-    implementation(libs.kotlinx.serialization.properties)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }

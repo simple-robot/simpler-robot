@@ -21,27 +21,11 @@
  *
  */
 
-plugins {
-    id("simbot.kotlin-jvm")
-    id("simbot.kotlin-jvm-abi-convention")
-    alias(libs.plugins.dokka)
-    kotlin("plugin.serialization")
-    id("simbot-maven-publish")
-}
+import org.gradle.api.Project
 
-configJavaCompileWithModule(jvmVersion = JVMConstants.TARGET_1_8)
 
-kotlin {
-    configKotlinJvm(JVMConstants.TARGET_1_8_VALUE)
-}
-
-dependencies {
-    implementation(libs.ksp)
-    implementation(libs.kotlinPoet.ksp)
-    implementation(libs.kotlinx.serialization.core)
-    implementation(libs.kotlinx.serialization.properties)
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+@Deprecated("Kt is already applied")
+@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
+fun Project.useK2(languageVersion: String = "2.0") {
+    // Nothing.
 }

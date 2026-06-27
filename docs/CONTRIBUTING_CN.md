@@ -38,7 +38,7 @@ _中文_ | [English](CONTRIBUTING.md)
 **参与者**
 
 包括核心库与官方组件库在内，它们都会在项目中存在配置参与者的地方。
-本指南以simbot核心库为例，在 `buildSrc/src/main/kotlin/P.kt` 中的如下代码内添加有关您的信息:
+本指南以simbot核心库为例，在 `build-logic/shared/src/main/kotlin/P.kt` 中的如下代码内添加有关您的信息:
 
 ```Kotlin
 override val developers: List<Developer> = developers {

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,11 +21,10 @@
  *
  */
 
-import org.gradle.api.Project
-
-
-@Deprecated("Kt is already applied")
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-fun Project.useK2(languageVersion: String = "2.0") {
-    // Nothing.
-}
+/*
+ * Marker convention plugin.
+ *
+ * Some project scripts still use build-logic helper types directly. Applying this
+ * plugin adds the build-logic artifact to the script classpath without changing
+ * project behavior.
+ */

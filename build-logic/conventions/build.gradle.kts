@@ -22,9 +22,35 @@
  */
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) apply false
+    `java-library`
+    `kotlin-dsl`
+    idea
 }
 
-subprojects {
-    group = P.GROUP + ".internal"
+val kotlinVersion: String = libs.versions.kotlin.get()
+
+dependencies {
+    api(project(":shared"))
+
+    implementation(kotlin("gradle-plugin", kotlinVersion))
+    implementation(kotlin("serialization", kotlinVersion))
+    implementation(kotlin("power-assert", kotlinVersion))
+    implementation(libs.dokka.plugin)
+
+    // see https://github.com/gradle-nexus/publish-plugin
+    implementation(libs.gradleNexusPublishPlugin)
+
+    // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html#configure-the-project
+    // see https://github.com/vanniktech/gradle-maven-publish-plugin
+    // see https://plugins.gradle.org/plugin/com.vanniktech.maven.publish
+    implementation(libs.maven.publish)
+
+    implementation(libs.suspend.transform.gradle)
+    implementation(libs.bundles.gradle.common)
+}
+
+idea {
+    module {
+        isDownloadSources = true
+    }
 }

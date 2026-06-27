@@ -28,9 +28,9 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.dokka)
     alias(libs.plugins.ksp)
-    `simbot-maven-publish`
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.api")

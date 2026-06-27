@@ -27,10 +27,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     id("simbot.kook.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-    id("love.forte.plugin.suspend-transform")
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
-    `simbot-maven-publish`
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.component.kook.core")

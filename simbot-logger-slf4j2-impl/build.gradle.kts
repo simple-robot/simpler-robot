@@ -25,9 +25,9 @@ plugins {
     `java-library`
     id("simbot.kotlin-jvm")
     id("simbot.kotlin-jvm-abi-convention")
-    id("com.github.gmazzo.buildconfig")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.buildconfig)
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 group = P.GROUP_LOGGER

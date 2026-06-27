@@ -22,21 +22,20 @@
  */
 
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformPluginExtension
-import org.gradle.api.internal.artifacts.dsl.dependencies.DependenciesExtensionModule.module
-import org.gradle.internal.impldep.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
-import kotlin.jvm.java
 
 plugins {
     idea
-    id("org.jetbrains.dokka")
-    id("com.github.gmazzo.buildconfig") version "6.0.7" apply false
-    kotlin("multiplatform") apply false
-    kotlin("jvm") apply false
+    id("simbot.build-logic")
+    alias(libs.plugins.dokka)
+    id("simbot.dokka-root-convention")
+    alias(libs.plugins.buildconfig) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.detekt)
-    id("love.forte.plugin.suspend-transform") apply false
+    alias(libs.plugins.suspendTransform) apply false
 
     // https://www.jetbrains.com/help/qodana/code-coverage.html
     // https://github.com/Kotlin/kotlinx-kover
@@ -226,66 +225,6 @@ fun Project.configureSuspendTransform() {
         includeRuntime = false
         includeAnnotation = false
         addSimbotJvmTransforms()
-    }
-}
-// endregion
-
-// region Dokka
-val dokkaExcludedProjectPaths = setOf(
-    ":simbot-test",
-)
-
-fun Project.shouldIncludeInRootDokka(): Boolean {
-    return path !in dokkaExcludedProjectPaths &&
-        !path.startsWith(":internal-processors:") &&
-        !path.startsWith(":samples:") &&
-        !path.startsWith(":tests:")
-}
-
-subprojects {
-    afterEvaluate {
-        val p = this
-        if (p.plugins.hasPlugin(libs.plugins.dokka.get().pluginId) && p.shouldIncludeInRootDokka()) {
-            p.dokka {
-                dokkaPublications.all {
-                    if (isSimbotLocal()) {
-                        logger.info("Is 'SIMBOT_LOCAL', offline")
-                        offlineMode = true
-                    } else if (isSimbotTest()) {
-                        logger.info("Is 'SIMBOT_TEST', offline")
-                        offlineMode = true
-                    }
-                }
-                configSourceSets(p)
-                pluginsConfiguration.html {
-                    configHtmlCustoms(p)
-                }
-            }
-            rootProject.dependencies {
-                val applied = rootProject.dependencies.dokka(project(p.path))
-                logger.lifecycle("Applied Dokka for subproject {}: {}", p, applied)
-            }
-        }
-    }
-}
-
-dokka {
-    moduleName = "Simple Robot"
-
-    dokkaPublications.all {
-        if (isSimbotLocal()) {
-            logger.info("Is 'SIMBOT_LOCAL', offline")
-            offlineMode = true
-        } else if (isSimbotTest()) {
-            logger.info("Is 'SIMBOT_TEST', offline")
-            offlineMode = true
-        }
-    }
-
-    configSourceSets(project)
-
-    pluginsConfiguration.html {
-        configHtmlCustoms(project)
     }
 }
 // endregion

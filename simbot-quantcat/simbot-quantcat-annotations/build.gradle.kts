@@ -40,7 +40,7 @@ import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 plugins {
     id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.dokka)
 }
 
 setup(P.SimbotQuantcat)

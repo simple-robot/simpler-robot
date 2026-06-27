@@ -27,8 +27,8 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.onebot.kotlin-multiplatform-convention")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.component.onebot.common")

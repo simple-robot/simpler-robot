@@ -23,10 +23,28 @@
 rootProject.name = "simple-robot"
 
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         mavenCentral()
         gradlePluginPortal()
         // mavenLocal()
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            val pluginId = requested.id.id
+            val pluginVersion = requested.version
+            if (
+                pluginVersion != null &&
+                pluginId in setOf(
+                    "org.jetbrains.kotlin.jvm",
+                    "org.jetbrains.kotlin.multiplatform"
+                )
+            ) {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginVersion")
+            }
+        }
     }
 }
 

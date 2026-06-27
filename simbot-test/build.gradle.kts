@@ -26,9 +26,9 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     id("simbot.kotlin-multiplatform")
     kotlin("plugin.serialization")
-    id("love.forte.plugin.suspend-transform")
+    alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
-    `simbot-maven-publish`
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.test")

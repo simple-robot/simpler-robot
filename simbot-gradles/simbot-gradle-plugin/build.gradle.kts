@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 plugins {
     `java-library`
     id("simbot.kotlin-jvm")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.dokka)
     `java-gradle-plugin`
 }
 
