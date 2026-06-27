@@ -26,6 +26,7 @@ import org.gradle.api.internal.artifacts.dsl.dependencies.DependenciesExtensionM
 import org.gradle.internal.impldep.org.apache.commons.compress.harmony.pack200.PackingUtils.config
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+import kotlin.jvm.java
 
 plugins {
     idea
@@ -288,3 +289,15 @@ dokka {
     }
 }
 // endregion
+
+// createChangelog
+tasks.register<changelog.GenerateSubChangelogTask>("createChangelog") {
+    description = "创建用于发布 GitHub Releases 的临时 changelog 文件"
+    tag = "v${P.VERSION}"
+    versions.put("Kotlin", libs.versions.kotlin)
+    versions.put("Kotlin Coroutines", libs.versions.kotlinx.coroutines)
+    versions.put("Kotlin Serialization", libs.versions.kotlinx.serialization)
+    versions.put("Kotlin IO", libs.versions.kotlinx.io)
+    versions.put("Kotlin Datetime", libs.versions.kotlinx.datetime)
+    versions.put("Ktor", libs.versions.ktor)
+}

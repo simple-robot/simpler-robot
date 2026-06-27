@@ -31,7 +31,6 @@ import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
-import java.io.File
 import java.net.URI
 import java.time.Year
 import kotlin.jvm.optionals.getOrElse
@@ -53,9 +52,11 @@ fun DokkaExtension.configSourceSets(project: Project) {
             "1.8" -> {
                 jdkVersion.set(8)
             }
+
             null -> {
                 // Do nothing here.
             }
+
             else -> {
                 jdkVersion.set(targetCompatibility.toInt())
             }
@@ -83,10 +84,10 @@ fun DokkaSourceSetSpec.configModuleMdInclude(project: Project) {
 
 fun DokkaSourceSetSpec.configSourceLink(project: Project) {
     sourceLink {
-        localDirectory.set(File(project.projectDir, "src"))
+        localDirectory.set(project.projectDir)
         val relativeTo = project.projectDir.relativeTo(project.rootProject.projectDir).toString()
             .replace('\\', '/')
-        remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/dev/main/$relativeTo/src"))
+        remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/dev/$relativeTo"))
         remoteLineSuffix.set("#L")
     }
 }
