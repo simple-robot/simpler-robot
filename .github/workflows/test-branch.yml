@@ -36,7 +36,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           add-job-summary-as-pr-comment: 'on-failure'
@@ -67,7 +67,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           add-job-summary-as-pr-comment: 'on-failure'
@@ -99,7 +99,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'gradle'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           add-job-summary-as-pr-comment: 'on-failure'
