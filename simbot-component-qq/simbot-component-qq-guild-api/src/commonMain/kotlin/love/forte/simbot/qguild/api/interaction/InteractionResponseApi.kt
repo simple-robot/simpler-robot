@@ -27,7 +27,6 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.QQGuildApiWithoutResult
 import love.forte.simbot.qguild.api.SimplePutApiDescription
-import org.jetbrains.annotations.Range
 import kotlin.jvm.JvmStatic
 
 /**
