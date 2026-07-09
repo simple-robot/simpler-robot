@@ -32,6 +32,7 @@ import love.forte.simbot.component.qguild.group.QGGroupMember
 import love.forte.simbot.component.qguild.utils.toTimestamp
 import love.forte.simbot.event.ChatGroupEvent
 import love.forte.simbot.event.FuzzyEventTypeImplementation
+import love.forte.simbot.qguild.event.GroupMemberManagementData
 import love.forte.simbot.qguild.event.GroupRobotManagementData
 import love.forte.simbot.suspendrunner.STP
 
@@ -103,3 +104,63 @@ public abstract class QGGroupMsgRejectEvent : QGGroupManagementEvent()
  */
 @OptIn(FuzzyEventTypeImplementation::class)
 public abstract class QGGroupMsgReceiveEvent : QGGroupManagementEvent()
+
+/**
+ * 群成员进退群聊事件。
+ *
+ * @see GroupMemberManagementData
+ * @since 4.4.0
+ */
+@SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+public abstract class QGGroupMemberManagementEvent :
+    QGBotEvent<GroupMemberManagementData>(),
+    ChatGroupEvent {
+    abstract override val id: ID
+
+    @OptIn(ExperimentalQGApi::class)
+    override val time: Timestamp
+        get() = sourceEventEntity.timestamp.toTimestamp()
+
+    /**
+     * 事件相关的群
+     */
+    @STP
+    abstract override suspend fun content(): QGGroup
+
+    /**
+     * 进退群的成员
+     *
+     * @since 4.4.0
+     */
+    @STP
+    public abstract suspend fun member(): QGGroupMember
+
+    protected fun GroupMemberManagementData.computeId(): ID = buildString(
+        groupOpenid.length +
+            memberOpenid.length +
+            timestamp.length +
+            2
+    ) {
+        append(groupOpenid)
+        append('-')
+        append(memberOpenid)
+        append('-')
+        append(timestamp)
+    }.ID
+}
+
+/**
+ * 群成员加入群聊
+ * @author ForteScarlet
+ * @since 4.4.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public abstract class QGGroupMemberAddEvent : QGGroupMemberManagementEvent()
+
+/**
+ * 群成员退出群聊
+ * @author ForteScarlet
+ * @since 4.4.0
+ */
+@OptIn(FuzzyEventTypeImplementation::class)
+public abstract class QGGroupMemberRemoveEvent : QGGroupMemberManagementEvent()

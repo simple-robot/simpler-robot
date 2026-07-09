@@ -37,9 +37,13 @@ configJavaCompileWithModule("simbot.component.qqguild.api")
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes",
+            "-Xconsistent-data-class-copy-visibility"
+        )
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
+        optIn.add("kotlin.ExperimentalVersionOverloading")
     }
 
     configKotlinJvm()

@@ -29,6 +29,7 @@ import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.model.MessageKeyboard
+import love.forte.simbot.qguild.model.MessageKeyboards
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -84,18 +85,39 @@ public class GroupMessageSendApi private constructor(
          * @param markdown markdown消息内容
          */
         @JvmStatic
-        @JvmOverloads
+        @Deprecated(
+            message = "使用参数为 `MessageKeyboards` 的方法，而不是直接使用 `MessageKeyboard`",
+            level = DeprecationLevel.ERROR
+        )
         public fun createMarkdown(
             groupId: String,
             markdown: String,
             keyboard: MessageKeyboard? = null
-        ): GroupMessageSendApi =
-            create(
-                groupId,
-                GroupAndC2CSendBody.create(content = markdown, msgType = MSG_TYPE_MARKDOWN) {
-                    this.keyboard = keyboard
-                }
-            )
+        ): GroupMessageSendApi = create(
+            groupId,
+            GroupAndC2CSendBody.create(content = markdown, msgType = MSG_TYPE_MARKDOWN) {
+                this.keyboards = keyboard?.let { button -> MessageKeyboards.create(button) }
+            }
+        )
+
+        /**
+         * Create a [GroupMessageSendApi].
+         *
+         * @param markdown markdown消息内容
+         * @since 4.4.0
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun createMarkdown(
+            groupId: String,
+            markdown: String,
+            keyboards: MessageKeyboards? = null
+        ): GroupMessageSendApi = create(
+            groupId,
+            GroupAndC2CSendBody.create(content = markdown, msgType = MSG_TYPE_MARKDOWN) {
+                this.keyboards = keyboards
+            }
+        )
 
     }
 

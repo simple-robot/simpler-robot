@@ -21,45 +21,20 @@
  *
  */
 
-package test
+package love.forte.simbot.component.qguild.internal.event
 
-import love.forte.simbot.qguild.event.EventIntents
-import love.forte.simbot.qguild.event.Intents
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import love.forte.simbot.component.qguild.event.QGInteractionCreateEvent
+import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
+import love.forte.simbot.qguild.api.interaction.InteractionResponseApi
+import love.forte.simbot.qguild.event.InteractionCreate
+import love.forte.simbot.qguild.stdlib.requestDataBy
 
-
-/**
- *
- * @author ForteScarlet
- */
-class IntentsTest {
-
-    @Test
-    fun testIntentsFactory() {
-        assertContains(
-            Intents {
-                audioAction()
-            },
-            EventIntents.AudioAction.intents,
-        )
-
-        assertEquals(0, Intents {}.value)
-
-        Intents {
-            audioAction()
-            forumsEvent()
-            groupMembers()
-        }.also {
-            assertContains(it, EventIntents.AudioAction.intents)
-            assertContains(it, EventIntents.ForumsEvent.intents)
-            assertContains(it, EventIntents.GroupMembers.intents)
-        }
+internal class QGInteractionCreateEventImpl(
+    override val bot: QGBotImpl,
+    override val sourceEventRaw: String,
+    override val sourceEventEntity: InteractionCreate,
+) : QGInteractionCreateEvent() {
+    override suspend fun respond(code: Int) {
+        InteractionResponseApi.create(sourceEventEntity.data.id, code).requestDataBy(bot.source)
     }
-
-    private fun assertContains(actual: Intents, expect: Intents) {
-        assertTrue(expect in actual)
-    }
-
 }

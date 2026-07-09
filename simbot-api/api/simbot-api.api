@@ -2711,9 +2711,9 @@ public final class love/forte/simbot/message/MessagesBuilders {
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Ljava/lang/Iterable;)V
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Ljava/lang/String;)V
 	public static final fun plusAssign (Llove/forte/simbot/message/MessagesAddable;Llove/forte/simbot/message/Message$Element;)V
-	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/Iterable;)V
-	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/String;)V
-	public static final fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Llove/forte/simbot/message/Message$Element;)V
+	public static final synthetic fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/Iterable;)V
+	public static final synthetic fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Ljava/lang/String;)V
+	public static final synthetic fun plusAssign (Llove/forte/simbot/message/MessagesBuilder;Llove/forte/simbot/message/Message$Element;)V
 }
 
 public final class love/forte/simbot/message/MessagesKt {

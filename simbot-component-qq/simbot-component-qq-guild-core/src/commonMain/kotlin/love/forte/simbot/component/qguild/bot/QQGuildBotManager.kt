@@ -241,6 +241,7 @@ public annotation class QGBotManagerConfigurationDsl
 /**
  * [QQGuildBotManager] 使用的配置类描述。
  */
+@QGBotManagerConfigurationDsl
 public class QQGuildBotManagerConfiguration {
     /**
      * 当前 botManager 使用的协程上下文。
@@ -279,7 +280,6 @@ public class QQGuildBotManagerConfiguration {
      * botConfigure { appId, secret, token -> /* ... */ }
      * ```
      */
-    @QGBotManagerConfigurationDsl
     public fun botConfigure(
         configure: ConfigurableBotConfiguration.(appId: String, secret: String, token: String) -> Unit
     ) {

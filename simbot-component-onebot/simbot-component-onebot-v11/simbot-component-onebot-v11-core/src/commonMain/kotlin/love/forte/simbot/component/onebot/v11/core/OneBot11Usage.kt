@@ -67,7 +67,7 @@ public fun ApplicationFactoryConfigurer<*, *, *>.useOneBot11(builder: OneBot11Us
  * 为 [OneBot11UsageBuilder] 中的函数染色。
  */
 @DslMarker
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 internal annotation class OneBot11UsageBuilderDsl
 
@@ -77,19 +77,18 @@ internal annotation class OneBot11UsageBuilderDsl
  *
  * @see useOneBot11
  */
+@OneBot11UsageBuilderDsl
 public interface OneBot11UsageBuilder {
 
     /**
      * 追加一个安装 [OneBot11Component] 时候使用的配置。
      */
-    @OneBot11UsageBuilderDsl
     public fun component(configurator: ConfigurerFunction<OneBot11ComponentConfiguration>)
 
 
     /**
      * 追加一个安装 [OneBotBotManager] 时候使用的配置。
      */
-    @OneBot11UsageBuilderDsl
     public fun botManager(configurator: ConfigurerFunction<OneBotBotManagerConfiguration>)
 
 }

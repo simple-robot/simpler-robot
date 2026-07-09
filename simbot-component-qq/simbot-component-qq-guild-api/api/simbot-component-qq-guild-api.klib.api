@@ -1293,6 +1293,52 @@ final class love.forte.simbot.qguild.api.guild/GetGuildApi : love.forte.simbot.q
     }
 }
 
+final class love.forte.simbot.qguild.api.interaction/InteractionResponseApi : love.forte.simbot.qguild.api/PutQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.interaction/InteractionResponseApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimplePutApiDescription { // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory|null[0]
+        final const val CODE_ADMIN_ONLY // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_ADMIN_ONLY|{}CODE_ADMIN_ONLY[0]
+            final fun <get-CODE_ADMIN_ONLY>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_ADMIN_ONLY.<get-CODE_ADMIN_ONLY>|<get-CODE_ADMIN_ONLY>(){}[0]
+        final const val CODE_DUPLICATE // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_DUPLICATE|{}CODE_DUPLICATE[0]
+            final fun <get-CODE_DUPLICATE>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_DUPLICATE.<get-CODE_DUPLICATE>|<get-CODE_DUPLICATE>(){}[0]
+        final const val CODE_FAILED // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_FAILED|{}CODE_FAILED[0]
+            final fun <get-CODE_FAILED>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_FAILED.<get-CODE_FAILED>|<get-CODE_FAILED>(){}[0]
+        final const val CODE_FREQUENT // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_FREQUENT|{}CODE_FREQUENT[0]
+            final fun <get-CODE_FREQUENT>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_FREQUENT.<get-CODE_FREQUENT>|<get-CODE_FREQUENT>(){}[0]
+        final const val CODE_NO_PERMISSION // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_NO_PERMISSION|{}CODE_NO_PERMISSION[0]
+            final fun <get-CODE_NO_PERMISSION>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_NO_PERMISSION.<get-CODE_NO_PERMISSION>|<get-CODE_NO_PERMISSION>(){}[0]
+        final const val CODE_SUCCESS // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_SUCCESS|{}CODE_SUCCESS[0]
+            final fun <get-CODE_SUCCESS>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.CODE_SUCCESS.<get-CODE_SUCCESS>|<get-CODE_SUCCESS>(){}[0]
+
+        final fun create(kotlin/String, kotlin/Int): love.forte.simbot.qguild.api.interaction/InteractionResponseApi // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.create|create(kotlin.String;kotlin.Int){}[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.api.interaction/InteractionResponseBody): love.forte.simbot.qguild.api.interaction/InteractionResponseApi // love.forte.simbot.qguild.api.interaction/InteractionResponseApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.interaction.InteractionResponseBody){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.interaction/InteractionResponseBody { // love.forte.simbot.qguild.api.interaction/InteractionResponseBody|null[0]
+    constructor <init>(kotlin/Int) // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.<init>|<init>(kotlin.Int){}[0]
+
+    final val code // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.code|{}code[0]
+        final fun <get-code>(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.code.<get-code>|<get-code>(){}[0]
+
+    final fun component1(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.component1|component1(){}[0]
+    final fun copy(kotlin/Int = ...): love.forte.simbot.qguild.api.interaction/InteractionResponseBody // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.copy|copy(kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.api.interaction/InteractionResponseBody> { // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.api.interaction/InteractionResponseBody // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.api.interaction/InteractionResponseBody) // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.api.interaction.InteractionResponseBody){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.interaction/InteractionResponseBody> // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.api.member/DeleteMemberApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.member/DeleteMemberApi|null[0]
     final val body // love.forte.simbot.qguild.api.member/DeleteMemberApi.body|{}body[0]
         final fun <get-body>(): kotlin/Any // love.forte.simbot.qguild.api.member/DeleteMemberApi.body.<get-body>|<get-body>(){}[0]
@@ -1413,6 +1459,7 @@ final class love.forte.simbot.qguild.api.message.group/GroupMessageSendApi : lov
         final fun create(kotlin/String, kotlin/String, kotlin/Int): love.forte.simbot.qguild.api.message.group/GroupMessageSendApi // love.forte.simbot.qguild.api.message.group/GroupMessageSendApi.Factory.create|create(kotlin.String;kotlin.String;kotlin.Int){}[0]
         final fun create(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.qguild.api.message.group/GroupMessageSendApi // love.forte.simbot.qguild.api.message.group/GroupMessageSendApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
         final fun createMarkdown(kotlin/String, kotlin/String, love.forte.simbot.qguild.model/MessageKeyboard? = ...): love.forte.simbot.qguild.api.message.group/GroupMessageSendApi // love.forte.simbot.qguild.api.message.group/GroupMessageSendApi.Factory.createMarkdown|createMarkdown(kotlin.String;kotlin.String;love.forte.simbot.qguild.model.MessageKeyboard?){}[0]
+        final fun createMarkdown(kotlin/String, kotlin/String, love.forte.simbot.qguild.model/MessageKeyboards? = ...): love.forte.simbot.qguild.api.message.group/GroupMessageSendApi // love.forte.simbot.qguild.api.message.group/GroupMessageSendApi.Factory.createMarkdown|createMarkdown(kotlin.String;kotlin.String;love.forte.simbot.qguild.model.MessageKeyboards?){}[0]
         final fun createText(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.message.group/GroupMessageSendApi // love.forte.simbot.qguild.api.message.group/GroupMessageSendApi.Factory.createText|createText(kotlin.String;kotlin.String){}[0]
     }
 }
@@ -1521,6 +1568,7 @@ final class love.forte.simbot.qguild.api.message.user/UserMessageSendApi : love.
         final fun create(kotlin/String, kotlin/String, kotlin/Int): love.forte.simbot.qguild.api.message.user/UserMessageSendApi // love.forte.simbot.qguild.api.message.user/UserMessageSendApi.Factory.create|create(kotlin.String;kotlin.String;kotlin.Int){}[0]
         final fun create(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.qguild.api.message.user/UserMessageSendApi // love.forte.simbot.qguild.api.message.user/UserMessageSendApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
         final fun createMarkdown(kotlin/String, kotlin/String, love.forte.simbot.qguild.model/MessageKeyboard? = ...): love.forte.simbot.qguild.api.message.user/UserMessageSendApi // love.forte.simbot.qguild.api.message.user/UserMessageSendApi.Factory.createMarkdown|createMarkdown(kotlin.String;kotlin.String;love.forte.simbot.qguild.model.MessageKeyboard?){}[0]
+        final fun createMarkdown(kotlin/String, kotlin/String, love.forte.simbot.qguild.model/MessageKeyboards? = ...): love.forte.simbot.qguild.api.message.user/UserMessageSendApi // love.forte.simbot.qguild.api.message.user/UserMessageSendApi.Factory.createMarkdown|createMarkdown(kotlin.String;kotlin.String;love.forte.simbot.qguild.model.MessageKeyboards?){}[0]
         final fun createText(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.message.user/UserMessageSendApi // love.forte.simbot.qguild.api.message.user/UserMessageSendApi.Factory.createText|createText(kotlin.String;kotlin.String){}[0]
     }
 }
@@ -2899,6 +2947,96 @@ final class love.forte.simbot.qguild.event/GroupDelRobot : love.forte.simbot.qgu
     }
 }
 
+final class love.forte.simbot.qguild.event/GroupMemberAdd : love.forte.simbot.qguild.event/GroupMemberManagementDispatch { // love.forte.simbot.qguild.event/GroupMemberAdd|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/GroupMemberManagementData) // love.forte.simbot.qguild.event/GroupMemberAdd.<init>|<init>(kotlin.String?;kotlin.Long;love.forte.simbot.qguild.event.GroupMemberManagementData){}[0]
+
+    final val data // love.forte.simbot.qguild.event/GroupMemberAdd.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberAdd.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.qguild.event/GroupMemberAdd.id|{}id[0]
+        final fun <get-id>(): kotlin/String? // love.forte.simbot.qguild.event/GroupMemberAdd.id.<get-id>|<get-id>(){}[0]
+
+    final fun component1(): kotlin/String? // love.forte.simbot.qguild.event/GroupMemberAdd.component1|component1(){}[0]
+    final fun component3(): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberAdd.component3|component3(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/GroupMemberManagementData = ...): love.forte.simbot.qguild.event/GroupMemberAdd // love.forte.simbot.qguild.event/GroupMemberAdd.copy|copy(kotlin.String?;kotlin.Long;love.forte.simbot.qguild.event.GroupMemberManagementData){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/GroupMemberAdd.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/GroupMemberAdd.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberAdd.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/GroupMemberAdd> { // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/GroupMemberAdd // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/GroupMemberAdd) // love.forte.simbot.qguild.event/GroupMemberAdd.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.GroupMemberAdd){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/GroupMemberAdd.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/GroupMemberAdd> // love.forte.simbot.qguild.event/GroupMemberAdd.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/GroupMemberManagementData { // love.forte.simbot.qguild.event/GroupMemberManagementData|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String) // love.forte.simbot.qguild.event/GroupMemberManagementData.<init>|<init>(kotlin.String;kotlin.String;kotlin.String){}[0]
+
+    final val groupOpenid // love.forte.simbot.qguild.event/GroupMemberManagementData.groupOpenid|{}groupOpenid[0]
+        final fun <get-groupOpenid>(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.groupOpenid.<get-groupOpenid>|<get-groupOpenid>(){}[0]
+    final val memberOpenid // love.forte.simbot.qguild.event/GroupMemberManagementData.memberOpenid|{}memberOpenid[0]
+        final fun <get-memberOpenid>(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.memberOpenid.<get-memberOpenid>|<get-memberOpenid>(){}[0]
+    final val timestamp // love.forte.simbot.qguild.event/GroupMemberManagementData.timestamp|{}timestamp[0]
+        final fun <get-timestamp>(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
+
+    final fun component1(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.component1|component1(){}[0]
+    final fun component2(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.component2|component2(){}[0]
+    final fun component3(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberManagementData.copy|copy(kotlin.String;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/GroupMemberManagementData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/GroupMemberManagementData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberManagementData.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/GroupMemberManagementData> { // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/GroupMemberManagementData) // love.forte.simbot.qguild.event/GroupMemberManagementData.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.GroupMemberManagementData){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/GroupMemberManagementData.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/GroupMemberManagementData> // love.forte.simbot.qguild.event/GroupMemberManagementData.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/GroupMemberRemove : love.forte.simbot.qguild.event/GroupMemberManagementDispatch { // love.forte.simbot.qguild.event/GroupMemberRemove|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/GroupMemberManagementData) // love.forte.simbot.qguild.event/GroupMemberRemove.<init>|<init>(kotlin.String?;kotlin.Long;love.forte.simbot.qguild.event.GroupMemberManagementData){}[0]
+
+    final val data // love.forte.simbot.qguild.event/GroupMemberRemove.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberRemove.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.qguild.event/GroupMemberRemove.id|{}id[0]
+        final fun <get-id>(): kotlin/String? // love.forte.simbot.qguild.event/GroupMemberRemove.id.<get-id>|<get-id>(){}[0]
+
+    final fun component1(): kotlin/String? // love.forte.simbot.qguild.event/GroupMemberRemove.component1|component1(){}[0]
+    final fun component3(): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberRemove.component3|component3(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/GroupMemberManagementData = ...): love.forte.simbot.qguild.event/GroupMemberRemove // love.forte.simbot.qguild.event/GroupMemberRemove.copy|copy(kotlin.String?;kotlin.Long;love.forte.simbot.qguild.event.GroupMemberManagementData){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/GroupMemberRemove.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/GroupMemberRemove.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/GroupMemberRemove.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/GroupMemberRemove> { // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/GroupMemberRemove // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/GroupMemberRemove) // love.forte.simbot.qguild.event/GroupMemberRemove.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.GroupMemberRemove){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/GroupMemberRemove.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/GroupMemberRemove> // love.forte.simbot.qguild.event/GroupMemberRemove.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.event/GroupMessageCreate : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/GroupMessageCreate|null[0]
     constructor <init>(kotlin/String? = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/GroupMessageCreate.Data) // love.forte.simbot.qguild.event/GroupMessageCreate.<init>|<init>(kotlin.String?;kotlin.Long;love.forte.simbot.qguild.event.GroupMessageCreate.Data){}[0]
 
@@ -3266,6 +3404,178 @@ final class love.forte.simbot.qguild.event/GuildUpdate : love.forte.simbot.qguil
 
     final object Companion { // love.forte.simbot.qguild.event/GuildUpdate.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/GuildUpdate> // love.forte.simbot.qguild.event/GuildUpdate.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/InteractionCreate : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/InteractionCreate|null[0]
+    constructor <init>(kotlin/String, kotlin/Long = ..., love.forte.simbot.qguild.event/InteractionCreateEventData) // love.forte.simbot.qguild.event/InteractionCreate.<init>|<init>(kotlin.String;kotlin.Long;love.forte.simbot.qguild.event.InteractionCreateEventData){}[0]
+
+    final val data // love.forte.simbot.qguild.event/InteractionCreate.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.qguild.event/InteractionCreateEventData // love.forte.simbot.qguild.event/InteractionCreate.data.<get-data>|<get-data>(){}[0]
+    final val id // love.forte.simbot.qguild.event/InteractionCreate.id|{}id[0]
+        final fun <get-id>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreate.id.<get-id>|<get-id>(){}[0]
+
+    final fun component1(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreate.component1|component1(){}[0]
+    final fun component3(): love.forte.simbot.qguild.event/InteractionCreateEventData // love.forte.simbot.qguild.event/InteractionCreate.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Long = ..., love.forte.simbot.qguild.event/InteractionCreateEventData = ...): love.forte.simbot.qguild.event/InteractionCreate // love.forte.simbot.qguild.event/InteractionCreate.copy|copy(kotlin.String;kotlin.Long;love.forte.simbot.qguild.event.InteractionCreateEventData){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/InteractionCreate.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreate.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreate.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/InteractionCreate> { // love.forte.simbot.qguild.event/InteractionCreate.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/InteractionCreate.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/InteractionCreate.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/InteractionCreate.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/InteractionCreate // love.forte.simbot.qguild.event/InteractionCreate.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/InteractionCreate) // love.forte.simbot.qguild.event/InteractionCreate.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.InteractionCreate){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/InteractionCreate.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/InteractionCreate> // love.forte.simbot.qguild.event/InteractionCreate.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/InteractionCreateData { // love.forte.simbot.qguild.event/InteractionCreateData|null[0]
+    constructor <init>(kotlin/Int, love.forte.simbot.qguild.event/InteractionCreateResolvedData) // love.forte.simbot.qguild.event/InteractionCreateData.<init>|<init>(kotlin.Int;love.forte.simbot.qguild.event.InteractionCreateResolvedData){}[0]
+
+    final val resolved // love.forte.simbot.qguild.event/InteractionCreateData.resolved|{}resolved[0]
+        final fun <get-resolved>(): love.forte.simbot.qguild.event/InteractionCreateResolvedData // love.forte.simbot.qguild.event/InteractionCreateData.resolved.<get-resolved>|<get-resolved>(){}[0]
+    final val type // love.forte.simbot.qguild.event/InteractionCreateData.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateData.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateData.component1|component1(){}[0]
+    final fun component2(): love.forte.simbot.qguild.event/InteractionCreateResolvedData // love.forte.simbot.qguild.event/InteractionCreateData.component2|component2(){}[0]
+    final fun copy(kotlin/Int = ..., love.forte.simbot.qguild.event/InteractionCreateResolvedData = ...): love.forte.simbot.qguild.event/InteractionCreateData // love.forte.simbot.qguild.event/InteractionCreateData.copy|copy(kotlin.Int;love.forte.simbot.qguild.event.InteractionCreateResolvedData){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/InteractionCreateData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateData.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/InteractionCreateData> { // love.forte.simbot.qguild.event/InteractionCreateData.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/InteractionCreateData.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/InteractionCreateData.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/InteractionCreateData.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/InteractionCreateData // love.forte.simbot.qguild.event/InteractionCreateData.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/InteractionCreateData) // love.forte.simbot.qguild.event/InteractionCreateData.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.InteractionCreateData){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/InteractionCreateData.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/InteractionCreateData> // love.forte.simbot.qguild.event/InteractionCreateData.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/InteractionCreateEventData { // love.forte.simbot.qguild.event/InteractionCreateEventData|null[0]
+    constructor <init>(kotlin/Int, love.forte.simbot.qguild.event/InteractionCreateData, kotlin/String? = ..., kotlin/String? = ..., kotlin/String, kotlin/String? = ..., kotlin/String, kotlin/Int, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Int = ...) // love.forte.simbot.qguild.event/InteractionCreateEventData.<init>|<init>(kotlin.Int;love.forte.simbot.qguild.event.InteractionCreateData;kotlin.String?;kotlin.String?;kotlin.String;kotlin.String?;kotlin.String;kotlin.Int;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.Int){}[0]
+
+    final val channelId // love.forte.simbot.qguild.event/InteractionCreateEventData.channelId|{}channelId[0]
+        final fun <get-channelId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.channelId.<get-channelId>|<get-channelId>(){}[0]
+    final val chatType // love.forte.simbot.qguild.event/InteractionCreateEventData.chatType|{}chatType[0]
+        final fun <get-chatType>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.chatType.<get-chatType>|<get-chatType>(){}[0]
+    final val data // love.forte.simbot.qguild.event/InteractionCreateEventData.data|{}data[0]
+        final fun <get-data>(): love.forte.simbot.qguild.event/InteractionCreateData // love.forte.simbot.qguild.event/InteractionCreateEventData.data.<get-data>|<get-data>(){}[0]
+    final val groupMemberOpenid // love.forte.simbot.qguild.event/InteractionCreateEventData.groupMemberOpenid|{}groupMemberOpenid[0]
+        final fun <get-groupMemberOpenid>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.groupMemberOpenid.<get-groupMemberOpenid>|<get-groupMemberOpenid>(){}[0]
+    final val groupOpenid // love.forte.simbot.qguild.event/InteractionCreateEventData.groupOpenid|{}groupOpenid[0]
+        final fun <get-groupOpenid>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.groupOpenid.<get-groupOpenid>|<get-groupOpenid>(){}[0]
+    final val guildId // love.forte.simbot.qguild.event/InteractionCreateEventData.guildId|{}guildId[0]
+        final fun <get-guildId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.guildId.<get-guildId>|<get-guildId>(){}[0]
+    final val id // love.forte.simbot.qguild.event/InteractionCreateEventData.id|{}id[0]
+        final fun <get-id>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.id.<get-id>|<get-id>(){}[0]
+    final val scene // love.forte.simbot.qguild.event/InteractionCreateEventData.scene|{}scene[0]
+        final fun <get-scene>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.scene.<get-scene>|<get-scene>(){}[0]
+    final val timestamp // love.forte.simbot.qguild.event/InteractionCreateEventData.timestamp|{}timestamp[0]
+        final fun <get-timestamp>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
+    final val type // love.forte.simbot.qguild.event/InteractionCreateEventData.type|{}type[0]
+        final fun <get-type>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.type.<get-type>|<get-type>(){}[0]
+    final val userOpenid // love.forte.simbot.qguild.event/InteractionCreateEventData.userOpenid|{}userOpenid[0]
+        final fun <get-userOpenid>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.userOpenid.<get-userOpenid>|<get-userOpenid>(){}[0]
+    final val version // love.forte.simbot.qguild.event/InteractionCreateEventData.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.version.<get-version>|<get-version>(){}[0]
+
+    final fun component1(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.component1|component1(){}[0]
+    final fun component10(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component10|component10(){}[0]
+    final fun component11(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component11|component11(){}[0]
+    final fun component12(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.component12|component12(){}[0]
+    final fun component2(): love.forte.simbot.qguild.event/InteractionCreateData // love.forte.simbot.qguild.event/InteractionCreateEventData.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component4|component4(){}[0]
+    final fun component5(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.component5|component5(){}[0]
+    final fun component6(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component6|component6(){}[0]
+    final fun component7(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.component7|component7(){}[0]
+    final fun component8(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.component8|component8(){}[0]
+    final fun component9(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateEventData.component9|component9(){}[0]
+    final fun copy(kotlin/Int = ..., love.forte.simbot.qguild.event/InteractionCreateData = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/Int = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Int = ...): love.forte.simbot.qguild.event/InteractionCreateEventData // love.forte.simbot.qguild.event/InteractionCreateEventData.copy|copy(kotlin.Int;love.forte.simbot.qguild.event.InteractionCreateData;kotlin.String?;kotlin.String?;kotlin.String;kotlin.String?;kotlin.String;kotlin.Int;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/InteractionCreateEventData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/InteractionCreateEventData> { // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/InteractionCreateEventData // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/InteractionCreateEventData) // love.forte.simbot.qguild.event/InteractionCreateEventData.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.InteractionCreateEventData){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion|null[0]
+        final const val CHAT_TYPE_CHANNEL // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_CHANNEL|{}CHAT_TYPE_CHANNEL[0]
+            final fun <get-CHAT_TYPE_CHANNEL>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_CHANNEL.<get-CHAT_TYPE_CHANNEL>|<get-CHAT_TYPE_CHANNEL>(){}[0]
+        final const val CHAT_TYPE_GROUP // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_GROUP|{}CHAT_TYPE_GROUP[0]
+            final fun <get-CHAT_TYPE_GROUP>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_GROUP.<get-CHAT_TYPE_GROUP>|<get-CHAT_TYPE_GROUP>(){}[0]
+        final const val CHAT_TYPE_PRIVATE // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_PRIVATE|{}CHAT_TYPE_PRIVATE[0]
+            final fun <get-CHAT_TYPE_PRIVATE>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.CHAT_TYPE_PRIVATE.<get-CHAT_TYPE_PRIVATE>|<get-CHAT_TYPE_PRIVATE>(){}[0]
+        final const val SCENE_C2C // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_C2C|{}SCENE_C2C[0]
+            final fun <get-SCENE_C2C>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_C2C.<get-SCENE_C2C>|<get-SCENE_C2C>(){}[0]
+        final const val SCENE_GROUP // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_GROUP|{}SCENE_GROUP[0]
+            final fun <get-SCENE_GROUP>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_GROUP.<get-SCENE_GROUP>|<get-SCENE_GROUP>(){}[0]
+        final const val SCENE_GUILD // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_GUILD|{}SCENE_GUILD[0]
+            final fun <get-SCENE_GUILD>(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.SCENE_GUILD.<get-SCENE_GUILD>|<get-SCENE_GUILD>(){}[0]
+        final const val TYPE_BUTTON // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.TYPE_BUTTON|{}TYPE_BUTTON[0]
+            final fun <get-TYPE_BUTTON>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.TYPE_BUTTON.<get-TYPE_BUTTON>|<get-TYPE_BUTTON>(){}[0]
+        final const val TYPE_MENU // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.TYPE_MENU|{}TYPE_MENU[0]
+            final fun <get-TYPE_MENU>(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.TYPE_MENU.<get-TYPE_MENU>|<get-TYPE_MENU>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/InteractionCreateEventData> // love.forte.simbot.qguild.event/InteractionCreateEventData.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.event/InteractionCreateResolvedData { // love.forte.simbot.qguild.event/InteractionCreateResolvedData|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...) // love.forte.simbot.qguild.event/InteractionCreateResolvedData.<init>|<init>(kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+
+    final val buttonData // love.forte.simbot.qguild.event/InteractionCreateResolvedData.buttonData|{}buttonData[0]
+        final fun <get-buttonData>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.buttonData.<get-buttonData>|<get-buttonData>(){}[0]
+    final val buttonId // love.forte.simbot.qguild.event/InteractionCreateResolvedData.buttonId|{}buttonId[0]
+        final fun <get-buttonId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.buttonId.<get-buttonId>|<get-buttonId>(){}[0]
+    final val featureId // love.forte.simbot.qguild.event/InteractionCreateResolvedData.featureId|{}featureId[0]
+        final fun <get-featureId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.featureId.<get-featureId>|<get-featureId>(){}[0]
+    final val messageId // love.forte.simbot.qguild.event/InteractionCreateResolvedData.messageId|{}messageId[0]
+        final fun <get-messageId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.messageId.<get-messageId>|<get-messageId>(){}[0]
+    final val userId // love.forte.simbot.qguild.event/InteractionCreateResolvedData.userId|{}userId[0]
+        final fun <get-userId>(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.userId.<get-userId>|<get-userId>(){}[0]
+
+    final fun component1(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // love.forte.simbot.qguild.event/InteractionCreateResolvedData.component5|component5(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ...): love.forte.simbot.qguild.event/InteractionCreateResolvedData // love.forte.simbot.qguild.event/InteractionCreateResolvedData.copy|copy(kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/InteractionCreateResolvedData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/InteractionCreateResolvedData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.event/InteractionCreateResolvedData.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/InteractionCreateResolvedData> { // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/InteractionCreateResolvedData // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/InteractionCreateResolvedData) // love.forte.simbot.qguild.event/InteractionCreateResolvedData.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.InteractionCreateResolvedData){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.event/InteractionCreateResolvedData.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/InteractionCreateResolvedData> // love.forte.simbot.qguild.event/InteractionCreateResolvedData.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -5592,8 +5902,6 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
     final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.toString|toString(){}[0]
 
     final class Action { // love.forte.simbot.qguild.model/MessageKeyboard.Action|null[0]
-        constructor <init>(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/String?, kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ..., kotlin/String) // love.forte.simbot.qguild.model/MessageKeyboard.Action.<init>|<init>(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?;kotlin.String){}[0]
-
         final val anchor // love.forte.simbot.qguild.model/MessageKeyboard.Action.anchor|{}anchor[0]
             final fun <get-anchor>(): kotlin/Int? // love.forte.simbot.qguild.model/MessageKeyboard.Action.anchor.<get-anchor>|<get-anchor>(){}[0]
         final val data // love.forte.simbot.qguild.model/MessageKeyboard.Action.data|{}data[0]
@@ -5616,7 +5924,6 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
         final fun component5(): kotlin/Int? // love.forte.simbot.qguild.model/MessageKeyboard.Action.component5|component5(){}[0]
         final fun component6(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.Action.component6|component6(){}[0]
         final fun component7(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboard.Action.component7|component7(){}[0]
-        final fun copy(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/String? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ..., kotlin/String = ...): love.forte.simbot.qguild.model/MessageKeyboard.Action // love.forte.simbot.qguild.model/MessageKeyboard.Action.copy|copy(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?;kotlin.String){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model/MessageKeyboard.Action.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboard.Action.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.Action.toString|toString(){}[0]
@@ -5664,6 +5971,10 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
 
         final object Companion { // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion|null[0]
             final val $childSerializers // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.$childSerializers|{}$childSerializers[0]
+            final val AdminOnly // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.AdminOnly|{}AdminOnly[0]
+                final fun <get-AdminOnly>(): love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.AdminOnly.<get-AdminOnly>|<get-AdminOnly>(){}[0]
+            final val AllAccessible // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.AllAccessible|{}AllAccessible[0]
+                final fun <get-AllAccessible>(): love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.AllAccessible.<get-AllAccessible>|<get-AllAccessible>(){}[0]
 
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission> // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.Companion.serializer|serializer(){}[0]
         }
@@ -5750,6 +6061,8 @@ final class love.forte.simbot.qguild.model/MessageKeyboardActionBuilder { // lov
     final fun from(love.forte.simbot.qguild.model/MessageKeyboard.Action): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.from|from(love.forte.simbot.qguild.model.MessageKeyboard.Action){}[0]
     final fun permission(love.forte.simbot.common.function/ConfigurerFunction<love.forte.simbot.qguild.model/MessageKeyboardActionPermissionBuilder>): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission|permission(love.forte.simbot.common.function.ConfigurerFunction<love.forte.simbot.qguild.model.MessageKeyboardActionPermissionBuilder>){}[0]
     final fun permission(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permission|permission(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?){}[0]
+    final fun permissionAdminOnly(): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permissionAdminOnly|permissionAdminOnly(){}[0]
+    final fun permissionAllAccessible(): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.permissionAllAccessible|permissionAllAccessible(){}[0]
     final fun reply(kotlin/Boolean?): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.reply|reply(kotlin.Boolean?){}[0]
     final fun type(kotlin/Int): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.type|type(kotlin.Int){}[0]
     final fun unsupportTips(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardActionBuilder // love.forte.simbot.qguild.model/MessageKeyboardActionBuilder.unsupportTips|unsupportTips(kotlin.String){}[0]
@@ -5821,6 +6134,115 @@ final class love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder { //
     final fun label(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.label|label(kotlin.String){}[0]
     final fun style(kotlin/Int): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.style|style(kotlin.Int){}[0]
     final fun visitedLabel(kotlin/String?): love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder // love.forte.simbot.qguild.model/MessageKeyboardRenderDataBuilder.visitedLabel|visitedLabel(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboards { // love.forte.simbot.qguild.model/MessageKeyboards|null[0]
+    final val content // love.forte.simbot.qguild.model/MessageKeyboards.content|{}content[0]
+        final fun <get-content>(): love.forte.simbot.qguild.model/MessageKeyboards.Content // love.forte.simbot.qguild.model/MessageKeyboards.content.<get-content>|<get-content>(){}[0]
+
+    final fun component1(): love.forte.simbot.qguild.model/MessageKeyboards.Content // love.forte.simbot.qguild.model/MessageKeyboards.component1|component1(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model/MessageKeyboards.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboards.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboards.toString|toString(){}[0]
+
+    final class Content { // love.forte.simbot.qguild.model/MessageKeyboards.Content|null[0]
+        final val rows // love.forte.simbot.qguild.model/MessageKeyboards.Content.rows|{}rows[0]
+            final fun <get-rows>(): kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboards.ContentRow> // love.forte.simbot.qguild.model/MessageKeyboards.Content.rows.<get-rows>|<get-rows>(){}[0]
+
+        final fun component1(): kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboards.ContentRow> // love.forte.simbot.qguild.model/MessageKeyboards.Content.component1|component1(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model/MessageKeyboards.Content.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboards.Content.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboards.Content.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model/MessageKeyboards.Content> { // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model/MessageKeyboards.Content // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model/MessageKeyboards.Content) // love.forte.simbot.qguild.model/MessageKeyboards.Content.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.MessageKeyboards.Content){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model/MessageKeyboards.Content.Companion|null[0]
+            final val $childSerializers // love.forte.simbot.qguild.model/MessageKeyboards.Content.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/MessageKeyboards.Content> // love.forte.simbot.qguild.model/MessageKeyboards.Content.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class ContentRow { // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow|null[0]
+        final val buttons // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.buttons|{}buttons[0]
+            final fun <get-buttons>(): kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboard> // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.buttons.<get-buttons>|<get-buttons>(){}[0]
+
+        final fun component1(): kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboard> // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.component1|component1(){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model/MessageKeyboards.ContentRow> { // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model/MessageKeyboards.ContentRow // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model/MessageKeyboards.ContentRow) // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.MessageKeyboards.ContentRow){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.Companion|null[0]
+            final val $childSerializers // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/MessageKeyboards.ContentRow> // love.forte.simbot.qguild.model/MessageKeyboards.ContentRow.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model/MessageKeyboards> { // love.forte.simbot.qguild.model/MessageKeyboards.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model/MessageKeyboards.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model/MessageKeyboards.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model/MessageKeyboards.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model/MessageKeyboards) // love.forte.simbot.qguild.model/MessageKeyboards.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.MessageKeyboards){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model/MessageKeyboards.Companion|null[0]
+        final fun builder(): love.forte.simbot.qguild.model/MessageKeyboardsBuilder // love.forte.simbot.qguild.model/MessageKeyboards.Companion.builder|builder(){}[0]
+        final fun create(kotlin.collections/Collection<love.forte.simbot.qguild.model/MessageKeyboard>): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards.Companion.create|create(kotlin.collections.Collection<love.forte.simbot.qguild.model.MessageKeyboard>){}[0]
+        final fun create(love.forte.simbot.qguild.model/MessageKeyboard): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards.Companion.create|create(love.forte.simbot.qguild.model.MessageKeyboard){}[0]
+        final fun parse(kotlin/String): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards.Companion.parse|parse(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/MessageKeyboards> // love.forte.simbot.qguild.model/MessageKeyboards.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardsBuilder { // love.forte.simbot.qguild.model/MessageKeyboardsBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardsBuilder.<init>|<init>(){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboardsBuilder.build|build(){}[0]
+    final fun content(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboardsBuilder // love.forte.simbot.qguild.model/MessageKeyboardsBuilder.content|content(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardsContentBuilder,kotlin.Unit>){}[0]
+    final fun content(love.forte.simbot.qguild.model/MessageKeyboards.Content): love.forte.simbot.qguild.model/MessageKeyboardsBuilder // love.forte.simbot.qguild.model/MessageKeyboardsBuilder.content|content(love.forte.simbot.qguild.model.MessageKeyboards.Content){}[0]
+
+    final object Companion // love.forte.simbot.qguild.model/MessageKeyboardsBuilder.Companion|null[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder { // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.<init>|<init>(){}[0]
+
+    final fun addRow(love.forte.simbot.qguild.model/MessageKeyboards.ContentRow): love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.addRow|addRow(love.forte.simbot.qguild.model.MessageKeyboards.ContentRow){}[0]
+    final fun addRows(kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboards.ContentRow>): love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.addRows|addRows(kotlin.collections.List<love.forte.simbot.qguild.model.MessageKeyboards.ContentRow>){}[0]
+    final fun addRows(kotlin/Array<out love.forte.simbot.qguild.model/MessageKeyboards.ContentRow>...): love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.addRows|addRows(kotlin.Array<out|love.forte.simbot.qguild.model.MessageKeyboards.ContentRow>...){}[0]
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboards.Content // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.build|build(){}[0]
+    final fun clearRows(): love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.clearRows|clearRows(){}[0]
+    final fun row(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentBuilder.row|row(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardsContentRowBuilder,kotlin.Unit>){}[0]
+}
+
+final class love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder { // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.<init>|<init>(){}[0]
+
+    final fun addButton(love.forte.simbot.qguild.model/MessageKeyboard): love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.addButton|addButton(love.forte.simbot.qguild.model.MessageKeyboard){}[0]
+    final fun addButtons(kotlin.collections/List<love.forte.simbot.qguild.model/MessageKeyboard>): love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.addButtons|addButtons(kotlin.collections.List<love.forte.simbot.qguild.model.MessageKeyboard>){}[0]
+    final fun addButtons(kotlin/Array<out love.forte.simbot.qguild.model/MessageKeyboard>...): love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.addButtons|addButtons(kotlin.Array<out|love.forte.simbot.qguild.model.MessageKeyboard>...){}[0]
+    final fun build(): love.forte.simbot.qguild.model/MessageKeyboards.ContentRow // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.build|build(){}[0]
+    final fun button(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.button|button(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardBuilder,kotlin.Unit>){}[0]
+    final fun clearButtons(): love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder // love.forte.simbot.qguild.model/MessageKeyboardsContentRowBuilder.clearButtons|clearButtons(){}[0]
 }
 
 final class love.forte.simbot.qguild.model/MessageMedia { // love.forte.simbot.qguild.model/MessageMedia|null[0]
@@ -6447,6 +6869,7 @@ final value class love.forte.simbot.qguild.event/IntentsAppenderOp { // love.for
     final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/IntentsAppenderOp.equals|equals(kotlin.Any?){}[0]
     final fun forumsEvent() // love.forte.simbot.qguild.event/IntentsAppenderOp.forumsEvent|forumsEvent(){}[0]
     final fun groupAndC2CEvent() // love.forte.simbot.qguild.event/IntentsAppenderOp.groupAndC2CEvent|groupAndC2CEvent(){}[0]
+    final fun groupMembers() // love.forte.simbot.qguild.event/IntentsAppenderOp.groupMembers|groupMembers(){}[0]
     final fun guildMembers() // love.forte.simbot.qguild.event/IntentsAppenderOp.guildMembers|guildMembers(){}[0]
     final fun guildMessageReactions() // love.forte.simbot.qguild.event/IntentsAppenderOp.guildMessageReactions|guildMessageReactions(){}[0]
     final fun guildMessages() // love.forte.simbot.qguild.event/IntentsAppenderOp.guildMessages|guildMessages(){}[0]
@@ -6494,7 +6917,7 @@ final value class love.forte.simbot.qguild.model/Permissions { // love.forte.sim
 }
 
 open class love.forte.simbot.qguild.api.message/GroupAndC2CSendBody { // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody|null[0]
-    constructor <init>(kotlin/Int, kotlin/String?, kotlin/Int, love.forte.simbot.qguild.model/Message.Markdown?, love.forte.simbot.qguild.model/MessageKeyboard?, love.forte.simbot.qguild.model/MessageMedia?, love.forte.simbot.qguild.model/Message.Ark?, love.forte.simbot.qguild.model/Message.Reference?, kotlin/String?, kotlin/String?, kotlin/Int?, kotlinx.serialization.internal/SerializationConstructorMarker?) // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.<init>|<init>(kotlin.Int;kotlin.String?;kotlin.Int;love.forte.simbot.qguild.model.Message.Markdown?;love.forte.simbot.qguild.model.MessageKeyboard?;love.forte.simbot.qguild.model.MessageMedia?;love.forte.simbot.qguild.model.Message.Ark?;love.forte.simbot.qguild.model.Message.Reference?;kotlin.String?;kotlin.String?;kotlin.Int?;kotlinx.serialization.internal.SerializationConstructorMarker?){}[0]
+    constructor <init>(kotlin/Int, kotlin/String?, kotlin/Int, love.forte.simbot.qguild.model/Message.Markdown?, love.forte.simbot.qguild.model/MessageKeyboards?, love.forte.simbot.qguild.model/MessageMedia?, love.forte.simbot.qguild.model/Message.Ark?, love.forte.simbot.qguild.model/Message.Reference?, kotlin/String?, kotlin/String?, kotlin/Int?, kotlinx.serialization.internal/SerializationConstructorMarker?) // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.<init>|<init>(kotlin.Int;kotlin.String?;kotlin.Int;love.forte.simbot.qguild.model.Message.Markdown?;love.forte.simbot.qguild.model.MessageKeyboards?;love.forte.simbot.qguild.model.MessageMedia?;love.forte.simbot.qguild.model.Message.Ark?;love.forte.simbot.qguild.model.Message.Reference?;kotlin.String?;kotlin.String?;kotlin.Int?;kotlinx.serialization.internal.SerializationConstructorMarker?){}[0]
 
     open var ark // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.ark|{}ark[0]
         open fun <get-ark>(): love.forte.simbot.qguild.model/Message.Ark? // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.ark.<get-ark>|<get-ark>(){}[0]
@@ -6508,6 +6931,9 @@ open class love.forte.simbot.qguild.api.message/GroupAndC2CSendBody { // love.fo
     open var keyboard // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboard|{}keyboard[0]
         open fun <get-keyboard>(): love.forte.simbot.qguild.model/MessageKeyboard? // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboard.<get-keyboard>|<get-keyboard>(){}[0]
         open fun <set-keyboard>(love.forte.simbot.qguild.model/MessageKeyboard?) // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboard.<set-keyboard>|<set-keyboard>(love.forte.simbot.qguild.model.MessageKeyboard?){}[0]
+    open var keyboards // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboards|{}keyboards[0]
+        open fun <get-keyboards>(): love.forte.simbot.qguild.model/MessageKeyboards? // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboards.<get-keyboards>|<get-keyboards>(){}[0]
+        open fun <set-keyboards>(love.forte.simbot.qguild.model/MessageKeyboards?) // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.keyboards.<set-keyboards>|<set-keyboards>(love.forte.simbot.qguild.model.MessageKeyboards?){}[0]
     open var markdown // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.markdown|{}markdown[0]
         open fun <get-markdown>(): love.forte.simbot.qguild.model/Message.Markdown? // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.markdown.<get-markdown>|<get-markdown>(){}[0]
         open fun <set-markdown>(love.forte.simbot.qguild.model/Message.Markdown?) // love.forte.simbot.qguild.api.message/GroupAndC2CSendBody.markdown.<set-markdown>|<set-markdown>(love.forte.simbot.qguild.model.Message.Markdown?){}[0]
@@ -7134,6 +7560,24 @@ sealed class love.forte.simbot.qguild.event/EventIntents { // love.forte.simbot.
         final fun toString(): kotlin/String // love.forte.simbot.qguild.event/EventIntents.GroupAndC2CEvent.toString|toString(){}[0]
     }
 
+    final object GroupMembers : love.forte.simbot.qguild.event/EventIntents { // love.forte.simbot.qguild.event/EventIntents.GroupMembers|null[0]
+        final const val GROUP_MEMBER_ADD_TYPE // love.forte.simbot.qguild.event/EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE|{}GROUP_MEMBER_ADD_TYPE[0]
+            final fun <get-GROUP_MEMBER_ADD_TYPE>(): kotlin/String // love.forte.simbot.qguild.event/EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE.<get-GROUP_MEMBER_ADD_TYPE>|<get-GROUP_MEMBER_ADD_TYPE>(){}[0]
+        final const val GROUP_MEMBER_REMOVE_TYPE // love.forte.simbot.qguild.event/EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE|{}GROUP_MEMBER_REMOVE_TYPE[0]
+            final fun <get-GROUP_MEMBER_REMOVE_TYPE>(): kotlin/String // love.forte.simbot.qguild.event/EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE.<get-GROUP_MEMBER_REMOVE_TYPE>|<get-GROUP_MEMBER_REMOVE_TYPE>(){}[0]
+        final const val INTENTS_INDEX // love.forte.simbot.qguild.event/EventIntents.GroupMembers.INTENTS_INDEX|{}INTENTS_INDEX[0]
+            final fun <get-INTENTS_INDEX>(): kotlin/Int // love.forte.simbot.qguild.event/EventIntents.GroupMembers.INTENTS_INDEX.<get-INTENTS_INDEX>|<get-INTENTS_INDEX>(){}[0]
+
+        final val intents // love.forte.simbot.qguild.event/EventIntents.GroupMembers.intents|{}intents[0]
+            final fun <get-intents>(): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/EventIntents.GroupMembers.intents.<get-intents>|<get-intents>(){}[0]
+        final val intentsValue // love.forte.simbot.qguild.event/EventIntents.GroupMembers.intentsValue|{}intentsValue[0]
+            final fun <get-intentsValue>(): kotlin/Int // love.forte.simbot.qguild.event/EventIntents.GroupMembers.intentsValue.<get-intentsValue>|<get-intentsValue>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/EventIntents.GroupMembers.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/EventIntents.GroupMembers.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.event/EventIntents.GroupMembers.toString|toString(){}[0]
+    }
+
     final object GuildMembers : love.forte.simbot.qguild.event/EventIntents { // love.forte.simbot.qguild.event/EventIntents.GuildMembers|null[0]
         final const val GUILD_MEMBER_ADD_TYPE // love.forte.simbot.qguild.event/EventIntents.GuildMembers.GUILD_MEMBER_ADD_TYPE|{}GUILD_MEMBER_ADD_TYPE[0]
             final fun <get-GUILD_MEMBER_ADD_TYPE>(): kotlin/String // love.forte.simbot.qguild.event/EventIntents.GuildMembers.GUILD_MEMBER_ADD_TYPE.<get-GUILD_MEMBER_ADD_TYPE>|<get-GUILD_MEMBER_ADD_TYPE>(){}[0]
@@ -7315,6 +7759,11 @@ sealed class love.forte.simbot.qguild.event/ForumReplyDispatch : love.forte.simb
 sealed class love.forte.simbot.qguild.event/ForumThreadDispatch : love.forte.simbot.qguild.event/ForumDispatch { // love.forte.simbot.qguild.event/ForumThreadDispatch|null[0]
     abstract val data // love.forte.simbot.qguild.event/ForumThreadDispatch.data|{}data[0]
         abstract fun <get-data>(): love.forte.simbot.qguild.model.forum/Thread // love.forte.simbot.qguild.event/ForumThreadDispatch.data.<get-data>|<get-data>(){}[0]
+}
+
+sealed class love.forte.simbot.qguild.event/GroupMemberManagementDispatch : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/GroupMemberManagementDispatch|null[0]
+    abstract val data // love.forte.simbot.qguild.event/GroupMemberManagementDispatch.data|{}data[0]
+        abstract fun <get-data>(): love.forte.simbot.qguild.event/GroupMemberManagementData // love.forte.simbot.qguild.event/GroupMemberManagementDispatch.data.<get-data>|<get-data>(){}[0]
 }
 
 sealed class love.forte.simbot.qguild.event/GroupRobotManagementDispatch : love.forte.simbot.qguild.event/Signal.Dispatch { // love.forte.simbot.qguild.event/GroupRobotManagementDispatch|null[0]
@@ -7583,6 +8032,7 @@ final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiE
 final inline fun <#A: reified kotlin/Throwable> (#A).love.forte.simbot.qguild/initCause0(kotlin/Throwable): #A // love.forte.simbot.qguild/initCause0|initCause0@0:0(kotlin.Throwable){0§<kotlin.Throwable>}[0]
 final inline fun love.forte.simbot.qguild.event/Intents(kotlin/Function1<love.forte.simbot.qguild.event/IntentsAppenderOp, kotlin/Unit>): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/Intents|Intents(kotlin.Function1<love.forte.simbot.qguild.event.IntentsAppenderOp,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.message/buildArk(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.message/ArkBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.message.ArkBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model/MessageKeyboards(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardsBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards|MessageKeyboards(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardsBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model/buildMessageKeyboard(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/buildMessageKeyboard|buildMessageKeyboard(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardBuilder,kotlin.Unit>){}[0]
 final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/request(io.ktor.client/HttpClient, kotlin/String? = ..., io.ktor.http/Url? = ..., kotlin/String? = ...): io.ktor.client.statement/HttpResponse // love.forte.simbot.qguild.api/request|request@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlin.String?){0§<kotlin.Any>}[0]
 final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/requestData(io.ktor.client/HttpClient, kotlin/String?, io.ktor.http/Url? = ..., kotlinx.serialization.json/Json = ..., kotlin/String? = ...): #A // love.forte.simbot.qguild.api/requestData|requestData@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlinx.serialization.json.Json;kotlin.String?){0§<kotlin.Any>}[0]
