@@ -23,6 +23,9 @@
 
 package love.forte.simbot.interceptor
 
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+
 /**
  * 一个基于 [Iterator] 游标推进的聚合式拦截器上下文实现。
  *
@@ -35,9 +38,10 @@ package love.forte.simbot.interceptor
  * 外层拦截器调用 [Interceptor.Context.invoke]，上下文继续推进到下一层拦截器，
  * 直到所有拦截器都已消费后执行 [invokeId]。
  *
- * [IteratorAggregationInterceptorContext] 不会缓存结果，也不会阻止重复调用 [invoke]。
- * 当 [interceptors] 已经被消费完毕后，后续再次调用 [invoke] 会直接执行 [invokeId]。
- * 子类应当为一次拦截流程提供独立的 [Iterator] 实例；同一个上下文不应被并发调用。
+ * [IteratorAggregationInterceptorContext] 不会缓存结果，并禁止重复调用 [invoke]。
+ * 当 [interceptors] 已经被消费完毕后，后续再次调用 [invoke] 会抛出 [DuplicateContextInvocationException]。
+ * 子类应当为一次拦截流程提供独立的 [Iterator] 实例、每一次拦截器的执行提供独立的 Context 实例；
+ * 同一个上下文不应被并发或重复调用。
  *
  * 一个最小实现示例：
  * ```Kotlin
@@ -54,14 +58,15 @@ package love.forte.simbot.interceptor
  * ```
  *
  * @see AggregationInterceptorContext
- * @see InterceptorSet.intercept
+ * @see intercept
  * @author Forte Scarlet
  */
+@OptIn(ExperimentalAtomicApi::class)
 public abstract class IteratorAggregationInterceptorContext<
     T : Interceptor<*, R>,
     R
     > : AggregationInterceptorContext<R> {
-        // TODO 比起 iterator 游标，获取可以改为 list + sublist 组合？
+    protected val invoked: AtomicBoolean = AtomicBoolean(false)
 
     /**
      * 当前拦截流程尚未执行的拦截器。
@@ -88,13 +93,17 @@ public abstract class IteratorAggregationInterceptorContext<
      *
      * ```Kotlin
      * override suspend fun doIntercept(interceptor: TextInterceptor): String {
-     *     return interceptor.intercept(this)
+     *     return interceptor.intercept(CustomContext(this)) // provide a new Context instance
      * }
      * ```
      */
     protected abstract suspend fun doIntercept(interceptor: T): R
 
     override suspend fun invoke(): R {
+        if (!invoked.compareAndSet(expectedValue = false, newValue = true)) {
+            throw DuplicateContextInvocationException(message = "Context.invoke has already been invoked")
+        }
+
         return if (interceptors.hasNext()) {
             doIntercept(interceptors.next())
         } else {
