@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2026. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.event
@@ -333,6 +339,48 @@ public sealed class EventIntents {
         /** 当用户离开音视频/直播子频道 */
         public const val AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT_TYPE: String = "AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT"
 
+    }
+
+    /**
+     * ```
+     * GROUP_MEMBERS (1 << 24)
+     *   - GROUP_MEMBER_ADD       // 群成员加入群聊
+     *   - GROUP_MEMBER_REMOVE    // 群成员退出群聊
+     * ```
+     *
+     * 注意：官方并未提供此 intent 的标准名称，因此 `GROUP_MEMBERS` 并非官方标准名称，未来可能会根据情况修改或变化。
+     *
+     * @since 4.4.0
+     */
+    public data object GroupMembers : EventIntents() {
+        public const val INTENTS_INDEX: Int = 24
+        internal const val INTENTS: Int = 1 shl INTENTS_INDEX
+
+        /**
+         * 群成员进退群聊事件 `intents`
+         *
+         * @since 4.4.0
+         */
+        @get:JvmStatic
+        @get:JvmName("getIntents")
+        public val intents: Intents = Intents(INTENTS)
+
+        override val intentsValue: Int
+            get() = INTENTS
+
+        /**
+         * 群成员加入群聊
+         *
+         * @since 4.4.0
+         */
+        public const val GROUP_MEMBER_ADD_TYPE: String = "GROUP_MEMBER_ADD"
+
+        /**
+         * 群成员退出群聊
+         *
+         * @since 4.4.0
+         */
+        public const val GROUP_MEMBER_REMOVE_TYPE: String = "GROUP_MEMBER_REMOVE"
     }
 
     /**

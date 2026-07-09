@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 @file:Suppress("MemberVisibilityCanBePrivate")
@@ -71,14 +77,12 @@ public class ArkBuilder(public var templateId: String) {
         kvs = ark.kv.toMutableList()
     }
 
-    @ArkBuilderDSL
     public var kvs: MutableList<Message.Ark.Kv> = mutableListOf()
 
     public fun kv(key: String, value: String): ArkBuilder = also {
         kvs.add(Message.Ark.Kv(key, value))
     }
 
-    @ArkBuilderDSL
     public fun kvs(block: ArkKvListBuilder.() -> Unit): ArkBuilder = also {
         kvs.addAll(ArkKvListBuilder().also(block).build())
     }
@@ -97,15 +101,12 @@ internal annotation class ArkKvBuilderDSL
 
 @ArkKvBuilderDSL
 public class ArkKvListBuilder {
-    @ArkKvBuilderDSL
     public var arkKvs: MutableList<Message.Ark.Kv> = mutableListOf()
 
-    @ArkKvBuilderDSL
     public fun kv(key: String, value: String): ArkKvListBuilder = also {
         arkKvs.add(Message.Ark.Kv(key, value))
     }
 
-    @ArkKvBuilderDSL
     @JvmOverloads
     public fun kv(key: String, value: String? = null, build: ArkObjListBuilder.() -> Unit): ArkKvListBuilder = also {
         arkKvs.add(Message.Ark.Kv(key, value, ArkObjListBuilder().also(build).build()))
@@ -122,15 +123,12 @@ internal annotation class ArkObjBuilderDSL
 
 @ArkObjBuilderDSL
 public class ArkObjListBuilder {
-    @ArkObjBuilderDSL
     public var objList: MutableList<Message.Ark.Obj> = mutableListOf()
 
-    @ArkObjBuilderDSL
     public fun obj(): ArkObjListBuilder = also {
         objList.add(Message.Ark.Obj())
     }
 
-    @ArkObjBuilderDSL
     public fun obj(block: ArkObjKvListBuilder.() -> Unit): ArkObjListBuilder = also {
         objList.add(Message.Ark.Obj(ArkObjKvListBuilder().also(block).build()))
     }
@@ -147,10 +145,8 @@ internal annotation class ArkObjKvBuilderDSL
 @ArkObjKvBuilderDSL
 public class ArkObjKvListBuilder {
 
-    @ArkObjKvBuilderDSL
     public var objKvs: MutableList<Message.Ark.Obj.Kv> = mutableListOf()
 
-    @ArkObjKvBuilderDSL
     public fun kv(key: String, value: String): ArkObjKvListBuilder = also {
         objKvs.add(Message.Ark.Obj.Kv(key, value))
     }

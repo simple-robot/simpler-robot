@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -37,7 +37,6 @@ import kotlin.jvm.JvmName
  * @param block The lambda expression where the MessagesBuilder functions are called to populate the message elements.
  * @return The built Messages object.
  */
-@MessagesBuilderDsl
 public inline fun buildMessages(
     container: MutableList<Message.Element> = mutableListOf(),
     block: MessagesBuilder.() -> Unit
@@ -50,7 +49,6 @@ public inline fun buildMessages(
  * @since 4.4.0
  * @see MessagesAddable.add
  */
-@MessagesBuilderDsl
 public operator fun MessagesAddable<*>.plusAssign(element: Message.Element) {
     add(element)
 }
@@ -62,7 +60,6 @@ public operator fun MessagesAddable<*>.plusAssign(element: Message.Element) {
  *
  * @see MessagesAddable.add
  */
-@MessagesBuilderDsl
 public operator fun MessagesAddable<*>.plusAssign(text: String) {
     add(text)
 }
@@ -73,7 +70,6 @@ public operator fun MessagesAddable<*>.plusAssign(text: String) {
  * @since 4.4.0
  * @see MessagesAddable.addAll
  */
-@MessagesBuilderDsl
 public operator fun MessagesAddable<*>.plusAssign(messages: Iterable<Message.Element>) {
     addAll(messages)
 }
@@ -86,9 +82,9 @@ public operator fun MessagesAddable<*>.plusAssign(messages: Iterable<Message.Ele
  */
 @Deprecated(
     "使用receiver类型为MessagesAddable的重载",
-    ReplaceWith("plusAssign(messages)")
+    ReplaceWith("plusAssign(messages)"),
+    level = DeprecationLevel.HIDDEN
 )
-@MessagesBuilderDsl
 @JvmName("plusAssign") // binary compatible
 public fun MessagesBuilder.plusAssign0(element: Message.Element) {
     plusAssign(element)
@@ -102,9 +98,9 @@ public fun MessagesBuilder.plusAssign0(element: Message.Element) {
  */
 @Deprecated(
     "使用receiver类型为MessagesAddable的重载",
-    ReplaceWith("plusAssign(messages)")
+    ReplaceWith("plusAssign(messages)"),
+    level = DeprecationLevel.HIDDEN
 )
-@MessagesBuilderDsl
 @JvmName("plusAssign") // binary compatible
 public fun MessagesBuilder.plusAssign0(text: String) {
     plusAssign(text)
@@ -118,9 +114,9 @@ public fun MessagesBuilder.plusAssign0(text: String) {
  */
 @Deprecated(
     "使用receiver类型为MessagesAddable的重载",
-    ReplaceWith("plusAssign(messages)")
+    ReplaceWith("plusAssign(messages)"),
+    level = DeprecationLevel.HIDDEN
 )
-@MessagesBuilderDsl
 @JvmName("plusAssign") // binary compatible
 public fun MessagesBuilder.plusAssign0(messages: Iterable<Message.Element>) {
     plusAssign(messages)

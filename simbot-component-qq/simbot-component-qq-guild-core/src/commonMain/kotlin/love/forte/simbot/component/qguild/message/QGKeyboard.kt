@@ -28,6 +28,7 @@ import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.Messages
 import love.forte.simbot.qguild.model.MessageKeyboard
+import love.forte.simbot.qguild.model.MessageKeyboards
 import kotlin.jvm.JvmStatic
 
 /**
@@ -35,21 +36,24 @@ import kotlin.jvm.JvmStatic
  * markdown 消息内含有的按钮信息
  *
  * @since 4.2.0
+ * @see QGKeyboards
  *
  * @author ForteScarlet
  */
 @Serializable
-@ConsistentCopyVisibility
-public data class QGKeyboard internal constructor(
-    public val keyboard: MessageKeyboard
-) : QGMessageElement {
+@Deprecated(
+    message = "请使用 QGKeyboards，QGKeyboard 和原本的 MessageKeyboard 类型的结构不够完整。",
+    replaceWith = ReplaceWith("QGKeyboards", imports = ["love.forte.simbot.component.qguild.message.QGKeyboards"]),
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION", "DEPRECATION_ERROR")
+public data class QGKeyboard internal constructor(public val keyboard: MessageKeyboard) : QGMessageElement {
     public companion object {
         /**
          * 使用 [keyboard] 直接包装构建。
          */
         @JvmStatic
-        public fun create(keyboard: MessageKeyboard): QGKeyboard =
-            QGKeyboard(keyboard)
+        public fun create(keyboard: MessageKeyboard): QGKeyboard = QGKeyboard(keyboard)
 
         /**
          * 使用 [id][MessageKeyboard.create] 构建。
@@ -57,11 +61,11 @@ public data class QGKeyboard internal constructor(
          * @see MessageKeyboard.create
          */
         @JvmStatic
-        public fun createById(id: String): QGKeyboard =
-            create(MessageKeyboard.create(id))
+        public fun createById(id: String): QGKeyboard = create(MessageKeyboard.create(id))
     }
 }
 
+@Suppress("DEPRECATION", "DEPRECATION_ERROR")
 internal object KeyboardParser : SendingMessageParser {
     internal val logger = LoggerFactory.getLogger("love.forte.simbot.component.qguild.message.KeyboardParser")
 
@@ -86,9 +90,9 @@ internal object KeyboardParser : SendingMessageParser {
         if (element is QGKeyboard) {
             val keyboard = element.keyboard
             val builder = builderContext.builderOrNew {
-                it.keyboard == null
+                it.keyboards == null
             }
-            builder.keyboard = keyboard
+            builder.keyboards = MessageKeyboards.create(keyboard)
         }
     }
 }

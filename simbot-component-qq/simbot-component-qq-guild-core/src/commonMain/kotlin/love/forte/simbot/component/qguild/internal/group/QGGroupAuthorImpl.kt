@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -24,19 +24,29 @@
 package love.forte.simbot.component.qguild.internal.group
 
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.qguild.group.QGGroupMember
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.qguild.group.QGGroupAuthor
+import love.forte.simbot.component.qguild.group.QGGroupRole
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
+import love.forte.simbot.qguild.event.GroupMessageAuthor
+import love.forte.simbot.qguild.event.GroupMessageAuthorRole
 import kotlin.coroutines.CoroutineContext
 
-
-/**
- *
- * @author ForteScarlet
- */
-internal class QGGroupMemberImpl(
+internal class QGGroupAuthorImpl(
     bot: QGBotImpl,
-    override val id: ID,
-) : QGGroupMember {
+    private val authorData: GroupMessageAuthor,
+) : QGGroupAuthor {
+    override val id: ID = authorData.memberOpenid.ID
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
+
+    override val isBot: Boolean
+        get() = authorData.bot
+
+    override val memberRole: QGGroupRole
+        get() = when (authorData.memberRole) {
+            GroupMessageAuthorRole.OWNER -> QGGroupRole.OWNER
+            GroupMessageAuthorRole.ADMIN -> QGGroupRole.ADMIN
+            GroupMessageAuthorRole.MEMBER -> QGGroupRole.MEMBER
+        }
 }
