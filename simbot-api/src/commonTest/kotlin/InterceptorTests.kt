@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import love.forte.simbot.interceptor.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /*
  *     Copyright (c) 2026. ForteScarlet.
@@ -177,7 +178,7 @@ class InterceptorTests {
     }
 
     @Test
-    fun consumedContextInvokesIdDirectlyOnFollowingInvoke() = runTest {
+    fun contextDuplicatedInvoke() = runTest {
         val events = mutableListOf<String>()
         val context = SimpleInterceptorContext(
             listOf(
@@ -194,16 +195,17 @@ class InterceptorTests {
         }
 
         assertEquals("Id", context.invoke())
-        assertEquals("Id", context.invoke())
         assertEquals(
             listOf(
                 "1-before",
                 "id",
                 "1-after:Id",
-                "id",
             ),
             events
         )
+
+        assertFailsWith<DuplicateContextInvocationException> { context.invoke() }
+
     }
 }
 
@@ -217,5 +219,6 @@ private class SimpleInterceptorContext(
     private val id: suspend () -> String
 ) : IteratorAggregationInterceptorContext<SimpleInterceptor, String>() {
     override suspend fun invokeId(): String = id()
-    override suspend fun doIntercept(interceptor: SimpleInterceptor): String = interceptor.intercept(this)
+    override suspend fun doIntercept(interceptor: SimpleInterceptor): String =
+        interceptor.intercept(SimpleInterceptorContext(interceptors, id))
 }

@@ -108,12 +108,15 @@ public interface Interceptor<C : Interceptor.Context<R>, R> {
          * 对于 [AggregationInterceptorContext]，这通常会进入下一层拦截器；
          * 当没有下一层拦截器时，则执行最终目标逻辑。
          *
-         * - 对于使用者，每个拦截器中此函数应当只能**执行一次**。
-         * - 对于实现者，**建议**对调用行为进行校验，如果一个拦截器调用了多次应当抛出明确的异常。
+         * - 对于使用者，每个拦截器中此函数应只**执行一次**。
+         * - 对于实现者，**建议**对调用行为进行校验，如果一个拦截器调用了多次应当抛出明确的异常
+         * [DuplicateContextInvocationException]。
          *
          * ```Kotlin
          * val result = context.invoke()
          * ```
+         *
+         * @throws DuplicateContextInvocationException 当尝试重复调用 [invoke] 时。
          */
         @ST
         @Throws(Exception::class)
