@@ -52,7 +52,8 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  *     override suspend fun invokeId(): String = block()
  *
  *     override suspend fun doIntercept(interceptor: TextInterceptor): String {
- *         return interceptor.intercept(this)
+ *         // 再次用于拦截行为的 context 应当是一个新的实例：因为 context 的 invoke 只能被使用一次。
+ *         return interceptor.intercept(TextContext(interceptors, block))
  *     }
  * }
  * ```
@@ -93,7 +94,8 @@ public abstract class IteratorAggregationInterceptorContext<
      *
      * ```Kotlin
      * override suspend fun doIntercept(interceptor: TextInterceptor): String {
-     *     return interceptor.intercept(CustomContext(this)) // provide a new Context instance
+     *         // 再次用于拦截行为的 context 应当是一个新的实例：因为 context 的 invoke 只能被使用一次。
+     *         return interceptor.intercept(TextContext(interceptors, block))
      * }
      * ```
      */
