@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,8 +23,14 @@
 
 package love.forte.simbot.common.collection
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 
@@ -80,6 +86,25 @@ class ConcurrentQueueTests {
 
     @OptIn(ExperimentalSimbotCollectionApi::class)
     @Test
+    fun iteratorShouldSeeTailAddBeforeReachingTailTest() {
+        val queue = createConcurrentQueue<Int>()
+        queue.add(1)
+        queue.add(2)
+
+        val iterator = queue.iterator()
+        assertTrue(iterator.hasNext())
+        assertEquals(1, iterator.next())
+
+        queue.add(3)
+
+        assertTrue(iterator.hasNext())
+        assertEquals(2, iterator.next())
+        assertTrue(iterator.hasNext())
+        assertEquals(3, iterator.next())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
     fun queueSizeTest() {
         with(createConcurrentQueue<Int>()) {
             assertEquals(0, size)
@@ -94,6 +119,120 @@ class ConcurrentQueueTests {
             clear()
             assertEquals(0, size)
         }
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun removeAndRemoveIfShouldKeepFifoOrderTest() {
+        val queue = createConcurrentQueue<Int>()
+        queue.add(1)
+        queue.add(2)
+        queue.add(2)
+        queue.add(3)
+        queue.add(4)
+
+        queue.remove(2)
+        assertEquals(listOf(1, 2, 3, 4), queue.toList())
+
+        queue.removeIf { it % 2 == 0 }
+        assertEquals(listOf(1, 3), queue.toList())
+        assertEquals(2, queue.size)
+        assertFalse(queue.isEmpty())
+
+        queue.remove(100)
+        queue.removeIf { it > 100 }
+        assertEquals(listOf(1, 3), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun emptyIteratorShouldRemainEmptyAfterLaterAddTest() {
+        val queue = createConcurrentQueue<Int>()
+        val iterator = queue.iterator()
+
+        assertFalse(iterator.hasNext())
+        queue.add(1)
+        assertFalse(iterator.hasNext())
+        assertEquals(listOf(1), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun iteratorHasNextShouldBeIdempotentTest() {
+        val queue = createConcurrentQueue<Int>()
+        queue.add(1)
+        queue.add(2)
+
+        val iterator = queue.iterator()
+        assertTrue(iterator.hasNext())
+        assertTrue(iterator.hasNext())
+        assertEquals(1, iterator.next())
+
+        queue.add(3)
+
+        assertTrue(iterator.hasNext())
+        assertTrue(iterator.hasNext())
+        assertEquals(2, iterator.next())
+        assertTrue(iterator.hasNext())
+        assertEquals(3, iterator.next())
+        assertFalse(iterator.hasNext())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun clearShouldAllowReuseAndKeepOldIteratorSafeTest() {
+        val queue = createConcurrentQueue<Int>()
+        queue.add(1)
+        queue.add(2)
+        queue.add(3)
+
+        val iterator = queue.iterator()
+        assertTrue(iterator.hasNext())
+        assertEquals(1, iterator.next())
+
+        queue.clear()
+        assertEquals(0, queue.size)
+        assertTrue(queue.isEmpty())
+
+        queue.add(4)
+        assertEquals(listOf(4), queue.toList())
+
+        while (iterator.hasNext()) {
+            iterator.next()
+        }
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun interleavedCoroutineReadAndWriteShouldKeepAllAddedValuesTest() = runTest {
+        val queue = createConcurrentQueue<Int>()
+        val jobs = mutableListOf<Job>()
+
+        repeat(4) { worker ->
+            jobs += launch {
+                repeat(50) { index ->
+                    queue.add(worker * 100 + index)
+                    if (index % 10 == 0) {
+                        yield()
+                    }
+                }
+            }
+        }
+
+        repeat(4) {
+            jobs += launch {
+                repeat(20) {
+                    queue.iterator().forEach { _ -> }
+                    yield()
+                }
+            }
+        }
+
+        jobs.joinAll()
+
+        val values = queue.toList()
+        assertEquals(200, values.size)
+        assertEquals(200, values.toSet().size)
     }
 
 }

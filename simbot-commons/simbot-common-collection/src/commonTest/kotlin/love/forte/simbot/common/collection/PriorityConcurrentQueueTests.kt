@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,16 +23,14 @@
 
 package love.forte.simbot.common.collection
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  *
@@ -69,7 +67,7 @@ class PriorityConcurrentQueueTests {
         val removeJob = launch {
             while (true) {
                 queue.removeIf(1) { it == "1-VALUE" }
-                delay(Random.nextLong(10L, 50L))
+                delay(Random.nextLong(10L, 50L).milliseconds)
             }
         }
 
@@ -85,7 +83,7 @@ class PriorityConcurrentQueueTests {
 
 
         addJobs.joinAll()
-        delay(100L)
+        delay(100L.milliseconds)
         removeJob.cancel()
 
         queue.forEach { value ->
@@ -94,6 +92,142 @@ class PriorityConcurrentQueueTests {
 
     }
 
+
+    @Test
+    fun priorityConcurrentQueueRemoveNoMatchReturnsTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(1, "A")
+        queue.add(2, "B")
+
+        queue.remove("C")
+        queue.removeIf { it == "C" }
+
+        assertEquals("A, B", queue.joinToString(", "))
+        assertEquals(2, queue.size)
+    }
+
+    @Test
+    fun priorityConcurrentQueueRemoveShouldAffectFirstMatchByPriorityTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(3, "3-A")
+        queue.add(1, "A")
+        queue.add(2, "A")
+
+        queue.remove("A")
+
+        assertEquals("A, 3-A", queue.joinToString(", "))
+        assertEquals(2, queue.size)
+    }
+
+    @Test
+    fun priorityConcurrentQueueRemoveIfShouldAffectOnlySpecifiedPriorityTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(1, "A")
+        queue.add(2, "A")
+        queue.add(2, "B")
+        queue.add(3, "A")
+
+        queue.removeIf(2) { it == "A" }
+
+        assertEquals("A, B, A", queue.joinToString(", "))
+        assertEquals(3, queue.size)
+        assertFalse(queue.isEmpty(1))
+        assertFalse(queue.isEmpty(2))
+        assertFalse(queue.isEmpty(3))
+    }
+
+    @Test
+    fun priorityConcurrentQueueBucketShouldBeReusableAfterEmptyTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(10, "10-A")
+        queue.add(5, "5-A")
+
+        queue.remove(5, "5-A")
+        assertTrue(queue.isEmpty(5))
+        assertEquals("10-A", queue.joinToString(", "))
+
+        queue.add(5, "5-B")
+        assertFalse(queue.isEmpty(5))
+        assertEquals("5-B, 10-A", queue.joinToString(", "))
+    }
+
+    @Test
+    fun priorityConcurrentQueueIteratorShouldSeeTailAddInCurrentBucketTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(1, "1-A")
+        queue.add(1, "1-B")
+        queue.add(2, "2-A")
+
+        val iterator = queue.iterator()
+        assertTrue(iterator.hasNext())
+        assertEquals("1-A", iterator.next())
+
+        queue.add(1, "1-C")
+
+        assertTrue(iterator.hasNext())
+        assertEquals("1-B", iterator.next())
+        assertTrue(iterator.hasNext())
+        assertEquals("1-C", iterator.next())
+        assertTrue(iterator.hasNext())
+        assertEquals("2-A", iterator.next())
+        assertFalse(iterator.hasNext())
+    }
+
+    @Test
+    fun priorityConcurrentQueueClearShouldAllowReuseAndKeepOldIteratorSafeTest() {
+        val queue = createPriorityConcurrentQueue<String>()
+        queue.add(1, "1-A")
+        queue.add(2, "2-A")
+
+        val iterator = queue.iterator()
+        assertTrue(iterator.hasNext())
+        iterator.next()
+
+        queue.clear()
+        assertEquals(0, queue.size)
+        assertTrue(queue.isEmpty())
+
+        queue.add(1, "1-B")
+        assertEquals("1-B", queue.joinToString(", "))
+
+        while (iterator.hasNext()) {
+            iterator.next()
+        }
+    }
+
+    @Test
+    fun priorityConcurrentQueueInterleavedReadAndWriteShouldKeepPriorityOrderTest() = runTest {
+        val queue = createPriorityConcurrentQueue<String>()
+        val jobs = mutableListOf<Job>()
+
+        for (priority in 1..3) {
+            jobs += launch {
+                repeat(40) { index ->
+                    queue.add(priority, "$priority:$index")
+                    if (index % 10 == 0) {
+                        yield()
+                    }
+                }
+            }
+        }
+
+        repeat(3) {
+            jobs += launch {
+                repeat(20) {
+                    queue.iterator().forEach { _ -> }
+                    yield()
+                }
+            }
+        }
+
+        jobs.joinAll()
+
+        val values = queue.toList()
+        val priorities = values.map { it.substringBefore(':').toInt() }
+        assertEquals(120, values.size)
+        assertEquals(120, values.toSet().size)
+        assertEquals(priorities.sorted(), priorities)
+    }
 
     @OptIn(ExperimentalSimbotCollectionApi::class)
     @Test

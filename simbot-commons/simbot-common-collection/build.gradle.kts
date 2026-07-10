@@ -34,6 +34,17 @@ plugins {
 configJavaCompileWithModule("simbot.common.collection")
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("nonJvm") {
+                withNative()
+                withJs()
+                withWasmJs()
+            }
+        }
+    }
+
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js {

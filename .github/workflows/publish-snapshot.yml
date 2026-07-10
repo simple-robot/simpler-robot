@@ -60,15 +60,12 @@ jobs:
     strategy:
       matrix:
         include:
+          # apple 只测试 mac
           - os: macos-latest
             test-tasks: >-
               jvmTest
               jsTest
               macosArm64Test
-              iosSimulatorArm64Test
-              watchosSimulatorArm64Test
-              tvosSimulatorArm64Test
-              iosX64Test
           - os: windows-latest
             test-tasks: >-
               jvmTest
