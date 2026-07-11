@@ -14,7 +14,7 @@ slf4j = "2.0.18"
 log4j = "2.24.3"
 # https://kotlinlang.org/docs/ksp-quickstart.html
 # https://github.com/google/ksp
-ksp = "2.3.9"
+ksp = "2.3.10"
 # https://square.github.io/kotlinpoet/
 # TODO to codeGentle
 kotlinPoet = "2.1.0"
