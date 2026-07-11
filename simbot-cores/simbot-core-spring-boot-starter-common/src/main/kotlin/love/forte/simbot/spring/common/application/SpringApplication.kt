@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -31,6 +31,8 @@ import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
+import love.forte.simbot.interceptor.InterceptorRegistrar
+import love.forte.simbot.interceptor.SimpleInterceptorRegistrar
 import java.util.concurrent.Executor
 import kotlin.coroutines.CoroutineContext
 
@@ -63,6 +65,8 @@ public open class SpringApplicationBuilder : AbstractApplicationBuilder() {
     @Suppress("MemberVisibilityCanBePrivate")
     public open var applicationConfigurationProperties: SpringApplicationConfigurationProperties =
         SpringApplicationConfigurationProperties()
+
+    override val interceptors: InterceptorRegistrar = SimpleInterceptorRegistrar()
 
     /**
      * Build [SpringApplicationConfiguration]

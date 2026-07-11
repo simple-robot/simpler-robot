@@ -82,6 +82,7 @@ public final class love/forte/simbot/spring/common/application/SpringApplication
 public class love/forte/simbot/spring/common/application/SpringApplicationBuilder : love/forte/simbot/application/AbstractApplicationBuilder {
 	public fun <init> ()V
 	public fun getApplicationConfigurationProperties ()Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;
+	public fun getInterceptors ()Llove/forte/simbot/interceptor/InterceptorRegistrar;
 	public fun setApplicationConfigurationProperties (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;)V
 }
 

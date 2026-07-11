@@ -10,6 +10,7 @@ public final class love/forte/simbot/common/PriorityConstant {
 	public static final field DE_PRIORITIZE_8 I
 	public static final field DE_PRIORITIZE_9 I
 	public static final field INSTANCE Llove/forte/simbot/common/PriorityConstant;
+	public static final field LEAST I
 	public static final field PRIORITIZE_1 I
 	public static final field PRIORITIZE_2 I
 	public static final field PRIORITIZE_3 I
@@ -19,6 +20,7 @@ public final class love/forte/simbot/common/PriorityConstant {
 	public static final field PRIORITIZE_7 I
 	public static final field PRIORITIZE_8 I
 	public static final field PRIORITIZE_9 I
+	public static final field TOP I
 }
 
 public final class love/forte/simbot/common/async/Async {

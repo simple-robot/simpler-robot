@@ -477,6 +477,8 @@ final object love.forte.simbot.common/PriorityConstant { // love.forte.simbot.co
         final fun <get-DE_PRIORITIZE_8>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_8.<get-DE_PRIORITIZE_8>|<get-DE_PRIORITIZE_8>(){}[0]
     final const val DE_PRIORITIZE_9 // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_9|{}DE_PRIORITIZE_9[0]
         final fun <get-DE_PRIORITIZE_9>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.DE_PRIORITIZE_9.<get-DE_PRIORITIZE_9>|<get-DE_PRIORITIZE_9>(){}[0]
+    final const val LEAST // love.forte.simbot.common/PriorityConstant.LEAST|{}LEAST[0]
+        final fun <get-LEAST>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.LEAST.<get-LEAST>|<get-LEAST>(){}[0]
     final const val PRIORITIZE_1 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_1|{}PRIORITIZE_1[0]
         final fun <get-PRIORITIZE_1>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_1.<get-PRIORITIZE_1>|<get-PRIORITIZE_1>(){}[0]
     final const val PRIORITIZE_2 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_2|{}PRIORITIZE_2[0]
@@ -495,6 +497,8 @@ final object love.forte.simbot.common/PriorityConstant { // love.forte.simbot.co
         final fun <get-PRIORITIZE_8>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_8.<get-PRIORITIZE_8>|<get-PRIORITIZE_8>(){}[0]
     final const val PRIORITIZE_9 // love.forte.simbot.common/PriorityConstant.PRIORITIZE_9|{}PRIORITIZE_9[0]
         final fun <get-PRIORITIZE_9>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.PRIORITIZE_9.<get-PRIORITIZE_9>|<get-PRIORITIZE_9>(){}[0]
+    final const val TOP // love.forte.simbot.common/PriorityConstant.TOP|{}TOP[0]
+        final fun <get-TOP>(): kotlin/Int // love.forte.simbot.common/PriorityConstant.TOP.<get-TOP>|<get-TOP>(){}[0]
 }
 
 final val love.forte.simbot.common.async/onAwait // love.forte.simbot.common.async/onAwait|@love.forte.simbot.common.async.Async<0:0>{0§<kotlin.Any?>}onAwait[0]

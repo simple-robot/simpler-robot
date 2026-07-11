@@ -41,13 +41,12 @@ import love.forte.simbot.core.event.SimpleEventDispatcher
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interceptor.InterceptorCollection
+import love.forte.simbot.interceptor.InterceptorRegistrar
+import love.forte.simbot.interceptor.SimpleInterceptorRegistrar
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.plugin.Plugin
-import love.forte.simbot.plugin.PluginConfigureContext
-import love.forte.simbot.plugin.PluginFactoriesConfigurator
-import love.forte.simbot.plugin.Plugins
-import love.forte.simbot.plugin.toPlugins
+import love.forte.simbot.plugin.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -62,6 +61,7 @@ private class SimpleApplicationImpl(
     override val components: Components,
     override val plugins: Plugins,
     override val botManagers: BotManagers,
+    override val interceptors: InterceptorCollection,
     val events: ApplicationLaunchStages
 ) : SimpleApplication {
     companion object {
@@ -173,7 +173,8 @@ public object Simple :
         val simpleConfigurer = SimpleApplicationFactoryConfigurer().invokeBy(configurer)
 
         // 配置信息
-        val configuration = simpleConfigurer.createConfigInternal(SimpleApplicationBuilder())
+        val applicationBuilder = SimpleApplicationBuilder()
+        val configuration = simpleConfigurer.createConfigInternal(applicationBuilder)
 
         val registrar = object : AbstractApplicationEventRegistrar() {
             public override val events: MutableMap<ApplicationLaunchStage<*>, MutableList<ApplicationEventHandler>>
@@ -230,12 +231,13 @@ public object Simple :
         val events = applicationLaunchStages(registrar.events.mapValues { it.value.toList() })
 
         return SimpleApplicationImpl(
-            configuration,
-            dispatcher,
-            components,
-            plugins,
-            botManagers,
-            events
+            configuration = configuration,
+            eventDispatcher = dispatcher,
+            components = components,
+            plugins = plugins,
+            botManagers = botManagers,
+            interceptors = applicationBuilder.interceptors.build(),
+            events = events,
         )
     }
 }
@@ -267,7 +269,7 @@ private class SimpleApplicationFactoryConfigurer(
 ) {
     fun createConfigInternal(configBuilder: SimpleApplicationBuilder): SimpleApplicationConfiguration {
         return createConfig(configBuilder) {
-            it.build()
+            it.buildConfiguration()
         }
     }
 
@@ -284,7 +286,9 @@ private class SimpleApplicationFactoryConfigurer(
  * 通过 [Simple] 构建 [SimpleApplication] 时使用的构建器。
  */
 public class SimpleApplicationBuilder : AbstractApplicationBuilder() {
-    internal fun build(): SimpleApplicationConfiguration {
+    override val interceptors: InterceptorRegistrar = SimpleInterceptorRegistrar()
+
+    internal fun buildConfiguration(): SimpleApplicationConfiguration {
         val context = coroutineContext
         val job = SupervisorJob(context[Job])
 

@@ -11,6 +11,7 @@ public abstract interface class love/forte/simbot/core/application/SimpleApplica
 
 public final class love/forte/simbot/core/application/SimpleApplicationBuilder : love/forte/simbot/application/AbstractApplicationBuilder {
 	public fun <init> ()V
+	public fun getInterceptors ()Llove/forte/simbot/interceptor/InterceptorRegistrar;
 }
 
 public abstract interface class love/forte/simbot/core/application/SimpleApplicationConfiguration : love/forte/simbot/application/ApplicationConfiguration {

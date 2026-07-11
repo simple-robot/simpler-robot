@@ -28,10 +28,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 
 /**
@@ -123,6 +120,17 @@ class ConcurrentQueueTests {
 
     @OptIn(ExperimentalSimbotCollectionApi::class)
     @Test
+    fun queueShouldKeepFifoOrderAndDuplicatesTest() {
+        val queue = createConcurrentQueue<Int>()
+        listOf(3, 1, 3, 2).forEach(queue::add)
+
+        assertEquals(listOf(3, 1, 3, 2), queue.toList())
+        assertEquals(4, queue.size)
+        assertFalse(queue.isEmpty())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
     fun removeAndRemoveIfShouldKeepFifoOrderTest() {
         val queue = createConcurrentQueue<Int>()
         queue.add(1)
@@ -142,6 +150,86 @@ class ConcurrentQueueTests {
         queue.remove(100)
         queue.removeIf { it > 100 }
         assertEquals(listOf(1, 3), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun removeIfPredicateFailureShouldKeepQueueUsableTest() {
+        val queue = createConcurrentQueue<Int>()
+        repeat(5) { queue.add(it) }
+
+        assertFailsWith<IllegalStateException> {
+            queue.removeIf {
+                if (it == 3) error("predicate failure")
+                it < 2
+            }
+        }
+
+        assertEquals(listOf(2, 3, 4), queue.toList())
+        queue.add(5)
+        queue.remove(3)
+        assertEquals(listOf(2, 4, 5), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun removingHeadTailAndLastElementShouldKeepQueueReusableTest() {
+        val queue = createConcurrentQueue<Int>()
+        listOf(1, 2, 3).forEach(queue::add)
+
+        queue.remove(1)
+        assertEquals(listOf(2, 3), queue.toList())
+        assertEquals(2, queue.size)
+
+        queue.remove(3)
+        assertEquals(listOf(2), queue.toList())
+        assertEquals(1, queue.size)
+
+        queue.remove(2)
+        assertTrue(queue.isEmpty())
+        assertEquals(0, queue.size)
+
+        queue.add(4)
+        assertEquals(listOf(4), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun removeIfAllAndEmptyOperationsShouldBeIdempotentTest() {
+        val queue = createConcurrentQueue<Int>()
+
+        queue.remove(1)
+        queue.removeIf { true }
+        queue.clear()
+        queue.clear()
+        assertTrue(queue.isEmpty())
+
+        repeat(5, queue::add)
+        queue.removeIf { true }
+        assertTrue(queue.isEmpty())
+        assertEquals(0, queue.size)
+        assertFalse(queue.iterator().hasNext())
+
+        queue.add(10)
+        assertEquals(listOf(10), queue.toList())
+    }
+
+    @OptIn(ExperimentalSimbotCollectionApi::class)
+    @Test
+    fun iteratorNextShouldRespectEmptyAndExhaustedBoundariesTest() {
+        val empty = createConcurrentQueue<Int>().iterator()
+        assertFalse(empty.hasNext())
+        assertFailsWith<NoSuchElementException> { empty.next() }
+
+        val queue = createConcurrentQueue<Int>()
+        queue.add(1)
+        queue.add(2)
+        val iterator = queue.iterator()
+
+        assertEquals(1, iterator.next())
+        assertEquals(2, iterator.next())
+        assertFalse(iterator.hasNext())
+        assertFailsWith<NoSuchElementException> { iterator.next() }
     }
 
     @OptIn(ExperimentalSimbotCollectionApi::class)

@@ -27,6 +27,9 @@ abstract interface love.forte.simbot.core.event/SimpleEventListenerRegistrationP
 
 final class love.forte.simbot.core.application/SimpleApplicationBuilder : love.forte.simbot.application/AbstractApplicationBuilder { // love.forte.simbot.core.application/SimpleApplicationBuilder|null[0]
     constructor <init>() // love.forte.simbot.core.application/SimpleApplicationBuilder.<init>|<init>(){}[0]
+
+    final val interceptors // love.forte.simbot.core.application/SimpleApplicationBuilder.interceptors|{}interceptors[0]
+        final fun <get-interceptors>(): love.forte.simbot.interceptor/InterceptorRegistrar // love.forte.simbot.core.application/SimpleApplicationBuilder.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
 }
 
 final class love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker : kotlin/Comparable<love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker>, love.forte.simbot.event/EventDispatchInterceptor { // love.forte.simbot.core.event.impl/SimpleEventDispatchInterceptorInvoker|null[0]

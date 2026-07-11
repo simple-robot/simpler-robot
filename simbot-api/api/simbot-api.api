@@ -219,6 +219,7 @@ public abstract interface class love/forte/simbot/application/Application : kotl
 	public abstract fun getConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
+	public abstract fun getInterceptors ()Llove/forte/simbot/interceptor/InterceptorCollection;
 	public abstract fun getPlugins ()Llove/forte/simbot/plugin/Plugins;
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
@@ -227,6 +228,7 @@ public abstract interface class love/forte/simbot/application/Application : kotl
 
 public abstract interface class love/forte/simbot/application/ApplicationBuilder {
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getInterceptors ()Llove/forte/simbot/interceptor/InterceptorRegistrar;
 	public abstract fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public abstract fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
 	public abstract fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
@@ -2400,6 +2402,50 @@ public abstract interface class love/forte/simbot/event/TypedJNonBlockEventListe
 
 public final class love/forte/simbot/event/TypedJNonBlockEventListener$Companion {
 	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract interface class love/forte/simbot/interceptor/AggregationInterceptorContext : love/forte/simbot/interceptor/Interceptor$Context {
+}
+
+public final class love/forte/simbot/interceptor/DuplicateContextInvocationException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface class love/forte/simbot/interceptor/Interceptor {
+	public abstract fun intercept (Llove/forte/simbot/interceptor/Interceptor$Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/interceptor/Interceptor$Context {
+	public abstract synthetic fun invoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun invokeAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun invokeBlocking ()Ljava/lang/Object;
+	public fun invokeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public abstract interface class love/forte/simbot/interceptor/InterceptorCollection {
+	public abstract fun all ()Lkotlin/sequences/Sequence;
+	public abstract fun getSize ()I
+}
+
+public abstract interface class love/forte/simbot/interceptor/InterceptorRegistrar {
+	public abstract fun build ()Llove/forte/simbot/interceptor/InterceptorCollection;
+	public abstract fun register (ILlove/forte/simbot/interceptor/Interceptor;)V
+	public fun register (Llove/forte/simbot/interceptor/Interceptor;)V
+}
+
+public abstract class love/forte/simbot/interceptor/IteratorAggregationInterceptorContext : love/forte/simbot/interceptor/AggregationInterceptorContext {
+	public fun <init> ()V
+	protected abstract fun doIntercept (Llove/forte/simbot/interceptor/Interceptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun getInterceptors ()Ljava/util/Iterator;
+	protected final fun getInvoked ()Ljava/util/concurrent/atomic/AtomicBoolean;
+	public fun invoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun invokeId (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/interceptor/SimpleInterceptorRegistrar : love/forte/simbot/interceptor/InterceptorRegistrar {
+	public fun <init> ()V
+	public fun build ()Llove/forte/simbot/interceptor/InterceptorCollection;
+	public fun register (ILlove/forte/simbot/interceptor/Interceptor;)V
 }
 
 public abstract class love/forte/simbot/message/AggregatedMessageReceipt : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/StandardMessageReceipt {

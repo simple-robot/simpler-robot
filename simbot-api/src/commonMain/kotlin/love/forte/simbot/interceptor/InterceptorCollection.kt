@@ -28,7 +28,7 @@ package love.forte.simbot.interceptor
 import kotlin.jvm.JvmName
 
 /**
- * 拦截器集合。
+ * 一组拦截器集合。
  *
  * 一个集合通常表示当前运行环境中已注册的所有拦截器，例如 Application 持有的全局拦截器列表。
  * 集合本身不规定拦截器的执行顺序稳定性、并发可见性或生命周期；
@@ -39,16 +39,23 @@ import kotlin.jvm.JvmName
  * val interceptors = set.all().filterIsInstance<TextInterceptor>()
  * ```
  *
+ * 添加到 [InterceptorCollection] 中的拦截器，都应当是**唯一**的，它们的唯一性通过添加时指定的 `id` 字符串为依据。
+ *
  * @see Interceptor
  * @see AggregationInterceptorContext
- * @see InterceptorSet.intercept
+ * @see InterceptorCollection.intercept
  * @since 5.0
  *
  * @author Forte Scarlet
  */
-public interface InterceptorSet {
+public interface InterceptorCollection {
     /**
-     * 获取当前集合中的所有拦截器。
+     * 拥有的拦截器数量。
+     */
+    public val size: Int
+
+    /**
+     * 获取当前集合中的所有拦截器和它对应的注册 ID。
      *
      * 返回值使用 [Sequence] 以便调用方继续按类型过滤或延迟构建上下文。
      * 具体实现可以返回快照序列，也可以返回基于当前集合状态的序列。
@@ -61,7 +68,7 @@ public interface InterceptorSet {
 }
 
 /**
- * 从 [InterceptorSet] 中筛选类型为 [T] 的拦截器，构建上下文并执行一次拦截流程。
+ * 从 [InterceptorCollection] 中筛选类型为 [T] 的拦截器，构建上下文并执行一次拦截流程。
  *
  * [contextFactory] 会接收已经按 [T] 过滤后的拦截器序列，并负责构建最终的 [AggregationInterceptorContext]。
  * 通过 [contextFactory] 构建出来的 [C] 必须聚合完整拦截流程：
@@ -106,7 +113,7 @@ public suspend inline fun <
     reified T : Interceptor<C, R>,
     C : AggregationInterceptorContext<R>,
     R
-    > InterceptorSet.intercept(
+    > InterceptorCollection.intercept(
     contextFactory: (Sequence<T>) -> C,
 ): R {
     val interceptors = all().filterIsInstance<T>()
