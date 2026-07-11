@@ -50,7 +50,7 @@ public interface ConcurrentQueue<T> : Iterable<T> {
     public fun add(value: T)
 
     /**
-     * 移除指定元素
+     * 移除第一个与指定元素相等的元素。
      */
     public fun remove(value: T)
 
@@ -113,7 +113,7 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
     public fun add(priority: Int, value: T)
 
     /**
-     * 根据给定的优先级和目标对象，从列表中删除指定的项。
+     * 根据给定的优先级和目标对象，从队列中删除第一个匹配项。
      *
      * @param priority 要删除的项目的优先级。
      * @param target 从列表中删除的目标对象。
@@ -129,7 +129,7 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
     public fun removeIf(priority: Int, predicate: (T) -> Boolean)
 
     /**
-     * 根据给定的目标对象，从列表中删除指定的项。
+     * 按 priority 升序从队列中删除第一个匹配项。
      *
      * @param target 从列表中删除的目标对象。
      */

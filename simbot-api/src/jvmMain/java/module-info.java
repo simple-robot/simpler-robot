@@ -52,6 +52,7 @@ module simbot.api {
     exports love.forte.simbot.component;
     exports love.forte.simbot.definition;
     exports love.forte.simbot.event;
+    exports love.forte.simbot.interceptor;
     exports love.forte.simbot.message;
     exports love.forte.simbot.plugin;
     exports love.forte.simbot.resource;

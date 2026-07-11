@@ -27,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.component.Components
+import love.forte.simbot.interceptor.InterceptorRegistrar
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -83,6 +84,13 @@ public interface ApplicationBuilder {
      * @since 4.5.0
      */
     public var serializersModule: SerializersModule
+
+    /**
+     * 拦截器注册器。用于构建 [Application] 中可见的拦截器集。
+     *
+     * @since 5.0
+     */
+    public val interceptors: InterceptorRegistrar
 }
 
 /**

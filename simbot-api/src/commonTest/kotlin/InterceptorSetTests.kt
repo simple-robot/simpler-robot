@@ -21,10 +21,11 @@
  *
  */
 
+import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
 import love.forte.simbot.interceptor.Interceptor
-import love.forte.simbot.interceptor.SimpleInterceptorSet
+import love.forte.simbot.interceptor.SimpleInterceptorCollection
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -66,17 +67,17 @@ class InterceptorSetTests {
 
     @Test
     fun testIteratorEachWithModify() {
-        val set = SimpleInterceptorSet()
+        val set = SimpleInterceptorCollection()
 
-        set.add(newIteratorInstance())
-        set.add(newIteratorInstance())
+        set.add(PriorityConstant.DEFAULT, newIteratorInstance())
+        set.add(PriorityConstant.DEFAULT, newIteratorInstance())
 
         val iter = set.all().iterator()
 
         assertTrue(iter.hasNext())
         iter.next()
 
-        set.add(newIteratorInstance())
+        set.add(PriorityConstant.DEFAULT, newIteratorInstance())
 
         assertTrue(iter.hasNext())
         iter.next()

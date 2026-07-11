@@ -25,10 +25,11 @@ package love.forte.simbot.interceptor
 
 import love.forte.simbot.common.collection.ConcurrentQueue
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
-import love.forte.simbot.common.collection.createConcurrentQueue
+import love.forte.simbot.common.collection.PriorityConcurrentQueue
+import love.forte.simbot.common.collection.createPriorityConcurrentQueue
 
 /**
- * 基于并发队列的简单 [InterceptorSet] 实现。
+ * 基于并发队列的简单 [InterceptorCollection] 实现。
  *
  * 该实现适合用于基础注册场景：调用 [add] 追加拦截器，
  * 调用 [all] 以当前队列顺序获取拦截器序列。
@@ -39,12 +40,15 @@ import love.forte.simbot.common.collection.createConcurrentQueue
  * set.add(TextInterceptor { context -> context.invoke() })
  * ```
  *
- * @since 5.0.0
+ * @since 5.0
  * @author Forte Scarlet
  */
 @OptIn(ExperimentalSimbotCollectionApi::class)
-public class SimpleInterceptorSet : InterceptorSet {
-    private val interceptors: ConcurrentQueue<Interceptor<*, *>> = createConcurrentQueue()
+internal class SimpleInterceptorCollection : InterceptorCollection {
+    private val interceptors: PriorityConcurrentQueue<Interceptor<*, *>> = createPriorityConcurrentQueue()
+
+    override val size: Int
+        get() = interceptors.size
 
     /**
      * 向集合末尾追加一个 [interceptor]。
@@ -53,8 +57,8 @@ public class SimpleInterceptorSet : InterceptorSet {
      * set.add(TextInterceptor { context -> context.invoke() })
      * ```
      */
-    public fun add(interceptor: Interceptor<*, *>) {
-        interceptors.add(interceptor)
+    fun add(priority: Int, interceptor: Interceptor<*, *>) {
+        interceptors.add(priority, interceptor)
     }
 
     /**

@@ -75,6 +75,7 @@ jobs:
             test-tasks: >-
               jvmTest
               jsTest
+              :simbot-commons:simbot-common-collection:wasmJsTest
               linuxX64Test
     runs-on: ${{ matrix.os }}
 

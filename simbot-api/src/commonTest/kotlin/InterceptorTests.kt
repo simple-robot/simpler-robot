@@ -22,6 +22,7 @@
  */
 
 import kotlinx.coroutines.test.runTest
+import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.interceptor.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -57,10 +58,11 @@ import kotlin.test.assertFailsWith
 class InterceptorTests {
     @Test
     fun passThroughInterceptorsInOrder() = runTest {
-        val set = SimpleInterceptorSet()
+        val set = SimpleInterceptorCollection()
         val events = mutableListOf<String>()
 
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "1-before"
                 it.invoke().also { result ->
@@ -69,6 +71,7 @@ class InterceptorTests {
             }
         )
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "2-before"
                 it.invoke().also { result ->
@@ -77,6 +80,7 @@ class InterceptorTests {
             }
         )
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "3-before"
                 it.invoke().also { result ->
@@ -109,10 +113,11 @@ class InterceptorTests {
 
     @Test
     fun interceptorCanShortCircuit() = runTest {
-        val set = SimpleInterceptorSet()
+        val set = SimpleInterceptorCollection()
         val events = mutableListOf<String>()
 
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "1-before"
                 it.invoke().also { result ->
@@ -121,6 +126,7 @@ class InterceptorTests {
             }
         )
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "2-before"
                 it.invoke().also { result ->
@@ -129,12 +135,14 @@ class InterceptorTests {
             }
         )
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "3-short-circuit"
                 "Intercepted"
             }
         )
         set.add(
+            PriorityConstant.DEFAULT,
             SimpleInterceptor {
                 events += "4-unreachable"
                 it.invoke()
@@ -163,7 +171,7 @@ class InterceptorTests {
 
     @Test
     fun emptyInterceptorSetInvokesIdDirectly() = runTest {
-        val set = SimpleInterceptorSet()
+        val set = SimpleInterceptorCollection()
         val events = mutableListOf<String>()
 
         val result = set.intercept<SimpleInterceptor, _, _> { interceptors ->

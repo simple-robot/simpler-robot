@@ -138,6 +138,8 @@ abstract interface <#A: kotlin/Any> love.forte.simbot.plugin/PluginFactoryProvid
     open fun loadConfigures(): kotlin.sequences/Sequence<love.forte.simbot.plugin/PluginFactoryConfigurerProvider<#A>>? // love.forte.simbot.plugin/PluginFactoryProvider.loadConfigures|loadConfigures(){}[0]
 }
 
+abstract interface <#A: kotlin/Any?> love.forte.simbot.interceptor/AggregationInterceptorContext : love.forte.simbot.interceptor/Interceptor.Context<#A> // love.forte.simbot.interceptor/AggregationInterceptorContext|null[0]
+
 abstract interface <#A: kotlin/Any?> love.forte.simbot.message/OfflineImageResolver { // love.forte.simbot.message/OfflineImageResolver|null[0]
     abstract fun resolveByteArray(love.forte.simbot.message/OfflineByteArrayImage, #A) // love.forte.simbot.message/OfflineImageResolver.resolveByteArray|resolveByteArray(love.forte.simbot.message.OfflineByteArrayImage;1:0){}[0]
     abstract fun resolveResource(love.forte.simbot.message/OfflineResourceImage, #A) // love.forte.simbot.message/OfflineImageResolver.resolveResource|resolveResource(love.forte.simbot.message.OfflineResourceImage;1:0){}[0]
@@ -183,6 +185,14 @@ abstract interface <#A: love.forte.simbot.bot/BotManager, #B: kotlin/Any> love.f
 
 abstract interface <#A: love.forte.simbot.component/Component, #B: kotlin/Any> love.forte.simbot.component/ComponentFactory : love.forte.simbot.common.function/MergeableFactory<love.forte.simbot.component/ComponentFactory.Key, #A, #B, love.forte.simbot.component/ComponentConfigureContext> { // love.forte.simbot.component/ComponentFactory|null[0]
     abstract interface Key : love.forte.simbot.common.function/MergeableFactory.Key // love.forte.simbot.component/ComponentFactory.Key|null[0]
+}
+
+abstract interface <#A: love.forte.simbot.interceptor/Interceptor.Context<#B>, #B: kotlin/Any?> love.forte.simbot.interceptor/Interceptor { // love.forte.simbot.interceptor/Interceptor|null[0]
+    abstract suspend fun intercept(#A): #B // love.forte.simbot.interceptor/Interceptor.intercept|intercept(1:0){}[0]
+
+    abstract interface <#A1: kotlin/Any?> Context { // love.forte.simbot.interceptor/Interceptor.Context|null[0]
+        abstract suspend fun invoke(): #A1 // love.forte.simbot.interceptor/Interceptor.Context.invoke|invoke(){}[0]
+    }
 }
 
 abstract interface <#A: love.forte.simbot.message/MessagesAddable<#A>> love.forte.simbot.message/MessagesAddable { // love.forte.simbot.message/MessagesAddable|null[0]
@@ -282,6 +292,8 @@ abstract interface love.forte.simbot.application/Application : kotlinx.coroutine
         abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.application/Application.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
     abstract val eventDispatcher // love.forte.simbot.application/Application.eventDispatcher|{}eventDispatcher[0]
         abstract fun <get-eventDispatcher>(): love.forte.simbot.event/EventDispatcher // love.forte.simbot.application/Application.eventDispatcher.<get-eventDispatcher>|<get-eventDispatcher>(){}[0]
+    abstract val interceptors // love.forte.simbot.application/Application.interceptors|{}interceptors[0]
+        abstract fun <get-interceptors>(): love.forte.simbot.interceptor/InterceptorCollection // love.forte.simbot.application/Application.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
     abstract val plugins // love.forte.simbot.application/Application.plugins|{}plugins[0]
         abstract fun <get-plugins>(): love.forte.simbot.plugin/Plugins // love.forte.simbot.application/Application.plugins.<get-plugins>|<get-plugins>(){}[0]
 
@@ -291,6 +303,9 @@ abstract interface love.forte.simbot.application/Application : kotlinx.coroutine
 }
 
 abstract interface love.forte.simbot.application/ApplicationBuilder { // love.forte.simbot.application/ApplicationBuilder|null[0]
+    abstract val interceptors // love.forte.simbot.application/ApplicationBuilder.interceptors|{}interceptors[0]
+        abstract fun <get-interceptors>(): love.forte.simbot.interceptor/InterceptorRegistrar // love.forte.simbot.application/ApplicationBuilder.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
+
     abstract var coroutineContext // love.forte.simbot.application/ApplicationBuilder.coroutineContext|{}coroutineContext[0]
         abstract fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // love.forte.simbot.application/ApplicationBuilder.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
         abstract fun <set-coroutineContext>(kotlin.coroutines/CoroutineContext) // love.forte.simbot.application/ApplicationBuilder.coroutineContext.<set-coroutineContext>|<set-coroutineContext>(kotlin.coroutines.CoroutineContext){}[0]
@@ -1169,6 +1184,19 @@ abstract interface love.forte.simbot.event/SourceEvent : love.forte.simbot.event
     abstract suspend fun source(): kotlin/Any? // love.forte.simbot.event/SourceEvent.source|source(){}[0]
 }
 
+abstract interface love.forte.simbot.interceptor/InterceptorCollection { // love.forte.simbot.interceptor/InterceptorCollection|null[0]
+    abstract val size // love.forte.simbot.interceptor/InterceptorCollection.size|{}size[0]
+        abstract fun <get-size>(): kotlin/Int // love.forte.simbot.interceptor/InterceptorCollection.size.<get-size>|<get-size>(){}[0]
+
+    abstract fun all(): kotlin.sequences/Sequence<love.forte.simbot.interceptor/Interceptor<*, *>> // love.forte.simbot.interceptor/InterceptorCollection.all|all(){}[0]
+}
+
+abstract interface love.forte.simbot.interceptor/InterceptorRegistrar { // love.forte.simbot.interceptor/InterceptorRegistrar|null[0]
+    abstract fun build(): love.forte.simbot.interceptor/InterceptorCollection // love.forte.simbot.interceptor/InterceptorRegistrar.build|build(){}[0]
+    abstract fun register(kotlin/Int, love.forte.simbot.interceptor/Interceptor<*, *>) // love.forte.simbot.interceptor/InterceptorRegistrar.register|register(kotlin.Int;love.forte.simbot.interceptor.Interceptor<*,*>){}[0]
+    open fun register(love.forte.simbot.interceptor/Interceptor<*, *>) // love.forte.simbot.interceptor/InterceptorRegistrar.register|register(love.forte.simbot.interceptor.Interceptor<*,*>){}[0]
+}
+
 abstract interface love.forte.simbot.message/BinaryDataAwareMessage { // love.forte.simbot.message/BinaryDataAwareMessage|null[0]
     abstract suspend fun binaryData(): kotlin/ByteArray // love.forte.simbot.message/BinaryDataAwareMessage.binaryData|binaryData(){}[0]
 }
@@ -1370,6 +1398,19 @@ abstract class <#A: love.forte.simbot.application/ApplicationBuilder, #B: love.f
     open fun stageEvents(love.forte.simbot.common.function/ConfigurerFunction<#B>) // love.forte.simbot.application/AbstractApplicationFactoryConfigurer.stageEvents|stageEvents(love.forte.simbot.common.function.ConfigurerFunction<1:1>){}[0]
 }
 
+abstract class <#A: love.forte.simbot.interceptor/Interceptor<*, #B>, #B: kotlin/Any?> love.forte.simbot.interceptor/IteratorAggregationInterceptorContext : love.forte.simbot.interceptor/AggregationInterceptorContext<#B> { // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext|null[0]
+    constructor <init>() // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.<init>|<init>(){}[0]
+
+    abstract val interceptors // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.interceptors|{}interceptors[0]
+        abstract fun <get-interceptors>(): kotlin.collections/Iterator<#A> // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.interceptors.<get-interceptors>|<get-interceptors>(){}[0]
+    final val invoked // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.invoked|{}invoked[0]
+        final fun <get-invoked>(): kotlin.concurrent.atomics/AtomicBoolean // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.invoked.<get-invoked>|<get-invoked>(){}[0]
+
+    abstract suspend fun doIntercept(#A): #B // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.doIntercept|doIntercept(1:0){}[0]
+    abstract suspend fun invokeId(): #B // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.invokeId|invokeId(){}[0]
+    open suspend fun invoke(): #B // love.forte.simbot.interceptor/IteratorAggregationInterceptorContext.invoke|invoke(){}[0]
+}
+
 abstract class love.forte.simbot.application/AbstractApplicationBuilder : love.forte.simbot.application/ApplicationBuilder { // love.forte.simbot.application/AbstractApplicationBuilder|null[0]
     constructor <init>() // love.forte.simbot.application/AbstractApplicationBuilder.<init>|<init>(){}[0]
 
@@ -1507,6 +1548,17 @@ final class love.forte.simbot.component/NoSuchComponentException : love.forte.si
     constructor <init>(kotlin/String?) // love.forte.simbot.component/NoSuchComponentException.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.component/NoSuchComponentException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
     constructor <init>(kotlin/Throwable?) // love.forte.simbot.component/NoSuchComponentException.<init>|<init>(kotlin.Throwable?){}[0]
+}
+
+final class love.forte.simbot.interceptor/DuplicateContextInvocationException : kotlin/RuntimeException { // love.forte.simbot.interceptor/DuplicateContextInvocationException|null[0]
+    constructor <init>(kotlin/String?) // love.forte.simbot.interceptor/DuplicateContextInvocationException.<init>|<init>(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.interceptor/SimpleInterceptorRegistrar : love.forte.simbot.interceptor/InterceptorRegistrar { // love.forte.simbot.interceptor/SimpleInterceptorRegistrar|null[0]
+    constructor <init>() // love.forte.simbot.interceptor/SimpleInterceptorRegistrar.<init>|<init>(){}[0]
+
+    final fun build(): love.forte.simbot.interceptor/InterceptorCollection // love.forte.simbot.interceptor/SimpleInterceptorRegistrar.build|build(){}[0]
+    final fun register(kotlin/Int, love.forte.simbot.interceptor/Interceptor<*, *>) // love.forte.simbot.interceptor/SimpleInterceptorRegistrar.register|register(kotlin.Int;love.forte.simbot.interceptor.Interceptor<*,*>){}[0]
 }
 
 final class love.forte.simbot.message/At : love.forte.simbot.message/MentionMessage { // love.forte.simbot.message/At|null[0]
@@ -2321,3 +2373,4 @@ final suspend fun (love.forte.simbot.event/StandardEventResult.CollectableReacti
 final suspend inline fun (love.forte.simbot.message/AggregatedMessageReceipt).love.forte.simbot.message/deleteAllSafely(kotlin/Array<out love.forte.simbot.ability/DeleteOption>..., kotlin/Function1<kotlin/Result<kotlin/Unit>, kotlin/Unit> = ...) // love.forte.simbot.message/deleteAllSafely|deleteAllSafely@love.forte.simbot.message.AggregatedMessageReceipt(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...;kotlin.Function1<kotlin.Result<kotlin.Unit>,kotlin.Unit>){}[0]
 final suspend inline fun <#A: love.forte.simbot.application/Application, #B: love.forte.simbot.application/AbstractApplicationBuilder, #C: love.forte.simbot.application/ApplicationLauncher<#A>, #D: love.forte.simbot.application/ApplicationEventRegistrar, #E: love.forte.simbot.event/EventDispatcherConfiguration> love.forte.simbot.application/launchApplication(love.forte.simbot.application/ApplicationFactory<#A, #B, #C, #D, #E>, crossinline kotlin/Function1<love.forte.simbot.application/ApplicationFactoryConfigurer<#B, #D, #E>, kotlin/Unit> = ...): #A // love.forte.simbot.application/launchApplication|launchApplication(love.forte.simbot.application.ApplicationFactory<0:0,0:1,0:2,0:3,0:4>;kotlin.Function1<love.forte.simbot.application.ApplicationFactoryConfigurer<0:1,0:3,0:4>,kotlin.Unit>){0§<love.forte.simbot.application.Application>;1§<love.forte.simbot.application.AbstractApplicationBuilder>;2§<love.forte.simbot.application.ApplicationLauncher<0:0>>;3§<love.forte.simbot.application.ApplicationEventRegistrar>;4§<love.forte.simbot.event.EventDispatcherConfiguration>}[0]
 final suspend inline fun <#A: love.forte.simbot.application/Application> (#A).love.forte.simbot.application/joinWith(kotlin/Function1<#A, kotlin/Unit>) // love.forte.simbot.application/joinWith|joinWith@0:0(kotlin.Function1<0:0,kotlin.Unit>){0§<love.forte.simbot.application.Application>}[0]
+final suspend inline fun <#A: reified love.forte.simbot.interceptor/Interceptor<#B, #C>, #B: love.forte.simbot.interceptor/AggregationInterceptorContext<#C>, #C: kotlin/Any?> (love.forte.simbot.interceptor/InterceptorCollection).love.forte.simbot.interceptor/intercept(kotlin/Function1<kotlin.sequences/Sequence<#A>, #B>): #C // love.forte.simbot.interceptor/intercept|intercept@love.forte.simbot.interceptor.InterceptorCollection(kotlin.Function1<kotlin.sequences.Sequence<0:0>,0:1>){0§<love.forte.simbot.interceptor.Interceptor<0:1,0:2>>;1§<love.forte.simbot.interceptor.AggregationInterceptorContext<0:2>>;2§<kotlin.Any?>}[0]

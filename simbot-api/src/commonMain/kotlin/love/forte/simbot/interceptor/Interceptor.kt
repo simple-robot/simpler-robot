@@ -70,7 +70,7 @@ import kotlin.jvm.JvmName
  * 拦截器的 Java 平台桥接/兼容类型由子类型提供实现，[Interceptor] 类型本身不考虑 Java 兼容性。
  *
  * @see AggregationInterceptorContext
- * @see InterceptorSet
+ * @see InterceptorCollection
  * @since 5.0
  *
  * @author Forte Scarlet
