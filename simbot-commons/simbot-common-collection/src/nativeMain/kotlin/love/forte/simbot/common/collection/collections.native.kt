@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -41,25 +41,3 @@ public actual fun <T> Collection<T>.toImmutable(): Collection<T> {
         }
     }
 }
-
-/**
- * 创建一个优先级并发队列 [PriorityConcurrentQueue] 。
- *
- * 优先级并发队列允许在多个线程中同时添加、读取和删除元素，
- * 并且元素的出队顺序会根据它们的优先级来确定。
- *
- * @return 返回一个新创建的优先级并发队列。
- */
-@ExperimentalSimbotCollectionApi
-public actual fun <T> createPriorityConcurrentQueue(): PriorityConcurrentQueue<T> =
-    PriorityConcurrentQueueImpl()
-
-/**
- * 创建一个普通的并发队列 [ConcurrentQueue] 。
- *
- * 并发队列允许在多个线程中同时添加、读取和删除元素。
- *
- * @return 返回一个新创建的并发队列。
- */
-@ExperimentalSimbotCollectionApi
-public actual fun <T> createConcurrentQueue(): ConcurrentQueue<T> = ConcurrentQueueImpl()

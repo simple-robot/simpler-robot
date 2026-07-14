@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -22,6 +22,9 @@
  */
 
 package love.forte.simbot.common
+
+import love.forte.simbot.common.PriorityConstant.DEFAULT
+
 
 /**
  * 优先级常量类。
@@ -56,6 +59,19 @@ package love.forte.simbot.common
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public object PriorityConstant {
+    /**
+     * 最优先的优先级 [Int.MIN_VALUE] 。
+     *
+     * @since 5.0
+     */
+    public const val TOP: Int = Int.MIN_VALUE
+
+    /**
+     * 最不优先的优先级 [Int.MAX_VALUE] 。
+     *
+     * @since 5.0
+     */
+    public const val LEAST: Int = Int.MAX_VALUE
 
     // 前九个 "较为优先" 级别。
     // 优先级次序为 PRIORITIZED_1 > PRIORITIZED_2 > ... > PRIORITIZED_9

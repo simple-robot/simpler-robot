@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -57,6 +57,7 @@ public annotation class EventDispatcherConfigurationDSL
  * 最少也要在不支持的情况下给出警告日志或异常。
  *
  */
+@EventDispatcherConfigurationDSL
 public interface EventDispatcherConfiguration {
 
     /**
@@ -80,7 +81,6 @@ public interface EventDispatcherConfiguration {
     /**
      * 添加一个拦截器与它可能存在的配置信息。
      */
-    @EventDispatcherConfigurationDSL
     public fun addInterceptor(
         propertiesConsumer: ConfigurerFunction<EventInterceptorRegistrationProperties>?,
         interceptor: EventInterceptor
@@ -89,7 +89,6 @@ public interface EventDispatcherConfiguration {
     /**
      * 添加一个拦截器与它可能存在的配置信息。
      */
-    @EventDispatcherConfigurationDSL
     public fun addInterceptor(interceptor: EventInterceptor) {
         addInterceptor(null, interceptor)
     }
@@ -98,7 +97,6 @@ public interface EventDispatcherConfiguration {
     /**
      * 添加一个事件调度拦截器与它可能存在的配置信息。
      */
-    @EventDispatcherConfigurationDSL
     public fun addDispatchInterceptor(
         propertiesConsumer: ConfigurerFunction<EventDispatchInterceptorRegistrationProperties>?,
         interceptor: EventDispatchInterceptor
@@ -107,10 +105,7 @@ public interface EventDispatcherConfiguration {
     /**
      * 添加一个事件调度拦截器与它可能存在的配置信息。
      */
-    @EventDispatcherConfigurationDSL
-    public fun addDispatchInterceptor(
-        interceptor: EventDispatchInterceptor
-    ) {
+    public fun addDispatchInterceptor(interceptor: EventDispatchInterceptor) {
         addDispatchInterceptor(null, interceptor)
     }
 }

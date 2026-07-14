@@ -34,6 +34,7 @@ configJavaCompileWithModule("simbot.component.qqguild.core")
 
 kotlin {
     compilerOptions {
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
     }

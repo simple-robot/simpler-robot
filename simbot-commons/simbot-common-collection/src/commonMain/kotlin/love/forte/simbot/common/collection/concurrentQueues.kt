@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,9 @@ package love.forte.simbot.common.collection
 /**
  * 可以并发安全地操作元素地并发队列类型。
  *
- * 注意：非 JVM 平台的实现仍处于试验阶段。
+ * 迭代器为弱一致语义：允许遍历过程中继续添加、删除或清空队列，
+ * 且不会因为队列结构变化导致迭代器失效。迭代器可能观察到遍历过程中的部分变更，
+ * 也可能跳过已经被删除的元素；不提供事务快照保证。
  *
  * @author ForteScarlet
  */
@@ -48,7 +50,7 @@ public interface ConcurrentQueue<T> : Iterable<T> {
     public fun add(value: T)
 
     /**
-     * 移除指定元素
+     * 移除第一个与指定元素相等的元素。
      */
     public fun remove(value: T)
 
@@ -63,8 +65,8 @@ public interface ConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
-     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
-     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改。
+     * 迭代器为弱一致语义，不保证完整快照，也不保证观察到所有并发变更。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */
@@ -79,7 +81,9 @@ public interface ConcurrentQueue<T> : Iterable<T> {
 /**
  * 表示一个基于优先级的并发队列，可以根据元素的优先级添加和删除元素。
  *
- * 注意：非 JVM 平台的实现仍处于试验阶段。
+ * 迭代器为弱一致语义：允许遍历过程中继续添加、删除或清空队列，
+ * 且不会因为队列结构变化导致迭代器失效。遍历顺序以 priority 升序为基础，
+ * 同 priority 内按添加顺序遍历。
  *
  * @author ForteScarlet
  */
@@ -109,7 +113,7 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
     public fun add(priority: Int, value: T)
 
     /**
-     * 根据给定的优先级和目标对象，从列表中删除指定的项。
+     * 根据给定的优先级和目标对象，从队列中删除第一个匹配项。
      *
      * @param priority 要删除的项目的优先级。
      * @param target 从列表中删除的目标对象。
@@ -117,15 +121,15 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
     public fun remove(priority: Int, target: T)
 
     /**
-     * 根据优先级和条件从列表中删除元素。
+     * 根据优先级和条件从队列中删除元素。
      *
-     * @param priority 要删除的元素的优先级。只有优先级高于或等于给定优先级的元素才会被删除。
+     * @param priority 要删除的元素的优先级。只有此优先级下满足条件的元素才会被删除。
      * @param predicate 用于确定是否应删除元素的条件。只有满足条件的元素才会被删除。
      */
     public fun removeIf(priority: Int, predicate: (T) -> Boolean)
 
     /**
-     * 根据给定的目标对象，从列表中删除指定的项。
+     * 按 priority 升序从队列中删除第一个匹配项。
      *
      * @param target 从列表中删除的目标对象。
      */
@@ -140,8 +144,8 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
-     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
-     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改。
+     * 迭代器为弱一致语义，不保证完整快照，也不保证观察到所有并发变更。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */

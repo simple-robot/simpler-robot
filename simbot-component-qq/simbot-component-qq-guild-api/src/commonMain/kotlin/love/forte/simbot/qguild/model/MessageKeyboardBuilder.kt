@@ -50,6 +50,15 @@ public class MessageKeyboardBuilder(public var id: String? = null) {
     public var renderData: MessageKeyboard.RenderData? = null
     public var action: MessageKeyboard.Action? = null
 
+    private fun MessageKeyboard.RenderData.doCopy(): MessageKeyboard.RenderData = copy()
+
+    private fun MessageKeyboard.Action.doCopy(): MessageKeyboard.Action = copy(
+        permission = permission?.copy(
+            specifyUserIds = permission.specifyUserIds?.toList(),
+            specifyRoleIds = permission.specifyRoleIds?.toList()
+        )
+    )
+
     /**
      * 基于现有 [keyboard] 填充当前构建器。
      */
@@ -133,9 +142,12 @@ public class MessageKeyboardBuilder(public var id: String? = null) {
      * 构建 [MessageKeyboard]。
      */
     public fun build(): MessageKeyboard =
-        MessageKeyboard(id = id, renderData = renderData, action = action)
+        MessageKeyboard(id = id, renderData = renderData?.doCopy(), action = action?.doCopy())
 }
 
+/**
+ * 用于构建一个 [MessageKeyboard.RenderData] 对象。
+ */
 @MessageKeyboardBuilderDsl
 public class MessageKeyboardRenderDataBuilder {
     public lateinit var label: String
@@ -206,7 +218,10 @@ public class MessageKeyboardActionBuilder {
      * 基于现有 [action] 填充当前构建器。
      */
     public fun from(action: MessageKeyboard.Action): MessageKeyboardActionBuilder = also {
-        permission = action.permission
+        permission = action.permission?.copy(
+            specifyUserIds = action.permission.specifyUserIds,
+            specifyRoleIds = action.permission.specifyRoleIds
+        )
         data = action.data
         reply = action.reply
         enter = action.enter
@@ -220,6 +235,20 @@ public class MessageKeyboardActionBuilder {
      */
     public fun permission(permission: MessageKeyboard.ActionPermission?): MessageKeyboardActionBuilder = also {
         this.permission = permission
+    }
+
+    /**
+     * 设置操作权限为仅管理员可用。
+     */
+    public fun permissionAdminOnly(): MessageKeyboardActionBuilder = also {
+        this.permission = MessageKeyboard.ActionPermission.AdminOnly
+    }
+
+    /**
+     * 设置操作权限为所有人可用。
+     */
+    public fun permissionAllAccessible(): MessageKeyboardActionBuilder = also {
+        this.permission = MessageKeyboard.ActionPermission.AllAccessible
     }
 
     /**

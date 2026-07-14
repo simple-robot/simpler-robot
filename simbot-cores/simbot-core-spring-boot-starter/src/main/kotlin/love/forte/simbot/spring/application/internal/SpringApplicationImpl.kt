@@ -34,6 +34,7 @@ import love.forte.simbot.application.NormalApplicationEventHandler
 import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interceptor.InterceptorCollection
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
 import love.forte.simbot.plugin.Plugins
@@ -50,6 +51,7 @@ internal class SpringApplicationImpl(
     override val components: Components,
     override val plugins: Plugins,
     override val botManagers: BotManagers,
+    override val interceptors: InterceptorCollection,
     val events: ApplicationLaunchStages
 ) : SpringApplication {
     companion object {

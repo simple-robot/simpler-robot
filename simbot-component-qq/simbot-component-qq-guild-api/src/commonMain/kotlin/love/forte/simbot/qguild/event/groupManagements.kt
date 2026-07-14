@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.event
@@ -32,6 +38,24 @@ public data class GroupRobotManagementData(
     val groupOpenid: String,
     @SerialName("op_member_openid")
     val opMemberOpenid: String,
+)
+
+/**
+ * [GroupMemberManagementDispatch] 事件的数据体。
+ *
+ * @property timestamp 触发时间戳
+ * @property groupOpenid 群 openid
+ * @property memberOpenid 群成员 openid
+ *
+ * @since 4.4.0
+ */
+@Serializable
+public data class GroupMemberManagementData(
+    val timestamp: String,
+    @SerialName("group_openid")
+    val groupOpenid: String,
+    @SerialName("member_openid")
+    val memberOpenid: String,
 )
 
 /**
@@ -101,3 +125,47 @@ public data class GroupMsgReceive(
     @SerialName("d")
     override val data: GroupRobotManagementData
 ) : GroupRobotManagementDispatch()
+
+/**
+ * 群成员进退群聊事件。
+ * [data] 类型为 [GroupMemberManagementData]
+ *
+ * @since 4.4.0
+ */
+public sealed class GroupMemberManagementDispatch : Signal.Dispatch() {
+    abstract override val data: GroupMemberManagementData
+}
+
+/**
+ * [群成员加入群聊](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/group/manage/event.html#群成员加入-退出群聊)
+ *
+ * 触发场景 成员加入群聊
+ *
+ * @since 4.4.0
+ */
+@Serializable
+@SerialName(EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE)
+@DispatchTypeName(EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE)
+public data class GroupMemberAdd(
+    override val id: String? = null,
+    override val s: Long = DEFAULT_SEQ,
+    @SerialName("d")
+    override val data: GroupMemberManagementData
+) : GroupMemberManagementDispatch()
+
+/**
+ * [群成员退出群聊](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/group/manage/event.html#群成员加入-退出群聊)
+ *
+ * 触发场景 成员退出群聊
+ *
+ * @since 4.4.0
+ */
+@Serializable
+@SerialName(EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE)
+@DispatchTypeName(EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE)
+public data class GroupMemberRemove(
+    override val id: String? = null,
+    override val s: Long = DEFAULT_SEQ,
+    @SerialName("d")
+    override val data: GroupMemberManagementData
+) : GroupMemberManagementDispatch()

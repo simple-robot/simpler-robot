@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -71,7 +71,8 @@ public object Spring : SpringApplicationFactory {
             >?
     ): SpringApplicationImpl {
         val springConfigurer = SpringApplicationFactoryConfigurer().invokeBy(configurer)
-        val configuration = springConfigurer.createConfigInternal(SpringApplicationBuilder())
+        val applicationBuilder = SpringApplicationBuilder()
+        val configuration = springConfigurer.createConfigInternal(applicationBuilder)
 
         val registrar = object : AbstractApplicationEventRegistrar(), SpringApplicationEventRegistrar {
             public override val events: MutableMap<ApplicationLaunchStage<*>, MutableList<ApplicationEventHandler>>
@@ -127,12 +128,13 @@ public object Spring : SpringApplicationFactory {
         val events = applicationLaunchStages(registrar.events.mapValues { it.value.toList() })
 
         return SpringApplicationImpl(
-            configuration,
-            dispatcher,
-            components,
-            plugins,
-            botManagers,
-            events
+            configuration = configuration,
+            eventDispatcher = dispatcher,
+            components = components,
+            plugins = plugins,
+            botManagers = botManagers,
+            interceptors = applicationBuilder.interceptors.build(),
+            events = events
         )
     }
 }

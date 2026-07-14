@@ -59,7 +59,24 @@ jobs:
     needs: build
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        include:
+          # apple 只测试 mac
+          - os: macos-latest
+            test-tasks: >-
+              jvmTest
+              jsTest
+              macosArm64Test
+          - os: windows-latest
+            test-tasks: >-
+              jvmTest
+              jsTest
+              mingwX64Test
+          - os: ubuntu-latest
+            test-tasks: >-
+              jvmTest
+              jsTest
+              :simbot-commons:simbot-common-collection:wasmJsTest
+              linuxX64Test
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -79,8 +96,8 @@ jobs:
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Run All Tests
-        run: gradle allTests -s --warning-mode all -x watchosSimulatorArm64Test -x iosX64Test -x macosX64Test -x watchosX64Test -x tvosX64Test
+      - name: Run Selected Tests
+        run: gradle ${{ matrix.test-tasks }} -s --warning-mode all
 
       - name: Upload test reports
         uses: actions/upload-artifact@v7

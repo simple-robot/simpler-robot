@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -107,6 +107,7 @@ public annotation class ApplicationFactoryConfigurerDSL
  *
  * @see AbstractApplicationFactoryConfigurer
  */
+@ApplicationFactoryConfigurerDSL
 public interface ApplicationFactoryConfigurer<
     C : ApplicationBuilder,
     AER : ApplicationEventRegistrar,
@@ -116,25 +117,21 @@ public interface ApplicationFactoryConfigurer<
     /**
      * 配置 [Application] 配置阶段的一些配置信息。
      */
-    @ApplicationFactoryConfigurerDSL
     public fun config(configurer: ConfigurerFunction<C>)
 
     /**
      * 配置 [Application] 的阶段事件。
      */
-    @ApplicationFactoryConfigurerDSL
     public fun stageEvents(configurer: ConfigurerFunction<AER>)
 
     /**
      * 添加一个事件调度器配置。
      */
-    @ApplicationFactoryConfigurerDSL
     public fun eventDispatcher(configurer: ConfigurerFunction<DC>)
 
     /**
      * 注册安装一个组件类型，并为其添加对应的配置。
      */
-    @ApplicationFactoryConfigurerDSL
     override fun <COM : Component, CONF : Any> install(
         componentFactory: ComponentFactory<COM, CONF>, configurer: ConfigurerFunction<CONF>
     )
@@ -142,7 +139,6 @@ public interface ApplicationFactoryConfigurer<
     /**
      * 注册安装一个组件类型。
      */
-    @ApplicationFactoryConfigurerDSL
     override fun <COM : Component, CONF : Any> install(componentFactory: ComponentFactory<COM, CONF>) {
         install(componentFactory) {}
     }
@@ -150,7 +146,6 @@ public interface ApplicationFactoryConfigurer<
     /**
      * 注册安装一个插件 [Plugin] 类型，并为其添加一个对应的配置。
      */
-    @ApplicationFactoryConfigurerDSL
     override fun <P : Plugin, CONF : Any> install(
         pluginFactory: PluginFactory<P, CONF>, configurer: ConfigurerFunction<CONF>
     )
@@ -158,7 +153,6 @@ public interface ApplicationFactoryConfigurer<
     /**
      * 注册安装一个插件 [Plugin] 类型。
      */
-    @ApplicationFactoryConfigurerDSL
     override fun <P : Plugin, CONF : Any> install(pluginFactory: PluginFactory<P, CONF>) {
         install(pluginFactory) {}
     }
@@ -227,11 +221,8 @@ public abstract class AbstractApplicationFactoryConfigurer<
  * 当执行 [ApplicationLauncher.launch] 时会构建并启动 [Application]。
  *
  * JVM 中提供了一些额外的扩展类型来支持使用 Java 的阻塞或异步风格 API 实现 [ApplicationLauncher]:
- * - [JBlockingApplicationLauncher][love.forte.simbot.application.JBlockingApplicationLauncher]
- * - [JAsyncApplicationLauncher][love.forte.simbot.application.JAsyncApplicationLauncher]
- *
- * @see love.forte.simbot.application.JBlockingApplicationLauncher
- * @see love.forte.simbot.application.JAsyncApplicationLauncher
+ * - `love.forte.simbot.application.JBlockingApplicationLauncher`
+ * - `love.forte.simbot.application.JAsyncApplicationLauncher`
  */
 public interface ApplicationLauncher<out A : Application> {
 

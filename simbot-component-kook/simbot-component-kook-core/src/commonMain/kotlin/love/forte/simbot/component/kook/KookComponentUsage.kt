@@ -50,7 +50,6 @@ import love.forte.simbot.component.kook.bot.KookBotManagerConfiguration
  *
  * @see KookComponent
  */
-@ApplicationFactoryConfigurerDSL
 public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookComponent(
     crossinline configurator: KookComponentConfiguration.() -> Unit = {
     }
@@ -83,7 +82,6 @@ public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookComponent(
  * @see KookBotManager
  */
 
-@ApplicationFactoryConfigurerDSL
 public inline fun ApplicationFactoryConfigurer<*, *, *>.useKookBotManager(
     crossinline configurator: KookBotManagerConfiguration.() -> Unit = {
     }
@@ -146,13 +144,11 @@ public interface KookComponentUsageBuilder {
      * 提供针对 [KOOK组件][KookComponent] 的配置。
      *
      */
-    @ApplicationFactoryConfigurerDSL
     public fun component(configurator: KookComponentConfiguration.() -> Unit)
 
     /**
      * 提供针对 [KookBotManager] 的配置。
      */
-    @ApplicationFactoryConfigurerDSL
     public fun botManager(configurator: KookBotManagerConfiguration.() -> Unit)
 
 }
