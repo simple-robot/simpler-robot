@@ -30,6 +30,7 @@ import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
 import love.forte.simbot.qguild.model.Message
 import love.forte.simbot.qguild.model.MessageKeyboard
+import love.forte.simbot.qguild.model.MessageKeyboards
 import love.forte.simbot.qguild.model.MessageMedia
 import kotlin.jvm.JvmStatic
 
@@ -41,7 +42,7 @@ import kotlin.jvm.JvmStatic
  * @property content 文本内容
  * @property msgType 消息类型： 0 文本，2 是 markdown，3 ark 消息，4 embed，7 media 富媒体
  * @property markdown
- * @property keyboard
+ * @property keyboards 消息按钮内容，会序列化为 `keyboard` 字段。
  * @property media
  * @property ark
  * @property messageReference
@@ -57,7 +58,29 @@ public open class GroupAndC2CSendBody internal constructor(
     public open var msgType: Int,
 ) {
     public open var markdown: Message.Markdown? = null
-    public open var keyboard: MessageKeyboard? = null
+
+    /**
+     * @since 4.4.0
+     */
+    @SerialName("keyboard")
+    public open var keyboards: MessageKeyboards? = null
+
+    /**
+     * `MessageKeyboard` 的结构存在缺损，请直接使用 [keyboards]。
+     *
+     * 目前 `keyboard` 属性会直接读取或修改 [keyboards]:
+     * - setter 会覆盖设置为 [keyboards] 的第一个 row 的第一个 button。
+     * - getter 会尝试获取 [keyboards] 的第一个 row 的第一个 button。
+     */
+    @Deprecated(message = "`MessageKeyboard` 的结构存在缺损，请直接使用 keyboards。", level = DeprecationLevel.ERROR)
+    public open var keyboard: MessageKeyboard?
+        get() = keyboards?.content?.rows?.firstOrNull()?.buttons?.firstOrNull()
+        set(value) {
+            keyboards = value?.let { button ->
+                MessageKeyboards.create(button)
+            }
+        }
+
     public open var media: MessageMedia? = null
     public open var ark: Message.Ark? = null
 
@@ -101,7 +124,7 @@ public open class GroupAndC2CSendBody internal constructor(
 
     override fun toString(): String {
         return "GroupAndC2CSendBody(content='$content', msgType=$msgType, markdown=$markdown, " +
-            "keyboard=$keyboard, media=$media, ark=$ark, messageReference=$messageReference, " +
+            "keyboards=$keyboards, media=$media, ark=$ark, messageReference=$messageReference, " +
             "eventId=$eventId, msgId=$msgId, msgSeq=$msgSeq)"
     }
 }
@@ -110,7 +133,7 @@ public open class GroupAndC2CSendBody internal constructor(
 public fun GroupAndC2CSendBody.isEmpty(): Boolean =
     content.isEmpty() &&
         markdown == null &&
-        keyboard == null &&
+        keyboards == null &&
         media == null &&
         ark == null &&
         messageReference == null &&

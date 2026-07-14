@@ -27,8 +27,8 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.common.core")

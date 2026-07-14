@@ -27,8 +27,8 @@ plugins {
     id("simbot.kotlin-jvm-abi-convention")
     kotlin("plugin.serialization")
     kotlin("kapt")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")

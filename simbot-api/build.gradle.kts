@@ -33,11 +33,11 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
     kotlin("plugin.serialization")
-    id("love.forte.plugin.suspend-transform")
+    alias(libs.plugins.suspendTransform)
     alias(libs.plugins.ksp)
-    id("org.jetbrains.dokka")
-    id("com.github.gmazzo.buildconfig")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.buildconfig)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.api")

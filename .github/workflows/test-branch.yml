@@ -53,7 +53,29 @@ jobs:
     needs: build
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        include:
+          - os: macos-latest
+            test-tasks: >-
+              checkKotlinAbi
+              jvmTest
+              jsTest
+              macosArm64Test
+              iosSimulatorArm64Test
+              watchosSimulatorArm64Test
+              tvosSimulatorArm64Test
+              iosX64Test
+          - os: windows-latest
+            test-tasks: >-
+              checkKotlinAbi
+              jvmTest
+              jsTest
+              mingwX64Test
+          - os: ubuntu-latest
+            test-tasks: >-
+              checkKotlinAbi
+              jvmTest
+              jsTest
+              linuxX64Test
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
@@ -75,9 +97,8 @@ jobs:
           build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
           build-scan-terms-of-use-agree: 'yes'
 
-      - name: Run All Tests
-        # 排除掉 apple 平台上 tier3 的平台（手表、X64平台）
-        run: gradle checkLegacyAbi allTests -s --warning-mode all -x watchosSimulatorArm64Test -x iosX64Test -x macosX64Test -x watchosX64Test -x tvosX64Test
+      - name: Run Selected Tests
+        run: gradle ${{ matrix.test-tasks }} -s --warning-mode all
 
       - name: Upload test reports
         uses: actions/upload-artifact@v7

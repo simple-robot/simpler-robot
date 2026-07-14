@@ -1,3 +1,26 @@
+/*
+ *     Copyright (c) 2026. ForteScarlet.
+ *
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
+ *
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package love.forte.simbot.component.qgguild.test
 
 import kotlinx.coroutines.flow.Flow
@@ -14,12 +37,13 @@ import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.message.MessageParsers
-import love.forte.simbot.component.qguild.message.QGKeyboard
+import love.forte.simbot.component.qguild.message.QGKeyboards
 import love.forte.simbot.component.qguild.message.QGMarkdown
 import love.forte.simbot.component.qguild.message.SendingMessageParser
 import love.forte.simbot.event.*
 import love.forte.simbot.message.plus
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
+import love.forte.simbot.qguild.model.MessageKeyboard
 import love.forte.simbot.qguild.stdlib.BotFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -118,7 +142,7 @@ class QGBotTests {
     fun testMessageCreation() = runTest {
         // Test creating different types of messages
         val markdown = QGMarkdown.create("# Hello")
-        val keyboard = QGKeyboard.createById("123")
+        val keyboard = QGKeyboards.create(MessageKeyboard.create("123"))
 
         // Create a message with markdown and keyboard
         val message = markdown + keyboard
@@ -140,6 +164,6 @@ class QGBotTests {
         // Verify the parsed message
         assertEquals(1, bodies.size)
         assertEquals("# Hello", bodies.first().markdown?.content)
-        assertEquals("123", bodies.first().keyboard?.id)
+        assertEquals("123", bodies.first().keyboards?.content?.rows?.single()?.buttons?.single()?.id)
     }
 }

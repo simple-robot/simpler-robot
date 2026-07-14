@@ -179,10 +179,8 @@ public class MessageSendApi private constructor(
      * [fileImage] 存在时将会使用 `multipart/form-data` 的形式发送，否则使用 `application/json`。
      *
      * 使用 [Builder] 构建。
-     *
      */
     @Serializable
-    @ConsistentCopyVisibility
     public data class Body internal constructor(
         /**
          * 选填，消息内容，文本内容，支持[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)

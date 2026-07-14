@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,10 +21,9 @@
  *
  */
 
-object JVMConstants {
-    const val KT_JVM_TARGET_VALUE = 11
-    const val KT_JVM_TARGET = "11"
-
-    const val TARGET_1_8_VALUE = 8
-    const val TARGET_1_8 = "1.8"
-}
+/*
+ * Compatibility placeholder for the historical plugin id.
+ *
+ * Dokka aggregation is configured by `simbot.dokka-root-convention`; published
+ * modules receive Dokka through `simbot-maven-publish`.
+ */

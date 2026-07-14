@@ -24,7 +24,7 @@
 import love.forte.gradle.common.core.project.setup
 
 plugins {
-    kotlin("multiplatform") apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
 }
 
 subprojects {

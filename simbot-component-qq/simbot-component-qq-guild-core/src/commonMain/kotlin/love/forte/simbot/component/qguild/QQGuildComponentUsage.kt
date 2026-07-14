@@ -138,7 +138,7 @@ public inline fun <A : Application> A.qqGuildBots(block: QQGuildBotManager.() ->
  * 为 [QQGuildUsageBuilder] 中的函数染色。
  */
 @DslMarker
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 internal annotation class QQGuildUsageBuilderDsl
 
@@ -149,19 +149,18 @@ internal annotation class QQGuildUsageBuilderDsl
  *
  * @see useQQGuild
  */
+@QQGuildUsageBuilderDsl
 public interface QQGuildUsageBuilder {
 
     /**
      * 追加一个安装 [QQGuildComponent] 时候使用的配置。
      */
-    @QQGuildUsageBuilderDsl
     public fun component(configurator: ConfigurerFunction<QQGuildComponentConfiguration>)
 
 
     /**
      * 追加一个安装 [QQGuildBotManager] 时候使用的配置。
      */
-    @QQGuildUsageBuilderDsl
     public fun botManager(configurator: ConfigurerFunction<QQGuildBotManagerConfiguration>)
 
 }

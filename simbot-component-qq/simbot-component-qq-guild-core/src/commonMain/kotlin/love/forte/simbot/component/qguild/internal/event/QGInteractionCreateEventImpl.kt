@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,11 +21,20 @@
  *
  */
 
-import org.gradle.api.Project
+package love.forte.simbot.component.qguild.internal.event
 
+import love.forte.simbot.component.qguild.event.QGInteractionCreateEvent
+import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
+import love.forte.simbot.qguild.api.interaction.InteractionResponseApi
+import love.forte.simbot.qguild.event.InteractionCreate
+import love.forte.simbot.qguild.stdlib.requestDataBy
 
-@Deprecated("Kt is already applied")
-@Suppress("UNUSED_PARAMETER", "UnusedReceiverParameter")
-fun Project.useK2(languageVersion: String = "2.0") {
-    // Nothing.
+internal class QGInteractionCreateEventImpl(
+    override val bot: QGBotImpl,
+    override val sourceEventRaw: String,
+    override val sourceEventEntity: InteractionCreate,
+) : QGInteractionCreateEvent() {
+    override suspend fun respond(code: Int) {
+        InteractionResponseApi.create(sourceEventEntity.data.id, code).requestDataBy(bot.source)
+    }
 }

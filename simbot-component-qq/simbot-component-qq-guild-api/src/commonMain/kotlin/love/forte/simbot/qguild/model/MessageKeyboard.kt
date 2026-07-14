@@ -35,6 +35,9 @@ import kotlin.jvm.JvmStatic
 /**
  * [消息交互=>消息按钮](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/msg-btn.html)
  *
+ * @see buildMessageKeyboard
+ * @see MessageKeyboards
+ *
  * @author ForteScarlet
  */
 @ApiModel
@@ -119,13 +122,30 @@ public data class MessageKeyboard @ApiModelConstructor constructor(
          */
         @SerialName("specify_role_ids")
         val specifyRoleIds: List<String>? = null,
-    )
+    ) {
+        public companion object {
+            /**
+             * 一个 type = 1 的 [ActionPermission]，表示仅管理者可操作。
+             *
+             * @since 4.4.0
+             */
+            @JvmStatic
+            public val AdminOnly: ActionPermission = ActionPermission(type = 1)
+
+            /**
+             * 一个 type = 2 的 [ActionPermission]，表示所有人可访问。
+             *
+             * @since 4.4.0
+             */
+            @JvmStatic
+            public val AllAccessible: ActionPermission = ActionPermission(type = 2)
+        }
+    }
 
     /**
      * [MessageKeyboard.action].
      * 参考 [官方文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/msg-btn.html)
      */
-    @ConsistentCopyVisibility
     @ApiModel
     @Serializable
     public data class Action @ApiModelConstructor internal constructor(
@@ -160,49 +180,7 @@ public data class MessageKeyboard @ApiModelConstructor constructor(
          *
          * @since 4.2.3
          */
-        val type: Int,
-    ) {
-        /**
-         * 构造函数。
-         * 4.2.2 版本以前作为主构造使用，现在用作兼容性辅助构造。
-         * 为了兼容，`type` 属性默认为 `2`。
-         */
-        @ApiModelConstructor
-        public constructor(
-            permission: ActionPermission? = null,
-            data: String?,
-            reply: Boolean? = null,
-            enter: Boolean? = null,
-            anchor: Int? = null,
-            unsupportTips: String,
-        ) : this(
-            permission = permission,
-            data = data,
-            reply = reply,
-            enter = enter,
-            anchor = anchor,
-            unsupportTips = unsupportTips,
-            type = 2
-        )
-
-        /**
-         * 用于兼容截止到 4.2.2 版本的 data class copy 函数而使用的兼容性函数。
-         */
-        public fun copy(
-            permission: ActionPermission? = this.permission,
-            data: String? = this.data,
-            reply: Boolean? = this.reply,
-            enter: Boolean? = this.enter,
-            anchor: Int? = this.anchor,
-            unsupportTips: String = this.unsupportTips,
-        ): Action = copy(
-            permission = permission,
-            data = data,
-            reply = reply,
-            enter = enter,
-            anchor = anchor,
-            unsupportTips = unsupportTips,
-            type = type
-        )
-    }
+        @IntroducedAt("4.2.3")
+        val type: Int = 2,
+    )
 }

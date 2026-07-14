@@ -25,15 +25,16 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-    id("love.forte.plugin.suspend-transform")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.suspendTransform)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.core")
 
 kotlin {
     compilerOptions {
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
     }

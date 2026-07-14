@@ -26,8 +26,8 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.kotlin-multiplatform-abi-convention")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.common.suspendrunner")

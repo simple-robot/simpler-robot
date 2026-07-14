@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,34 +21,25 @@
  *
  */
 
-package utils
+import org.gradle.api.Project
+import java.net.URI
 
-import Env
-import isSnapshot
-
-data class PublishConfigurableResult(
-    val isSnapshotOnly: Boolean,
-    val isReleaseOnly: Boolean,
-    val isPublishConfigurable: Boolean = when {
-        isSnapshotOnly -> isSnapshot()
-        isReleaseOnly -> !isSnapshot()
-        else -> true
-    },
-)
-
-
-fun checkPublishConfigurable(): PublishConfigurableResult {
-    val isSnapshotOnly =
-        (System.getProperty("snapshotOnly") ?: System.getenv(Env.SNAPSHOT_ONLY))?.equals("true", true) == true
-    val isReleaseOnly =
-        (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY))?.equals("true", true) == true
-
-    return PublishConfigurableResult(isSnapshotOnly, isReleaseOnly)
-}
-
-inline fun checkPublishConfigurable(block: PublishConfigurableResult.() -> Unit) {
-    val v = checkPublishConfigurable()
-    if (v.isPublishConfigurable) {
-        v.block()
+sealed class Sonatype {
+    abstract val name: String
+    abstract val url: String
+    fun Project.uri(): URI = uri(url)
+    
+    object Central : Sonatype() {
+        const val NAME = "central"
+        const val URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        override val name: String get() = NAME
+        override val url: String get() = URL
+    }
+    
+    object Snapshot : Sonatype() {
+        const val NAME = "snapshot"
+        const val URL = "https://oss.sonatype.org/content/repositories/snapshots/"
+        override val name: String get() = NAME
+        override val url get() = URL
     }
 }

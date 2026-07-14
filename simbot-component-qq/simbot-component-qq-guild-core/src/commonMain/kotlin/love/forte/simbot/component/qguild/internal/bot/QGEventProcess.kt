@@ -189,6 +189,12 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             is GroupMsgReceive -> {
                 pushEvent { QGGroupMsgReceiveEventImpl(event.id, bot, raw, event.data) }
             }
+            is GroupMemberAdd -> {
+                pushEvent { QGGroupMemberAddEventImpl(event.id, bot, raw, event.data) }
+            }
+            is GroupMemberRemove -> {
+                pushEvent { QGGroupMemberRemoveEventImpl(event.id, bot, raw, event.data) }
+            }
             // C2C: managements
             is FriendAdd -> {
                 pushEvent { QGFriendAddEventImpl(event.id, bot, raw, event.data) }
@@ -201,6 +207,11 @@ internal fun QGBotImpl.registerEventProcessor(): DisposableHandle {
             }
             is C2CMsgReceive -> {
                 pushEvent { QGC2CMsgReceiveEventImpl(event.id, bot, raw, event.data) }
+            }
+
+            // Interactions
+            is InteractionCreate -> {
+                pushEvent { QGInteractionCreateEventImpl(bot, raw, event) }
             }
 
             // OpenForum

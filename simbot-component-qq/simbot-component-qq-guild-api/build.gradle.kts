@@ -28,18 +28,22 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.dokka)
     alias(libs.plugins.ksp)
-    `simbot-maven-publish`
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.component.qqguild.api")
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes",
+            "-Xconsistent-data-class-copy-visibility"
+        )
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
+        optIn.add("kotlin.ExperimentalVersionOverloading")
     }
 
     configKotlinJvm()

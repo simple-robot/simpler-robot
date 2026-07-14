@@ -26,7 +26,7 @@ package love.forte.simbot.gradle.suspendtransforms
 import love.forte.plugin.suspendtrans.*
 
 /**
- * 添加至 gradle 项目的 `buildSrc` 中，并在需要配置 `suspendTransform` 的地方：
+ * 添加至 Gradle 项目的 `buildSrc` 或 `build-logic` included build 中，并在需要配置 `suspendTransform` 的地方：
  *
  * ```kotlin
  * suspendTransform {
@@ -331,5 +331,4 @@ public fun SuspendTransformConfiguration.addSimbotJvmTransformers(
         SuspendTransforms.jvmSuspendTransPropTransformerForReactive,
     )
 }
-
 

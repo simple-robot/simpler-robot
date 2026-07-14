@@ -27,8 +27,8 @@ plugins {
     `java-library`
     id("simbot.kotlin-jvm")
     id("simbot.kotlin-jvm-abi-convention")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.gradle.suspendtransforms")

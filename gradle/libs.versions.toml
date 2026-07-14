@@ -157,9 +157,13 @@ i2p-crypto-eddsa = { module = "net.i2p.crypto:eddsa", version.ref = "eddsa" }
 libsodium-bindings = { module = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings", version.ref = "libsodium-bindings" }
 
 [plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 #kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
 # Kover
 # https://www.jetbrains.com/help/qodana/code-coverage.html
 # https://github.com/Kotlin/kotlinx-kover
@@ -170,7 +174,7 @@ spring4 = { id = "org.springframework.boot", version.ref = "spring-boot-v4" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version = "1.1.7" }
 kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
-suspendTransform = { id = "love.forte.plugin.suspend-transform" } # , version.ref = "suspendTransform" } # version built in buildSrc
+suspendTransform = { id = "love.forte.plugin.suspend-transform", version.ref = "suspendTransform" }
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }

@@ -23,9 +23,9 @@
 
 plugins {
     id("simbot.kotlin-multiplatform")
-    id("love.forte.plugin.suspend-transform")
-    id("org.jetbrains.dokka")
-    `simbot-maven-publish`
+    alias(libs.plugins.suspendTransform)
+    alias(libs.plugins.dokka)
+    id("simbot-maven-publish")
 }
 
 configJavaCompileWithModule("simbot.extension.continuous.session")
