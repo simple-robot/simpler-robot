@@ -26,6 +26,7 @@ package love.forte.simbot.component.qgguild.test
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.QQGuildComponent
 import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
@@ -36,26 +37,45 @@ import love.forte.simbot.component.qguild.message.QGMarkdown
 import love.forte.simbot.component.qguild.message.SendingMessageParser
 import love.forte.simbot.event.*
 import love.forte.simbot.message.plus
+import love.forte.simbot.message.At
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.model.MessageKeyboard
 import love.forte.simbot.qguild.stdlib.BotFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 /**
  *
  * @author ForteScarlet
  */
 class MessageParserTests {
+    @Test
+    fun receiveNonNumericUserMentions() {
+        val cases = listOf(
+            Triple("<@2F61FF438B355A8CB1A1874C187C2F87>签到", "2F61FF438B355A8CB1A1874C187C2F87", "签到"),
+            Triple("<@!abc.DEF_ghi-jkl>", "abc.DEF_ghi-jkl", ""),
+            Triple("<qqbot-at-user id=\"abc_DEF-ghi\" />", "abc_DEF-ghi", ""),
+        )
+
+        cases.forEach { (content, expectedId, expectedPlainText) ->
+            val context = MessageParsers.parse(content)
+            assertEquals(expectedPlainText, context.plainTextBuilder.toString())
+            assertEquals(expectedId, assertIs<At>(context.messages.first()).target.literal)
+        }
+    }
+
     @OptIn(ExperimentalQGApi::class)
     @Test
     fun testKeyboardParse() = runTest {
         val builders = MessageParsers.parse(
-            QGMarkdown.create("content") + QGKeyboards.create(MessageKeyboard.create("1")),
+            bot = null,
+            message = QGMarkdown.create("content") + QGKeyboards.create(MessageKeyboard.create("1")),
         )
 
         assertEquals(1, builders.size)
         val build = builders.first().build()
+        assertEquals(" ", build.content)
         assertEquals("content", build.markdown?.content)
 
         val bot = QGBotImpl(
@@ -94,6 +114,7 @@ class MessageParserTests {
         )
 
         assertEquals(1, bodies.size)
+        assertEquals(" ", bodies.first().content)
         assertEquals("content", bodies.first().markdown?.content)
         assertEquals("1", bodies.first().keyboards?.content?.rows?.single()?.buttons?.single()?.id)
     }

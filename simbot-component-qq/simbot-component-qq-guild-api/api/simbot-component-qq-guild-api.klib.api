@@ -1691,6 +1691,7 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
                 final fun <set-msgId>(kotlin/String?) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.msgId.<set-msgId>|<set-msgId>(kotlin.String?){}[0]
 
             final fun appendContent(kotlin/String) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.appendContent|appendContent(kotlin.String){}[0]
+            final fun appendMarkdownContent(kotlin/String) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.appendMarkdownContent|appendMarkdownContent(kotlin.String){}[0]
             final fun build(): love.forte.simbot.qguild.api.message/MessageSendApi.Body // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.build|build(){}[0]
             final fun fromMessage(love.forte.simbot.qguild.model/Message) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.fromMessage|fromMessage(love.forte.simbot.qguild.model.Message){}[0]
             final fun setFileImage(io.ktor.client.request.forms/ChannelProvider) // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder.setFileImage|setFileImage(io.ktor.client.request.forms.ChannelProvider){}[0]

@@ -42,6 +42,7 @@ import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.collection.ConcurrentQueue
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
+import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.stageloop.loop
 import love.forte.simbot.common.weak.WeakRef
 import love.forte.simbot.common.weak.weakRef
@@ -204,6 +205,8 @@ internal class BotImpl(
                 apiHttpSocketTimeoutMillis?.also { socketTimeoutMillis = it }
             }
         }
+
+        configuration.apiClientAdditionalConfiguration.invokeWith(this)
     }
 
     /**

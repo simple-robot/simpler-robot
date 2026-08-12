@@ -1668,6 +1668,7 @@ public final synthetic class love/forte/simbot/qguild/api/message/MessageSendApi
 public final class love/forte/simbot/qguild/api/message/MessageSendApi$Body$Builder {
 	public fun <init> ()V
 	public final fun appendContent (Ljava/lang/String;)V
+	public final fun appendMarkdownContent (Ljava/lang/String;)V
 	public final fun build ()Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
 	public final fun fromMessage (Llove/forte/simbot/qguild/model/Message;)V
 	public final fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
