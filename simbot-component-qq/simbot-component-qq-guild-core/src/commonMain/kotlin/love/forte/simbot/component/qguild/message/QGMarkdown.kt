@@ -153,6 +153,9 @@ internal object MarkdownParser : SendingMessageParser {
             val builder = builderContext.builderOrNew {
                 it.markdown == null
             }
+            if (builder.content.isNullOrEmpty()) {
+                builder.content = " "
+            }
             builder.markdown = element.markdown
         }
     }
@@ -171,6 +174,9 @@ internal object MarkdownParser : SendingMessageParser {
         if (element is QGMarkdown) {
             val builder = builderContext.builderOrNew {
                 isTextOrMarkdown(it.msgType) && it.markdown == null
+            }
+            if (builder.content.isEmpty()) {
+                builder.content = " "
             }
             builder.msgType = GroupAndC2CSendBody.MSG_TYPE_MARKDOWN
             builder.markdown = element.markdown

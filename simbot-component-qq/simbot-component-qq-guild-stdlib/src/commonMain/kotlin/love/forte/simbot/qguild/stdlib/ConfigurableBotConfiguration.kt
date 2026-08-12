@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2025. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.stdlib
@@ -22,6 +28,8 @@ import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
+import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.function.plus
 import love.forte.simbot.qguild.QQGuild
 import love.forte.simbot.qguild.event.*
 import kotlin.coroutines.CoroutineContext
@@ -182,6 +190,40 @@ public class ConfigurableBotConfiguration : BotConfiguration, IntentsAppender {
      */
     override var apiDecoder: Json = QQGuild.DefaultJson
 
+    /**
+     * 控制各消息目的地是否将普通内容作为 Markdown 发送。
+     *
+     * @since 4.5.0
+     */
+    override val contentAsMarkdown: MutableMap<MessageDestination, Boolean> = mutableMapOf()
+
+    /**
+     * 为全部消息目的地设置普通内容的 Markdown 发送行为。
+     *
+     * @since 4.5.0
+     */
+    public fun contentAsMarkdownAll(value: Boolean = true): ConfigurableBotConfiguration = apply {
+        MessageDestination.entries.forEach { destination ->
+            contentAsMarkdown[destination] = value
+        }
+    }
+
+    /**
+     * 构建 API 客户端时追加的 Ktor 配置。
+     *
+     * @since 4.5.0
+     */
+    override var apiClientAdditionalConfiguration: ConfigurerFunction<HttpClientConfig<*>> = ConfigurerFunction {}
+
+    /**
+     * 向 [apiClientAdditionalConfiguration] 追加配置逻辑。
+     *
+     * @since 4.5.0
+     */
+    public fun apiClientAdditionalConfiguration(configurer: ConfigurerFunction<HttpClientConfig<*>>) {
+        apiClientAdditionalConfiguration += configurer
+    }
+
     @Suppress("DEPRECATION")
     internal fun release(): BotConfiguration = BotConfigurationImpl(
         coroutineContext = coroutineContext,
@@ -199,6 +241,8 @@ public class ConfigurableBotConfiguration : BotConfiguration, IntentsAppender {
         wsClientEngineFactory = wsClientEngineFactory,
         disableWs = disableWs,
         apiDecoder = apiDecoder,
+        contentAsMarkdown = contentAsMarkdown.toMap(),
+        apiClientAdditionalConfiguration = apiClientAdditionalConfiguration,
     )
 
     public companion object
@@ -220,4 +264,6 @@ private class BotConfigurationImpl(
     override val wsClientEngineFactory: HttpClientEngineFactory<*>?,
     override val disableWs: Boolean,
     override val apiDecoder: Json,
+    override val contentAsMarkdown: Map<MessageDestination, Boolean>,
+    override val apiClientAdditionalConfiguration: ConfigurerFunction<HttpClientConfig<*>>,
 ) : BotConfiguration

@@ -39,6 +39,7 @@ import love.forte.simbot.qguild.api.message.direct.DmsSendApi
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
 import love.forte.simbot.qguild.message.ContentTextEncoder
+import love.forte.simbot.qguild.stdlib.MessageDestination
 import love.forte.simbot.qguild.stdlib.requestDataBy
 
 /**
@@ -70,7 +71,7 @@ public suspend inline fun QGBot.sendMessage(
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
     onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
 ): QGMessageReceipt {
-    val parsed = MessageParsers.parse(message = message, onEachPre = onEachPre, onEachPost = onEachPost)
+    val parsed = MessageParsers.parse(this, MessageDestination.CHANNEL, message, onEachPre, onEachPost)
 
     if (parsed.size == 1) {
         val body = parsed[0].build()
@@ -154,7 +155,12 @@ public suspend inline fun QGBot.sendMessage(
     val body = MessageSendApi.Body {
         onEachPre()
         // 转义后的纯文本字符串
-        content = ContentTextEncoder.encode(text)
+        val content = ContentTextEncoder.encode(text)
+        if (source.configuration.contentAsMarkdown[MessageDestination.CHANNEL] == true) {
+            appendMarkdownContent(content)
+        } else {
+            this.content = content
+        }
         onEachPost()
     }
 
@@ -180,7 +186,7 @@ internal suspend inline fun QGBot.sendDmsMessage(
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
     onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
 ): QGMessageReceipt {
-    val parsed = MessageParsers.parse(message = message, onEachPre = onEachPre, onEachPost = onEachPost)
+    val parsed = MessageParsers.parse(this, MessageDestination.DMS, message, onEachPre, onEachPost)
 
     if (parsed.size == 1) {
         val body = parsed[0].build()
@@ -218,7 +224,12 @@ internal suspend inline fun QGBot.sendDmsMessage(
     val body = MessageSendApi.Body {
         onEachPre()
         // 转义后的纯文本字符串
-        content = ContentTextEncoder.encode(text)
+        val content = ContentTextEncoder.encode(text)
+        if (source.configuration.contentAsMarkdown[MessageDestination.DMS] == true) {
+            appendMarkdownContent(content)
+        } else {
+            this.content = content
+        }
         onEachPost()
     }
 
@@ -288,8 +299,16 @@ internal suspend inline fun QGBot.sendGroupMessage(
 ): QGMessageReceipt {
     // 转义
     val contentPlainText = ContentTextEncoder.encode(text)
-    val body = GroupAndC2CSendBody.create(contentPlainText, msgType)
-        .also(configure)
+    val body = if (
+        msgType == GroupAndC2CSendBody.MSG_TYPE_TEXT &&
+        source.configuration.contentAsMarkdown[MessageDestination.GROUP] == true
+    ) {
+        GroupAndC2CSendBody.create(" ", GroupAndC2CSendBody.MSG_TYPE_MARKDOWN).also {
+            it.markdown = love.forte.simbot.qguild.model.Message.Markdown(content = contentPlainText)
+        }
+    } else {
+        GroupAndC2CSendBody.create(contentPlainText, msgType)
+    }.also(configure)
 
     return sendGroupMessage(openid, body)
 }
@@ -355,8 +374,16 @@ internal suspend inline fun QGBot.sendUserMessage(
 ): QGMessageReceipt {
     // 转义
     val contentPlainText = ContentTextEncoder.encode(text)
-    val body = GroupAndC2CSendBody.create(contentPlainText, msgType)
-        .also(configure)
+    val body = if (
+        msgType == GroupAndC2CSendBody.MSG_TYPE_TEXT &&
+        source.configuration.contentAsMarkdown[MessageDestination.USER] == true
+    ) {
+        GroupAndC2CSendBody.create(" ", GroupAndC2CSendBody.MSG_TYPE_MARKDOWN).also {
+            it.markdown = love.forte.simbot.qguild.model.Message.Markdown(content = contentPlainText)
+        }
+    } else {
+        GroupAndC2CSendBody.create(contentPlainText, msgType)
+    }.also(configure)
 
     return sendUserMessage(openid, body)
 }

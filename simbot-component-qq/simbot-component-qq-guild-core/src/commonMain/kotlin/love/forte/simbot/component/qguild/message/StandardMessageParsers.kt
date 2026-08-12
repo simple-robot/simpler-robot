@@ -29,6 +29,8 @@ import love.forte.simbot.component.qguild.QQGuildComponent
 import love.forte.simbot.component.qguild.message.QGAttachmentMessage.Companion.toMessage
 import love.forte.simbot.component.qguild.message.QGReference.Companion.toMessage
 import love.forte.simbot.message.*
+import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
+import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.message.ContentTextDecoder
 import love.forte.simbot.qguild.message.ContentTextEncoder
 import love.forte.simbot.qguild.model.Message
@@ -42,14 +44,14 @@ internal object ContentParser : SendingMessageParser {
         messages: Messages?,
         builderContext: SendingMessageParser.BuilderContext
     ) {
+        val contentAsMarkdown = builderContext.contentAsMarkdown
         when (element) {
-            is Text -> {
-                // 转义为无内嵌格式的文本
-                builderContext.builder.appendContent(ContentTextEncoder.encode(element.text))
+            is QGContentText -> {
+                builderContext.builder.appendContent(element.content, contentAsMarkdown)
             }
 
-            is QGContentText -> {
-                builderContext.builder.appendContent(element.content)
+            is PlainText -> {
+                builderContext.builder.appendContent(ContentTextEncoder.encode(element.text), contentAsMarkdown)
             }
         }
     }
@@ -65,13 +67,34 @@ internal object ContentParser : SendingMessageParser {
         when (element) {
             is Text -> {
                 // 转义为无内嵌格式的文本
-                builder().content += ContentTextEncoder.encode(element.text)
+                builder().appendContent(ContentTextEncoder.encode(element.text), builderContext.contentAsMarkdown)
             }
 
             is QGContentText -> {
-                builder().content += element.content
+                builder().appendContent(element.content, builderContext.contentAsMarkdown)
             }
         }
+    }
+}
+
+internal fun MessageSendApi.Body.Builder.appendContent(content: String, asMarkdown: Boolean) {
+    if (asMarkdown) {
+        appendMarkdownContent(content)
+    } else {
+        appendContent(content)
+    }
+}
+
+internal fun GroupAndC2CSendBody.appendContent(content: String, asMarkdown: Boolean) {
+    if (asMarkdown) {
+        if (this.content.isEmpty()) {
+            this.content = " "
+        }
+        val currentMarkdown = markdown ?: Message.Markdown()
+        markdown = currentMarkdown.copy(content = (currentMarkdown.content ?: "") + content)
+        msgType = GroupAndC2CSendBody.MSG_TYPE_MARKDOWN
+    } else {
+        this.content += content
     }
 }
 
@@ -96,7 +119,7 @@ internal object FaceParser : SendingMessageParser {
     ) {
         if (element is Face) {
             val id = element.id.literal
-            builderContext.builder.appendContent("$EMOJI_PREFIX$id$EMOJI_SUFFIX")
+            builderContext.builder.appendContent("$EMOJI_PREFIX$id$EMOJI_SUFFIX", builderContext.contentAsMarkdown)
         }
     }
 
@@ -110,7 +133,7 @@ internal object FaceParser : SendingMessageParser {
             val builder = builderContext.builder
 
             val id = element.id.literal
-            builder.content += "$EMOJI_PREFIX$id$EMOJI_SUFFIX"
+            builder.appendContent("$EMOJI_PREFIX$id$EMOJI_SUFFIX", builderContext.contentAsMarkdown)
         }
     }
 }
@@ -151,16 +174,16 @@ internal object QGMessageParser : ReceivingMessageParser {
             "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
             "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
             // 兼容之前的两个写法解析
-            "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>" +
+            "|<@!?(?<$AT_USER_OLD_VALUE>[.a-zA-Z0-9_-]+)>" +
             "|(?<$AT_EVERYONE_OLD_GROUP>@everyone)"
     )
 
     private val replaceWithoutMentionAllRegex = Regex(
-        "<qqbot-at-user +id=\"(?<$AT_USER_VALUE>[.a-zA-Z0-9_-]+)\" */>" +
+        "<qqbot-at-user +id=\"(?<$AT_USER_VALUE>[a-zA-Z0-9_-]+)\" */>" +
             "|<#(?<$MENTION_CHANNEL_VALUE>\\d+)>" +
             "|<emoji:(?<$EMOJI_VALUE>\\d+)>" +
             // 兼容之前的两个写法解析
-            "|<@!?(?<$AT_USER_OLD_VALUE>\\d+)>"
+            "|<@!?(?<$AT_USER_OLD_VALUE>[.a-zA-Z0-9_-]+)>"
     )
 
     override fun invoke(qgContent: String, context: ReceivingMessageParser.Context): ReceivingMessageParser.Context {

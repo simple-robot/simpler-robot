@@ -1,24 +1,31 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.bot.QGBot
@@ -53,6 +60,7 @@ public data class QGAttachmentMessage
 
     internal var bot: QGBot? = null
 
+    @Transient
     private lateinit var _source: Message.Attachment
 
     /**
@@ -62,7 +70,11 @@ public data class QGAttachmentMessage
      *
      */
     public val source: Message.Attachment
-        get() = if (::_source.isInitialized) _source else Message.Attachment(url, properties).also { _source = it }
+        get() = if (::_source.isInitialized) {
+            _source
+        } else {
+            Message.Attachment(url, properties).also { _source = it }
+        }
 
     @Deprecated("Just get url", ReplaceWith("url.ID", "love.forte.simbot.ID"))
     public val id: ID get() = url.ID
@@ -89,7 +101,9 @@ public data class QGAttachmentMessage
         @JvmName("of")
         public fun Message.Attachment.toMessage(): QGAttachmentMessage {
             val url0 = if (!url.startsWith("http")) "https://$url" else url
-            return QGAttachmentMessage(url0, properties)
+            return QGAttachmentMessage(url0, properties).also {
+                it._source = this
+            }
         }
     }
 }

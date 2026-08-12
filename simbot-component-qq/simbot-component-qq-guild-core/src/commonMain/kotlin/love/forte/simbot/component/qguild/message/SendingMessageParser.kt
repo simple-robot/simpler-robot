@@ -27,10 +27,13 @@ import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.emptyMessages
+import love.forte.simbot.qguild.QGInternalApi
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.api.message.isEmpty
 import love.forte.simbot.qguild.model.Message
+import love.forte.simbot.qguild.stdlib.BotConfiguration
+import love.forte.simbot.qguild.stdlib.MessageDestination
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 import love.forte.simbot.message.Message as SimbotMessage
@@ -72,7 +75,12 @@ public fun interface SendingMessageParser {
     public abstract class AbstractBuilderContext<B>(
         public val builderFactory: () -> B
     ) {
-        public val builders: ArrayDeque<B>
+        public val builders: ArrayDeque<B> = ArrayDeque()
+        public abstract val configuration: BotConfiguration?
+        internal abstract val destination: MessageDestination?
+
+        internal val contentAsMarkdown: Boolean
+            get() = destination?.let { configuration?.contentAsMarkdown?.get(it) } == true
 
         /**
          * 标记下一次再获取 builder 时必须新建。
@@ -83,10 +91,6 @@ public fun interface SendingMessageParser {
         @PublishedApi
         internal open fun nextMustBeNew(value: Boolean = true) {
             nextIsNew = value
-        }
-
-        init {
-            builders = ArrayDeque()
         }
 
         public open val builder: B
@@ -133,16 +137,33 @@ public fun interface SendingMessageParser {
 
     }
 
-    public class BuilderContext(
-        builderFactory: () -> MessageSendApi.Body.Builder
-    ) : AbstractBuilderContext<MessageSendApi.Body.Builder>(builderFactory)
+    public class BuilderContext @PublishedApi internal constructor(
+        public val bot: QGBot?,
+        internal override val destination: MessageDestination?,
+        builderFactory: () -> MessageSendApi.Body.Builder,
+    ) : AbstractBuilderContext<MessageSendApi.Body.Builder>(builderFactory) {
+        @Deprecated("新增参数的兼容性次级构造", level = DeprecationLevel.ERROR)
+        public constructor(builderFactory: () -> MessageSendApi.Body.Builder) : this(null, null, builderFactory)
 
-    public class GroupAndC2CBuilderContext(
+        override val configuration: BotConfiguration?
+            get() = bot?.source?.configuration
+    }
+
+    public class GroupAndC2CBuilderContext @QGInternalApi constructor(
         public val bot: QGBot,
         public val type: GroupBuilderType,
         public val targetOpenid: String,
         builderFactory: () -> GroupAndC2CSendBody
-    ) : AbstractBuilderContext<GroupAndC2CSendBody>(builderFactory)
+    ) : AbstractBuilderContext<GroupAndC2CSendBody>(builderFactory) {
+        override val configuration: BotConfiguration
+            get() = bot.source.configuration
+
+        override val destination: MessageDestination
+            get() = when (type) {
+                GroupBuilderType.GROUP -> MessageDestination.GROUP
+                GroupBuilderType.C2C -> MessageDestination.USER
+            }
+    }
 }
 
 /**
@@ -193,6 +214,17 @@ public object MessageParsers {
         add(KeyboardsParser)
     }
 
+    @Deprecated(
+        message = "请明确提供 `bot` 参数",
+        level = DeprecationLevel.ERROR,
+        replaceWith = ReplaceWith("parse(bot = bot, destination = destination, message = message)")
+    )
+    public suspend inline fun parse(
+        message: SimbotMessage,
+        crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
+        onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
+    ): List<MessageSendApi.Body.Builder> = parse(null, null, message, onEachPre, onEachPost)
+
     @ExperimentalQGApi
     public val receivingParsers: List<ReceivingMessageParser> = buildList {
         add(QGMessageParser)
@@ -233,11 +265,13 @@ public object MessageParsers {
     @OptIn(ExperimentalQGApi::class)
     @JvmSynthetic
     public suspend inline fun parse(
+        bot: QGBot?,
+        destination: MessageDestination? = null,
         message: SimbotMessage,
         crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
         onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
     ): List<MessageSendApi.Body.Builder> {
-        val context = SendingMessageParser.BuilderContext {
+        val context = SendingMessageParser.BuilderContext(bot, destination) {
             MessageSendApi.Body.Builder().also(onEachPre)
         }
 
