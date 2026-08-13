@@ -179,9 +179,9 @@ support [JetBrains][jetbrains], its products, and genuine software.
 
 ## Stars!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=simple-robot/simpler-robot&type=Date)](https://star-history.com/#simple-robot/simpler-robot&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=simple-robot/simpler-robot&type=Date)](https://star-history.dera.page/#simple-robot/simpler-robot&Date)
 
-> powered by [Star History](https://star-history.com)
+> powered by [Star History](https://star-history.dera.page)
 
 ## License
 
