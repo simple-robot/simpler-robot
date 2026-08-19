@@ -485,7 +485,7 @@ public data class MessageMember @ApiModelConstructor constructor(
          */
         @JvmStatic
         public fun Member.asMessageMember(): MessageMember =
-            if (this is MessageMember) this else MessageMember(nick, roles, joinedAt).also { it.user = user }
+            this as? MessageMember ?: MessageMember(nick, roles, joinedAt).also { it.user = user }
     }
 }
 

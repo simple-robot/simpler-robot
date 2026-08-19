@@ -25,6 +25,7 @@ package love.forte.simbot.component.qguild.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
@@ -57,6 +58,7 @@ public class QGReference private constructor(
     override val id: ID
         get() = messageId
 
+    @Transient
     private lateinit var _source: Message.Reference
 
     /**

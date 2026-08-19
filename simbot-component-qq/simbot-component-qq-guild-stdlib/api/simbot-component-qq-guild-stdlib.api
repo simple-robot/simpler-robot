@@ -72,6 +72,7 @@ public class love/forte/simbot/qguild/stdlib/BotAlreadyCancelledException : java
 }
 
 public abstract interface class love/forte/simbot/qguild/stdlib/BotConfiguration {
+	public abstract fun getApiClientAdditionalConfiguration ()Llove/forte/simbot/common/function/ConfigurerFunction;
 	public abstract fun getApiClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
 	public abstract fun getApiClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
 	public abstract fun getApiDecoder ()Lkotlinx/serialization/json/Json;
@@ -79,6 +80,7 @@ public abstract interface class love/forte/simbot/qguild/stdlib/BotConfiguration
 	public abstract fun getApiHttpRequestTimeoutMillis ()Ljava/lang/Long;
 	public abstract fun getApiHttpSocketTimeoutMillis ()Ljava/lang/Long;
 	public abstract fun getClientProperties ()Ljava/util/Map;
+	public abstract fun getContentAsMarkdown ()Ljava/util/Map;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun getDisableWs ()Z
 	public abstract fun getExceptionHandler ()Llove/forte/simbot/qguild/stdlib/ExceptionProcessor;
@@ -143,7 +145,11 @@ public final class love/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration 
 	public static final field Companion Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration$Companion;
 	public fun <init> ()V
 	public final fun addIntents (I)Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;
+	public final fun apiClientAdditionalConfiguration (Llove/forte/simbot/common/function/ConfigurerFunction;)V
 	public fun appendIntents-NLurJl8 (I)V
+	public final fun contentAsMarkdownAll (Z)Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;
+	public static synthetic fun contentAsMarkdownAll$default (Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;ZILjava/lang/Object;)Llove/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration;
+	public fun getApiClientAdditionalConfiguration ()Llove/forte/simbot/common/function/ConfigurerFunction;
 	public fun getApiClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
 	public fun getApiClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
 	public fun getApiDecoder ()Lkotlinx/serialization/json/Json;
@@ -151,6 +157,7 @@ public final class love/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration 
 	public fun getApiHttpRequestTimeoutMillis ()Ljava/lang/Long;
 	public fun getApiHttpSocketTimeoutMillis ()Ljava/lang/Long;
 	public fun getClientProperties ()Ljava/util/Map;
+	public fun getContentAsMarkdown ()Ljava/util/Map;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getDisableWs ()Z
 	public fun getExceptionHandler ()Llove/forte/simbot/qguild/stdlib/ExceptionProcessor;
@@ -160,6 +167,7 @@ public final class love/forte/simbot/qguild/stdlib/ConfigurableBotConfiguration 
 	public fun getShard ()Llove/forte/simbot/qguild/event/Shard;
 	public fun getWsClientEngine ()Lio/ktor/client/engine/HttpClientEngine;
 	public fun getWsClientEngineFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
+	public fun setApiClientAdditionalConfiguration (Llove/forte/simbot/common/function/ConfigurerFunction;)V
 	public fun setApiClientEngine (Lio/ktor/client/engine/HttpClientEngine;)V
 	public fun setApiClientEngineFactory (Lio/ktor/client/engine/HttpClientEngineFactory;)V
 	public fun setApiDecoder (Lkotlinx/serialization/json/Json;)V
@@ -260,6 +268,21 @@ public abstract interface class love/forte/simbot/qguild/stdlib/JAsyncEventProce
 public abstract interface class love/forte/simbot/qguild/stdlib/JBlockEventProcessor : love/forte/simbot/qguild/stdlib/EventProcessor {
 	public abstract fun block (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;)V
 	public synthetic fun invoke (Llove/forte/simbot/qguild/event/Signal$Dispatch;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/qguild/stdlib/MessageDestination : java/lang/Enum {
+	public static final field CHANNEL Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public static final field Companion Llove/forte/simbot/qguild/stdlib/MessageDestination$Companion;
+	public static final field DMS Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public static final field GROUP Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public static final field USER Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public static fun values ()[Llove/forte/simbot/qguild/stdlib/MessageDestination;
+}
+
+public final class love/forte/simbot/qguild/stdlib/MessageDestination$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class love/forte/simbot/qguild/stdlib/SubscribeSequence : java/lang/Enum {

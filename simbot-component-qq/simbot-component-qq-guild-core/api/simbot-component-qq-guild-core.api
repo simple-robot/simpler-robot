@@ -415,23 +415,29 @@ public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfig
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config {
 	public static final field Companion Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$Companion;
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)V
-	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;Ljava/lang/Boolean;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;)V
+	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;Ljava/lang/Boolean;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;
 	public final fun component2 ()Llove/forte/simbot/component/qguild/bot/config/ShardConfig;
 	public final fun component3 ()Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;
 	public final fun component4 ()Ljava/util/Map;
 	public final fun component5 ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;
 	public final fun component6 ()Llove/forte/simbot/component/qguild/bot/config/CacheConfig;
 	public final fun component7 ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
-	public final fun copy (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;
-	public static synthetic fun copy$default (Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;
+	public final fun component8 ()Ljava/lang/Boolean;
+	public final fun component9 ()Ljava/util/Map;
+	public final fun copy (Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;Ljava/lang/Boolean;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;Ljava/lang/String;Llove/forte/simbot/component/qguild/bot/config/ShardConfig;Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;Llove/forte/simbot/component/qguild/bot/config/CacheConfig;Llove/forte/simbot/bot/configuration/DispatcherConfiguration;Ljava/lang/Boolean;Ljava/util/Map;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCacheConfig ()Llove/forte/simbot/component/qguild/bot/config/CacheConfig;
 	public final fun getClientProperties ()Ljava/util/Map;
+	public final fun getContentAsMarkdown ()Ljava/util/Map;
+	public final fun getContentAsMarkdownAll ()Ljava/lang/Boolean;
 	public final fun getDisableWs ()Ljava/lang/Boolean;
 	public final fun getDispatcherConfiguration ()Llove/forte/simbot/bot/configuration/DispatcherConfiguration;
 	public final fun getIntentsConfig ()Llove/forte/simbot/component/qguild/bot/config/IntentsConfig;
+	public final fun getRetry ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;
 	public final fun getServerUrl ()Ljava/lang/String;
 	public final fun getShardConfig ()Llove/forte/simbot/component/qguild/bot/config/ShardConfig;
 	public final fun getTimeoutConfig ()Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$TimeoutConfig;
@@ -451,6 +457,38 @@ public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBot
 }
 
 public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$Config$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig {
+	public static final field Companion Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Integer;ZZ)V
+	public synthetic fun <init> (Ljava/lang/Integer;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Integer;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/Integer;ZZ)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;
+	public static synthetic fun copy$default (Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;Ljava/lang/Integer;ZZILjava/lang/Object;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExponentialDelay ()Z
+	public final fun getMaxRetries ()Ljava/lang/Integer;
+	public final fun getRetryOnServerErrors ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig;)V
+}
+
+public final class love/forte/simbot/component/qguild/bot/config/QGBotFileConfiguration$RetryConfig$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -2049,10 +2087,12 @@ public final class love/forte/simbot/component/qguild/message/MessageParsers {
 	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
 	public final fun parse (Ljava/lang/String;Ljava/util/List;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
 	public final fun parse (Ljava/lang/String;Ljava/util/List;Llove/forte/simbot/message/Messages;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
-	public final synthetic fun parse (Llove/forte/simbot/message/Message;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final synthetic fun parse (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/message/Message;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun parse (Llove/forte/simbot/message/Message;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun parse (Llove/forte/simbot/qguild/model/Message;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
 	public final fun parse (Llove/forte/simbot/qguild/model/Message;Llove/forte/simbot/message/Messages;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
 	public static synthetic fun parse$default (Llove/forte/simbot/component/qguild/message/MessageParsers;Ljava/lang/String;Ljava/util/List;Llove/forte/simbot/message/Messages;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
+	public static synthetic fun parse$default (Llove/forte/simbot/component/qguild/message/MessageParsers;Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/message/Message;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun parse$default (Llove/forte/simbot/component/qguild/message/MessageParsers;Llove/forte/simbot/message/Message;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun parse$default (Llove/forte/simbot/component/qguild/message/MessageParsers;Llove/forte/simbot/qguild/model/Message;Llove/forte/simbot/message/Messages;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/message/ReceivingMessageParser$Context;
 }
@@ -2546,6 +2586,7 @@ public abstract class love/forte/simbot/component/qguild/message/SendingMessageP
 	public fun getBuilder ()Ljava/lang/Object;
 	public final fun getBuilderFactory ()Lkotlin/jvm/functions/Function0;
 	public final fun getBuilders ()Lkotlin/collections/ArrayDeque;
+	public abstract fun getConfiguration ()Llove/forte/simbot/qguild/stdlib/BotConfiguration;
 	public fun getNextIsNew ()Z
 	public fun newBuilder ()Ljava/lang/Object;
 	public fun nextMustBeNew (Z)V
@@ -2555,11 +2596,14 @@ public abstract class love/forte/simbot/component/qguild/message/SendingMessageP
 
 public final class love/forte/simbot/component/qguild/message/SendingMessageParser$BuilderContext : love/forte/simbot/component/qguild/message/SendingMessageParser$AbstractBuilderContext {
 	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public fun <init> (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/qguild/stdlib/MessageDestination;Lkotlin/jvm/functions/Function0;)V
+	public final fun getBot ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public fun getConfiguration ()Llove/forte/simbot/qguild/stdlib/BotConfiguration;
 }
 
 public final class love/forte/simbot/component/qguild/message/SendingMessageParser$GroupAndC2CBuilderContext : love/forte/simbot/component/qguild/message/SendingMessageParser$AbstractBuilderContext {
-	public fun <init> (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/component/qguild/message/SendingMessageParser$GroupBuilderType;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 	public final fun getBot ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public fun getConfiguration ()Llove/forte/simbot/qguild/stdlib/BotConfiguration;
 	public final fun getTargetOpenid ()Ljava/lang/String;
 	public final fun getType ()Llove/forte/simbot/component/qguild/message/SendingMessageParser$GroupBuilderType;
 }
