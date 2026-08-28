@@ -115,6 +115,8 @@ public class ConfigurableBotConfiguration : BotConfiguration, IntentsAppender {
     /**
      * 使 [BotConfiguration.serverUrl] 为 [QQGuild.SANDBOX_URL]
      */
+    @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+    @Deprecated("官方文档 `20260810` 更新后，不再有独立的‘沙箱’环境的接口域名。")
     public fun useSandboxServerUrl() {
         serverUrl = QQGuild.SANDBOX_URL
     }
