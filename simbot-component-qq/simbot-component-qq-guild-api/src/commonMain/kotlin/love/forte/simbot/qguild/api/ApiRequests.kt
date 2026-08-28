@@ -189,7 +189,7 @@ public suspend inline fun <R : Any> QQGuildApi<R>.requestText(
  * 进行一个与此插件 _类似的_ 逻辑去寻找 body 的序列化信息。此时要求 API 的 body 必须支持 Kotlinx 的序列化。
  *
  * @param client 用于本次http请求的client。
- * @param server 请求目标服务器。See also: [QQGuild.URL]、[QQGuild.SANDBOX_URL]。
+ * @param server 请求目标服务器。See also: [QQGuild.URL] 。
  * @param token 用于本次请求鉴权的token。
  * @param decoder 用于本次请求结果的反序列化器。不出意外的话应该是 [Json] 序列化器，默认使用 [QQGuild.DefaultJson]。
  *

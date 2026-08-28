@@ -107,7 +107,7 @@ val api = GetBotGuildListApi.create(before = null, after = null, limit = 10)
 // 如果失败可以捕获 QQGuildApiException 获取详情
 val guildList: List<SimpleGuild> = api.request(
     client = client,
-    server = QQGuild.SANDBOX_URL, // 请求server地址. 你可以通过 QQGuild.URL 得到一个官方的正式环境地址，或者其他自定义地址。
+    server = QQGuild.URL, // QQ 开放平台统一接口地址；也可以使用其他自定义地址。
     token = token,
     decoder = Json // 可以省略
 )

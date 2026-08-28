@@ -23,30 +23,27 @@
 
 package love.forte.simbot.qguild
 
-// import kotlin.js.ExperimentalJsExport
-// import kotlin.js.JsExport
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmField
 
 /**
- *
- * [QQ頻道API](https://bot.q.qq.com/wiki/develop/api/) 的一些可能会用到的常量信息，
+ * [QQ Bot API](https://bot.q.qq.com/wiki/develop/api-v2/) 的一些可能会用到的常量信息，
  * 例如正式和沙箱环境的服务器地址。
- *
- *
  */
 public object QQGuild {
     /**
-     * 正式环境接口域名 `https://api.sgroup.qq.com`
+     * 正式环境接口域名 `https://api.bot.qq.com`
+     *
+     * 参考[官方文档 `20260810` 更新日志](https://bot.q.qq.com/wiki/develop/api-v2/changelog.html#_20260810)：
+     * > 接口调用域名统一：所有接口调用域名统一为 `api.bot.qq.com`。
      *
      * @see URL
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    public const val URL_STRING: String = "https://api.sgroup.qq.com"
+    public const val URL_STRING: String = "https://api.bot.qq.com"
 
     /**
-     * 正式环境接口域名 `https://api.sgroup.qq.com`
+     * 正式环境接口域名 `https://api.bot.qq.com`
      *
      * @see URL_STRING
      */
@@ -58,17 +55,21 @@ public object QQGuild {
      *
      * 沙箱环境只会收到测试频道的事件，且调用openapi仅能操作测试频道
      *
+     * @see URL
      * @see SANDBOX_URL
      */
-    @Suppress("MemberVisibilityCanBePrivate")
+    @Deprecated("官方文档 `20260810` 更新后，不再有独立的‘沙箱’环境的接口域名。")
     public const val SANDBOX_URL_STRING: String = "https://sandbox.api.sgroup.qq.com"
 
     /**
      * 沙箱环境接口域名 `https://sandbox.api.sgroup.qq.com`
      *
+     * @see URL_STRING
      * @see SANDBOX_URL_STRING
      */
+    @Suppress("DEPRECATION")
     @JvmField
+    @Deprecated("官方文档 `20260810` 更新后，不再有独立的‘沙箱’环境的接口域名。")
     public val SANDBOX_URL: Url = Url(SANDBOX_URL_STRING)
 
     /**
@@ -96,5 +97,4 @@ public object QQGuild {
         useArrayPolymorphism = false
     }
 }
-
 

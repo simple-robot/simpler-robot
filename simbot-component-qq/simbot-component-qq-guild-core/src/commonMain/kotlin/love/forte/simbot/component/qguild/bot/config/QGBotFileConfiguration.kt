@@ -30,6 +30,8 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.bot.SerializableBotConfiguration
 import love.forte.simbot.bot.configuration.DispatcherConfiguration
 import love.forte.simbot.component.qguild.QQGuildComponent
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.qguild.QQGuild
 import love.forte.simbot.qguild.event.EventIntents
 import love.forte.simbot.qguild.event.Signal
@@ -58,7 +60,7 @@ public annotation class UsedOnlyForConfigSerialization
  *    "ticket": {
  *      "appId": "appId-value",
  *      "secret": "secret-value",
- *      "token": "token-value",
+ *      "token": "token-value"
  *    },
  *    "config": null
  * }
@@ -120,7 +122,8 @@ public data class QGBotFileConfiguration(
         /**
          * 目标服务器地址。默认为null，使用 [BotConfiguration] 的默认情况。
          *
-         * 当 [serverUrl] 的值为特殊值：`"SANDBOX"` 时会选择使用 [QQGuild.SANDBOX_URL_STRING]
+         * 为兼容已有配置，当 [serverUrl] 的值为特殊值 `"SANDBOX"` 时，
+         * 仍会选择已弃用的 [QQGuild.SANDBOX_URL_STRING] 并输出警告。
          *
          * 自定义服务器地址：
          *
@@ -328,6 +331,7 @@ public data class QGBotFileConfiguration(
         val retryOnServerErrors: Boolean = false,
     )
 
+    @Suppress("DEPRECATION")
     internal fun includeConfig(cpConfiguration: QGBotComponentConfiguration) {
         cpConfiguration.botConfig {
             val configuration = this
@@ -339,6 +343,12 @@ public data class QGBotFileConfiguration(
                 serverUrl?.also { su ->
                     if (su == Config.SERVER_URL_SANDBOX_VALUE) {
                         configuration.serverUrl = QQGuild.SANDBOX_URL
+                        logger.warn(
+                            "Sandbox URL {} was deprecated since `20260810`. See Official Documentation " +
+                                "https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/api-call-guide.html " +
+                                "for more details.",
+                            QQGuild.SANDBOX_URL,
+                        )
                     } else {
                         configuration.serverUrl = Url(su)
                     }
@@ -376,5 +386,7 @@ public data class QGBotFileConfiguration(
         }
     }
 
-    public companion object
+    public companion object {
+        private val logger = LoggerFactory.logger<QGBotFileConfiguration>()
+    }
 }

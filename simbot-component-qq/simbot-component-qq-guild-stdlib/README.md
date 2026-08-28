@@ -108,9 +108,8 @@ val bot = BotFactory.create(
     "SECRET",
     "TOKEN",
 ) {
-    // 一些配置，例如订阅的事件、使用的服务器（比如切换到沙箱环境）
+    // 一些配置，例如订阅的事件、使用的服务器
     this.intents = EventIntents.GuildMembers.intents + EventIntents.Guilds.intents // 订阅的事件
-    useSandboxServerUrl() // 使用的服务器切换到沙箱环境
     // ...
 }
 
