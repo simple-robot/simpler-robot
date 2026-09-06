@@ -40,6 +40,7 @@ import love.forte.simbot.common.exception.initExceptionCause
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.time.TimeUnit
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.kook.KookMember
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
 import love.forte.simbot.component.kook.bot.internal.MuteJob
@@ -169,7 +170,7 @@ internal class KookMemberImpl(
         val delayJob = bot.launch(start = CoroutineStart.LAZY) {
             delay(milli)
             // delay and do unmute
-            runCatching {
+            runCatchingCancellable {
                 if (logger.isDebugEnabled) {
                     logger.debug(
                         "After a delay of {}, unmute(type={}) for member(id={}, username={}) in guild(id={})",

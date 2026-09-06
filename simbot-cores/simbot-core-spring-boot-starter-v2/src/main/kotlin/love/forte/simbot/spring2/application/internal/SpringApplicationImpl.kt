@@ -32,6 +32,7 @@ import love.forte.simbot.application.ApplicationLaunchStage
 import love.forte.simbot.application.ApplicationLaunchStages
 import love.forte.simbot.application.NormalApplicationEventHandler
 import love.forte.simbot.bot.BotManagers
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.logger.LoggerFactory
@@ -72,7 +73,7 @@ internal class SpringApplicationImpl(
     ) {
         events[stage]?.forEach { handler ->
             (handler as? H)?.also { handler0 ->
-                runCatching {
+                runCatchingCancellable {
                     block(handler0)
                 }.onFailure { e ->
                     logger.error("Invoke application event stage {} handler failed.", stage, e)

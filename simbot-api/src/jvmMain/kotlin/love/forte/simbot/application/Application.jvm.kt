@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -31,6 +31,7 @@ import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.function.toConfigurerFunction
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.event.EventDispatcherConfiguration
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
@@ -62,7 +63,7 @@ public fun <
     factory: ApplicationFactory<A, C, L, AER, DC>,
     configurer: ConfigurerFunction<ApplicationFactoryConfigurer<C, AER, DC>>? = null
 ): A {
-    runCatching {
+    runCatchingCancellable {
         val launcher = factory.create(
             configurer?.let { c ->
                 toConfigurerFunction {
@@ -81,4 +82,3 @@ public fun <
  * @see launchApplicationBlocking
  */
 public class ApplicationLaunchBlockingFailureException internal constructor(cause: Throwable?) : RuntimeException(cause)
-

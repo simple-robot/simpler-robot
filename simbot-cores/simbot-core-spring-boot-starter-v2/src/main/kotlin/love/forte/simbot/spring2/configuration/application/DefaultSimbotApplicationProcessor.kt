@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,6 +23,7 @@
 
 package love.forte.simbot.spring2.configuration.application
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -30,6 +31,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import love.forte.simbot.bot.*
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -220,6 +222,8 @@ private class BotAutoLoader(
                             if (manager.configurable(configuration)) {
                                 bot = manager.register(configuration)
                             }
+                        } catch (e: CancellationException) {
+                            throw e
                         } catch (e: Throwable) {
                             processRegisterBotFailed(
                                 properties.autoRegistrationFailurePolicy,
@@ -407,6 +411,8 @@ private class BotAutoLoader(
                                 logger.debug("Launched to start bot {}", bot)
                             }
                         }
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Throwable) {
                         val err = BotAutoStartOnFailureException(e)
                         logger.error(
@@ -433,7 +439,7 @@ private class BotAutoLoader(
             supervisorScope {
                 botList.forEach { bot ->
                     launch {
-                        kotlin.runCatching { bot.start() }
+                        runCatchingCancellable { bot.start() }
                             .getOrElse { e -> logger.onFailure(BotAutoStartOnFailureException(e)) }
                     }
                     logger.debug("Launched to start bot {}", bot)
@@ -452,6 +458,8 @@ private class BotAutoLoader(
                 try {
                     bot.start()
                     logger.debug("Bot {} started successfully", bot)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Throwable) {
                     val message = "Bot $bot auto start on failure: ${e.localizedMessage}"
                     val ex = BotAutoStartOnFailureException(message, e)

@@ -25,6 +25,7 @@ package love.forte.simbot.component.kook.internal
 
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.kook.KookCategory
 import love.forte.simbot.component.kook.KookChatChannel
 import love.forte.simbot.component.kook.bot.KookBot
@@ -41,7 +42,7 @@ internal suspend fun KookBot.deleteChannel(id: String, options: Array<out Delete
     val api = DeleteChannelApi.create(id)
     // 如果设置了忽略失败选项，则捕获异常
     if (StandardDeleteOption.IGNORE_ON_FAILURE in options) {
-        runCatching { requestData(api) }
+        runCatchingCancellable { requestData(api) }
     } else {
         requestData(api)
     }

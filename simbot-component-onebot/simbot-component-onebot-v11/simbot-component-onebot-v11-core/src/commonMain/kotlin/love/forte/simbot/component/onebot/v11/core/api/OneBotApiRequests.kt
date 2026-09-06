@@ -34,6 +34,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.utils.io.charsets.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
 import love.forte.simbot.common.serialization.guessSerializer
@@ -148,6 +149,8 @@ public suspend fun BasicOneBotApi<*>.request(
                         val jsonText = json.encodeToString(serializer, b)
                         jsonStr = jsonText
                         setBody(jsonText)
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Throwable) {
                         try {
                             setBody(b)

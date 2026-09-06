@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -39,6 +39,7 @@ import love.forte.simbot.common.collection.PriorityConcurrentQueue
 import love.forte.simbot.common.collection.concurrentMutableMap
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.core.event.*
 import love.forte.simbot.event.*
 import kotlin.concurrent.Volatile
@@ -324,7 +325,7 @@ public class SimpleEventDispatcherImpl(
     private fun pushWithInterceptor(event: Event): Flow<EventResult> {
         val context = EventContextImpl(dispatcherContext, event)
 
-        return runCatching {
+        return runCatchingCancellable {
             dispatchInterceptorsInvoker?.invoke(context) { eventFlow(context) } ?: eventFlow(context)
         }.getOrElse { e ->
             return flow {
@@ -377,7 +378,7 @@ public class SimpleEventDispatcherImpl(
     }
 
     private inline fun orErrorResult(block: () -> EventResult): EventResult =
-        runCatching { block() }.getOrElse { e -> EventResult.error(e) }
+        runCatchingCancellable { block() }.getOrElse { e -> EventResult.error(e) }
 
     override fun toString(): String {
         return "SimpleEventDispatcher"

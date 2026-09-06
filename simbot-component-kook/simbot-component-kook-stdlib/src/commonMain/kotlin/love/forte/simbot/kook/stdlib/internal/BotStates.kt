@@ -150,6 +150,8 @@ private class CreateWsSession(
             val session = connectWs()
             botLogger.debug("Ws session created: {}", session)
             session
+        } catch (e: KtxCancellationException) {
+            throw e
         } catch (e: Throwable) {
             botLogger.error("Connect to gateway {} failed, msg: {}, retry.", gateway, e.message)
             botLogger.debug("Connect to gateway {} failed, msg: {}, retry.", gateway, e.message, e)
@@ -498,6 +500,11 @@ private class Receiving(
         try {
             eventLogger.trace("Receiving next frame...")
             val frameCatching = session.incoming.receiveCatching()
+            val frameFailure = frameCatching.exceptionOrNull()
+            if (frameFailure is KtxCancellationException) {
+                throw frameFailure
+            }
+
             frameCatching.onFailure { cause ->
                 eventLogger.error(
                     "Receiving next frame on failure: {}, close current session and try to reconnect",
@@ -537,25 +544,16 @@ private class Receiving(
                         eventLogger.trace("Other frame: {}", frame)
                     }
                 }
+            } catch (processException: KtxCancellationException) {
+                throw processException
             } catch (processException: Throwable) {
                 eventLogger.error("An exception was thrown while processing the event frame", processException)
             }
 
             return this
         } catch (cancellation: KtxCancellationException) {
-            // 似乎不会到这儿来？
             client.cancel()
-            return if (!bot.isActive) {
-                botLogger.warn("Session (and bot) is cancelled: {}", cancellation.message)
-                botLogger.debug("Session (and bot) is cancelled: {}", cancellation.message, cancellation)
-                null
-            } else {
-                botLogger.warn("Session is cancelled: {}, try to reconnect", cancellation.message)
-                botLogger.debug("Session is cancelled: {}, try to reconnect", cancellation.message, cancellation)
-                // reconnect?
-                Reconnect(bot, botLogger, client.isCompress, client.sn.value, hello.d.sessionId)
-            }
-
+            throw cancellation
         } catch (e: Throwable) {
             botLogger.error("Session received frame failed: {}, cancel current session and try reconnect", e.message, e)
             client.cancel(sessionCause = KtxCancellationException("unexpected exception was received", e))
@@ -686,12 +684,19 @@ private class Receiving(
                                 }
 
                                 if (sendResult.isClosed) {
+                                    val cause = sendResult.exceptionOrNull()
+                                    if (cause is KtxCancellationException) {
+                                        throw cause
+                                    }
+
                                     return@apply
                                 }
                             }
 
                             sendEvent(eventData)
                         }
+                    } catch (e: KtxCancellationException) {
+                        throw e
                     } catch (e: Throwable) {
                         eventLogger.error("Event push on error: {}", e.message, e)
                     }

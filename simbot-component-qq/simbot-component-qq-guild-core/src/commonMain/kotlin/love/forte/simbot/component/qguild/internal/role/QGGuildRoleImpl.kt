@@ -35,6 +35,7 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.guild.QGMember
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
@@ -87,7 +88,7 @@ internal class QGGuildRoleImpl(
 
     override suspend fun delete(vararg options: DeleteOption) {
         val stdOpts = options.standardAnalysis()
-        kotlin.runCatching {
+        runCatchingCancellable {
             DeleteGuildRoleApi.create(guildId.literal, source.id).requestDataBy(bot.source)
         }.onFailure { e ->
             if (e is QQGuildApiException) {

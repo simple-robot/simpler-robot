@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -36,6 +36,7 @@ import love.forte.simbot.common.async.toAsync
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.function.toConfigurerFunction
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.event.EventDispatcherConfiguration
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -82,7 +83,7 @@ public fun <
     factory: ApplicationFactory<A, C, L, AER, DC>,
     configurer: ConfigurerFunction<ApplicationFactoryConfigurer<C, AER, DC>>? = null
 ): Async<A> {
-    val launcher = runCatching {
+    val launcher = runCatchingCancellable {
         factory.create(
             configurer?.let { c ->
                 toConfigurerFunction {

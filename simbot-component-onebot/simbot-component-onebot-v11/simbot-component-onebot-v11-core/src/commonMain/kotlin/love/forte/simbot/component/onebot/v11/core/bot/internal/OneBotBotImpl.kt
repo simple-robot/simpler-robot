@@ -51,6 +51,7 @@ import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.onebot.common.annotations.InternalForInheritanceOneBotBotApi
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotFriend
@@ -401,6 +402,8 @@ internal class OneBotBotImpl(
                 try {
                     logger.debug("Connect to ws server {}", wsHost)
                     session = createSession()
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     retryTimes++
 
@@ -474,9 +477,11 @@ internal class OneBotBotImpl(
                     }
                 }
 
-                kotlin.runCatching {
+                try {
                     receiveEvent(currentSession)
-                }.onFailure { ex ->
+                } catch (cancellation: CancellationException) {
+                    throw cancellation
+                } catch (ex: Throwable) {
                     logger.error("Event reception is interrupted: {}", ex.message, ex)
                 }
 
@@ -503,9 +508,11 @@ internal class OneBotBotImpl(
                 }
 
                 // 等待关闭完成
-                val reason = kotlin.runCatching {
+                val reason = try {
                     currentSession.closeReason.await()
-                }.getOrElse { e ->
+                } catch (cancellation: CancellationException) {
+                    throw cancellation
+                } catch (e: Throwable) {
                     logger.debug("Failed to get close reason for session: {}", e.message, e)
                     null
                 }
@@ -522,12 +529,16 @@ internal class OneBotBotImpl(
                     val frameResult = incoming.receiveCatching()
 
                     if (!frameResult.isSuccess) {
+                        val ex = frameResult.exceptionOrNull()
+                        if (ex is CancellationException) {
+                            throw ex
+                        }
+
                         if (frameResult.isClosed) {
                             logger.debug("Session received Close frame result: {}", frameResult)
                             break
                         }
                         if (frameResult.isFailure) {
-                            val ex = frameResult.exceptionOrNull()
                             logger.debug(
                                 "Session received Failure frame result: {}, exception: {}",
                                 frameResult,
@@ -560,9 +571,11 @@ internal class OneBotBotImpl(
 
                     logger.debug("Received raw event: {}", eventRaw)
 
-                    val event = runCatching {
+                    val event = try {
                         resolveEvent(eventRaw)
-                    }.getOrElse { e ->
+                    } catch (cancellation: CancellationException) {
+                        throw cancellation
+                    } catch (e: Throwable) {
                         val exMsg = "Failed to resolve raw event $eventRaw, " +
                             "session and bot will be closed exceptionally"
 
@@ -705,7 +718,7 @@ internal class OneBotBotImpl(
         )
 
     override fun push(rawEvent: String): Flow<EventResult> {
-        val event = kotlin.runCatching {
+        val event = runCatchingCancellable {
             resolveEvent(rawEvent)
         }.getOrElse { e ->
             val exMsg = "Failed to resolve raw event $rawEvent, " +
@@ -761,7 +774,7 @@ internal fun OneBotBotImpl.resolveEvent(text: String): Event {
         val context = CustomEventResolverContextImpl(this, OneBot11.DefaultJson, eventResolvedResult)
 
         for (resolver in customEventResolvers) {
-            runCatching {
+            runCatchingCancellable {
                 event = resolver.resolve(context)
             }.onFailure { e ->
                 errors.add(e)

@@ -33,6 +33,7 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.logger.LoggerFactory
@@ -178,6 +179,8 @@ private suspend inline fun KookApi<*>.reqForResp(
                     val ser = guessSerializer(body, KookApi.DEFAULT_JSON.serializersModule)
                     val bodyJson = KookApi.DEFAULT_JSON.encodeToString(ser, body)
                     setBody(bodyJson)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Throwable) {
                     try {
                         setBody(body)
@@ -192,4 +195,3 @@ private suspend inline fun KookApi<*>.reqForResp(
 
     postAction()
 }
-

@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import kotlinx.coroutines.CancellationException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
@@ -127,7 +128,7 @@ internal abstract class OneBotMemberImpl(
                 error("The group id for current member $this is unknown")
             }
 
-        kotlin.runCatching {
+        try {
             bot.executeData(
                 SetGroupKickApi.create(
                     groupId = groupId,
@@ -135,7 +136,9 @@ internal abstract class OneBotMemberImpl(
                     rejectAddRequest = mark.isRejectRequest
                 )
             )
-        }.onFailure { err ->
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (err: Throwable) {
             if (!mark.isIgnoreFailure) {
                 throw err
             }

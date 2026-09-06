@@ -181,6 +181,9 @@ internal class WaitingReadyEvent(
             val frameResult = session.incoming.receiveCatching()
             if (!frameResult.isSuccess) {
                 val reason = frameResult.exceptionOrNull()
+                if (reason is CancellationException) {
+                    throw reason
+                }
                 val closeReason = session.closeReason.await()
                 throw IllegalStateException("Session closed: $closeReason", reason)
             }
@@ -307,6 +310,10 @@ internal class ReceiveEvent(
 
         @Suppress("ReturnCount")
         suspend fun onCatchErr(e: Throwable?): State? {
+            if (e is CancellationException) {
+                throw e
+            }
+
             val reason = session.closeReason.await()
             if (reason == null) {
                 logger.debug("Session closed and reason is null, try to resume", e)
@@ -433,6 +440,8 @@ internal class ReceiveEvent(
             }
         } catch (serEx: SerializationException) {
             logger.error("Serialization exception: {}", serEx.message, serEx)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
         } catch (other: Throwable) {
             logger.error("Exception: {}", other.message, other)
         }
@@ -493,5 +502,3 @@ internal class Resume(
 private suspend inline fun HttpClient.ws(crossinline gatewayInfo: () -> GatewayInfo): DefaultClientWebSocketSession {
     return webSocketSession { url(gatewayInfo().url) }
 }
-
-

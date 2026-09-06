@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -118,6 +118,8 @@ public open class SimbotApplicationRunner(
             try {
                 runBlocking { app.join() }
                 logger.info("ApplicationLaunchThread done.")
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Throwable) {
                 logger.info("ApplicationLaunchThread done on failure: {}", e.localizedMessage, e)
             }

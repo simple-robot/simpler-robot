@@ -32,6 +32,7 @@ import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.kook.blacklist.KookBlacklistItem
 import love.forte.simbot.component.kook.blacklist.KookGuildBlacklistOperator
 import love.forte.simbot.component.kook.bot.KookBot
@@ -81,7 +82,7 @@ internal class KookGuildBlacklistOperatorImpl(
         val api = DeleteBlacklistApi.create(guildId.literal, targetId.literal)
 
         if (options.contains(StandardDeleteOption.IGNORE_ON_FAILURE)) {
-            runCatching { bot.requestData(api) }
+            runCatchingCancellable { bot.requestData(api) }
             // Log?
             return
         }

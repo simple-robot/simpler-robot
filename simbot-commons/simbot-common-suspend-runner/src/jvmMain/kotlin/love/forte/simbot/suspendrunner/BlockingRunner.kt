@@ -350,7 +350,6 @@ private inline fun initDispatcher(
             if (useDispatcher != null) {
                 val limitedParallelism = systemInt(dispatcherLimitedParallelismPropertyName)
 
-                @OptIn(ExperimentalCoroutinesApi::class)
                 if (limitedParallelism != null) {
                     logger.debug(
                         "Dispatcher runner limited parallelism: {}={}",
@@ -633,10 +632,12 @@ public fun <T> runInTimeoutBlocking(
     block: suspend CoroutineScope.() -> T,
 ): T = try {
     runInBlockingStrategy(context) {
-        withTimeout(timeout, block)
+        withTimeout(timeout.milliseconds, block)
     }
 } catch (timeout: TimeoutCancellationException) {
     throw timeout
+} catch (cancellation: CancellationException) {
+    throw cancellation
 } catch (e: Throwable) {
     throw `$RunInBlockingException$`(e)
 }
@@ -697,7 +698,7 @@ public fun <T> runInNoScopeTimeoutBlocking(
     block: suspend () -> T,
 ): T = runInNoScopeBlockingStrategy(context) {
     try {
-        withTimeout(timeout) { block() }
+        withTimeout(timeout.milliseconds) { block() }
     } catch (timeout: TimeoutCancellationException) {
         throw TimeoutException(timeout.localizedMessage).initCause(timeout)
     }

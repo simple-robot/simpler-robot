@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -266,6 +266,9 @@ public suspend inline fun <C, T, R> ContinuousSessionReceiver<C, T, R>.awaitWith
     val continuation = await()
     try {
         continuation.resume(block(continuation.context, continuation.value))
+    } catch (e: CancellationException) {
+        continuation.resumeWithException(e)
+        throw e
     } catch (e: Throwable) {
         continuation.resumeWithException(e)
     }

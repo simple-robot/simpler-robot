@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.actor.internal
 
+import kotlinx.coroutines.CancellationException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.collectable.Collectable
@@ -146,14 +147,16 @@ internal abstract class OneBotGroupImpl(
     }
 
     private suspend fun doDelete(mark: DeleteMark) {
-        kotlin.runCatching {
+        try {
             bot.executeData(
                 SetGroupLeaveApi.create(
                     groupId = id,
                     isDismiss = mark.isDismiss
                 )
             )
-        }.onFailure { err ->
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (err: Throwable) {
             if (!mark.isIgnoreFailure) {
                 throw err
             }

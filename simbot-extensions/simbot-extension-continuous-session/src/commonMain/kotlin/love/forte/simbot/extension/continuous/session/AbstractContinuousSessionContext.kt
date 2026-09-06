@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -142,12 +142,14 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
         }
 
         launchScope.launch {
-            kotlin.runCatching {
+            try {
                 inSession.run { session.invoke() }
-            }.onFailure { e ->
-                job.completeExceptionally(e)
-            }.onSuccess {
                 job.complete()
+            } catch (e: CancellationException) {
+                job.completeExceptionally(e)
+                throw e
+            } catch (e: Throwable) {
+                job.completeExceptionally(e)
             }
         }
 
@@ -193,46 +195,37 @@ private class SimpleSessionImpl<C, T, R>(
         return suspendCancellableCoroutine { continuation ->
             val data = SessionData(context, value, continuation)
             launchScope.launch {
-                kotlin.runCatching {
+                try {
                     channel.send(data)
-                }.onFailure { e ->
-                    when (e) {
-                        is ClosedSendChannelException -> {
-                            data.continuation.resumeWithException(
-                                SessionPushOnFailureException(
-                                    "Push to session channel (key=$key) failed: ${e.message}",
-                                    e
-                                )
-                            )
-                        }
-
-                        is ClosedReceiveChannelException -> {
-                            data.continuation.resumeWithException(
-                                SessionPushOnFailureException(
-                                    "Push to session channel (key=$key) failed: ${e.message}",
-                                    e
-                                )
-                            )
-                        }
-
-                        is CancellationException -> {
-                            data.continuation.cancel(
-                                CancellationException(
-                                    "Push to session channel (key=$key) failed: ${e.message}",
-                                    e.cause?.let { SessionPushOnFailureException(e.message, it) }
-                                )
-                            )
-                        }
-
-                        else -> {
-                            data.continuation.resumeWithException(
-                                SessionPushOnFailureException(
-                                    "Push to session channel (key=$key) failed: ${e.message}",
-                                    e
-                                )
-                            )
-                        }
-                    }
+                } catch (e: ClosedSendChannelException) {
+                    data.continuation.resumeWithException(
+                        SessionPushOnFailureException(
+                            "Push to session channel (key=$key) failed: ${e.message}",
+                            e
+                        )
+                    )
+                } catch (e: ClosedReceiveChannelException) {
+                    data.continuation.resumeWithException(
+                        SessionPushOnFailureException(
+                            "Push to session channel (key=$key) failed: ${e.message}",
+                            e
+                        )
+                    )
+                } catch (e: CancellationException) {
+                    data.continuation.cancel(
+                        CancellationException(
+                            "Push to session channel (key=$key) failed: ${e.message}",
+                            e.cause?.let { SessionPushOnFailureException(e.message, it) }
+                        )
+                    )
+                    throw e
+                } catch (e: Throwable) {
+                    data.continuation.resumeWithException(
+                        SessionPushOnFailureException(
+                            "Push to session channel (key=$key) failed: ${e.message}",
+                            e
+                        )
+                    )
                 }
             }
         }
@@ -291,4 +284,3 @@ private class SimpleSessionImpl<C, T, R>(
         return createSimpleSessionContinuation(context, value, continuation, handle)
     }
 }
-

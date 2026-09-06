@@ -36,6 +36,7 @@ import love.forte.simbot.bot.toBotManagers
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.function.invokeWith
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.*
 import love.forte.simbot.core.event.SimpleEventDispatcher
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
@@ -43,11 +44,7 @@ import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.plugin.Plugin
-import love.forte.simbot.plugin.PluginConfigureContext
-import love.forte.simbot.plugin.PluginFactoriesConfigurator
-import love.forte.simbot.plugin.Plugins
-import love.forte.simbot.plugin.toPlugins
+import love.forte.simbot.plugin.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -84,7 +81,7 @@ private class SimpleApplicationImpl(
     ) {
         events[stage]?.forEach { handler ->
             (handler as? H)?.also { handler0 ->
-                runCatching {
+                runCatchingCancellable {
                     block(handler0)
                 }.onFailure { e ->
                     logger.error("Invoke application event stage {} handler failed.", stage, e)

@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +26,8 @@ package love.forte.simbot.common.stageloop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.test.*
 
 
 /**
@@ -63,6 +62,21 @@ class StageLoopTests {
             assertTrue(d1Done)
             assertTrue(d2Done)
         }
+    }
+
+    @Test
+    fun cancellationIsNotHandledByExceptionHandler() = runTest {
+        val cancellation = CancellationException("cancelled")
+        val loop = DefaultStageLoop<TestStage>()
+        loop.appendStage(Cancel(cancellation))
+        var handled = 0
+
+        val error = assertFailsWith<CancellationException> {
+            loop.loop(exceptionHandle = { handled++ })
+        }
+
+        assertSame(cancellation, error)
+        assertEquals(0, handled)
     }
 
     sealed class TestStage : Stage<TestStage>()
@@ -106,5 +120,10 @@ class StageLoopTests {
         }
     }
 
-}
+    data class Cancel(val cancellation: CancellationException) : TestStage() {
+        override suspend fun invoke(loop: StageLoop<TestStage>) {
+            throw cancellation
+        }
+    }
 
+}

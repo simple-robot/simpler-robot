@@ -44,6 +44,7 @@ import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.stageloop.loop
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.common.weak.WeakRef
 import love.forte.simbot.common.weak.weakRef
 import love.forte.simbot.logger.Logger
@@ -414,7 +415,7 @@ internal class BotImpl(
     }
 
     private suspend fun getNewAccessToken(api: GetAppAccessTokenApi): AppAccessToken =
-        runCatching {
+        runCatchingCancellable {
             api.requestData(
                 client = apiClient,
                 token = null,

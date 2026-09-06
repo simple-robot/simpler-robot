@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 
 package love.forte.simbot.common.stageloop
 
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * 通过提供的 [StageLoop] 进行循环。
@@ -46,6 +47,8 @@ public suspend inline fun <S : Stage<S>> StageLoop<S>.loop(
     while (condition(next)) {
         try {
             invoke(next)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Throwable) {
             exceptionHandle(e)
         }
@@ -53,4 +56,3 @@ public suspend inline fun <S : Stage<S>> StageLoop<S>.loop(
     }
     invoke(null)
 }
-

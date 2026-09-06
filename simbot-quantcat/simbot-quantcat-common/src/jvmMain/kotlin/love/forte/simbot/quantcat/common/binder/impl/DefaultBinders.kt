@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,6 +23,7 @@
 
 package love.forte.simbot.quantcat.common.binder.impl
 
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.event.EventListenerContext
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -141,7 +142,7 @@ public class MergedBinder(
             return null
         }
 
-        return kotlin.runCatching {
+        return runCatchingCancellable {
             for (binder in binders) {
                 val result = binder.invoke()
                 if (result != null) return result

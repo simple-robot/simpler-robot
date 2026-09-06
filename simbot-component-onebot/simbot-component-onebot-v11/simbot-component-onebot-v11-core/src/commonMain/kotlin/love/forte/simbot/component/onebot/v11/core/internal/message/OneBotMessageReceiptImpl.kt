@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.internal.message
 
+import kotlinx.coroutines.CancellationException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
@@ -40,9 +41,11 @@ internal class OneBotMessageReceiptImpl(
     private val bot: OneBotBotImpl,
 ) : OneBotMessageReceipt {
     override suspend fun delete(vararg options: DeleteOption) {
-        kotlin.runCatching {
+        try {
             bot.executeData(DeleteMsgApi.create(messageId))
-        }.onFailure { ex ->
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (ex: Throwable) {
             if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
                 throw ex
             }

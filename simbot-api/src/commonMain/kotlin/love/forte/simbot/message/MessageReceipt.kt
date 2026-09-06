@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -28,6 +28,7 @@ import love.forte.simbot.ability.DeleteSupport
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.ability.StandardDeleteOption
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 
@@ -160,6 +161,6 @@ public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(
     onResult: (Result<Unit>) -> Unit = { /* Ignore it. */ }
 ) {
     for (receipt in this) {
-        onResult(kotlin.runCatching { receipt.delete(options = options) })
+        onResult(runCatchingCancellable { receipt.delete(options = options) })
     }
 }
