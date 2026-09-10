@@ -32,7 +32,7 @@ import kotlin.jvm.JvmExposeBoxed
 /**
  * 指令面板记录信息。
  *
- * 它的内容信息是获取时基于 [love.forte.simbot.qguild.model.panel.CommandPanelRecord] 的瞬时**快照**。
+ * 它的内容信息是获取时基于 [CommandPanelRecord] 的瞬时**快照**。
  *
  * @since 4.7.0
  */

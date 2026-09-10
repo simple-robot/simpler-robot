@@ -32,7 +32,6 @@ import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.panel.InternalForInheritanceQGPanelApi
 import love.forte.simbot.component.qguild.panel.QGCommandPanelHandle
-import love.forte.simbot.component.qguild.panel.QGCommandPanelTargetOperation
 import love.forte.simbot.component.qguild.panel.QGCommandPanelUpdateReceipt
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -42,6 +41,7 @@ import love.forte.simbot.qguild.api.panel.ModifyCommandPanelApi
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
 import love.forte.simbot.qguild.model.panel.CommandPanel
 import love.forte.simbot.qguild.model.panel.CommandPanelRecord
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate
 
 
 /**
@@ -63,11 +63,11 @@ internal class QGCommandPanelHandleOperator(
     }
 
     override suspend fun addTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?) {
-        updateTargets(QGCommandPanelTargetOperation.ADD, userOpenids, groupOpenids)
+        updateTargets(CommandPanelTargetUpdate.OP_ADD, userOpenids, groupOpenids)
     }
 
     override suspend fun removeTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?) {
-        updateTargets(QGCommandPanelTargetOperation.DEL, userOpenids, groupOpenids)
+        updateTargets(CommandPanelTargetUpdate.OP_DEL, userOpenids, groupOpenids)
     }
 
     /**
@@ -93,12 +93,12 @@ internal class QGCommandPanelHandleOperator(
     }
 
     private suspend fun updateTargets(
-        operation: QGCommandPanelTargetOperation,
+        operation: String,
         userOpenids: Collection<ID>?,
         groupOpenids: Collection<ID>?
     ) {
         val api = ModifyCommandPanelTargetApi.create(id.literal) {
-            op = operation.value
+            op = operation
             userOpenids?.forEach { addUserOpenid(it.literal) }
             groupOpenids?.forEach { addGroupOpenid(it.literal) }
         }

@@ -103,7 +103,13 @@ public class CustomMenu @ApiModelConstructor internal constructor(
         }
 
         override fun toString(): String {
-            return "Item(link=$link, name=$name, type=$type, subMenuItems=$subMenuItems, sendMessage=$sendMessage, switch=$switch)"
+            return "Item(" +
+                "link=$link, " +
+                "name=$name, " +
+                "type=$type, " +
+                "subMenuItems=$subMenuItems, " +
+                "sendMessage=$sendMessage, " +
+                "switch=$switch)"
         }
     }
 

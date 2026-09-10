@@ -32,27 +32,6 @@ import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 
 /**
- * 指令面板目标关联操作的可扩展字符串值对象。
- *
- * @property value 服务端使用的原始操作字符串。
- * @since 4.7.0
- */
-public enum class QGCommandPanelTargetOperation(public val value: String) {
-    /**
-     *  添加目标关联。
-     *  @see CommandPanelTargetUpdate.OP_ADD
-     */
-    ADD(CommandPanelTargetUpdate.OP_ADD),
-
-    /**
-     * 删除目标关联。
-     * @see CommandPanelTargetUpdate.OP_DEL
-     */
-    DEL(CommandPanelTargetUpdate.OP_DEL),
-}
-
-
-/**
  * 指令面板操作器。
  *
  * 此 facade 不缓存远端面板，也不会为了补齐创建结果自动发起详情查询。
@@ -87,7 +66,7 @@ public interface QGCommandPanelManager {
      * 创建接口只返回新面板 ID，因此本方法只返回带 ID 的句柄，不隐式查询详情。
      *
      * @param scope 指令面板生效的会话场景。
-     * @param targetType 指令面板的目标范围类型。可参考 [QGCommandPanelTargetType]。
+     * @param targetType 指令面板的目标范围类型。
      * @param userOpenids C2C 用户 OpenID 列表，仅 c2c 场景且 target_type=specific 时有效。
      * @param groupOpenids 群 OpenID 列表，仅 group 场景且 target_type=specific 时有效。
      * @param panel 面板配置内容，定义面板中展示的指令和链接项
@@ -99,13 +78,13 @@ public interface QGCommandPanelManager {
     public suspend fun create(
         scope: String? = null,
         targetType: String? = null,
-        userOpenids: List<ID>? = null,
-        groupOpenids: List<ID>? = null,
+        userOpenids: Collection<ID>? = null,
+        groupOpenids: Collection<ID>? = null,
         panel: CommandPanel? = null
     ): QGCommandPanelHandle = create(
         CommandPanelCreate.builder()
             .scope(scope?.let(CommandPanelScope::of))
-            .targetType(targetType)
+            .targetType(targetType?.let(CommandPanelTargetType::of))
             .addUserOpenids(userOpenids?.map { it.literal } ?: emptyList())
             .addGroupOpenids(groupOpenids?.map { it.literal } ?: emptyList())
             .panel(panel)
@@ -162,7 +141,7 @@ public interface QGCommandPanelManager {
  * 创建接口只返回新面板 ID，因此本方法只返回带 ID 的句柄，不隐式查询详情。
  *
  * @param scope 指令面板生效的会话场景。
- * @param targetType 指令面板的目标范围类型。可参考 [QGCommandPanelTargetType]。
+ * @param targetType 指令面板的目标范围类型。
  * @param userOpenids C2C 用户 OpenID 列表，仅 c2c 场景且 target_type=specific 时有效。
  * @param groupOpenids 群 OpenID 列表，仅 group 场景且 target_type=specific 时有效。
  * @param panel 面板配置内容，定义面板中展示的指令和链接项
@@ -172,9 +151,9 @@ public interface QGCommandPanelManager {
  */
 public suspend fun QGCommandPanelManager.create(
     scope: CommandPanelScope? = null,
-    targetType: String? = null,
-    userOpenids: List<ID>? = null,
-    groupOpenids: List<ID>? = null,
+    targetType: CommandPanelTargetType? = null,
+    userOpenids: Collection<ID>? = null,
+    groupOpenids: Collection<ID>? = null,
     panel: CommandPanel? = null
 ): QGCommandPanelHandle = create(
     CommandPanelCreate.builder()

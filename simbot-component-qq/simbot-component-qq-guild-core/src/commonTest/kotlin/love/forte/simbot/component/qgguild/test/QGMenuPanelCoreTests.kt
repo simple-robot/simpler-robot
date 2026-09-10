@@ -31,8 +31,8 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.panel.create
 import love.forte.simbot.component.qguild.panel.update
-import love.forte.simbot.qguild.model.panel.CommandPanelRecord
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetTypeValues
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotSame
@@ -119,7 +119,7 @@ class QGMenuPanelCoreTests : AbstractInteractionTests() {
             assertEquals(listOf("first", "second"), snapshots.map { it.id.toString() })
             assertEquals("future-scope", snapshots.first().scopeValue)
             assertEquals("all", snapshots.first().targetTypeValue)
-            assertEquals(CommandPanelRecord.TARGET_TYPE_ALL, snapshots.first().targetTypeValue)
+            assertEquals(CommandPanelTargetTypeValues.ALL, snapshots.first().targetTypeValue)
 
             bot.commandPanels
                 .list("future-scope", limit = 2)

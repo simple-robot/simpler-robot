@@ -28,59 +28,39 @@ import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmInline
 import kotlin.jvm.JvmStatic
 
+
 /**
- * 面板生效场景 `scope`。
- *
- * @see CommandPanelScopeValues
+ * 面板生效范围 `target_type`
  *
  * @since 5.0
- * @author Forte Scarlet
+ * @author ForteScarlet
  */
+@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
-@OptIn(ExperimentalStdlibApi::class)
 @Serializable
-public value class CommandPanelScope private constructor(public val scope: String) {
+public value class CommandPanelTargetType private constructor(public val value: String) {
+
     public companion object {
         /**
-         * 构建一个自定义值的 [CommandPanelScope]。
+         * 构建一个自定义值的 [CommandPanelTargetType]。
          */
         @JvmStatic
         @JvmExposeBoxed
-        public fun of(scope: String): CommandPanelScope {
-            // 内联类内部使用 when (scope) { ... , else } 似乎是无意义的，
-            // 针对 JVM 的 box 行为都是在内联之后，因此 val C2C 之类的‘对象’
-            // 也都是 return box-impl(C2C常量)，返回的对象仍然是一个新对象，而不是固定对象。
-            // 所以直接返回内联对象就行，对已知量枚举是无意义的。
-            return CommandPanelScope(scope)
-        }
+        public fun of(scope: String): CommandPanelTargetType = CommandPanelTargetType(scope)
 
         /**
-         * C2C 单聊场景。
+         * 对指定场景下的所有目标生效。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val C2C: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.C2C)
+        public val All: CommandPanelTargetType = of(CommandPanelTargetTypeValues.ALL)
 
         /**
-         * 群聊场景。
+         * 仅对指定用户或群生效。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Group: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.GROUP)
-
-        /**
-         * 文字子频道场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val Channel: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.CHANNEL)
-
-        /**
-         * 频道私信场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val DM: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.DM)
+        public val Specific: CommandPanelTargetType = of(CommandPanelTargetTypeValues.SPECIFIC)
     }
 }

@@ -53,10 +53,10 @@ public class GetCommandPanelListApi private constructor(
          * 注意参数不在本地进行校验。
          *
          * @param scope 生效场景，可选值：
-         * - [`c2c`（单聊）][love.forte.simbot.qguild.model.panel.CommandPanelRecord.SCOPE_C2C]
-         * - [`group`（群聊）][love.forte.simbot.qguild.model.panel.CommandPanelRecord.SCOPE_GROUP]
-         * - [`channel`（文字子频道）][love.forte.simbot.qguild.model.panel.CommandPanelRecord.SCOPE_CHANNEL]
-         * - [`dm`（频道私信）。 ][love.forte.simbot.qguild.model.panel.CommandPanelRecord.SCOPE_DM]
+         * - [`c2c`（单聊）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.C2C]
+         * - [`group`（群聊）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.GROUP]
+         * - [`channel`（文字子频道）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.CHANNEL]
+         * - [`dm`（频道私信）。 ][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.DM]
          * 按指定场景筛选面板列表
          * @param cursor 分页游标。首次请求不传或传空串，后续请求传入上次响应中的 next_cursor 值
          * @param limit 每页拉取条数，默认 20，最大 50

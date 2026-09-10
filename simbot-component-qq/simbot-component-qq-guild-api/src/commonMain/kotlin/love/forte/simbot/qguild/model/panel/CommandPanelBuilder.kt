@@ -201,7 +201,10 @@ public class CommandPanelCreateBuilder {
     /**
      * 面板生效场景。
      */
-    @Deprecated("Use `scopeValue` directly")
+    @Deprecated(
+        "Use `scopeValue` directly",
+        replaceWith = ReplaceWith("scopeValue")
+    )
     public var scope: String?
         get() = scopeValue?.scope
         set(value) {
@@ -219,7 +222,22 @@ public class CommandPanelCreateBuilder {
     /**
      * 面板生效范围。
      */
-    public var targetType: String? = null
+    @Deprecated(
+        "Use `targetTypeValue` directly",
+        replaceWith = ReplaceWith("targetTypeValue")
+    )
+    public var targetType: String?
+        get() = targetTypeValue?.value
+        set(value) {
+            targetTypeValue = value?.let(CommandPanelTargetType::of)
+        }
+
+    /**
+     * 面板生效范围。
+     *
+     * @since 5.0
+     */
+    public var targetTypeValue: CommandPanelTargetType? = null
 
     /**
      * 面板配置。
@@ -235,8 +253,8 @@ public class CommandPanelCreateBuilder {
     @Deprecated(
         "Use `scope` with `CommandPanelScope` directly",
         ReplaceWith(
-            "scope(scope?.let(CommandPanelScope::of))",
-            "love.forte.simbot.qguild.model.panel.CommandPanelScope.of"
+            "scope(scope?.let { CommandPanelScope.of(it) })",
+            "love.forte.simbot.qguild.model.panel.CommandPanelScope"
         )
     )
     public fun scope(scope: String?): CommandPanelCreateBuilder =
@@ -255,8 +273,24 @@ public class CommandPanelCreateBuilder {
     /**
      * 设置面板生效范围。
      */
-    public fun targetType(targetType: String?): CommandPanelCreateBuilder = also {
-        this.targetType = targetType
+    @Deprecated(
+        "Use `targetType` with `CommandPanelTargetType` directly",
+        ReplaceWith(
+            "targetType(targetType?.let { CommandPanelTargetType.of(it) })",
+            "love.forte.simbot.qguild.model.panel.CommandPanelTargetType"
+        )
+    )
+    public fun targetType(targetType: String?): CommandPanelCreateBuilder =
+        targetType(targetType?.let(CommandPanelTargetType::of))
+
+    /**
+     * 设置面板生效范围。
+     *
+     * @since 5.0
+     */
+    @JvmExposeBoxed
+    public fun targetType(targetType: CommandPanelTargetType?): CommandPanelCreateBuilder = also {
+        this.targetTypeValue = targetType
     }
 
     /**
@@ -322,7 +356,7 @@ public class CommandPanelCreateBuilder {
      */
     public fun build(): CommandPanelCreate = CommandPanelCreate(
         scope = scopeValue,
-        targetType = targetType,
+        targetType = targetTypeValue,
         userOpenids = userOpenids.takeIf { it.isNotEmpty() }?.toList(),
         groupOpenids = groupOpenids.takeIf { it.isNotEmpty() }?.toList(),
         panel = panel,

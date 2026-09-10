@@ -30,11 +30,12 @@ import kotlinx.serialization.json.jsonObject
 import love.forte.simbot.qguild.QQGuild
 import love.forte.simbot.qguild.api.menu.ModifyCustomMenuApi
 import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
-import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi
+import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
 import love.forte.simbot.qguild.model.menu.CustomMenu
 import love.forte.simbot.qguild.model.panel.CommandPanel
-import love.forte.simbot.qguild.model.panel.CommandPanelRecord
+import love.forte.simbot.qguild.model.panel.CommandPanelScope
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetTypeValues
 import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -47,7 +48,10 @@ class MenuPanelApiTests {
             item {
                 name = "forwarded"
                 type = "unknown"
-                subMenuItem { type = CustomMenu.SubItem.TYPE_LINK; link = "https://example.com" }
+                subMenuItem {
+                    type = CustomMenu.SubItem.TYPE_LINK
+                    link = "https://example.com"
+                }
             }
         }
         val tree = QQGuild.DefaultJson.encodeToString(api.body).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
@@ -59,12 +63,17 @@ class MenuPanelApiTests {
 
     @Test
     fun commandPanelApisUseResourcesAndOmitEmptyTargetLists() {
-        val list = GetCommandPanelListApi.create(CommandPanelRecord.SCOPE_C2C, "cursor", 51)
+        val list = create(CommandPanelScope.C2C, "cursor", 51)
         val create = CreateCommandPanelApi.create {
-            scope = CommandPanelRecord.SCOPE_C2C
-            targetType = CommandPanelRecord.TARGET_TYPE_SPECIFIC
+            scopeValue = CommandPanelScope.C2C
+            targetType = CommandPanelTargetTypeValues.SPECIFIC
             addUserOpenid("user-openid")
-            panel { item { name = "/help"; type = CommandPanel.Item.TYPE_COMMAND } }
+            panel {
+                item {
+                    name = "/help"
+                    type = CommandPanel.Item.TYPE_COMMAND
+                }
+            }
         }
         val target = ModifyCommandPanelTargetApi.create("panel-id") {
             op = CommandPanelTargetUpdate.OP_DEL
@@ -77,7 +86,9 @@ class MenuPanelApiTests {
         assertEquals(HttpMethod.Post, create.method)
         assertEquals("/v2/panels", create.url.encodedPath)
         assertEquals(HttpMethod.Put, target.method)
-        val targetTree = QQGuild.DefaultJson.encodeToString(target.body).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
+        val targetTree = QQGuild.DefaultJson.encodeToString(
+            target.body
+        ).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
         assertNull(targetTree["group_openids"])
     }
 }
