@@ -27,6 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -38,9 +39,11 @@ import kotlin.jvm.JvmStatic
  *
  * @since 5.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @ApiModel
 @Serializable
 public class CommandPanelTargetUpdate @ApiModelConstructor internal constructor(
+    @get:JvmExposeBoxed
     public val op: CommandPanelTargetUpdateOp? = null,
     @SerialName("user_openids")
     public val userOpenids: List<String>? = null,

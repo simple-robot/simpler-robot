@@ -27,6 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
+import kotlin.jvm.JvmExposeBoxed
 
 /**
  * 指令面板记录。
@@ -35,6 +36,7 @@ import love.forte.simbot.qguild.ApiModelConstructor
  *
  * @since 5.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @ApiModel
 @Serializable
 public class CommandPanelRecord @ApiModelConstructor internal constructor(
@@ -46,11 +48,13 @@ public class CommandPanelRecord @ApiModelConstructor internal constructor(
     /**
      * 面板生效场景。
      */
+    @get:JvmExposeBoxed
     public val scope: CommandPanelScope,
     /**
      * 面板生效范围。
      */
     @SerialName("target_type")
+    @get:JvmExposeBoxed
     public val targetType: CommandPanelTargetType,
     /**
      * 面板配置。

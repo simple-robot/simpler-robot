@@ -134,7 +134,8 @@ public class CommandPanelItemBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
     public var type: CommandPanelItemType? = null
 
     /**
@@ -210,7 +211,8 @@ public class CommandPanelCreateBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
     public var scope: CommandPanelScope? = null
 
     /**
@@ -218,7 +220,8 @@ public class CommandPanelCreateBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
     public var targetType: CommandPanelTargetType? = null
 
     /**
@@ -332,7 +335,8 @@ public class CommandPanelTargetUpdateBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
     public var op: CommandPanelTargetUpdateOp? = null
 
     private var userOpenids: MutableList<String> = mutableListOf()

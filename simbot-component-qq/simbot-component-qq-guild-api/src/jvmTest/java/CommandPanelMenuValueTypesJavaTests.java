@@ -45,7 +45,7 @@ public class CommandPanelMenuValueTypesJavaTests {
         );
         Assertions.assertEquals(
             CustomMenuItemType.getLink(),
-            new CustomMenuItemBuilder().type(CustomMenuItemType.getLink()).getTypeValue()
+            new CustomMenuItemBuilder().type(CustomMenuItemType.getLink()).getType()
         );
     }
 

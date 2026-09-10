@@ -27,6 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -34,6 +35,7 @@ import kotlin.jvm.JvmStatic
  *
  * @since 5.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @ApiModel
 @Serializable
 public class CommandPanelCreate @ApiModelConstructor internal constructor(
@@ -42,6 +44,7 @@ public class CommandPanelCreate @ApiModelConstructor internal constructor(
      *
      * 四种场景均支持创建面板，但 channel 和 dm 场景仅支持全局配置（target_type 只能为 all）
      */
+    @get:JvmExposeBoxed
     public val scope: CommandPanelScope? = null,
     /**
      * 面板生效范围。
@@ -49,6 +52,7 @@ public class CommandPanelCreate @ApiModelConstructor internal constructor(
      * 仅 c2c 和 group 场景支持 specific；channel 和 dm 场景只能传 all
      */
     @SerialName("target_type")
+    @get:JvmExposeBoxed
     public val targetType: CommandPanelTargetType? = null,
     /**
      * C2C 场景中关联的用户 OpenID，仅 c2c 场景且 target_type=specific 时有效。

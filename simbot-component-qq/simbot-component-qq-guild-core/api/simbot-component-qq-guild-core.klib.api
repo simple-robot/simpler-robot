@@ -18,6 +18,10 @@ open annotation class love.forte.simbot.component.qguild.bot/QGBotManagerConfigu
     constructor <init>() // love.forte.simbot.component.qguild.bot/QGBotManagerConfigurationDsl.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi : kotlin/Annotation { // love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.component.qguild.message/QGSendOnly : kotlin/Annotation { // love.forte.simbot.component.qguild.message/QGSendOnly|null[0]
     constructor <init>() // love.forte.simbot.component.qguild.message/QGSendOnly.<init>|<init>(){}[0]
 }
@@ -44,32 +48,6 @@ final enum class love.forte.simbot.component.qguild.group/QGGroupRole : kotlin/E
 
     final fun valueOf(kotlin/String): love.forte.simbot.component.qguild.group/QGGroupRole // love.forte.simbot.component.qguild.group/QGGroupRole.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<love.forte.simbot.component.qguild.group/QGGroupRole> // love.forte.simbot.component.qguild.group/QGGroupRole.values|values#static(){}[0]
-}
-
-final enum class love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation : kotlin/Enum<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation> { // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation|null[0]
-    enum entry ADD // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.ADD|null[0]
-    enum entry DEL // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.DEL|null[0]
-
-    final val entries // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.entries|#static{}entries[0]
-        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation> // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.entries.<get-entries>|<get-entries>#static(){}[0]
-    final val value // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.value|{}value[0]
-        final fun <get-value>(): kotlin/String // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.value.<get-value>|<get-value>(){}[0]
-
-    final fun valueOf(kotlin/String): love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.valueOf|valueOf#static(kotlin.String){}[0]
-    final fun values(): kotlin/Array<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation> // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetOperation.values|values#static(){}[0]
-}
-
-final enum class love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType : kotlin/Enum<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType> { // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType|null[0]
-    enum entry ALL // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.ALL|null[0]
-    enum entry SPECIFIC // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.SPECIFIC|null[0]
-
-    final val entries // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.entries|#static{}entries[0]
-        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType> // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.entries.<get-entries>|<get-entries>#static(){}[0]
-    final val value // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.value|{}value[0]
-        final fun <get-value>(): kotlin/String // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.value.<get-value>|<get-value>(){}[0]
-
-    final fun valueOf(kotlin/String): love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.valueOf|valueOf#static(kotlin.String){}[0]
-    final fun values(): kotlin/Array<love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType> // love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType.values|values#static(){}[0]
 }
 
 abstract fun interface love.forte.simbot.component.qguild.bot/QQGuildBotManagerFactoryConfigurerProvider : love.forte.simbot.plugin/PluginFactoryConfigurerProvider<love.forte.simbot.component.qguild.bot/QQGuildBotManagerConfiguration> // love.forte.simbot.component.qguild.bot/QQGuildBotManagerFactoryConfigurerProvider|null[0]
@@ -757,7 +735,6 @@ abstract interface love.forte.simbot.component.qguild.panel/QGCommandPanelManage
     abstract suspend fun create(love.forte.simbot.qguild.model.panel/CommandPanelCreate): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.create|create(love.forte.simbot.qguild.model.panel.CommandPanelCreate){}[0]
     abstract suspend fun get(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.panel/QGCommandPanelRecord // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.get|get(love.forte.simbot.common.id.ID){}[0]
     open fun list(kotlin/String): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.panel/QGCommandPanelRecord> // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.list|list(kotlin.String){}[0]
-    open suspend fun create(kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<love.forte.simbot.common.id/ID>? = ..., kotlin.collections/List<love.forte.simbot.common.id/ID>? = ..., love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.create|create(kotlin.String?;kotlin.String?;kotlin.collections.List<love.forte.simbot.common.id.ID>?;kotlin.collections.List<love.forte.simbot.common.id.ID>?;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
 }
 
 abstract interface love.forte.simbot.component.qguild.role/QGRoleUpdater { // love.forte.simbot.component.qguild.role/QGRoleUpdater|null[0]
@@ -1400,12 +1377,8 @@ abstract class love.forte.simbot.component.qguild.panel/QGCommandPanelRecord : l
         final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.panel.<get-panel>|<get-panel>(){}[0]
     final val scope // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scope|{}scope[0]
         final fun <get-scope>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scope.<get-scope>|<get-scope>(){}[0]
-    final val scopeValue // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scopeValue|{}scopeValue[0]
-        final fun <get-scopeValue>(): kotlin/String // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scopeValue.<get-scopeValue>|<get-scopeValue>(){}[0]
     final val targetType // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetType|{}targetType[0]
-        final fun <get-targetType>(): love.forte.simbot.component.qguild.panel/QGCommandPanelTargetType? // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetType.<get-targetType>|<get-targetType>(){}[0]
-    final val targetTypeValue // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetTypeValue|{}targetTypeValue[0]
-        final fun <get-targetTypeValue>(): kotlin/String // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetTypeValue.<get-targetTypeValue>|<get-targetTypeValue>(){}[0]
+        final fun <get-targetType>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetType.<get-targetType>|<get-targetType>(){}[0]
     final val version // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.version|{}version[0]
         final fun <get-version>(): kotlin/Int? // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.version.<get-version>|<get-version>(){}[0]
 }
@@ -2447,7 +2420,7 @@ final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simb
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, kotlin.collections/List<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody>): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody>){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
-final suspend fun (love.forte.simbot.component.qguild.panel/QGCommandPanelManager).love.forte.simbot.component.qguild.panel/create(love.forte.simbot.qguild.model.panel/CommandPanelScope? = ..., kotlin/String? = ..., kotlin.collections/List<love.forte.simbot.common.id/ID>? = ..., kotlin.collections/List<love.forte.simbot.common.id/ID>? = ..., love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/create|create@love.forte.simbot.component.qguild.panel.QGCommandPanelManager(love.forte.simbot.qguild.model.panel.CommandPanelScope?;kotlin.String?;kotlin.collections.List<love.forte.simbot.common.id.ID>?;kotlin.collections.List<love.forte.simbot.common.id.ID>?;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
+final suspend fun (love.forte.simbot.component.qguild.panel/QGCommandPanelManager).love.forte.simbot.component.qguild.panel/create(love.forte.simbot.qguild.model.panel/CommandPanelScope? = ..., love.forte.simbot.qguild.model.panel/CommandPanelTargetType? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/create|create@love.forte.simbot.component.qguild.panel.QGCommandPanelManager(love.forte.simbot.qguild.model.panel.CommandPanelScope?;love.forte.simbot.qguild.model.panel.CommandPanelTargetType?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.bot/emitEvent(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.stdlib/EmitEventOptions, kotlin/Unit>): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.component.qguild.bot/emitEvent|emitEvent@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.stdlib.EmitEventOptions,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.message/Message, crossinline kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ..., kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ...): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.message.Message;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, love.forte.simbot.message/Message, crossinline kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ..., kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ...): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.message.Message;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>){}[0]

@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.QQGuild
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -53,6 +54,7 @@ public class CommandPanel @ApiModelConstructor internal constructor(
      *
      * @since 5.0
      */
+    @OptIn(ExperimentalStdlibApi::class)
     @ApiModel
     @Serializable
     public class Item @ApiModelConstructor internal constructor(
@@ -73,6 +75,7 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         /**
          * 元素类型。
          */
+        @get:JvmExposeBoxed
         public val type: CommandPanelItemType? = null,
         /**
          * 是否仅管理员可操作。

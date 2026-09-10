@@ -100,8 +100,9 @@ public class CustomMenuItemBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
-    public var typeValue: CustomMenuItemType? = null
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
+    public var type: CustomMenuItemType? = null
 
     /**
      * 发送消息菜单项的消息内容。
@@ -134,7 +135,7 @@ public class CustomMenuItemBuilder {
      */
     @JvmExposeBoxed
     public fun type(type: CustomMenuItemType?): CustomMenuItemBuilder = also {
-        this.typeValue = type
+        this.type = type
     }
 
     /**
@@ -206,7 +207,7 @@ public class CustomMenuItemBuilder {
      */
     public fun build(): CustomMenu.Item = CustomMenu.Item(
         name = name,
-        type = typeValue,
+        type = type,
         subMenuItems = subMenuItems.takeIf { it.isNotEmpty() }?.toList(),
         sendMessage = sendMessage,
         link = link,
@@ -232,8 +233,9 @@ public class CustomMenuSubItemBuilder {
      *
      * @since 5.0
      */
-    @all:JvmExposeBoxed
-    public var typeValue: CustomMenuItemType? = null
+    @get:JvmExposeBoxed
+    @set:JvmExposeBoxed
+    public var type: CustomMenuItemType? = null
 
     /**
      * 发送消息菜单项的消息内容。
@@ -259,7 +261,7 @@ public class CustomMenuSubItemBuilder {
      */
     @JvmExposeBoxed
     public fun type(type: CustomMenuItemType?): CustomMenuSubItemBuilder = also {
-        this.typeValue = type
+        this.type = type
     }
 
     /**
@@ -281,7 +283,7 @@ public class CustomMenuSubItemBuilder {
      */
     public fun build(): CustomMenu.SubItem = CustomMenu.SubItem(
         name = name,
-        type = typeValue,
+        type = type,
         sendMessage = sendMessage,
         link = link,
     )

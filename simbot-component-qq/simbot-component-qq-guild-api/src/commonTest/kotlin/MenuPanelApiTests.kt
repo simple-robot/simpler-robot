@@ -45,9 +45,9 @@ class MenuPanelApiTests {
         val api = ModifyCustomMenuApi.create {
             item {
                 name = "forwarded"
-                typeValue = CustomMenuItemType.of("unknown")
+                type = CustomMenuItemType.of("unknown")
                 subMenuItem {
-                    typeValue = CustomMenuItemType.Link
+                    type = CustomMenuItemType.Link
                     link = "https://example.com"
                 }
             }

@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.QQGuild
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -50,6 +51,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
      *
      * @since 5.0
      */
+    @OptIn(ExperimentalStdlibApi::class)
     @ApiModel
     @Serializable
     public class Item @ApiModelConstructor internal constructor(
@@ -60,6 +62,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
         /**
          * 菜单项类型。
          */
+        @get:JvmExposeBoxed
         public val type: CustomMenuItemType? = null,
         /**
          * 仅 [CustomMenuItemType.Menu] 有效的二级菜单项。
@@ -96,6 +99,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
      *
      * @since 5.0
      */
+    @OptIn(ExperimentalStdlibApi::class)
     @ApiModel
     @Serializable
     public class SubItem @ApiModelConstructor internal constructor(
@@ -106,6 +110,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
         /**
          * 二级菜单项类型。
          */
+        @get:JvmExposeBoxed
         public val type: CustomMenuItemType? = null,
         /**
          * 仅 [CustomMenuItemType.SendMessage] 有效的待填入消息。
