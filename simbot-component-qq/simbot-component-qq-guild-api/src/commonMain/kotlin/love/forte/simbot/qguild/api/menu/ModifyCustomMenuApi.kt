@@ -38,7 +38,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * 传入的菜单内容会整体覆盖当前菜单配置；参数不在本地进行校验。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class ModifyCustomMenuApi private constructor(
     override val body: Body,
@@ -74,7 +74,7 @@ public class ModifyCustomMenuApi private constructor(
      *
      * @property menu 要整体覆盖的菜单。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @Serializable
     public class Body internal constructor(

@@ -32,7 +32,7 @@ import kotlin.jvm.JvmStatic
 /**
  * [获取指令面板详情](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/panel/get.html)。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class GetCommandPanelApi private constructor(
     panelId: String,

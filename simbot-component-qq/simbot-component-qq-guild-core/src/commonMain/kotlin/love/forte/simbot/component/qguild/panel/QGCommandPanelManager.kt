@@ -36,7 +36,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * 此 facade 不缓存远端面板，也不会为了补齐创建结果自动发起详情查询。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @SubclassOptInRequired(InternalForInheritanceQGPanelApi::class)
 public interface QGCommandPanelManager {
@@ -45,7 +45,7 @@ public interface QGCommandPanelManager {
      *
      * 此操作不产生请求。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public fun handle(panelId: ID): QGCommandPanelHandle
 
@@ -55,48 +55,17 @@ public interface QGCommandPanelManager {
      * QQ API 的创建接口只返回新面板 ID 而不包含完整数据，因此本方法只返回带 ID 的句柄。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun create(input: CommandPanelCreate): QGCommandPanelHandle
-
-    /**
-     * 创建一个指令面板。
-     *
-     * 创建接口只返回新面板 ID，因此本方法只返回带 ID 的句柄，不隐式查询详情。
-     *
-     * @param scope 指令面板生效的会话场景。
-     * @param targetType 指令面板的目标范围类型。
-     * @param userOpenids C2C 用户 OpenID 列表，仅 c2c 场景且 target_type=specific 时有效。
-     * @param groupOpenids 群 OpenID 列表，仅 group 场景且 target_type=specific 时有效。
-     * @param panel 面板配置内容，定义面板中展示的指令和链接项
-     *
-     * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
-     */
-    @ST
-    public suspend fun create(
-        scope: String? = null,
-        targetType: String? = null,
-        userOpenids: Collection<ID>? = null,
-        groupOpenids: Collection<ID>? = null,
-        panel: CommandPanel? = null
-    ): QGCommandPanelHandle = create(
-        CommandPanelCreate.builder()
-            .scope(scope?.let(CommandPanelScope::of))
-            .targetType(targetType?.let(CommandPanelTargetType::of))
-            .addUserOpenids(userOpenids?.map { it.literal } ?: emptyList())
-            .addGroupOpenids(groupOpenids?.map { it.literal } ?: emptyList())
-            .panel(panel)
-            .build()
-    )
 
     /**
      * 获取指定指令面板的详情快照。
      *
      * @param panelId 指令面板 ID。
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun get(panelId: ID): QGCommandPanelRecord
@@ -115,7 +84,7 @@ public interface QGCommandPanelManager {
      * @param limit 每页请求数量；`null` 表示使用服务端默认值。
      * @param autoPagination 是否自动分页。默认为 true。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public fun list(
         scope: String,
@@ -130,7 +99,7 @@ public interface QGCommandPanelManager {
      * 返回的 [Collectable] 是基于冷流的分页收集器，只有当开始收集此流时才会真正产生请求。
      *
      * @param scope 生效场景。
-     * @since 4.7.0
+     * @since 5.0
      */
     public fun list(scope: String): Collectable<QGCommandPanelRecord> = list(scope, startCursor = null)
 }
@@ -168,7 +137,7 @@ public suspend fun QGCommandPanelManager.create(
 /**
  * 使用 [CommandPanelCreateBuilder] DSL 创建一个指令面板。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @JvmSynthetic
 public suspend inline fun QGCommandPanelManager.create(
@@ -181,7 +150,7 @@ public suspend inline fun QGCommandPanelManager.create(
  *
  * @property version 服务端返回的更新后面板版本。
  * @property source 低层 API 返回的原始回执。
- * @since 4.7.0
+ * @since 5.0
  */
 public class QGCommandPanelUpdateReceipt internal constructor(
     override val source: CommandPanelUpdated,

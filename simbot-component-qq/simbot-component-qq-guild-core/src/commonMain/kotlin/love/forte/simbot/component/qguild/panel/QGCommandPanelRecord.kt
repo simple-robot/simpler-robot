@@ -35,17 +35,11 @@ import kotlin.jvm.JvmExposeBoxed
  *
  * 它的内容信息是获取时基于 [CommandPanelRecord] 的瞬时**快照**。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @SubclassOptInRequired(InternalForInheritanceQGPanelApi::class)
 public abstract class QGCommandPanelRecord : QGObjectiveContainer<CommandPanelRecord>, QGCommandPanelHandle {
-    /**
-     * 面板生效场景的原始值。
-     */
-    public val scopeValue: String
-        get() = source.scope.scope
-
     /**
      * 面板生效场景的 scope 。
      *
@@ -54,12 +48,6 @@ public abstract class QGCommandPanelRecord : QGObjectiveContainer<CommandPanelRe
     @get:JvmExposeBoxed
     public val scope: CommandPanelScope
         get() = source.scope
-
-    /**
-     * 面板生效范围的原始值。
-     */
-    public val targetTypeValue: String
-        get() = source.targetType.value
 
     /**
      * 面板生效范围。

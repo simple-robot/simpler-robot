@@ -33,7 +33,7 @@ import love.forte.simbot.qguild.ApiModelConstructor
  *
  * 列表查询不会返回 [userOpenids] 和 [groupOpenids]；详情查询才会在适用时返回它们。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable

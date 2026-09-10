@@ -31,7 +31,7 @@ import love.forte.simbot.qguild.ApiModelConstructor
 /**
  * 指令面板分页查询结果。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable

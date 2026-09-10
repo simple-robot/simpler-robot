@@ -28,7 +28,7 @@ package love.forte.simbot.qguild.model.panel
  *
  * @see CommandPanelRecord.scope
  * @see CommandPanelScope
- * @since 4.7.0
+ * @since 5.0
  */
 public object CommandPanelScopeValues {
     /**

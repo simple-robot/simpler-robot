@@ -36,7 +36,7 @@ import kotlin.jvm.JvmStatic
  * @property userOpenids C2C 场景中要操作的用户 OpenID。
  * @property groupOpenids 群聊场景中要操作的群 OpenID。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable
@@ -65,7 +65,7 @@ public class CommandPanelTargetUpdate @ApiModelConstructor internal constructor(
  *
  * @property version 更新后的面板版本。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable

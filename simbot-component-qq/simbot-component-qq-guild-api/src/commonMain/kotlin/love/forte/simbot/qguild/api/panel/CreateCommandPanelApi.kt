@@ -35,7 +35,7 @@ import kotlin.jvm.JvmSynthetic
 /**
  * [创建指令面板](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/panel/post.html)。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class CreateCommandPanelApi private constructor(
     override val body: CommandPanelCreate,

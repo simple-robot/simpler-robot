@@ -37,7 +37,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * [QGCustomMenuManager] 不缓存远端菜单，每次读取或更新都会直接请求 QQ API。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @SubclassOptInRequired(InternalForInheritanceQGMenuApi::class)
 public interface QGCustomMenuManager {
@@ -63,7 +63,7 @@ public interface QGCustomMenuManager {
  *
  * 构建器的字段组合校验仍由低层模型和服务端负责。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @JvmSynthetic
 public suspend inline fun QGCustomMenuManager.update(block: CustomMenuBuilder.() -> Unit): QGCustomMenuUpdateReceipt =
@@ -75,7 +75,7 @@ public suspend inline fun QGCustomMenuManager.update(block: CustomMenuBuilder.()
  * @property version 服务端返回的菜单版本。
  * @property menu 当前生效的菜单；从未设置时为 `null`。
  * @property source 低层 API 返回的原始快照。
- * @since 4.7.0
+ * @since 5.0
  */
 public class QGCustomMenuSnapshot internal constructor(
     override val source: CustomMenuSnapshot,
@@ -95,7 +95,7 @@ public class QGCustomMenuSnapshot internal constructor(
  *
  * @property version 服务端返回的更新后版本号。
  * @property source 低层 API 返回的原始回执。
- * @since 4.7.0
+ * @since 5.0
  */
 public class QGCustomMenuUpdateReceipt(
     override val source: CustomMenuUpdated,

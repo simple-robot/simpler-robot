@@ -38,7 +38,7 @@ import kotlin.jvm.JvmSynthetic
  *
  * 此接口只覆盖面板元素与备注，不改变关联对象；参数不在本地进行校验。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class ModifyCommandPanelApi private constructor(
     panelId: String,
@@ -47,7 +47,7 @@ public class ModifyCommandPanelApi private constructor(
     /**
      * [ModifyCommandPanelApi] 的描述与构建入口。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public companion object Factory : SimplePutApiDescription("/v2/panels/{panel_id}") {
         /**
@@ -77,7 +77,7 @@ public class ModifyCommandPanelApi private constructor(
      *
      * @property panel 要整体覆盖的面板配置。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @Serializable
     public class Body internal constructor(

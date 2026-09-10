@@ -32,7 +32,7 @@ import kotlin.jvm.JvmStatic
 /**
  * 创建指令面板的请求体。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable
@@ -90,7 +90,7 @@ public class CommandPanelCreate @ApiModelConstructor internal constructor(
  *
  * @property panelId 新建面板 ID。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable

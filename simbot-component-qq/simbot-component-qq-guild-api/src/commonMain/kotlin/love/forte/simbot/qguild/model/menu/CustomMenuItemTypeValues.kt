@@ -29,7 +29,7 @@ package love.forte.simbot.qguild.model.menu
  * @see CustomMenu.Item.type
  * @see CustomMenu.SubItem.type
  * @see CustomMenuItemType
- * @since 4.7.0
+ * @since 5.0
  */
 public object CustomMenuItemTypeValues {
     /**

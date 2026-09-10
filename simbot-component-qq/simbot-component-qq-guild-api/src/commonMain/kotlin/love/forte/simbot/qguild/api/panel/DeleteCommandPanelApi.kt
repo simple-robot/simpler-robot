@@ -31,7 +31,7 @@ import kotlin.jvm.JvmStatic
 /**
  * [删除指令面板](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/panel/delete.html)。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class DeleteCommandPanelApi private constructor(
     panelId: String,

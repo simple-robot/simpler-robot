@@ -28,7 +28,7 @@ package love.forte.simbot.qguild.model.panel
  *
  * @see CommandPanel.Item.type
  * @see CommandPanelItemType
- * @since 4.7.0
+ * @since 5.0
  */
 public object CommandPanelItemTypeValues {
     /**

@@ -31,7 +31,7 @@ import kotlin.jvm.JvmExposeBoxed
  *
  * 构建器不校验场景、元素类型与字段组合，由 QQ 服务端决定其有效性。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public inline fun CommandPanel(block: CommandPanelBuilder.() -> Unit): CommandPanel =
     CommandPanelBuilder().also(block).build()
@@ -43,7 +43,7 @@ internal annotation class CommandPanelBuilderDsl
 /**
  * 用于构建 [CommandPanel] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @CommandPanelBuilderDsl
 public class CommandPanelBuilder {
@@ -114,7 +114,7 @@ public class CommandPanelBuilder {
 /**
  * 用于构建 [CommandPanel.Item] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @CommandPanelBuilderDsl
@@ -131,24 +131,11 @@ public class CommandPanelItemBuilder {
 
     /**
      * 元素类型。
-     */
-    @Deprecated(
-        "Use `typeValue` directly.",
-        replaceWith = ReplaceWith("typeValue")
-    )
-    public var type: String?
-        get() = typeValue?.value
-        set(value) {
-            typeValue = value?.let(CommandPanelItemType::of)
-        }
-
-    /**
-     * 元素类型。
      *
      * @since 5.0
      */
     @all:JvmExposeBoxed
-    public var typeValue: CommandPanelItemType? = null
+    public var type: CommandPanelItemType? = null
 
     /**
      * 是否仅管理员可操作。
@@ -176,17 +163,12 @@ public class CommandPanelItemBuilder {
 
     /**
      * 设置元素类型。
-     */
-    public fun type(type: String?): CommandPanelItemBuilder = type(type?.let(CommandPanelItemType::of))
-
-    /**
-     * 设置元素类型。
      *
      * @since 5.0
      */
     @JvmExposeBoxed
     public fun type(type: CommandPanelItemType?): CommandPanelItemBuilder = also {
-        this.typeValue = type
+        this.type = type
     }
 
     /**
@@ -209,7 +191,7 @@ public class CommandPanelItemBuilder {
     public fun build(): CommandPanel.Item = CommandPanel.Item(
         name = name,
         desc = desc,
-        type = typeValue,
+        type = type,
         onlyAdmin = onlyAdmin,
         link = link,
     )
@@ -218,44 +200,18 @@ public class CommandPanelItemBuilder {
 /**
  * 用于构建 [CommandPanelCreate] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @CommandPanelBuilderDsl
 public class CommandPanelCreateBuilder {
     /**
      * 面板生效场景。
-     */
-    @Deprecated(
-        "Use `scopeValue` directly",
-        replaceWith = ReplaceWith("scopeValue")
-    )
-    public var scope: String?
-        get() = scopeValue?.scope
-        set(value) {
-            scopeValue = value?.let(CommandPanelScope::of)
-        }
-
-    /**
-     * 面板生效场景。
      *
      * @since 5.0
      */
     @all:JvmExposeBoxed
-    public var scopeValue: CommandPanelScope? = null
-
-    /**
-     * 面板生效范围。
-     */
-    @Deprecated(
-        "Use `targetTypeValue` directly",
-        replaceWith = ReplaceWith("targetTypeValue")
-    )
-    public var targetType: String?
-        get() = targetTypeValue?.value
-        set(value) {
-            targetTypeValue = value?.let(CommandPanelTargetType::of)
-        }
+    public var scope: CommandPanelScope? = null
 
     /**
      * 面板生效范围。
@@ -263,7 +219,7 @@ public class CommandPanelCreateBuilder {
      * @since 5.0
      */
     @all:JvmExposeBoxed
-    public var targetTypeValue: CommandPanelTargetType? = null
+    public var targetType: CommandPanelTargetType? = null
 
     /**
      * 面板配置。
@@ -275,39 +231,13 @@ public class CommandPanelCreateBuilder {
 
     /**
      * 设置面板生效场景。
-     */
-    @Deprecated(
-        "Use `scope` with `CommandPanelScope` directly",
-        ReplaceWith(
-            "scope(scope?.let { CommandPanelScope.of(it) })",
-            "love.forte.simbot.qguild.model.panel.CommandPanelScope"
-        )
-    )
-    public fun scope(scope: String?): CommandPanelCreateBuilder =
-        scope(scope?.let(CommandPanelScope::of))
-
-    /**
-     * 设置面板生效场景。
      *
      * @since 5.0
      */
     @JvmExposeBoxed
     public fun scope(scope: CommandPanelScope?): CommandPanelCreateBuilder = also {
-        this.scopeValue = scope
+        this.scope = scope
     }
-
-    /**
-     * 设置面板生效范围。
-     */
-    @Deprecated(
-        "Use `targetType` with `CommandPanelTargetType` directly",
-        ReplaceWith(
-            "targetType(targetType?.let { CommandPanelTargetType.of(it) })",
-            "love.forte.simbot.qguild.model.panel.CommandPanelTargetType"
-        )
-    )
-    public fun targetType(targetType: String?): CommandPanelCreateBuilder =
-        targetType(targetType?.let(CommandPanelTargetType::of))
 
     /**
      * 设置面板生效范围。
@@ -316,7 +246,7 @@ public class CommandPanelCreateBuilder {
      */
     @JvmExposeBoxed
     public fun targetType(targetType: CommandPanelTargetType?): CommandPanelCreateBuilder = also {
-        this.targetTypeValue = targetType
+        this.targetType = targetType
     }
 
     /**
@@ -381,8 +311,8 @@ public class CommandPanelCreateBuilder {
      * 构建 [CommandPanelCreate]。
      */
     public fun build(): CommandPanelCreate = CommandPanelCreate(
-        scope = scopeValue,
-        targetType = targetTypeValue,
+        scope = scope,
+        targetType = targetType,
         userOpenids = userOpenids.takeIf { it.isNotEmpty() }?.toList(),
         groupOpenids = groupOpenids.takeIf { it.isNotEmpty() }?.toList(),
         panel = panel,
@@ -392,47 +322,21 @@ public class CommandPanelCreateBuilder {
 /**
  * 用于构建 [CommandPanelTargetUpdate] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @CommandPanelBuilderDsl
 public class CommandPanelTargetUpdateBuilder {
     /**
      * 关联操作类型。
-     */
-    @Deprecated(
-        "Use `opValue` directly.",
-        replaceWith = ReplaceWith("opValue")
-    )
-    public var op: String?
-        get() = opValue?.value
-        set(value) {
-            opValue = value?.let(CommandPanelTargetUpdateOp::of)
-        }
-
-    /**
-     * 关联操作类型。
      *
      * @since 5.0
      */
     @all:JvmExposeBoxed
-    public var opValue: CommandPanelTargetUpdateOp? = null
+    public var op: CommandPanelTargetUpdateOp? = null
 
     private var userOpenids: MutableList<String> = mutableListOf()
     private var groupOpenids: MutableList<String> = mutableListOf()
-
-    /**
-     * 设置关联操作类型。
-     */
-    @Deprecated(
-        "Use `op` with `CommandPanelTargetUpdateOp` directly.",
-        ReplaceWith(
-            "op(op?.let { CommandPanelTargetUpdateOp.of(it) })",
-            "love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp"
-        )
-    )
-    public fun op(op: String?): CommandPanelTargetUpdateBuilder =
-        op(op?.let(CommandPanelTargetUpdateOp::of))
 
     /**
      * 设置关联操作类型。
@@ -441,7 +345,7 @@ public class CommandPanelTargetUpdateBuilder {
      */
     @JvmExposeBoxed
     public fun op(op: CommandPanelTargetUpdateOp?): CommandPanelTargetUpdateBuilder = also {
-        this.opValue = op
+        this.op = op
     }
 
     /**
@@ -492,7 +396,7 @@ public class CommandPanelTargetUpdateBuilder {
      * 构建 [CommandPanelTargetUpdate]。
      */
     public fun build(): CommandPanelTargetUpdate = CommandPanelTargetUpdate(
-        op = opValue,
+        op = op,
         userOpenids = userOpenids.takeIf { it.isNotEmpty() }?.toList(),
         groupOpenids = groupOpenids.takeIf { it.isNotEmpty() }?.toList(),
     )

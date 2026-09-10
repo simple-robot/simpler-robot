@@ -33,7 +33,7 @@ import kotlin.jvm.JvmStatic
  *
  * 用于撤回机器人发送给用户 `user_openid` 的消息 `message_id`。发送超过两分钟的消息不可撤回。
  *
- * @since 4.7.0
+ * @since 5.0
  * @author ForteScarlet
  */
 public class UserMessageDeleteApi private constructor(

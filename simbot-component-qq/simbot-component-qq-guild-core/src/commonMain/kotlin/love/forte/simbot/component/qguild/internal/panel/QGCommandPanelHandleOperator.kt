@@ -45,7 +45,7 @@ import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp
 
 
 /**
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalQGApi::class, InternalForInheritanceQGPanelApi::class)
 internal class QGCommandPanelHandleOperator(
@@ -76,7 +76,7 @@ internal class QGCommandPanelHandleOperator(
      * 成功时返回 `Unit`，不会隐式查询或缓存删除后的状态。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     override suspend fun delete(vararg options: DeleteOption) {
         suspend fun doDelete() {
@@ -98,7 +98,7 @@ internal class QGCommandPanelHandleOperator(
         groupOpenids: Collection<ID>?
     ) {
         val api = ModifyCommandPanelTargetApi.create(id.literal) {
-            opValue = operation
+            op = operation
             userOpenids?.forEach { addUserOpenid(it.literal) }
             groupOpenids?.forEach { addGroupOpenid(it.literal) }
         }

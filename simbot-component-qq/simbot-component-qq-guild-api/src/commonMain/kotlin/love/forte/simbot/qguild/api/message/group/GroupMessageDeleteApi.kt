@@ -34,7 +34,7 @@ import kotlin.jvm.JvmStatic
  * 用于撤回群 `group_openid` 中的消息 `message_id`。发送超过两分钟的消息不可撤回。
  * 群管理员可撤回机器人自身和普通群成员的消息；普通成员只能撤回机器人自身发送的消息。
  *
- * @since 4.7.0
+ * @since 5.0
  * @author ForteScarlet
  */
 public class GroupMessageDeleteApi private constructor(

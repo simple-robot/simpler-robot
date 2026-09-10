@@ -35,7 +35,7 @@ import kotlin.jvm.JvmStatic
  *
  * [官方文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/)
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable
@@ -48,7 +48,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
     /**
      * [CustomMenu] 的菜单项。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @ApiModel
     @Serializable
@@ -94,7 +94,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
     /**
      * [Item] 的二级菜单项。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @ApiModel
     @Serializable
@@ -125,7 +125,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
     /**
      * [Item] 的开关配置。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @ApiModel
     @Serializable
@@ -169,7 +169,7 @@ public class CustomMenu @ApiModelConstructor internal constructor(
 /**
  * 当前生效的自定义菜单及其版本。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable
@@ -191,7 +191,7 @@ public class CustomMenuSnapshot @ApiModelConstructor internal constructor(
 /**
  * 自定义菜单更新后的版本。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable

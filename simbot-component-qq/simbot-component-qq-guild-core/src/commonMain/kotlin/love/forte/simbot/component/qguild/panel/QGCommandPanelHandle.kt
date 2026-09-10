@@ -33,7 +33,7 @@ import love.forte.simbot.suspendrunner.ST
 /**
  * 指令面板操作句柄，保存面板 ID 和对其的操作行为。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @SubclassOptInRequired(InternalForInheritanceQGPanelApi::class)
 public interface QGCommandPanelHandle : DeleteSupport {
@@ -46,7 +46,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 获取此面板的详情快照。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun get(): QGCommandPanelRecord
@@ -57,7 +57,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 面板关联对象不会被修改。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun update(panel: CommandPanel): QGCommandPanelUpdateReceipt
@@ -66,7 +66,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 添加面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun addTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?)
@@ -75,7 +75,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 添加用户相关的面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun addUserTargets(userOpenids: Collection<ID>) {
@@ -86,7 +86,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 添加群聊相关的面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun addGroupTargets(groupOpenids: Collection<ID>) {
@@ -97,7 +97,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 删除面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun removeTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?)
@@ -106,7 +106,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 删除用户面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun removeUserTargets(userOpenids: Collection<ID>) {
@@ -117,7 +117,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 删除群聊面板关联目标。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     public suspend fun removeGroupTargets(groupOpenids: Collection<ID>) {
@@ -128,7 +128,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
      * 删除此指令面板。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝时抛出。
-     * @since 4.7.0
+     * @since 5.0
      */
     @ST
     override suspend fun delete(vararg options: DeleteOption)
@@ -137,7 +137,7 @@ public interface QGCommandPanelHandle : DeleteSupport {
 /**
  * 使用 [love.forte.simbot.qguild.model.panel.CommandPanelBuilder] DSL 整体覆盖此面板的内容与备注。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public suspend inline fun QGCommandPanelHandle.update(
     block: CommandPanelBuilder.() -> Unit

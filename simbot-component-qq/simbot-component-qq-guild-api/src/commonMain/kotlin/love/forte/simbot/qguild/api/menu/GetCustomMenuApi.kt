@@ -34,19 +34,19 @@ import kotlin.jvm.JvmStatic
  *
  * 自定义菜单仅在 C2C 单聊会话中展示。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class GetCustomMenuApi private constructor() : GetQQGuildApi<CustomMenuSnapshot>() {
     /**
      * [GetCustomMenuApi] 的描述与构建入口。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public companion object Factory : SimpleGetApiDescription("/v2/menu") {
         /**
          * 构建 [GetCustomMenuApi]。
          *
-         * @since 4.7.0
+         * @since 5.0
          */
         @JvmStatic
         public fun create(): GetCustomMenuApi = GetCustomMenuApi()

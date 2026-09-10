@@ -39,7 +39,7 @@ import kotlin.jvm.JvmStatic
  * - 管理员可以撤回普通成员的消息。
  * - 频道主可以撤回所有人的消息。
  *
- * @since 4.7.0
+ * @since 5.0
  * @author ForteScarlet
  */
 @PrivateDomainOnly

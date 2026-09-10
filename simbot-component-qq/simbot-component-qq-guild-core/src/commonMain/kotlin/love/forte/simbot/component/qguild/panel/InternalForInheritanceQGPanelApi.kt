@@ -26,7 +26,7 @@ package love.forte.simbot.component.qguild.panel
 /**
  * 为 QQ 组件下 panel 相关抽象类型的实现提供警告信息。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @Target(AnnotationTarget.CLASS)
 @RequiresOptIn(

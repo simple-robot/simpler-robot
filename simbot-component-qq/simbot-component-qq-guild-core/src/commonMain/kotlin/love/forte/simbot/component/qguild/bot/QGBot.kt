@@ -183,7 +183,7 @@ public interface QGBot : Bot, EventMentionAware {
      * 此属性提供的 [QGCustomMenuManager] 直接面向 QQ API 操作菜单；它不会缓存远端菜单，
      * 因而每次读取或更新都以服务端当前状态为准。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public val customMenus: QGCustomMenuManager
         get() = QGCustomMenuManagerImpl(this)
@@ -194,7 +194,7 @@ public interface QGBot : Bot, EventMentionAware {
      * 此属性提供的 [QGCommandPanelManager] 用于创建、查询和遍历指令面板，并可通过其
      * [QGCommandPanelManager.handle] 函数创建只携带面板 ID 的操作句柄。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public val commandPanels: QGCommandPanelManager
         get() = QGCommandPanelManagerImpl(this)

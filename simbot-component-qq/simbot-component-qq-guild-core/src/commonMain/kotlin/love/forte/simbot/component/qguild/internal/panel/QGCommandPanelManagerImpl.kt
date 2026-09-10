@@ -39,6 +39,7 @@ import love.forte.simbot.qguild.api.panel.GetCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi
 import love.forte.simbot.qguild.model.panel.CommandPanelCreate
 import love.forte.simbot.qguild.model.panel.CommandPanelRecord
+import love.forte.simbot.qguild.model.panel.CommandPanelScope
 
 @OptIn(ExperimentalQGApi::class, InternalForInheritanceQGPanelApi::class)
 internal class QGCommandPanelManagerImpl(
@@ -67,7 +68,7 @@ internal class QGCommandPanelManagerImpl(
             do {
                 val page = bot.executeData(
                     GetCommandPanelListApi.create(
-                        scope = scope,
+                        scope = CommandPanelScope.of(scope),
                         cursor = cursor,
                         limit = limit,
                     )

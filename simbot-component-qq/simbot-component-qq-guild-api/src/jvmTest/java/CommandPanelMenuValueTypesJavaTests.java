@@ -61,7 +61,7 @@ public class CommandPanelMenuValueTypesJavaTests {
         );
         Assertions.assertEquals(
             CommandPanelTargetUpdateOp.getAdd(),
-            new CommandPanelTargetUpdateBuilder().op(CommandPanelTargetUpdateOp.getAdd()).getOpValue()
+            new CommandPanelTargetUpdateBuilder().op(CommandPanelTargetUpdateOp.getAdd()).getOp()
         );
     }
 }

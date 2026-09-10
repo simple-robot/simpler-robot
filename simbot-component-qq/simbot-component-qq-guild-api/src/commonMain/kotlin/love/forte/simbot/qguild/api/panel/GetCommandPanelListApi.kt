@@ -35,7 +35,7 @@ import kotlin.jvm.JvmStatic
 /**
  * [获取指令面板列表](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/panel/get-list.html)。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class GetCommandPanelListApi private constructor(
     private val scope: CommandPanelScope,
@@ -47,36 +47,6 @@ public class GetCommandPanelListApi private constructor(
      */
     @OptIn(ExperimentalStdlibApi::class)
     public companion object Factory : SimpleGetApiDescription("/v2/panels") {
-        /**
-         * 使用给定查询参数构建 [GetCommandPanelListApi]。
-         *
-         * 注意参数不在本地进行校验。
-         *
-         * @param scope 生效场景，可选值：
-         * - [`c2c`（单聊）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.C2C]
-         * - [`group`（群聊）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.GROUP]
-         * - [`channel`（文字子频道）][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.CHANNEL]
-         * - [`dm`（频道私信）。 ][love.forte.simbot.qguild.model.panel.CommandPanelScopeValues.DM]
-         * 按指定场景筛选面板列表
-         * @param cursor 分页游标。首次请求不传或传空串，后续请求传入上次响应中的 next_cursor 值
-         * @param limit 每页拉取条数，默认 20，最大 50
-         *
-         */
-        @JvmStatic
-        @Deprecated(
-            "Use create with `scope: CommandPanelScope` directly.",
-            ReplaceWith(
-                "create(CommandPanelScope.of(scope), cursor, limit)",
-                "love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create",
-                "love.forte.simbot.qguild.model.panel.CommandPanelScope"
-            )
-        )
-        public fun create(
-            scope: String,
-            cursor: String? = null,
-            limit: Int? = null,
-        ): GetCommandPanelListApi = create(CommandPanelScope.of(scope), cursor, limit)
-
         /**
          * 使用给定查询参数构建 [GetCommandPanelListApi]。
          *

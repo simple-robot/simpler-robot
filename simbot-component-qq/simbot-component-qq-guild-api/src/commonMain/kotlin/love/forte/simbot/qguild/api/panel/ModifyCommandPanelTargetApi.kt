@@ -34,7 +34,7 @@ import kotlin.jvm.JvmSynthetic
 /**
  * [修改指令面板关联对象](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/menu-panel/panel/put-target.html)。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public class ModifyCommandPanelTargetApi private constructor(
     panelId: String,
@@ -43,7 +43,7 @@ public class ModifyCommandPanelTargetApi private constructor(
     /**
      * [ModifyCommandPanelTargetApi] 的描述与构建入口。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public companion object Factory : SimplePutApiDescription("/v2/panels/{panel_id}/target") {
         /**

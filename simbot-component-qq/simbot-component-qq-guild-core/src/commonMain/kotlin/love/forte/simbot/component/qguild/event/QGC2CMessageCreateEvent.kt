@@ -66,7 +66,7 @@ public abstract class QGC2CMessageCreateEvent : QGBaseMessageEvent<C2CMessageCre
      *
      * 当上游事件未提供该字段时为 `null`。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public val messageType: Int?
         get() = sourceEventEntity.data.messageType
@@ -77,7 +77,7 @@ public abstract class QGC2CMessageCreateEvent : QGBaseMessageEvent<C2CMessageCre
      * 自定义菜单的开关结果位于 [C2CMessageCreate.MessageScene.ext]；
      * 当上游事件未提供该字段时为 `null`。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     public val messageScene: C2CMessageCreate.MessageScene?
         get() = sourceEventEntity.data.messageScene

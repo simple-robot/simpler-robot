@@ -28,7 +28,7 @@ package love.forte.simbot.qguild.model.panel
  *
  * @see CommandPanelTargetUpdate.op
  * @see CommandPanelTargetUpdateOp
- * @since 4.7.0
+ * @since 5.0
  */
 public object CommandPanelTargetUpdateOpValues {
     /**

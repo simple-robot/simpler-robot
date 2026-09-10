@@ -54,17 +54,6 @@ public data class C2CMessageCreate(
      * @property attachments 富媒体文件附件，文件类型："图片，语音，视频，文件"
      * `{"content_type": "", "filename": "", "height": "", "width": "", "size": "", "url": ""}`
      *
-     * [messageType] 与 [messageScene] 使用 [IntroducedAt] 标记为自 4.7.0 引入。
-     * 编译器会据此生成并保留以下兼容入口：
-     *
-     * - 4.7.0 前不包含 [messageType]、[messageScene] 的 JVM 构造函数签名；
-     * - 4.7.0 前不包含 [messageType]、[messageScene] 的 JVM `copy` 函数签名。
-     *
-     * 这些兼容入口仅用于保持既有二进制兼容，不应在新代码中直接使用。
-     * 使用 [IntroducedAt] 后无需再手写隐藏构造函数和 `copy` 函数，
-     * 也避免了手写兼容声明与数据类编译器生成成员之间的重复。
-     *
-     * TODO: 官方单聊消息事件还声明了 `ark_data` 和 `msg_elements`；待抽象对应 ARK 与消息元素模型后补齐。
      */
     @Serializable
     public data class Data(
@@ -76,27 +65,29 @@ public data class C2CMessageCreate(
         /**
          * 消息类型。
          *
-         * @since 4.7.0
+         * @since 5.0
          */
         @SerialName("message_type")
-        @IntroducedAt("4.7.0")
+        @IntroducedAt("5.0")
         public val messageType: Int? = null,
         /**
          * 消息场景信息。
          *
-         * @since 4.7.0
+         * @since 5.0
          */
         @SerialName("message_scene")
-        @IntroducedAt("4.7.0")
+        @IntroducedAt("5.0")
         public val messageScene: MessageScene? = null,
-    )
+    ) {
+        // TODO: 官方单聊消息事件还声明了 `ark_data` 和 `msg_elements`；待抽象对应 ARK 与消息元素模型后补齐。
+    }
 
     /**
      * C2C 消息的场景信息。
      *
      * [ext] 中的元素是 `key=value` 形式的扩展信息。自定义菜单的开关操作会在此处携带开关设置结果。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @Serializable
     public class MessageScene(

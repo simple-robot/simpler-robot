@@ -32,7 +32,7 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.panel.create
 import love.forte.simbot.component.qguild.panel.update
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
-import love.forte.simbot.qguild.model.panel.CommandPanelTargetTypeValues
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotSame
@@ -40,7 +40,7 @@ import kotlin.test.assertNotSame
 /**
  * Core menu and command-panel facade tests.
  *
- * @since 4.7.0
+ * @since 5.0
  */
 class QGMenuPanelCoreTests : AbstractInteractionTests() {
     @Test
@@ -107,8 +107,8 @@ class QGMenuPanelCoreTests : AbstractInteractionTests() {
 
         try {
             val handle = bot.commandPanels.create {
-                scopeValue = CommandPanelScope.C2C
-                targetType = "future-target"
+                scope = CommandPanelScope.C2C
+                targetType = CommandPanelTargetType.of("future-target")
             }
             assertEquals("created-panel", handle.id.toString())
 
@@ -117,9 +117,8 @@ class QGMenuPanelCoreTests : AbstractInteractionTests() {
                 .asFlow()
                 .toList()
             assertEquals(listOf("first", "second"), snapshots.map { it.id.toString() })
-            assertEquals("future-scope", snapshots.first().scopeValue)
-            assertEquals("all", snapshots.first().targetTypeValue)
-            assertEquals(CommandPanelTargetTypeValues.ALL, snapshots.first().targetTypeValue)
+            assertEquals(CommandPanelScope.of("future-scope"), snapshots.first().scope)
+            assertEquals(CommandPanelTargetType.All, snapshots.first().targetType)
 
             bot.commandPanels
                 .list("future-scope", limit = 2)

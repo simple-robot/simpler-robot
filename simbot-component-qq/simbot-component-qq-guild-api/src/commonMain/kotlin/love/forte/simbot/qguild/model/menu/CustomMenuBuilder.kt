@@ -30,7 +30,7 @@ import kotlin.jvm.JvmExposeBoxed
  *
  * 构建器不校验菜单类型与字段组合，由 QQ 服务端决定其有效性。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 public inline fun CustomMenu(block: CustomMenuBuilder.() -> Unit): CustomMenu =
     CustomMenuBuilder().also(block).build()
@@ -42,7 +42,7 @@ internal annotation class CustomMenuBuilderDsl
 /**
  * 用于构建 [CustomMenu] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @CustomMenuBuilderDsl
 public class CustomMenuBuilder {
@@ -85,7 +85,7 @@ public class CustomMenuBuilder {
 /**
  * 用于构建 [CustomMenu.Item] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @CustomMenuBuilderDsl
@@ -94,19 +94,6 @@ public class CustomMenuItemBuilder {
      * 菜单项名称。
      */
     public var name: String? = null
-
-    /**
-     * 菜单项类型。
-     */
-    @Deprecated(
-        "Use `typeValue` directly.",
-        replaceWith = ReplaceWith("typeValue")
-    )
-    public var type: String?
-        get() = typeValue?.value
-        set(value) {
-            typeValue = value?.let(CustomMenuItemType::of)
-        }
 
     /**
      * 菜单项类型。
@@ -139,19 +126,6 @@ public class CustomMenuItemBuilder {
     public fun name(name: String?): CustomMenuItemBuilder = also {
         this.name = name
     }
-
-    /**
-     * 设置菜单项类型。
-     */
-    @Deprecated(
-        "Use `type` with `CustomMenuItemType` directly.",
-        ReplaceWith(
-            "type(type?.let { CustomMenuItemType.of(it) })",
-            "love.forte.simbot.qguild.model.menu.CustomMenuItemType"
-        )
-    )
-    public fun type(type: String?): CustomMenuItemBuilder =
-        type(type?.let(CustomMenuItemType::of))
 
     /**
      * 设置菜单项类型。
@@ -243,7 +217,7 @@ public class CustomMenuItemBuilder {
 /**
  * 用于构建 [CustomMenu.SubItem] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @OptIn(ExperimentalStdlibApi::class)
 @CustomMenuBuilderDsl
@@ -252,19 +226,6 @@ public class CustomMenuSubItemBuilder {
      * 二级菜单项名称。
      */
     public var name: String? = null
-
-    /**
-     * 二级菜单项类型。
-     */
-    @Deprecated(
-        "Use `typeValue` directly.",
-        replaceWith = ReplaceWith("typeValue")
-    )
-    public var type: String?
-        get() = typeValue?.value
-        set(value) {
-            typeValue = value?.let(CustomMenuItemType::of)
-        }
 
     /**
      * 二级菜单项类型。
@@ -290,19 +251,6 @@ public class CustomMenuSubItemBuilder {
     public fun name(name: String?): CustomMenuSubItemBuilder = also {
         this.name = name
     }
-
-    /**
-     * 设置二级菜单项类型。
-     */
-    @Deprecated(
-        "Use `type` with `CustomMenuItemType` directly.",
-        ReplaceWith(
-            "type(type?.let { CustomMenuItemType.of(it) })",
-            "love.forte.simbot.qguild.model.menu.CustomMenuItemType"
-        )
-    )
-    public fun type(type: String?): CustomMenuSubItemBuilder =
-        type(type?.let(CustomMenuItemType::of))
 
     /**
      * 设置二级菜单项类型。
@@ -342,7 +290,7 @@ public class CustomMenuSubItemBuilder {
 /**
  * 用于构建 [CustomMenu.Switch] 的构建器。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @CustomMenuBuilderDsl
 public class CustomMenuSwitchBuilder {

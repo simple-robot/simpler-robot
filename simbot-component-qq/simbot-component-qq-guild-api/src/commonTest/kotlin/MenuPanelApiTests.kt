@@ -31,7 +31,7 @@ import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
 import love.forte.simbot.qguild.model.menu.CustomMenuItemType
-import love.forte.simbot.qguild.model.panel.CommandPanelItemTypeValues
+import love.forte.simbot.qguild.model.panel.CommandPanelItemType
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
 import love.forte.simbot.qguild.model.panel.CommandPanelTargetType
 import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp
@@ -63,18 +63,18 @@ class MenuPanelApiTests {
     fun commandPanelApisUseResourcesAndOmitEmptyTargetLists() {
         val list = create(CommandPanelScope.C2C, "cursor", 51)
         val create = CreateCommandPanelApi.create {
-            scopeValue = CommandPanelScope.C2C
-            targetTypeValue = CommandPanelTargetType.Specific
+            scope = CommandPanelScope.C2C
+            targetType = CommandPanelTargetType.Specific
             addUserOpenid("user-openid")
             panel {
                 item {
                     name = "/help"
-                    type = CommandPanelItemTypeValues.COMMAND
+                    type = CommandPanelItemType.Command
                 }
             }
         }
         val target = ModifyCommandPanelTargetApi.create("panel-id") {
-            opValue = CommandPanelTargetUpdateOp.Del
+            op = CommandPanelTargetUpdateOp.Del
             clearGroupOpenids()
         }
 

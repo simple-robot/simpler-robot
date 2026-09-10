@@ -39,7 +39,7 @@ import kotlin.jvm.JvmStatic
  * @property remark 面板备注，用于开发者标记面板用途，最多 255 个字符，不对用户展示。
  * @property version 当前版本号。
  *
- * @since 4.7.0
+ * @since 5.0
  */
 @ApiModel
 @Serializable
@@ -51,7 +51,7 @@ public class CommandPanel @ApiModelConstructor internal constructor(
     /**
      * 指令面板中的元素。
      *
-     * @since 4.7.0
+     * @since 5.0
      */
     @ApiModel
     @Serializable
