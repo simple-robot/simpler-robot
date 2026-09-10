@@ -82,7 +82,7 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         @SerialName("only_admin")
         public val onlyAdmin: Boolean? = null,
         /**
-         * 仅 [CommandPanelItemTypeValues.LINK] 有效的跳转链接。
+         * 仅 [CommandPanelItemType.Link] 有效的跳转链接。
          */
         public val link: String? = null,
     ) {

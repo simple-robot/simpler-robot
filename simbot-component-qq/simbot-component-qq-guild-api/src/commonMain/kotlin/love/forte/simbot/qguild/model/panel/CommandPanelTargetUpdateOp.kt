@@ -31,7 +31,6 @@ import kotlin.jvm.JvmStatic
 /**
  * 修改指令面板关联对象的操作类型 `op`。
  *
- * @see CommandPanelTargetUpdateOpValues
  * @see CommandPanelTargetUpdate.op
  *
  * @since 5.0
@@ -44,18 +43,28 @@ import kotlin.jvm.JvmStatic
 public value class CommandPanelTargetUpdateOp private constructor(public val value: String) {
     public companion object {
         /**
+         * 添加关联对象操作的原始值。
+         */
+        public const val ADD_VALUE: String = "add"
+
+        /**
+         * 删除关联对象操作的原始值。
+         */
+        public const val DEL_VALUE: String = "del"
+
+        /**
          * 添加关联对象的操作类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Add: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(CommandPanelTargetUpdateOpValues.ADD)
+        public val Add: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(ADD_VALUE)
 
         /**
          * 删除关联对象的操作类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Del: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(CommandPanelTargetUpdateOpValues.DEL)
+        public val Del: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(DEL_VALUE)
 
         /**
          * 构建一个自定义值的 [CommandPanelTargetUpdateOp]。

@@ -43,18 +43,28 @@ import kotlin.jvm.JvmStatic
 public value class CommandPanelItemType private constructor(public val value: String) {
     public companion object {
         /**
+         * 指令元素类型的原始值。
+         */
+        public const val COMMAND_VALUE: String = "command"
+
+        /**
+         * 链接元素类型的原始值。
+         */
+        public const val LINK_VALUE: String = "link"
+
+        /**
          * 指令元素类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Command: CommandPanelItemType = CommandPanelItemType(CommandPanelItemTypeValues.COMMAND)
+        public val Command: CommandPanelItemType = CommandPanelItemType(COMMAND_VALUE)
 
         /**
          * 链接元素类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Link: CommandPanelItemType = CommandPanelItemType(CommandPanelItemTypeValues.LINK)
+        public val Link: CommandPanelItemType = CommandPanelItemType(LINK_VALUE)
 
         /**
          * 构建一个自定义值内容的 [CommandPanelItemType]。

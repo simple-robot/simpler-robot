@@ -31,7 +31,6 @@ import kotlin.jvm.JvmStatic
 /**
  * 自定义菜单项的类型。
  *
- * @see CustomMenuItemTypeValues
  * @see CustomMenu.Item.type
  * @see CustomMenu.SubItem.type
  *
@@ -45,32 +44,52 @@ import kotlin.jvm.JvmStatic
 public value class CustomMenuItemType private constructor(public val value: String) {
     public companion object {
         /**
+         * 开关菜单项类型的原始值。
+         */
+        public const val SWITCH_VALUE: String = "switch"
+
+        /**
+         * 发送消息菜单项类型的原始值。
+         */
+        public const val SEND_MESSAGE_VALUE: String = "send_message"
+
+        /**
+         * 链接菜单项类型的原始值。
+         */
+        public const val LINK_VALUE: String = "link"
+
+        /**
+         * 包含二级菜单的菜单项类型的原始值。
+         */
+        public const val MENU_VALUE: String = "menu"
+
+        /**
          * 开关菜单项类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Switch: CustomMenuItemType = CustomMenuItemType(CustomMenuItemTypeValues.SWITCH)
+        public val Switch: CustomMenuItemType = CustomMenuItemType(SWITCH_VALUE)
 
         /**
          * 发送消息菜单项类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val SendMessage: CustomMenuItemType = CustomMenuItemType(CustomMenuItemTypeValues.SEND_MESSAGE)
+        public val SendMessage: CustomMenuItemType = CustomMenuItemType(SEND_MESSAGE_VALUE)
 
         /**
          * 链接菜单项类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Link: CustomMenuItemType = CustomMenuItemType(CustomMenuItemTypeValues.LINK)
+        public val Link: CustomMenuItemType = CustomMenuItemType(LINK_VALUE)
 
         /**
          * 包含二级菜单的菜单项类型。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Menu: CustomMenuItemType = CustomMenuItemType(CustomMenuItemTypeValues.MENU)
+        public val Menu: CustomMenuItemType = CustomMenuItemType(MENU_VALUE)
 
         /**
          * 构建一个自定义值的 [CustomMenuItemType]。

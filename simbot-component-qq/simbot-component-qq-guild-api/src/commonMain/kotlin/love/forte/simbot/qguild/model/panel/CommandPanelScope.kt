@@ -31,8 +31,6 @@ import kotlin.jvm.JvmStatic
 /**
  * 面板生效场景 `scope`。
  *
- * @see CommandPanelScopeValues
- *
  * @since 5.0
  * @author Forte Scarlet
  */
@@ -42,6 +40,54 @@ import kotlin.jvm.JvmStatic
 @Serializable
 public value class CommandPanelScope private constructor(public val scope: String) {
     public companion object {
+        /**
+         * C2C 单聊场景的原始值。
+         */
+        public const val C2C_VALUE: String = "c2c"
+
+        /**
+         * 群聊场景的原始值。
+         */
+        public const val GROUP_VALUE: String = "group"
+
+        /**
+         * 文字子频道场景的原始值。
+         */
+        public const val CHANNEL_VALUE: String = "channel"
+
+        /**
+         * 频道私信场景的原始值。
+         */
+        public const val DM_VALUE: String = "dm"
+
+        /**
+         * C2C 单聊场景。
+         */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val C2C: CommandPanelScope = CommandPanelScope(C2C_VALUE)
+
+        /**
+         * 群聊场景。
+         */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val Group: CommandPanelScope = CommandPanelScope(GROUP_VALUE)
+
+        /**
+         * 文字子频道场景。
+         */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val Channel: CommandPanelScope = CommandPanelScope(CHANNEL_VALUE)
+
+        /**
+         * 频道私信场景。
+         */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val DM: CommandPanelScope = CommandPanelScope(DM_VALUE)
+
         /**
          * 构建一个自定义值的 [CommandPanelScope]。
          */
@@ -54,33 +100,5 @@ public value class CommandPanelScope private constructor(public val scope: Strin
             // 所以直接返回内联对象就行，对已知量枚举是无意义的。
             return CommandPanelScope(scope)
         }
-
-        /**
-         * C2C 单聊场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val C2C: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.C2C)
-
-        /**
-         * 群聊场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val Group: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.GROUP)
-
-        /**
-         * 文字子频道场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val Channel: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.CHANNEL)
-
-        /**
-         * 频道私信场景。
-         */
-        @JvmStatic
-        @get:JvmExposeBoxed
-        public val DM: CommandPanelScope = CommandPanelScope(CommandPanelScopeValues.DM)
     }
 }

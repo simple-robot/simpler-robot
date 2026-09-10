@@ -43,24 +43,34 @@ public value class CommandPanelTargetType private constructor(public val value: 
 
     public companion object {
         /**
-         * 构建一个自定义值的 [CommandPanelTargetType]。
+         * 对指定场景下所有目标生效的原始值。
          */
-        @JvmStatic
-        @JvmExposeBoxed
-        public fun of(scope: String): CommandPanelTargetType = CommandPanelTargetType(scope)
+        public const val ALL_VALUE: String = "all"
+
+        /**
+         * 仅对指定用户或群生效的原始值。
+         */
+        public const val SPECIFIC_VALUE: String = "specific"
 
         /**
          * 对指定场景下的所有目标生效。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val All: CommandPanelTargetType = of(CommandPanelTargetTypeValues.ALL)
+        public val All: CommandPanelTargetType = of(ALL_VALUE)
 
         /**
          * 仅对指定用户或群生效。
          */
         @JvmStatic
         @get:JvmExposeBoxed
-        public val Specific: CommandPanelTargetType = of(CommandPanelTargetTypeValues.SPECIFIC)
+        public val Specific: CommandPanelTargetType = of(SPECIFIC_VALUE)
+
+        /**
+         * 构建一个自定义值的 [CommandPanelTargetType]。
+         */
+        @JvmStatic
+        @JvmExposeBoxed
+        public fun of(scope: String): CommandPanelTargetType = CommandPanelTargetType(scope)
     }
 }
