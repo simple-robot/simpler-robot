@@ -21,8 +21,6 @@
  *
  */
 
-package test
-
 import io.ktor.http.*
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
@@ -33,9 +31,9 @@ import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
 import love.forte.simbot.qguild.model.menu.CustomMenu
-import love.forte.simbot.qguild.model.panel.CommandPanel
+import love.forte.simbot.qguild.model.panel.CommandPanelItemTypeValues
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
-import love.forte.simbot.qguild.model.panel.CommandPanelTargetTypeValues
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetType
 import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -66,12 +64,12 @@ class MenuPanelApiTests {
         val list = create(CommandPanelScope.C2C, "cursor", 51)
         val create = CreateCommandPanelApi.create {
             scopeValue = CommandPanelScope.C2C
-            targetType = CommandPanelTargetTypeValues.SPECIFIC
+            targetTypeValue = CommandPanelTargetType.Specific
             addUserOpenid("user-openid")
             panel {
                 item {
                     name = "/help"
-                    type = CommandPanel.Item.TYPE_COMMAND
+                    type = CommandPanelItemTypeValues.COMMAND
                 }
             }
         }

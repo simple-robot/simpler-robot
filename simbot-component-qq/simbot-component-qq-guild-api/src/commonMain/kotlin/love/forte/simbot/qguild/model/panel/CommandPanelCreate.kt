@@ -40,20 +40,11 @@ public class CommandPanelCreate @ApiModelConstructor internal constructor(
     /**
      * 面板生效场景。
      *
-     * 可选值：
-     * - `c2c`（单聊）
-     * - `group`（群聊）
-     * - `channel`（文字子频道）
-     * - `dm`（频道私信）
      * 四种场景均支持创建面板，但 channel 和 dm 场景仅支持全局配置（target_type 只能为 all）
      */
     public val scope: CommandPanelScope? = null,
     /**
      * 面板生效范围。
-     *
-     * 可选值：
-     * - `all`（对该场景下所有用户/群生效）
-     * - `specific`（仅对指定用户/群生效）
      *
      * 仅 c2c 和 group 场景支持 specific；channel 和 dm 场景只能传 all
      */

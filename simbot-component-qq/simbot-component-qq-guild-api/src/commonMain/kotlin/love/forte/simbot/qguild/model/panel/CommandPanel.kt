@@ -59,8 +59,8 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         /**
          * 元素名称。
          *
-         * - `type=command` 时用户点击后该内容会填入聊天输入框
-         * - `type=link` 时仅用于面板展示
+         * - [type] = [CommandPanelItemType.Command] 时用户点击后该内容会填入聊天输入框
+         * - [type] = [CommandPanelItemType.Link] 时仅用于面板展示
          *
          * 最多 14 个字符，约 7 个中文汉字
          */
@@ -72,12 +72,8 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         public val desc: String? = null,
         /**
          * 元素类型。
-         *
-         * 可选值：
-         * - `command`（指令）
-         * - `link`（链接跳转）
          */
-        public val type: String? = null,
+        public val type: CommandPanelItemType? = null,
         /**
          * 是否仅管理员可操作。
          *
@@ -86,22 +82,10 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         @SerialName("only_admin")
         public val onlyAdmin: Boolean? = null,
         /**
-         * 仅 [TYPE_LINK] 有效的跳转链接。
+         * 仅 [CommandPanelItemTypeValues.LINK] 有效的跳转链接。
          */
         public val link: String? = null,
     ) {
-        public companion object {
-            /**
-             * 指令元素类型。
-             */
-            public const val TYPE_COMMAND: String = "command"
-
-            /**
-             * 链接元素类型。
-             */
-            public const val TYPE_LINK: String = "link"
-        }
-
         override fun toString(): String {
             return "Item(name=$name, desc=$desc, type=$type, onlyAdmin=$onlyAdmin, link=$link)"
         }
@@ -126,4 +110,3 @@ public class CommandPanel @ApiModelConstructor internal constructor(
         return "CommandPanel(items=$items, remark=$remark, version=$version)"
     }
 }
-

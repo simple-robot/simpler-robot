@@ -27,6 +27,7 @@ import love.forte.simbot.component.qguild.QGObjectiveContainer
 import love.forte.simbot.qguild.model.panel.CommandPanel
 import love.forte.simbot.qguild.model.panel.CommandPanelRecord
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetType
 import kotlin.jvm.JvmExposeBoxed
 
 /**
@@ -47,6 +48,8 @@ public abstract class QGCommandPanelRecord : QGObjectiveContainer<CommandPanelRe
 
     /**
      * 面板生效场景的 scope 。
+     *
+     * @since 5.0
      */
     @get:JvmExposeBoxed
     public val scope: CommandPanelScope
@@ -56,6 +59,15 @@ public abstract class QGCommandPanelRecord : QGObjectiveContainer<CommandPanelRe
      * 面板生效范围的原始值。
      */
     public val targetTypeValue: String
+        get() = source.targetType.value
+
+    /**
+     * 面板生效范围。
+     *
+     * @since 5.0
+     */
+    @get:JvmExposeBoxed
+    public val targetType: CommandPanelTargetType
         get() = source.targetType
 
     /**

@@ -116,6 +116,7 @@ public class CommandPanelBuilder {
  *
  * @since 4.7.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @CommandPanelBuilderDsl
 public class CommandPanelItemBuilder {
     /**
@@ -131,7 +132,23 @@ public class CommandPanelItemBuilder {
     /**
      * 元素类型。
      */
-    public var type: String? = null
+    @Deprecated(
+        "Use `typeValue` directly.",
+        replaceWith = ReplaceWith("typeValue")
+    )
+    public var type: String?
+        get() = typeValue?.value
+        set(value) {
+            typeValue = value?.let(CommandPanelItemType::of)
+        }
+
+    /**
+     * 元素类型。
+     *
+     * @since 5.0
+     */
+    @all:JvmExposeBoxed
+    public var typeValue: CommandPanelItemType? = null
 
     /**
      * 是否仅管理员可操作。
@@ -160,8 +177,16 @@ public class CommandPanelItemBuilder {
     /**
      * 设置元素类型。
      */
-    public fun type(type: String?): CommandPanelItemBuilder = also {
-        this.type = type
+    public fun type(type: String?): CommandPanelItemBuilder = type(type?.let(CommandPanelItemType::of))
+
+    /**
+     * 设置元素类型。
+     *
+     * @since 5.0
+     */
+    @JvmExposeBoxed
+    public fun type(type: CommandPanelItemType?): CommandPanelItemBuilder = also {
+        this.typeValue = type
     }
 
     /**
@@ -184,7 +209,7 @@ public class CommandPanelItemBuilder {
     public fun build(): CommandPanel.Item = CommandPanel.Item(
         name = name,
         desc = desc,
-        type = type,
+        type = typeValue,
         onlyAdmin = onlyAdmin,
         link = link,
     )
@@ -237,6 +262,7 @@ public class CommandPanelCreateBuilder {
      *
      * @since 5.0
      */
+    @all:JvmExposeBoxed
     public var targetTypeValue: CommandPanelTargetType? = null
 
     /**
