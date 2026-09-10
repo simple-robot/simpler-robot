@@ -34,6 +34,7 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
@@ -121,9 +122,14 @@ public suspend fun <R : Any> QQGuildApi<R>.request(
                         val ser = guessSerializer(body, json.serializersModule)
                         val bodyJson = json.encodeToString(ser, body)
                         setBody(bodyJson)
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Throwable) {
                         try {
                             setBody(body)
+                        } catch (e0: CancellationException) {
+                            e0.addSuppressed(e)
+                            throw e0
                         } catch (e0: Throwable) {
                             e0.addSuppressed(e)
                             throw e0

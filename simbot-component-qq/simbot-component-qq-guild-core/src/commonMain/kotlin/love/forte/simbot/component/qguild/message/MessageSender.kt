@@ -23,11 +23,15 @@
 
 package love.forte.simbot.component.qguild.message
 
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
+import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.internal.message.asGroupReceipt
 import love.forte.simbot.component.qguild.internal.message.asReceipt
 import love.forte.simbot.component.qguild.internal.message.asUserReceipt
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.qguild.QGInternalApi
@@ -36,11 +40,15 @@ import love.forte.simbot.qguild.api.MessageAuditedException
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.api.message.direct.DmsSendApi
+import love.forte.simbot.qguild.api.message.group.GroupMessageDeleteApi
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
+import love.forte.simbot.qguild.api.message.user.UserMessageDeleteApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
 import love.forte.simbot.qguild.message.ContentTextEncoder
 import love.forte.simbot.qguild.stdlib.MessageDestination
 import love.forte.simbot.qguild.stdlib.requestDataBy
+
+private val logger = LoggerFactory.getLogger("love.forte.simbot.component.qguild.message.MessageSenderKt")
 
 /**
  * 使用当前 [QGBot] 向 [channelId] 通过 [MessageSendApi] 发送一个消息，
@@ -256,7 +264,7 @@ internal suspend fun QGBot.sendGroupMessage(
     openid: String,
     body: GroupAndC2CSendBody,
 ): QGMessageReceipt {
-    return GroupMessageSendApi.create(openid, body).requestDataBy(source).asReceipt()
+    return GroupMessageSendApi.create(openid, body).requestDataBy(source).asReceipt(this, openid)
 }
 
 @PublishedApi
@@ -268,7 +276,7 @@ internal suspend fun QGBot.sendGroupMessage(
         GroupMessageSendApi.create(openid, it).requestDataBy(source)
     }
 
-    return receipts.asGroupReceipt()
+    return receipts.asGroupReceipt(this, openid)
 }
 
 @PublishedApi
@@ -280,7 +288,7 @@ internal suspend fun QGBot.sendUserMessage(
         UserMessageSendApi.create(openid, it).requestDataBy(source)
     }
 
-    return receipts.asUserReceipt()
+    return receipts.asUserReceipt(this, openid)
 }
 
 @PublishedApi
@@ -288,7 +296,45 @@ internal suspend fun QGBot.sendUserMessage(
     openid: String,
     body: GroupAndC2CSendBody,
 ): QGMessageReceipt {
-    return UserMessageSendApi.create(openid, body).requestDataBy(source).asReceipt()
+    return UserMessageSendApi.create(openid, body).requestDataBy(source).asReceipt(this, openid)
+}
+
+internal suspend fun QGBot.deleteGroupMessage(
+    groupOpenid: String,
+    messageId: String,
+    vararg options: DeleteOption,
+) {
+    executeMessageDelete(options, targetLogValue = { "(groupOpenid: $groupOpenid, messageId: $messageId)" }) {
+        GroupMessageDeleteApi.create(groupOpenid, messageId).requestDataBy(source)
+    }
+}
+
+internal suspend fun QGBot.deleteUserMessage(
+    userOpenid: String,
+    messageId: String,
+    vararg options: DeleteOption,
+) {
+    executeMessageDelete(options, targetLogValue = { "(userOpenid: $userOpenid, messageId: $messageId)" }) {
+        UserMessageDeleteApi.create(userOpenid, messageId).requestDataBy(source)
+    }
+}
+
+private suspend inline fun executeMessageDelete(
+    options: Array<out DeleteOption>,
+    targetLogValue: () -> String = { "" },
+    request: suspend () -> Unit,
+) {
+    runCatchingCancellable { request() }.onFailure { e ->
+        if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
+            throw e
+        } else {
+            logger.debug(
+                "Failed to delete message${targetLogValue()}, " +
+                    "but ignore it because of option [StandardDeleteOption.IGNORE_ON_FAILURE].",
+                e
+            )
+        }
+    }
 }
 
 internal suspend inline fun QGBot.sendGroupMessage(

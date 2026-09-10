@@ -89,9 +89,11 @@ public abstract interface class love/forte/simbot/component/qguild/bot/QGBot : l
 	public fun emitEventReserve (Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun emitEventReserve$default (Llove/forte/simbot/component/qguild/bot/QGBot;Ljava/lang/String;Llove/forte/simbot/qguild/stdlib/EmitEventOptions;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun getAvatar ()Ljava/lang/String;
+	public fun getCommandPanels ()Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;
 	public synthetic fun getComponent ()Llove/forte/simbot/component/Component;
 	public abstract fun getComponent ()Llove/forte/simbot/component/qguild/QQGuildComponent;
 	public fun getContactRelation ()Llove/forte/simbot/bot/ContactRelation;
+	public fun getCustomMenus ()Llove/forte/simbot/component/qguild/menu/QGCustomMenuManager;
 	public synthetic fun getGroupRelation ()Llove/forte/simbot/bot/GroupRelation;
 	public abstract fun getGroupRelation ()Llove/forte/simbot/component/qguild/group/QGGroupRelation;
 	public synthetic fun getGuildRelation ()Llove/forte/simbot/bot/GuildRelation;
@@ -892,6 +894,8 @@ public abstract class love/forte/simbot/component/qguild/event/QGC2CMessageCreat
 	public synthetic fun getMessageContent ()Llove/forte/simbot/component/qguild/message/QGBaseMessageContent;
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/qguild/message/QGGroupAndC2CMessageContent;
 	public synthetic fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
+	public final fun getMessageScene ()Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;
+	public final fun getMessageType ()Ljava/lang/Integer;
 	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
 	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2075,6 +2079,37 @@ public abstract interface class love/forte/simbot/component/qguild/guild/QGMembe
 	public fun unmuteReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
+public abstract interface class love/forte/simbot/component/qguild/menu/QGCustomMenuManager {
+	public abstract synthetic fun get (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBlocking ()Llove/forte/simbot/component/qguild/menu/QGCustomMenuSnapshot;
+	public fun getReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun update (Llove/forte/simbot/qguild/model/menu/CustomMenu;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun updateAsync (Llove/forte/simbot/qguild/model/menu/CustomMenu;)Ljava/util/concurrent/CompletableFuture;
+	public fun updateBlocking (Llove/forte/simbot/qguild/model/menu/CustomMenu;)Llove/forte/simbot/component/qguild/menu/QGCustomMenuUpdateReceipt;
+	public fun updateReserve (Llove/forte/simbot/qguild/model/menu/CustomMenu;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/qguild/menu/QGCustomMenuManagerKt {
+	public static final synthetic fun update (Llove/forte/simbot/component/qguild/menu/QGCustomMenuManager;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/component/qguild/menu/QGCustomMenuSnapshot : love/forte/simbot/component/qguild/QGObjectiveContainer {
+	public final fun getMenu ()Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/qguild/model/menu/CustomMenuSnapshot;
+	public final fun getVersion ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/menu/QGCustomMenuUpdateReceipt : love/forte/simbot/component/qguild/QGObjectiveContainer {
+	public fun <init> (Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated;)V
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated;
+	public final fun getVersion ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class love/forte/simbot/component/qguild/message/ImageParser : love/forte/simbot/component/qguild/message/SendingMessageParser {
 	public static final field INSTANCE Llove/forte/simbot/component/qguild/message/ImageParser;
 	public static final fun disableBase64UploadWarn ()V
@@ -2614,6 +2649,117 @@ public final class love/forte/simbot/component/qguild/message/SendingMessagePars
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/component/qguild/message/SendingMessageParser$GroupBuilderType;
 	public static fun values ()[Llove/forte/simbot/component/qguild/message/SendingMessageParser$GroupBuilderType;
+}
+
+public abstract interface annotation class love/forte/simbot/component/qguild/panel/InternalForInheritanceQGPanelApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class love/forte/simbot/component/qguild/panel/QGCommandPanelHandle : love/forte/simbot/ability/DeleteSupport {
+	public synthetic fun addGroupTargets (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addGroupTargetsAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun addGroupTargetsBlocking (Ljava/util/Collection;)V
+	public fun addGroupTargetsReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun addTargets (Ljava/util/Collection;Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addTargetsAsync (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun addTargetsBlocking (Ljava/util/Collection;Ljava/util/Collection;)V
+	public fun addTargetsReserve (Ljava/util/Collection;Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun addUserTargets (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addUserTargetsAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun addUserTargetsBlocking (Ljava/util/Collection;)V
+	public fun addUserTargetsReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun deleteBlocking ([Llove/forte/simbot/ability/DeleteOption;)V
+	public fun deleteReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun get (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getBlocking ()Llove/forte/simbot/component/qguild/panel/QGCommandPanelRecord;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun removeGroupTargets (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeGroupTargetsAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeGroupTargetsBlocking (Ljava/util/Collection;)V
+	public fun removeGroupTargetsReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun removeTargets (Ljava/util/Collection;Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeTargetsAsync (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeTargetsBlocking (Ljava/util/Collection;Ljava/util/Collection;)V
+	public fun removeTargetsReserve (Ljava/util/Collection;Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun removeUserTargets (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeUserTargetsAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeUserTargetsBlocking (Ljava/util/Collection;)V
+	public fun removeUserTargetsReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun update (Llove/forte/simbot/qguild/model/panel/CommandPanel;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun updateAsync (Llove/forte/simbot/qguild/model/panel/CommandPanel;)Ljava/util/concurrent/CompletableFuture;
+	public fun updateBlocking (Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelUpdateReceipt;
+	public fun updateReserve (Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/qguild/panel/QGCommandPanelHandleKt {
+	public static final fun update (Llove/forte/simbot/component/qguild/panel/QGCommandPanelHandle;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/component/qguild/panel/QGCommandPanelManager {
+	public synthetic fun create (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun create (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun create$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun createAsync (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;)Ljava/util/concurrent/CompletableFuture;
+	public fun createAsync (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun createAsync$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;ILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun createBlocking (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelHandle;
+	public fun createBlocking (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelHandle;
+	public static synthetic fun createBlocking$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelHandle;
+	public fun createReserve (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public fun createReserve (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun createReserve$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun get (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun getBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelRecord;
+	public fun getReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun handle (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelHandle;
+	public fun list (Ljava/lang/String;)Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun list (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Z)Llove/forte/simbot/common/collectable/Collectable;
+	public static synthetic fun list$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;ZILjava/lang/Object;)Llove/forte/simbot/common/collectable/Collectable;
+}
+
+public final class love/forte/simbot/component/qguild/panel/QGCommandPanelManagerKt {
+	public static final synthetic fun create (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun create-hGL_d1I (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun create-hGL_d1I$default (Llove/forte/simbot/component/qguild/panel/QGCommandPanelManager;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/qguild/panel/QGCommandPanelRecord : love/forte/simbot/component/qguild/QGObjectiveContainer, love/forte/simbot/component/qguild/panel/QGCommandPanelHandle {
+	public fun <init> ()V
+	public final fun getPanel ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun getScope ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getScope-t2OB-1c ()Ljava/lang/String;
+	public final fun getScopeValue ()Ljava/lang/String;
+	public final fun getTargetType ()Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetType;
+	public final fun getTargetTypeValue ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/Integer;
+}
+
+public final class love/forte/simbot/component/qguild/panel/QGCommandPanelTargetOperation : java/lang/Enum {
+	public static final field ADD Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetOperation;
+	public static final field DEL Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetOperation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetOperation;
+	public static fun values ()[Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetOperation;
+}
+
+public final class love/forte/simbot/component/qguild/panel/QGCommandPanelTargetType : java/lang/Enum {
+	public static final field ALL Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetType;
+	public static final field SPECIFIC Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetType;
+	public static fun values ()[Llove/forte/simbot/component/qguild/panel/QGCommandPanelTargetType;
+}
+
+public final class love/forte/simbot/component/qguild/panel/QGCommandPanelUpdateReceipt : love/forte/simbot/component/qguild/QGObjectiveContainer {
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/qguild/model/panel/CommandPanelUpdated;
+	public final fun getVersion ()I
 }
 
 public abstract interface class love/forte/simbot/component/qguild/role/QGRoleUpdater {

@@ -20,5 +20,6 @@ module simbot.common.core {
     exports love.forte.simbot.common.serialization;
     exports love.forte.simbot.common.services;
     exports love.forte.simbot.common.text;
+    exports love.forte.simbot.common.utils;
     exports love.forte.simbot.common.weak;
 }

@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.component.qguild.message
@@ -44,9 +50,16 @@ import kotlin.jvm.JvmSynthetic
  */
 public interface QGMessageReceipt : MessageReceipt {
     /**
-     * 消息暂时不支持撤回。
+     * 由群聊或单聊消息发送得到的具体回执可以撤回对应的机器人消息。
+     *
+     * 未保留目标消息上下文的回执不支持撤回。
+     * 当回执不支持撤回时，可以传入 [StandardDeleteOption.IGNORE_ON_UNSUPPORTED]
+     * 将本次调用作为空操作处理。
+     *
      * 如果 [options] 不包含 [StandardDeleteOption.IGNORE_ON_UNSUPPORTED]
      * 则会抛出 [UnsupportedOperationException] 异常。
+     *
+     * @param options 控制不支持撤回或撤回失败时行为的选项。
      */
     @JvmSynthetic
     public override suspend fun delete(vararg options: DeleteOption) {
@@ -88,6 +101,11 @@ public abstract class QGAggregatedMessageReceipt : AggregatedMessageReceipt(), Q
      */
     abstract override fun iterator(): Iterator<QGSingleMessageReceipt>
 
+    /**
+     * 依次撤回聚合回执中的全部消息。
+     *
+     * @param options 控制各消息撤回失败时行为的选项。
+     */
     override suspend fun delete(vararg options: DeleteOption) {
         super<AggregatedMessageReceipt>.delete(*options)
     }
@@ -97,6 +115,9 @@ public abstract class QGAggregatedMessageReceipt : AggregatedMessageReceipt(), Q
  * 仅有ID信息的 [QGMessageReceipt]. 通常来自发送群消息或好友消息。
  */
 public abstract class QGSingleIdMessageReceipt : SingleMessageReceipt(), QGMessageReceipt {
+    /**
+     * QQ API 返回的消息 ID。
+     */
     abstract override val id: ID
 }
 
@@ -104,12 +125,29 @@ public abstract class QGSingleIdMessageReceipt : SingleMessageReceipt(), QGMessa
  * 多个 [QGSingleIdMessageReceipt] 的集合回执。
  */
 public abstract class QGAggregatedIdMessageReceipt : AggregatedMessageReceipt(), QGMessageReceipt {
+    /**
+     * 聚合回执中单消息回执的数量。
+     */
     abstract override val size: Int
 
+    /**
+     * 获取指定索引处的单消息回执。
+     *
+     * @param index 要获取的索引。
+     * @throws IndexOutOfBoundsException 当 [index] 超出有效范围时抛出。
+     */
     abstract override fun get(index: Int): QGSingleIdMessageReceipt
 
+    /**
+     * 获取按发送顺序遍历所有单消息回执的迭代器。
+     */
     abstract override fun iterator(): Iterator<QGSingleIdMessageReceipt>
 
+    /**
+     * 依次撤回聚合回执中的全部消息。
+     *
+     * @param options 控制各消息撤回失败时行为的选项。
+     */
     override suspend fun delete(vararg options: DeleteOption) {
         super<AggregatedMessageReceipt>.delete(*options)
     }

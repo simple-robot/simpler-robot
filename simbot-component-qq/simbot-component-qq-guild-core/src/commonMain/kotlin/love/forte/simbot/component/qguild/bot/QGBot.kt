@@ -42,8 +42,12 @@ import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.group.QGGroupRelation
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
+import love.forte.simbot.component.qguild.internal.menu.QGCustomMenuManagerImpl
 import love.forte.simbot.component.qguild.internal.message.QGMessageContentImpl
+import love.forte.simbot.component.qguild.internal.panel.QGCommandPanelManagerImpl
+import love.forte.simbot.component.qguild.menu.QGCustomMenuManager
 import love.forte.simbot.component.qguild.message.*
+import love.forte.simbot.component.qguild.panel.QGCommandPanelManager
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -172,6 +176,28 @@ public interface QGBot : Bot, EventMentionAware {
      *
      */
     override val guildRelation: QGGuildRelation
+
+    /**
+     * C2C 全局自定义菜单的相关操作。
+     *
+     * 此属性提供的 [QGCustomMenuManager] 直接面向 QQ API 操作菜单；它不会缓存远端菜单，
+     * 因而每次读取或更新都以服务端当前状态为准。
+     *
+     * @since 4.7.0
+     */
+    public val customMenus: QGCustomMenuManager
+        get() = QGCustomMenuManagerImpl(this)
+
+    /**
+     * 指令面板的相关操作。
+     *
+     * 此属性提供的 [QGCommandPanelManager] 用于创建、查询和遍历指令面板，并可通过其
+     * [QGCommandPanelManager.handle] 函数创建只携带面板 ID 的操作句柄。
+     *
+     * @since 4.7.0
+     */
+    public val commandPanels: QGCommandPanelManager
+        get() = QGCommandPanelManagerImpl(this)
 
     /**
      * 直接向目标子频道发送消息。

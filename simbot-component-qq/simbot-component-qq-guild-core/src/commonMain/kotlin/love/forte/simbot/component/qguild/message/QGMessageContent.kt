@@ -180,6 +180,13 @@ public abstract class QGBaseMessageContent : MessageContent {
     override suspend fun referenceMessage(): QGBaseMessageContent? =
         queryReferenceMessage()
 
+    /**
+     * 查询当前消息引用所指向的消息正文。
+     *
+     * 子类应在所属消息类型支持引用查询时实现实际请求；不支持时返回 `null`。
+     *
+     * @return 被引用消息的内容；无法查询或不存在引用时为 `null`。
+     */
     protected abstract suspend fun queryReferenceMessage(): QGBaseMessageContent?
 }
 
@@ -197,13 +204,21 @@ public abstract class QGMessageContent : QGBaseMessageContent() {
     /**
      * 撤回此文字子频道的消息。
      *
+     * 撤回请求会直接由 QQ API 处理；消息不存在、没有权限或其他服务端拒绝都会以异常的形式返回。
+     * 传入 [StandardDeleteOption.IGNORE_ON_FAILURE] 时，具体实现可以忽略此类撤回失败。
+     *
      * @throws RuntimeException 撤回过程中可能产生的异常，例如无权限、没有对应的消息等。
      * 可以被 [StandardDeleteOption.IGNORE_ON_FAILURE] 选项忽略。
+     * @param options 控制撤回失败时行为的选项。
      */
     @JvmSynthetic
     abstract override suspend fun delete(vararg options: DeleteOption)
 
-
+    /**
+     * 查询此文字子频道消息引用所指向的消息正文。
+     *
+     * @return 被引用消息的内容；不存在引用或无法查询时为 `null`。
+     */
     abstract override suspend fun queryReferenceMessage(): QGBaseMessageContent?
 }
 
@@ -223,10 +238,16 @@ public abstract class QGGroupAndC2CMessageContent : QGBaseMessageContent() {
     public abstract val attachments: List<Message.Attachment>
 
     /**
-     * 暂时不支持消息撤回。
+     * 群聊消息事件的具体实现可以支持撤回；C2C 单聊消息和未提供撤回上下文的实现不支持。
+     *
+     * 调用方可以传入 [StandardDeleteOption.IGNORE_ON_UNSUPPORTED]，在实现不支持撤回时
+     * 将本次调用作为空操作处理。
+     *
      * 如果 [options] 中不包含
      * [StandardDeleteOption.IGNORE_ON_UNSUPPORTED]
      * 则抛出 [UnsupportedOperationException]
+     *
+     * @param options 控制不支持撤回时行为的选项。
      */
     @JvmSynthetic
     override suspend fun delete(vararg options: DeleteOption) {
