@@ -394,12 +394,29 @@ public class CommandPanelCreateBuilder {
  *
  * @since 4.7.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @CommandPanelBuilderDsl
 public class CommandPanelTargetUpdateBuilder {
     /**
      * 关联操作类型。
      */
-    public var op: String? = null
+    @Deprecated(
+        "Use `opValue` directly.",
+        replaceWith = ReplaceWith("opValue")
+    )
+    public var op: String?
+        get() = opValue?.value
+        set(value) {
+            opValue = value?.let(CommandPanelTargetUpdateOp::of)
+        }
+
+    /**
+     * 关联操作类型。
+     *
+     * @since 5.0
+     */
+    @all:JvmExposeBoxed
+    public var opValue: CommandPanelTargetUpdateOp? = null
 
     private var userOpenids: MutableList<String> = mutableListOf()
     private var groupOpenids: MutableList<String> = mutableListOf()
@@ -407,8 +424,24 @@ public class CommandPanelTargetUpdateBuilder {
     /**
      * 设置关联操作类型。
      */
-    public fun op(op: String?): CommandPanelTargetUpdateBuilder = also {
-        this.op = op
+    @Deprecated(
+        "Use `op` with `CommandPanelTargetUpdateOp` directly.",
+        ReplaceWith(
+            "op(op?.let { CommandPanelTargetUpdateOp.of(it) })",
+            "love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp"
+        )
+    )
+    public fun op(op: String?): CommandPanelTargetUpdateBuilder =
+        op(op?.let(CommandPanelTargetUpdateOp::of))
+
+    /**
+     * 设置关联操作类型。
+     *
+     * @since 5.0
+     */
+    @JvmExposeBoxed
+    public fun op(op: CommandPanelTargetUpdateOp?): CommandPanelTargetUpdateBuilder = also {
+        this.opValue = op
     }
 
     /**
@@ -459,7 +492,7 @@ public class CommandPanelTargetUpdateBuilder {
      * 构建 [CommandPanelTargetUpdate]。
      */
     public fun build(): CommandPanelTargetUpdate = CommandPanelTargetUpdate(
-        op = op,
+        op = opValue,
         userOpenids = userOpenids.takeIf { it.isNotEmpty() }?.toList(),
         groupOpenids = groupOpenids.takeIf { it.isNotEmpty() }?.toList(),
     )

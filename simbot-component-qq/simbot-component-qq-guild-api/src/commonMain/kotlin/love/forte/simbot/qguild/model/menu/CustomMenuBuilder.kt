@@ -23,6 +23,7 @@
 
 package love.forte.simbot.qguild.model.menu
 
+import kotlin.jvm.JvmExposeBoxed
 
 /**
  * 通过 DSL 构建 [CustomMenu]。
@@ -86,6 +87,7 @@ public class CustomMenuBuilder {
  *
  * @since 4.7.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @CustomMenuBuilderDsl
 public class CustomMenuItemBuilder {
     /**
@@ -96,7 +98,23 @@ public class CustomMenuItemBuilder {
     /**
      * 菜单项类型。
      */
-    public var type: String? = null
+    @Deprecated(
+        "Use `typeValue` directly.",
+        replaceWith = ReplaceWith("typeValue")
+    )
+    public var type: String?
+        get() = typeValue?.value
+        set(value) {
+            typeValue = value?.let(CustomMenuItemType::of)
+        }
+
+    /**
+     * 菜单项类型。
+     *
+     * @since 5.0
+     */
+    @all:JvmExposeBoxed
+    public var typeValue: CustomMenuItemType? = null
 
     /**
      * 发送消息菜单项的消息内容。
@@ -125,8 +143,24 @@ public class CustomMenuItemBuilder {
     /**
      * 设置菜单项类型。
      */
-    public fun type(type: String?): CustomMenuItemBuilder = also {
-        this.type = type
+    @Deprecated(
+        "Use `type` with `CustomMenuItemType` directly.",
+        ReplaceWith(
+            "type(type?.let { CustomMenuItemType.of(it) })",
+            "love.forte.simbot.qguild.model.menu.CustomMenuItemType"
+        )
+    )
+    public fun type(type: String?): CustomMenuItemBuilder =
+        type(type?.let(CustomMenuItemType::of))
+
+    /**
+     * 设置菜单项类型。
+     *
+     * @since 5.0
+     */
+    @JvmExposeBoxed
+    public fun type(type: CustomMenuItemType?): CustomMenuItemBuilder = also {
+        this.typeValue = type
     }
 
     /**
@@ -198,7 +232,7 @@ public class CustomMenuItemBuilder {
      */
     public fun build(): CustomMenu.Item = CustomMenu.Item(
         name = name,
-        type = type,
+        type = typeValue,
         subMenuItems = subMenuItems.takeIf { it.isNotEmpty() }?.toList(),
         sendMessage = sendMessage,
         link = link,
@@ -211,6 +245,7 @@ public class CustomMenuItemBuilder {
  *
  * @since 4.7.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @CustomMenuBuilderDsl
 public class CustomMenuSubItemBuilder {
     /**
@@ -221,7 +256,23 @@ public class CustomMenuSubItemBuilder {
     /**
      * 二级菜单项类型。
      */
-    public var type: String? = null
+    @Deprecated(
+        "Use `typeValue` directly.",
+        replaceWith = ReplaceWith("typeValue")
+    )
+    public var type: String?
+        get() = typeValue?.value
+        set(value) {
+            typeValue = value?.let(CustomMenuItemType::of)
+        }
+
+    /**
+     * 二级菜单项类型。
+     *
+     * @since 5.0
+     */
+    @all:JvmExposeBoxed
+    public var typeValue: CustomMenuItemType? = null
 
     /**
      * 发送消息菜单项的消息内容。
@@ -243,8 +294,24 @@ public class CustomMenuSubItemBuilder {
     /**
      * 设置二级菜单项类型。
      */
-    public fun type(type: String?): CustomMenuSubItemBuilder = also {
-        this.type = type
+    @Deprecated(
+        "Use `type` with `CustomMenuItemType` directly.",
+        ReplaceWith(
+            "type(type?.let { CustomMenuItemType.of(it) })",
+            "love.forte.simbot.qguild.model.menu.CustomMenuItemType"
+        )
+    )
+    public fun type(type: String?): CustomMenuSubItemBuilder =
+        type(type?.let(CustomMenuItemType::of))
+
+    /**
+     * 设置二级菜单项类型。
+     *
+     * @since 5.0
+     */
+    @JvmExposeBoxed
+    public fun type(type: CustomMenuItemType?): CustomMenuSubItemBuilder = also {
+        this.typeValue = type
     }
 
     /**
@@ -266,7 +333,7 @@ public class CustomMenuSubItemBuilder {
      */
     public fun build(): CustomMenu.SubItem = CustomMenu.SubItem(
         name = name,
-        type = type,
+        type = typeValue,
         sendMessage = sendMessage,
         link = link,
     )

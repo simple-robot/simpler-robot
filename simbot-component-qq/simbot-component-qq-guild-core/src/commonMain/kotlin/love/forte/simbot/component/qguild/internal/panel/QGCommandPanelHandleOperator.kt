@@ -41,7 +41,7 @@ import love.forte.simbot.qguild.api.panel.ModifyCommandPanelApi
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
 import love.forte.simbot.qguild.model.panel.CommandPanel
 import love.forte.simbot.qguild.model.panel.CommandPanelRecord
-import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp
 
 
 /**
@@ -63,11 +63,11 @@ internal class QGCommandPanelHandleOperator(
     }
 
     override suspend fun addTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?) {
-        updateTargets(CommandPanelTargetUpdate.OP_ADD, userOpenids, groupOpenids)
+        updateTargets(CommandPanelTargetUpdateOp.Add, userOpenids, groupOpenids)
     }
 
     override suspend fun removeTargets(userOpenids: Collection<ID>?, groupOpenids: Collection<ID>?) {
-        updateTargets(CommandPanelTargetUpdate.OP_DEL, userOpenids, groupOpenids)
+        updateTargets(CommandPanelTargetUpdateOp.Del, userOpenids, groupOpenids)
     }
 
     /**
@@ -93,12 +93,12 @@ internal class QGCommandPanelHandleOperator(
     }
 
     private suspend fun updateTargets(
-        operation: String,
+        operation: CommandPanelTargetUpdateOp,
         userOpenids: Collection<ID>?,
         groupOpenids: Collection<ID>?
     ) {
         val api = ModifyCommandPanelTargetApi.create(id.literal) {
-            op = operation
+            opValue = operation
             userOpenids?.forEach { addUserOpenid(it.literal) }
             groupOpenids?.forEach { addGroupOpenid(it.literal) }
         }

@@ -60,48 +60,26 @@ public class CustomMenu @ApiModelConstructor internal constructor(
         /**
          * 菜单项类型。
          */
-        public val type: String? = null,
+        public val type: CustomMenuItemType? = null,
         /**
-         * 仅 [TYPE_MENU] 有效的二级菜单项。
+         * 仅 [CustomMenuItemType.Menu] 有效的二级菜单项。
          */
         @SerialName("sub_menu_items")
         public val subMenuItems: List<SubItem>? = null,
         /**
-         * 仅 [TYPE_SEND_MESSAGE] 有效的待填入消息。
+         * 仅 [CustomMenuItemType.SendMessage] 有效的待填入消息。
          */
         @SerialName("send_message")
         public val sendMessage: String? = null,
         /**
-         * 仅 [TYPE_LINK] 有效的跳转链接。
+         * 仅 [CustomMenuItemType.Link] 有效的跳转链接。
          */
         public val link: String? = null,
         /**
-         * 仅 [TYPE_SWITCH] 有效的开关配置。
+         * 仅 [CustomMenuItemType.Switch] 有效的开关配置。
          */
         public val switch: Switch? = null,
     ) {
-        public companion object {
-            /**
-             * 开关菜单项类型。
-             */
-            public const val TYPE_SWITCH: String = "switch"
-
-            /**
-             * 发送消息菜单项类型。
-             */
-            public const val TYPE_SEND_MESSAGE: String = "send_message"
-
-            /**
-             * 链接菜单项类型。
-             */
-            public const val TYPE_LINK: String = "link"
-
-            /**
-             * 包含二级菜单的菜单项类型。
-             */
-            public const val TYPE_MENU: String = "menu"
-        }
-
         override fun toString(): String {
             return "Item(" +
                 "link=$link, " +
@@ -128,29 +106,17 @@ public class CustomMenu @ApiModelConstructor internal constructor(
         /**
          * 二级菜单项类型。
          */
-        public val type: String? = null,
+        public val type: CustomMenuItemType? = null,
         /**
-         * 仅 [TYPE_SEND_MESSAGE] 有效的待填入消息。
+         * 仅 [CustomMenuItemType.SendMessage] 有效的待填入消息。
          */
         @SerialName("send_message")
         public val sendMessage: String? = null,
         /**
-         * 仅 [TYPE_LINK] 有效的跳转链接。
+         * 仅 [CustomMenuItemType.Link] 有效的跳转链接。
          */
         public val link: String? = null,
     ) {
-        public companion object {
-            /**
-             * 发送消息菜单项类型。
-             */
-            public const val TYPE_SEND_MESSAGE: String = Item.TYPE_SEND_MESSAGE
-
-            /**
-             * 链接菜单项类型。
-             */
-            public const val TYPE_LINK: String = Item.TYPE_LINK
-        }
-
         override fun toString(): String {
             return "SubItem(link=$link, name=$name, type=$type, sendMessage=$sendMessage)"
         }

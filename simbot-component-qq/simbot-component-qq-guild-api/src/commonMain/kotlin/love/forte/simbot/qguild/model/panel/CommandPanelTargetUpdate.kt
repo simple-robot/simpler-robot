@@ -41,23 +41,13 @@ import kotlin.jvm.JvmStatic
 @ApiModel
 @Serializable
 public class CommandPanelTargetUpdate @ApiModelConstructor internal constructor(
-    public val op: String? = null,
+    public val op: CommandPanelTargetUpdateOp? = null,
     @SerialName("user_openids")
     public val userOpenids: List<String>? = null,
     @SerialName("group_openids")
     public val groupOpenids: List<String>? = null,
 ) {
     public companion object {
-        /**
-         * 添加关联对象的操作类型。
-         */
-        public const val OP_ADD: String = "add"
-
-        /**
-         * 删除关联对象的操作类型。
-         */
-        public const val OP_DEL: String = "del"
-
         /**
          * 获取 [CommandPanelTargetUpdateBuilder]。
          */

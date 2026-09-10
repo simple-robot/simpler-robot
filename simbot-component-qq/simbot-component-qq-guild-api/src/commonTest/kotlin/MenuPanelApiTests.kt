@@ -30,11 +30,11 @@ import love.forte.simbot.qguild.api.menu.ModifyCustomMenuApi
 import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
-import love.forte.simbot.qguild.model.menu.CustomMenu
+import love.forte.simbot.qguild.model.menu.CustomMenuItemType
 import love.forte.simbot.qguild.model.panel.CommandPanelItemTypeValues
 import love.forte.simbot.qguild.model.panel.CommandPanelScope
 import love.forte.simbot.qguild.model.panel.CommandPanelTargetType
-import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate
+import love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -45,9 +45,9 @@ class MenuPanelApiTests {
         val api = ModifyCustomMenuApi.create {
             item {
                 name = "forwarded"
-                type = "unknown"
+                typeValue = CustomMenuItemType.of("unknown")
                 subMenuItem {
-                    type = CustomMenu.SubItem.TYPE_LINK
+                    typeValue = CustomMenuItemType.Link
                     link = "https://example.com"
                 }
             }
@@ -74,7 +74,7 @@ class MenuPanelApiTests {
             }
         }
         val target = ModifyCommandPanelTargetApi.create("panel-id") {
-            op = CommandPanelTargetUpdate.OP_DEL
+            opValue = CommandPanelTargetUpdateOp.Del
             clearGroupOpenids()
         }
 
@@ -87,6 +87,7 @@ class MenuPanelApiTests {
         val targetTree = QQGuild.DefaultJson.encodeToString(
             target.body
         ).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
+        assertEquals(JsonPrimitive("del"), targetTree["op"])
         assertNull(targetTree["group_openids"])
     }
 }
