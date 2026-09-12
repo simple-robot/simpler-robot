@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -38,6 +38,7 @@ import love.forte.simbot.event.EventResult
 import love.forte.simbot.plugin.Plugin
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.jvm.JvmMultifileClass
@@ -113,12 +114,13 @@ public class EventContinuousSessionContextConfiguration {
      * 为 [coroutineContext] 配置调度器。
      * 如果为 `null` 则移除调度器。
      */
-    @OptIn(ExperimentalStdlibApi::class)
     public var coroutineDispatcher: CoroutineDispatcher?
-        get() = coroutineContext[CoroutineDispatcher]
+        get() = coroutineContext[ContinuationInterceptor] as? CoroutineDispatcher
         set(value) {
             if (value == null) {
-                coroutineContext = coroutineContext.minusKey(CoroutineDispatcher)
+                if (coroutineContext[ContinuationInterceptor] is CoroutineDispatcher) {
+                    coroutineContext = coroutineContext.minusKey(ContinuationInterceptor)
+                }
             } else {
                 coroutineContext += value
             }

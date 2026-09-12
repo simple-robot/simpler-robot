@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2024-2026. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.event
@@ -43,6 +49,8 @@ public data class C2CMessageCreate(
      * @property author 发送者
      * @property content 文本消息内容
      * @property timestamp 消息生产时间（RFC3339）
+     * @property messageType 消息类型
+     * @property messageScene 消息场景；自定义菜单开关操作的设置结果位于 [MessageScene.ext] 中
      * @property attachments 富媒体文件附件，文件类型："图片，语音，视频，文件"
      * `{"content_type": "", "filename": "", "height": "", "width": "", "size": "", "url": ""}`
      *
@@ -54,10 +62,50 @@ public data class C2CMessageCreate(
         public val content: String,
         public val timestamp: String,
         public val attachments: List<Message.Attachment> = emptyList(),
+        /**
+         * 消息类型。
+         *
+         * @since 5.0
+         */
+        @SerialName("message_type")
+        @IntroducedAt("5.0")
+        public val messageType: Int? = null,
+        /**
+         * 消息场景信息。
+         *
+         * @since 5.0
+         */
+        @SerialName("message_scene")
+        @IntroducedAt("5.0")
+        public val messageScene: MessageScene? = null,
+    ) {
+        // TODO: 官方单聊消息事件还声明了 `ark_data` 和 `msg_elements`；待抽象对应 ARK 与消息元素模型后补齐。
+    }
+
+    /**
+     * C2C 消息的场景信息。
+     *
+     * [ext] 中的元素是 `key=value` 形式的扩展信息。自定义菜单的开关操作会在此处携带开关设置结果。
+     *
+     * @since 5.0
+     */
+    @Serializable
+    public class MessageScene(
+        /**
+         * 消息来源。
+         */
+        public val source: String? = null,
+        /**
+         * 场景扩展信息。
+         */
+        public val ext: List<String> = emptyList(),
     )
 
     /**
      * The [Data.author].
+     *
+     * TODO: 官方单聊消息事件还声明了 `id`、`username`、`bot`、`union_openid`、`union_user_account`、
+     * `member_openid` 与 `member_role`；待确认跨 C2C/群聊的统一作者模型后补齐。
      */
     @Serializable
     public data class Author(
@@ -73,6 +121,7 @@ public data class C2CMessageCreate(
  */
 @Serializable
 public sealed interface GroupMessageData {
+
     /**
      * 平台方消息 ID，可以用于被动消息发送
      */
@@ -103,11 +152,11 @@ public sealed interface GroupMessageData {
      * `{"content_type": "", "filename": "", "height": "", "width": "", "size": "", "url": ""}`
      */
     public val attachments: List<Message.Attachment>
+
 }
 
 /**
  * 群聊消息体内的发信人信息。
- *
  * @since 4.3.0
  */
 @Serializable
@@ -126,11 +175,11 @@ public sealed interface GroupMessageAuthor {
      * 是否是机器人
      */
     public val bot: Boolean
+
 }
 
 /**
  * 群聊消息体内的发信人身份。
- *
  * @since 4.3.0
  */
 @Serializable
@@ -161,14 +210,6 @@ public data class GroupAtMessageCreate(
 ) : Signal.Dispatch() {
     /**
      * The data of [GroupAtMessageCreate.data]
-     *
-     * @property id 平台方消息 ID，可以用于被动消息发送
-     * @property author 发送者
-     * @property content 消息内容
-     * @property timestamp 消息生产时间（RFC3339）
-     * @property groupOpenid 群聊的 openid
-     * @property attachments 富媒体文件附件，文件类型："图片，语音，视频，文件"
-     * `{"content_type": "", "filename": "", "height": "", "width": "", "size": "", "url": ""}`
      */
     @Serializable
     public data class Data(
@@ -183,8 +224,6 @@ public data class GroupAtMessageCreate(
 
     /**
      * The [Data.author]
-     *
-     * @property memberOpenid 用户在本群的 member_openid
      */
     @Serializable
     public data class Author(
@@ -195,6 +234,7 @@ public data class GroupAtMessageCreate(
         override val bot: Boolean = false,
     ) : GroupMessageAuthor
 }
+
 
 /**
  * [群聊全量消息](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/send-receive/event.html#群聊全量消息)
@@ -225,6 +265,7 @@ public data class GroupMessageCreate(
     @SerialName("d")
     override val data: Data,
 ) : Signal.Dispatch() {
+
     /**
      * The data of [GroupMessageCreate.data]
      */

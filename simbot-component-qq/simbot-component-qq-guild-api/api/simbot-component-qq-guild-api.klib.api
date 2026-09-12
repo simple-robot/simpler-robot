@@ -1414,6 +1414,45 @@ final class love.forte.simbot.qguild.api.member/GuildRoleMemberList { // love.fo
     }
 }
 
+final class love.forte.simbot.qguild.api.menu/GetCustomMenuApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.menu/CustomMenuSnapshot> { // love.forte.simbot.qguild.api.menu/GetCustomMenuApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.menu/GetCustomMenuApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.menu/CustomMenuSnapshot> // love.forte.simbot.qguild.api.menu/GetCustomMenuApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.menu/GetCustomMenuApi.Factory|null[0]
+        final fun create(): love.forte.simbot.qguild.api.menu/GetCustomMenuApi // love.forte.simbot.qguild.api.menu/GetCustomMenuApi.Factory.create|create(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi : love.forte.simbot.qguild.api/PutQQGuildApi<love.forte.simbot.qguild.model.menu/CustomMenuUpdated> { // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi|null[0]
+    final val body // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.menu/CustomMenuUpdated> // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final class Body { // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body|null[0]
+        final val menu // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.menu|{}menu[0]
+            final fun <get-menu>(): love.forte.simbot.qguild.model.menu/CustomMenu? // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.menu.<get-menu>|<get-menu>(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body> { // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body) // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.api.menu.ModifyCustomMenuApi.Body){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body> // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Body.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePutApiDescription { // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Factory|null[0]
+        final fun create(love.forte.simbot.qguild.model.menu/CustomMenu? = ...): love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Factory.create|create(love.forte.simbot.qguild.model.menu.CustomMenu?){}[0]
+        final inline fun create(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi // love.forte.simbot.qguild.api.menu/ModifyCustomMenuApi.Factory.create|create(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuBuilder,kotlin.Unit>){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.api.message.direct/CreateDmsApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model/DirectMessageSession> { // love.forte.simbot.qguild.api.message.direct/CreateDmsApi|null[0]
     final val resultDeserializationStrategy // love.forte.simbot.qguild.api.message.direct/CreateDmsApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model/DirectMessageSession> // love.forte.simbot.qguild.api.message.direct/CreateDmsApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
@@ -1437,6 +1476,12 @@ final class love.forte.simbot.qguild.api.message.direct/DmsSendApi : love.forte.
 
     final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.message.direct/DmsSendApi.Factory|null[0]
         final fun create(kotlin/String, love.forte.simbot.qguild.api.message/MessageSendApi.Body): love.forte.simbot.qguild.api.message.direct/DmsSendApi // love.forte.simbot.qguild.api.message.direct/DmsSendApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.message.MessageSendApi.Body){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.message.group/GroupMessageDeleteApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.message.group/GroupMessageDeleteApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimpleDeleteApiDescription { // love.forte.simbot.qguild.api.message.group/GroupMessageDeleteApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.message.group/GroupMessageDeleteApi // love.forte.simbot.qguild.api.message.group/GroupMessageDeleteApi.Factory.create|create(kotlin.String;kotlin.String){}[0]
     }
 }
 
@@ -1499,6 +1544,12 @@ final class love.forte.simbot.qguild.api.message.setting/GetMessageSettingApi : 
 
     final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.message.setting/GetMessageSettingApi.Factory|null[0]
         final fun create(kotlin/String): love.forte.simbot.qguild.api.message.setting/GetMessageSettingApi // love.forte.simbot.qguild.api.message.setting/GetMessageSettingApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.message.user/UserMessageDeleteApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.message.user/UserMessageDeleteApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimpleDeleteApiDescription { // love.forte.simbot.qguild.api.message.user/UserMessageDeleteApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.message.user/UserMessageDeleteApi // love.forte.simbot.qguild.api.message.user/UserMessageDeleteApi.Factory.create|create(kotlin.String;kotlin.String){}[0]
     }
 }
 
@@ -1599,6 +1650,12 @@ final class love.forte.simbot.qguild.api.message.user/UserMessageSendResult { //
 
     final object Companion { // love.forte.simbot.qguild.api.message.user/UserMessageSendResult.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.message.user/UserMessageSendResult> // love.forte.simbot.qguild.api.message.user/UserMessageSendResult.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.message/DeleteChannelMessageApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.message/DeleteChannelMessageApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimpleDeleteApiDescription { // love.forte.simbot.qguild.api.message/DeleteChannelMessageApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String, kotlin/Boolean? = ...): love.forte.simbot.qguild.api.message/DeleteChannelMessageApi // love.forte.simbot.qguild.api.message/DeleteChannelMessageApi.Factory.create|create(kotlin.String;kotlin.String;kotlin.Boolean?){}[0]
     }
 }
 
@@ -1718,6 +1775,82 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
 
     final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.message/MessageSendApi.Factory|null[0]
         final fun create(kotlin/String, love.forte.simbot.qguild.api.message/MessageSendApi.Body): love.forte.simbot.qguild.api.message/MessageSendApi // love.forte.simbot.qguild.api.message/MessageSendApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.message.MessageSendApi.Body){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/CreateCommandPanelApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model.panel/CommandPanelCreated> { // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi|null[0]
+    final val body // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.model.panel/CommandPanelCreate // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.panel/CommandPanelCreated> // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.Factory|null[0]
+        final fun create(love.forte.simbot.qguild.model.panel/CommandPanelCreate): love.forte.simbot.qguild.api.panel/CreateCommandPanelApi // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.Factory.create|create(love.forte.simbot.qguild.model.panel.CommandPanelCreate){}[0]
+        final inline fun create(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.panel/CreateCommandPanelApi // love.forte.simbot.qguild.api.panel/CreateCommandPanelApi.Factory.create|create(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelCreateBuilder,kotlin.Unit>){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/DeleteCommandPanelApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.panel/DeleteCommandPanelApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimpleDeleteApiDescription { // love.forte.simbot.qguild.api.panel/DeleteCommandPanelApi.Factory|null[0]
+        final fun create(kotlin/String): love.forte.simbot.qguild.api.panel/DeleteCommandPanelApi // love.forte.simbot.qguild.api.panel/DeleteCommandPanelApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/GetCommandPanelApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.panel/CommandPanelRecord> { // love.forte.simbot.qguild.api.panel/GetCommandPanelApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.panel/GetCommandPanelApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.panel/CommandPanelRecord> // love.forte.simbot.qguild.api.panel/GetCommandPanelApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.panel/GetCommandPanelApi.Factory|null[0]
+        final fun create(kotlin/String): love.forte.simbot.qguild.api.panel/GetCommandPanelApi // love.forte.simbot.qguild.api.panel/GetCommandPanelApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/GetCommandPanelListApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.panel/CommandPanelPage> { // love.forte.simbot.qguild.api.panel/GetCommandPanelListApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.panel/GetCommandPanelListApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.panel/CommandPanelPage> // love.forte.simbot.qguild.api.panel/GetCommandPanelListApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.panel/GetCommandPanelListApi.Factory|null[0]
+        final fun create(love.forte.simbot.qguild.model.panel/CommandPanelScope, kotlin/String? = ..., kotlin/Int? = ...): love.forte.simbot.qguild.api.panel/GetCommandPanelListApi // love.forte.simbot.qguild.api.panel/GetCommandPanelListApi.Factory.create|create(love.forte.simbot.qguild.model.panel.CommandPanelScope;kotlin.String?;kotlin.Int?){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi : love.forte.simbot.qguild.api/PutQQGuildApi<love.forte.simbot.qguild.model.panel/CommandPanelUpdated> { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi|null[0]
+    final val body // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.panel/CommandPanelUpdated> // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final class Body { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body|null[0]
+        final val panel // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.panel|{}panel[0]
+            final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel? // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.panel.<get-panel>|<get-panel>(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body> { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body) // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.api.panel.ModifyCommandPanelApi.Body){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body> // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Body.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePutApiDescription { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Factory|null[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
+        final inline fun create(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi // love.forte.simbot.qguild.api.panel/ModifyCommandPanelApi.Factory.create|create(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelBuilder,kotlin.Unit>){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi : love.forte.simbot.qguild.api/PutQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi|null[0]
+    final val body // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi.body.<get-body>|<get-body>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePutApiDescription { // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi.Factory|null[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate): love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate){}[0]
+        final inline fun create(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi // love.forte.simbot.qguild.api.panel/ModifyCommandPanelTargetApi.Factory.create|create(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateBuilder,kotlin.Unit>){}[0]
     }
 }
 
@@ -2128,6 +2261,7 @@ final class love.forte.simbot.qguild.event/C2CMessageCreate : love.forte.simbot.
 
     final class Data { // love.forte.simbot.qguild.event/C2CMessageCreate.Data|null[0]
         constructor <init>(kotlin/String, love.forte.simbot.qguild.event/C2CMessageCreate.Author, kotlin/String, kotlin/String, kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> = ...) // love.forte.simbot.qguild.event/C2CMessageCreate.Data.<init>|<init>(kotlin.String;love.forte.simbot.qguild.event.C2CMessageCreate.Author;kotlin.String;kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.model.Message.Attachment>){}[0]
+        constructor <init>(kotlin/String, love.forte.simbot.qguild.event/C2CMessageCreate.Author, kotlin/String, kotlin/String, kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> = ..., kotlin/Int? = ..., love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? = ...) // love.forte.simbot.qguild.event/C2CMessageCreate.Data.<init>|<init>(kotlin.String;love.forte.simbot.qguild.event.C2CMessageCreate.Author;kotlin.String;kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.model.Message.Attachment>;kotlin.Int?;love.forte.simbot.qguild.event.C2CMessageCreate.MessageScene?){}[0]
 
         final val attachments // love.forte.simbot.qguild.event/C2CMessageCreate.Data.attachments|{}attachments[0]
             final fun <get-attachments>(): kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> // love.forte.simbot.qguild.event/C2CMessageCreate.Data.attachments.<get-attachments>|<get-attachments>(){}[0]
@@ -2137,6 +2271,10 @@ final class love.forte.simbot.qguild.event/C2CMessageCreate : love.forte.simbot.
             final fun <get-content>(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.content.<get-content>|<get-content>(){}[0]
         final val id // love.forte.simbot.qguild.event/C2CMessageCreate.Data.id|{}id[0]
             final fun <get-id>(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.id.<get-id>|<get-id>(){}[0]
+        final val messageScene // love.forte.simbot.qguild.event/C2CMessageCreate.Data.messageScene|{}messageScene[0]
+            final fun <get-messageScene>(): love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? // love.forte.simbot.qguild.event/C2CMessageCreate.Data.messageScene.<get-messageScene>|<get-messageScene>(){}[0]
+        final val messageType // love.forte.simbot.qguild.event/C2CMessageCreate.Data.messageType|{}messageType[0]
+            final fun <get-messageType>(): kotlin/Int? // love.forte.simbot.qguild.event/C2CMessageCreate.Data.messageType.<get-messageType>|<get-messageType>(){}[0]
         final val timestamp // love.forte.simbot.qguild.event/C2CMessageCreate.Data.timestamp|{}timestamp[0]
             final fun <get-timestamp>(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
 
@@ -2145,7 +2283,10 @@ final class love.forte.simbot.qguild.event/C2CMessageCreate : love.forte.simbot.
         final fun component3(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.component3|component3(){}[0]
         final fun component4(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.component4|component4(){}[0]
         final fun component5(): kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> // love.forte.simbot.qguild.event/C2CMessageCreate.Data.component5|component5(){}[0]
+        final fun component6(): kotlin/Int? // love.forte.simbot.qguild.event/C2CMessageCreate.Data.component6|component6(){}[0]
+        final fun component7(): love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? // love.forte.simbot.qguild.event/C2CMessageCreate.Data.component7|component7(){}[0]
         final fun copy(kotlin/String = ..., love.forte.simbot.qguild.event/C2CMessageCreate.Author = ..., kotlin/String = ..., kotlin/String = ..., kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> = ...): love.forte.simbot.qguild.event/C2CMessageCreate.Data // love.forte.simbot.qguild.event/C2CMessageCreate.Data.copy|copy(kotlin.String;love.forte.simbot.qguild.event.C2CMessageCreate.Author;kotlin.String;kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.model.Message.Attachment>){}[0]
+        final fun copy(kotlin/String = ..., love.forte.simbot.qguild.event/C2CMessageCreate.Author = ..., kotlin/String = ..., kotlin/String = ..., kotlin.collections/List<love.forte.simbot.qguild.model/Message.Attachment> = ..., kotlin/Int? = ..., love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? = ...): love.forte.simbot.qguild.event/C2CMessageCreate.Data // love.forte.simbot.qguild.event/C2CMessageCreate.Data.copy|copy(kotlin.String;love.forte.simbot.qguild.event.C2CMessageCreate.Author;kotlin.String;kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.model.Message.Attachment>;kotlin.Int?;love.forte.simbot.qguild.event.C2CMessageCreate.MessageScene?){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/C2CMessageCreate.Data.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/C2CMessageCreate.Data.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.Data.toString|toString(){}[0]
@@ -2163,6 +2304,30 @@ final class love.forte.simbot.qguild.event/C2CMessageCreate : love.forte.simbot.
             final val $childSerializers // love.forte.simbot.qguild.event/C2CMessageCreate.Data.Companion.$childSerializers|{}$childSerializers[0]
 
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/C2CMessageCreate.Data> // love.forte.simbot.qguild.event/C2CMessageCreate.Data.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class MessageScene { // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene|null[0]
+        constructor <init>(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ...) // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.<init>|<init>(kotlin.String?;kotlin.collections.List<kotlin.String>){}[0]
+
+        final val ext // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.ext|{}ext[0]
+            final fun <get-ext>(): kotlin.collections/List<kotlin/String> // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.ext.<get-ext>|<get-ext>(){}[0]
+        final val source // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.source|{}source[0]
+            final fun <get-source>(): kotlin/String? // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.source.<get-source>|<get-source>(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene> { // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene) // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.event.C2CMessageCreate.MessageScene){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.Companion|null[0]
+            final val $childSerializers // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene> // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.Companion.serializer|serializer(){}[0]
         }
     }
 
@@ -5115,6 +5280,540 @@ final class love.forte.simbot.qguild.model.forum/VideoElem { // love.forte.simbo
     }
 }
 
+final class love.forte.simbot.qguild.model.menu/CustomMenu { // love.forte.simbot.qguild.model.menu/CustomMenu|null[0]
+    final val items // love.forte.simbot.qguild.model.menu/CustomMenu.items|{}items[0]
+        final fun <get-items>(): kotlin.collections/List<love.forte.simbot.qguild.model.menu/CustomMenu.Item> // love.forte.simbot.qguild.model.menu/CustomMenu.items.<get-items>|<get-items>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenu.toString|toString(){}[0]
+
+    final class Item { // love.forte.simbot.qguild.model.menu/CustomMenu.Item|null[0]
+        final val link // love.forte.simbot.qguild.model.menu/CustomMenu.Item.link|{}link[0]
+            final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.link.<get-link>|<get-link>(){}[0]
+        final val name // love.forte.simbot.qguild.model.menu/CustomMenu.Item.name|{}name[0]
+            final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.name.<get-name>|<get-name>(){}[0]
+        final val sendMessage // love.forte.simbot.qguild.model.menu/CustomMenu.Item.sendMessage|{}sendMessage[0]
+            final fun <get-sendMessage>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.sendMessage.<get-sendMessage>|<get-sendMessage>(){}[0]
+        final val subMenuItems // love.forte.simbot.qguild.model.menu/CustomMenu.Item.subMenuItems|{}subMenuItems[0]
+            final fun <get-subMenuItems>(): kotlin.collections/List<love.forte.simbot.qguild.model.menu/CustomMenu.SubItem>? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.subMenuItems.<get-subMenuItems>|<get-subMenuItems>(){}[0]
+        final val switch // love.forte.simbot.qguild.model.menu/CustomMenu.Item.switch|{}switch[0]
+            final fun <get-switch>(): love.forte.simbot.qguild.model.menu/CustomMenu.Switch? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.switch.<get-switch>|<get-switch>(){}[0]
+        final val type // love.forte.simbot.qguild.model.menu/CustomMenu.Item.type|{}type[0]
+            final fun <get-type>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType? // love.forte.simbot.qguild.model.menu/CustomMenu.Item.type.<get-type>|<get-type>(){}[0]
+
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenu.Item.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.Item> { // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenu.Item // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenu.Item) // love.forte.simbot.qguild.model.menu/CustomMenu.Item.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenu.Item){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenu.Item.Companion|null[0]
+            final val $childSerializers // love.forte.simbot.qguild.model.menu/CustomMenu.Item.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.Item> // love.forte.simbot.qguild.model.menu/CustomMenu.Item.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class SubItem { // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem|null[0]
+        final val link // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.link|{}link[0]
+            final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.link.<get-link>|<get-link>(){}[0]
+        final val name // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.name|{}name[0]
+            final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.name.<get-name>|<get-name>(){}[0]
+        final val sendMessage // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.sendMessage|{}sendMessage[0]
+            final fun <get-sendMessage>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.sendMessage.<get-sendMessage>|<get-sendMessage>(){}[0]
+        final val type // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.type|{}type[0]
+            final fun <get-type>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType? // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.type.<get-type>|<get-type>(){}[0]
+
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.SubItem> { // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenu.SubItem // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenu.SubItem) // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenu.SubItem){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.SubItem> // love.forte.simbot.qguild.model.menu/CustomMenu.SubItem.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Switch { // love.forte.simbot.qguild.model.menu/CustomMenu.Switch|null[0]
+        final val defaultValue // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.defaultValue|{}defaultValue[0]
+            final fun <get-defaultValue>(): kotlin/Boolean? // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
+        final val switchId // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.switchId|{}switchId[0]
+            final fun <get-switchId>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.switchId.<get-switchId>|<get-switchId>(){}[0]
+
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.Switch> { // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenu.Switch // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenu.Switch) // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenu.Switch){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenu.Switch> // love.forte.simbot.qguild.model.menu/CustomMenu.Switch.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenu> { // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenu) // love.forte.simbot.qguild.model.menu/CustomMenu.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenu){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenu.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.menu/CustomMenu.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.menu/CustomMenuBuilder // love.forte.simbot.qguild.model.menu/CustomMenu.Companion.builder|builder(){}[0]
+        final fun parse(kotlin/String): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenu.Companion.parse|parse(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenu> // love.forte.simbot.qguild.model.menu/CustomMenu.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuBuilder { // love.forte.simbot.qguild.model.menu/CustomMenuBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.<init>|<init>(){}[0]
+
+    final fun addItem(love.forte.simbot.qguild.model.menu/CustomMenu.Item): love.forte.simbot.qguild.model.menu/CustomMenuBuilder // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.addItem|addItem(love.forte.simbot.qguild.model.menu.CustomMenu.Item){}[0]
+    final fun addItems(kotlin.collections/Iterable<love.forte.simbot.qguild.model.menu/CustomMenu.Item>): love.forte.simbot.qguild.model.menu/CustomMenuBuilder // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.addItems|addItems(kotlin.collections.Iterable<love.forte.simbot.qguild.model.menu.CustomMenu.Item>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.build|build(){}[0]
+    final fun clearItems(): love.forte.simbot.qguild.model.menu/CustomMenuBuilder // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.clearItems|clearItems(){}[0]
+    final fun item(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenuBuilder // love.forte.simbot.qguild.model.menu/CustomMenuBuilder.item|item(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuItemBuilder,kotlin.Unit>){}[0]
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder { // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.<init>|<init>(){}[0]
+
+    final var link // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.link|{}link[0]
+        final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.link.<get-link>|<get-link>(){}[0]
+        final fun <set-link>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.link.<set-link>|<set-link>(kotlin.String?){}[0]
+    final var name // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.name.<set-name>|<set-name>(kotlin.String?){}[0]
+    final var sendMessage // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.sendMessage|{}sendMessage[0]
+        final fun <get-sendMessage>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.sendMessage.<get-sendMessage>|<get-sendMessage>(){}[0]
+        final fun <set-sendMessage>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.sendMessage.<set-sendMessage>|<set-sendMessage>(kotlin.String?){}[0]
+    final var switch // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch|{}switch[0]
+        final fun <get-switch>(): love.forte.simbot.qguild.model.menu/CustomMenu.Switch? // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch.<get-switch>|<get-switch>(){}[0]
+        final fun <set-switch>(love.forte.simbot.qguild.model.menu/CustomMenu.Switch?) // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch.<set-switch>|<set-switch>(love.forte.simbot.qguild.model.menu.CustomMenu.Switch?){}[0]
+    final var type // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.type|{}type[0]
+        final fun <get-type>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType? // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.type.<get-type>|<get-type>(){}[0]
+        final fun <set-type>(love.forte.simbot.qguild.model.menu/CustomMenuItemType?) // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.type.<set-type>|<set-type>(love.forte.simbot.qguild.model.menu.CustomMenuItemType?){}[0]
+
+    final fun addSubMenuItem(love.forte.simbot.qguild.model.menu/CustomMenu.SubItem): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.addSubMenuItem|addSubMenuItem(love.forte.simbot.qguild.model.menu.CustomMenu.SubItem){}[0]
+    final fun addSubMenuItems(kotlin.collections/Iterable<love.forte.simbot.qguild.model.menu/CustomMenu.SubItem>): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.addSubMenuItems|addSubMenuItems(kotlin.collections.Iterable<love.forte.simbot.qguild.model.menu.CustomMenu.SubItem>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.menu/CustomMenu.Item // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.build|build(){}[0]
+    final fun clearSubMenuItems(): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.clearSubMenuItems|clearSubMenuItems(){}[0]
+    final fun link(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.link|link(kotlin.String?){}[0]
+    final fun name(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.name|name(kotlin.String?){}[0]
+    final fun sendMessage(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.sendMessage|sendMessage(kotlin.String?){}[0]
+    final fun subMenuItem(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.subMenuItem|subMenuItem(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuSubItemBuilder,kotlin.Unit>){}[0]
+    final fun switch(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch|switch(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuSwitchBuilder,kotlin.Unit>){}[0]
+    final fun switch(kotlin/String? = ..., kotlin/Boolean? = ...): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch|switch(kotlin.String?;kotlin.Boolean?){}[0]
+    final fun switch(love.forte.simbot.qguild.model.menu/CustomMenu.Switch?): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.switch|switch(love.forte.simbot.qguild.model.menu.CustomMenu.Switch?){}[0]
+    final fun type(love.forte.simbot.qguild.model.menu/CustomMenuItemType?): love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuItemBuilder.type|type(love.forte.simbot.qguild.model.menu.CustomMenuItemType?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuSnapshot { // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot|null[0]
+    final val menu // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.menu|{}menu[0]
+        final fun <get-menu>(): love.forte.simbot.qguild.model.menu/CustomMenu? // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.menu.<get-menu>|<get-menu>(){}[0]
+    final val version // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenuSnapshot> { // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenuSnapshot // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenuSnapshot) // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenuSnapshot){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenuSnapshot> // love.forte.simbot.qguild.model.menu/CustomMenuSnapshot.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder { // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.<init>|<init>(){}[0]
+
+    final var link // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.link|{}link[0]
+        final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.link.<get-link>|<get-link>(){}[0]
+        final fun <set-link>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.link.<set-link>|<set-link>(kotlin.String?){}[0]
+    final var name // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.name.<set-name>|<set-name>(kotlin.String?){}[0]
+    final var sendMessage // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.sendMessage|{}sendMessage[0]
+        final fun <get-sendMessage>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.sendMessage.<get-sendMessage>|<get-sendMessage>(){}[0]
+        final fun <set-sendMessage>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.sendMessage.<set-sendMessage>|<set-sendMessage>(kotlin.String?){}[0]
+    final var type // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.type|{}type[0]
+        final fun <get-type>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType? // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.type.<get-type>|<get-type>(){}[0]
+        final fun <set-type>(love.forte.simbot.qguild.model.menu/CustomMenuItemType?) // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.type.<set-type>|<set-type>(love.forte.simbot.qguild.model.menu.CustomMenuItemType?){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model.menu/CustomMenu.SubItem // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.build|build(){}[0]
+    final fun link(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.link|link(kotlin.String?){}[0]
+    final fun name(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.name|name(kotlin.String?){}[0]
+    final fun sendMessage(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.sendMessage|sendMessage(kotlin.String?){}[0]
+    final fun type(love.forte.simbot.qguild.model.menu/CustomMenuItemType?): love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSubItemBuilder.type|type(love.forte.simbot.qguild.model.menu.CustomMenuItemType?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder { // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.<init>|<init>(){}[0]
+
+    final var defaultValue // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.defaultValue|{}defaultValue[0]
+        final fun <get-defaultValue>(): kotlin/Boolean? // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
+        final fun <set-defaultValue>(kotlin/Boolean?) // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.defaultValue.<set-defaultValue>|<set-defaultValue>(kotlin.Boolean?){}[0]
+    final var switchId // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.switchId|{}switchId[0]
+        final fun <get-switchId>(): kotlin/String? // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.switchId.<get-switchId>|<get-switchId>(){}[0]
+        final fun <set-switchId>(kotlin/String?) // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.switchId.<set-switchId>|<set-switchId>(kotlin.String?){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model.menu/CustomMenu.Switch // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.build|build(){}[0]
+    final fun defaultValue(kotlin/Boolean?): love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.defaultValue|defaultValue(kotlin.Boolean?){}[0]
+    final fun switchId(kotlin/String?): love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder // love.forte.simbot.qguild.model.menu/CustomMenuSwitchBuilder.switchId|switchId(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.menu/CustomMenuUpdated { // love.forte.simbot.qguild.model.menu/CustomMenuUpdated|null[0]
+    final val version // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenuUpdated> { // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenuUpdated // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenuUpdated) // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenuUpdated){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenuUpdated> // love.forte.simbot.qguild.model.menu/CustomMenuUpdated.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanel { // love.forte.simbot.qguild.model.panel/CommandPanel|null[0]
+    final val items // love.forte.simbot.qguild.model.panel/CommandPanel.items|{}items[0]
+        final fun <get-items>(): kotlin.collections/List<love.forte.simbot.qguild.model.panel/CommandPanel.Item> // love.forte.simbot.qguild.model.panel/CommandPanel.items.<get-items>|<get-items>(){}[0]
+    final val remark // love.forte.simbot.qguild.model.panel/CommandPanel.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanel.remark.<get-remark>|<get-remark>(){}[0]
+    final val version // love.forte.simbot.qguild.model.panel/CommandPanel.version|{}version[0]
+        final fun <get-version>(): kotlin/Int? // love.forte.simbot.qguild.model.panel/CommandPanel.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanel.toString|toString(){}[0]
+
+    final class Item { // love.forte.simbot.qguild.model.panel/CommandPanel.Item|null[0]
+        final val desc // love.forte.simbot.qguild.model.panel/CommandPanel.Item.desc|{}desc[0]
+            final fun <get-desc>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanel.Item.desc.<get-desc>|<get-desc>(){}[0]
+        final val link // love.forte.simbot.qguild.model.panel/CommandPanel.Item.link|{}link[0]
+            final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanel.Item.link.<get-link>|<get-link>(){}[0]
+        final val name // love.forte.simbot.qguild.model.panel/CommandPanel.Item.name|{}name[0]
+            final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanel.Item.name.<get-name>|<get-name>(){}[0]
+        final val onlyAdmin // love.forte.simbot.qguild.model.panel/CommandPanel.Item.onlyAdmin|{}onlyAdmin[0]
+            final fun <get-onlyAdmin>(): kotlin/Boolean? // love.forte.simbot.qguild.model.panel/CommandPanel.Item.onlyAdmin.<get-onlyAdmin>|<get-onlyAdmin>(){}[0]
+        final val type // love.forte.simbot.qguild.model.panel/CommandPanel.Item.type|{}type[0]
+            final fun <get-type>(): love.forte.simbot.qguild.model.panel/CommandPanelItemType? // love.forte.simbot.qguild.model.panel/CommandPanel.Item.type.<get-type>|<get-type>(){}[0]
+
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanel.Item.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanel.Item> { // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer|null[0]
+            final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanel.Item // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanel.Item) // love.forte.simbot.qguild.model.panel/CommandPanel.Item.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanel.Item){}[0]
+        }
+
+        final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanel.Item.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanel.Item> // love.forte.simbot.qguild.model.panel/CommandPanel.Item.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanel> { // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanel) // love.forte.simbot.qguild.model.panel/CommandPanel.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanel){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanel.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.panel/CommandPanel.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanel.Companion.builder|builder(){}[0]
+        final fun parse(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanel.Companion.parse|parse(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanel> // love.forte.simbot.qguild.model.panel/CommandPanel.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelBuilder { // love.forte.simbot.qguild.model.panel/CommandPanelBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.<init>|<init>(){}[0]
+
+    final var remark // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.remark.<get-remark>|<get-remark>(){}[0]
+        final fun <set-remark>(kotlin/String?) // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.remark.<set-remark>|<set-remark>(kotlin.String?){}[0]
+    final var version // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.version|{}version[0]
+        final fun <get-version>(): kotlin/Int? // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.version.<get-version>|<get-version>(){}[0]
+        final fun <set-version>(kotlin/Int?) // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.version.<set-version>|<set-version>(kotlin.Int?){}[0]
+
+    final fun addItem(love.forte.simbot.qguild.model.panel/CommandPanel.Item): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.addItem|addItem(love.forte.simbot.qguild.model.panel.CommandPanel.Item){}[0]
+    final fun addItems(kotlin.collections/Iterable<love.forte.simbot.qguild.model.panel/CommandPanel.Item>): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.addItems|addItems(kotlin.collections.Iterable<love.forte.simbot.qguild.model.panel.CommandPanel.Item>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.build|build(){}[0]
+    final fun clearItems(): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.clearItems|clearItems(){}[0]
+    final fun item(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.item|item(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelItemBuilder,kotlin.Unit>){}[0]
+    final fun remark(kotlin/String?): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.remark|remark(kotlin.String?){}[0]
+    final fun version(kotlin/Int?): love.forte.simbot.qguild.model.panel/CommandPanelBuilder // love.forte.simbot.qguild.model.panel/CommandPanelBuilder.version|version(kotlin.Int?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelCreate { // love.forte.simbot.qguild.model.panel/CommandPanelCreate|null[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.panel/CommandPanelCreate.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelCreate.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val panel // love.forte.simbot.qguild.model.panel/CommandPanelCreate.panel|{}panel[0]
+        final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel? // love.forte.simbot.qguild.model.panel/CommandPanelCreate.panel.<get-panel>|<get-panel>(){}[0]
+    final val scope // love.forte.simbot.qguild.model.panel/CommandPanelCreate.scope|{}scope[0]
+        final fun <get-scope>(): love.forte.simbot.qguild.model.panel/CommandPanelScope? // love.forte.simbot.qguild.model.panel/CommandPanelCreate.scope.<get-scope>|<get-scope>(){}[0]
+    final val targetType // love.forte.simbot.qguild.model.panel/CommandPanelCreate.targetType|{}targetType[0]
+        final fun <get-targetType>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType? // love.forte.simbot.qguild.model.panel/CommandPanelCreate.targetType.<get-targetType>|<get-targetType>(){}[0]
+    final val userOpenids // love.forte.simbot.qguild.model.panel/CommandPanelCreate.userOpenids|{}userOpenids[0]
+        final fun <get-userOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelCreate.userOpenids.<get-userOpenids>|<get-userOpenids>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelCreate.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelCreate> { // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelCreate // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelCreate) // love.forte.simbot.qguild.model.panel/CommandPanelCreate.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelCreate){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelCreate.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.panel/CommandPanelCreate.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreate.Companion.builder|builder(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelCreate> // love.forte.simbot.qguild.model.panel/CommandPanelCreate.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder { // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.<init>|<init>(){}[0]
+
+    final var panel // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.panel|{}panel[0]
+        final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel? // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.panel.<get-panel>|<get-panel>(){}[0]
+        final fun <set-panel>(love.forte.simbot.qguild.model.panel/CommandPanel?) // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.panel.<set-panel>|<set-panel>(love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
+    final var scope // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.scope|{}scope[0]
+        final fun <get-scope>(): love.forte.simbot.qguild.model.panel/CommandPanelScope? // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.scope.<get-scope>|<get-scope>(){}[0]
+        final fun <set-scope>(love.forte.simbot.qguild.model.panel/CommandPanelScope?) // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.scope.<set-scope>|<set-scope>(love.forte.simbot.qguild.model.panel.CommandPanelScope?){}[0]
+    final var targetType // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.targetType|{}targetType[0]
+        final fun <get-targetType>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType? // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.targetType.<get-targetType>|<get-targetType>(){}[0]
+        final fun <set-targetType>(love.forte.simbot.qguild.model.panel/CommandPanelTargetType?) // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.targetType.<set-targetType>|<set-targetType>(love.forte.simbot.qguild.model.panel.CommandPanelTargetType?){}[0]
+
+    final fun addGroupOpenid(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.addGroupOpenid|addGroupOpenid(kotlin.String){}[0]
+    final fun addGroupOpenids(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.addGroupOpenids|addGroupOpenids(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun addUserOpenid(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.addUserOpenid|addUserOpenid(kotlin.String){}[0]
+    final fun addUserOpenids(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.addUserOpenids|addUserOpenids(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.panel/CommandPanelCreate // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.build|build(){}[0]
+    final fun clearGroupOpenids(): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.clearGroupOpenids|clearGroupOpenids(){}[0]
+    final fun clearUserOpenids(): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.clearUserOpenids|clearUserOpenids(){}[0]
+    final fun panel(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.panel|panel(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelBuilder,kotlin.Unit>){}[0]
+    final fun panel(love.forte.simbot.qguild.model.panel/CommandPanel?): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.panel|panel(love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
+    final fun scope(love.forte.simbot.qguild.model.panel/CommandPanelScope?): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.scope|scope(love.forte.simbot.qguild.model.panel.CommandPanelScope?){}[0]
+    final fun targetType(love.forte.simbot.qguild.model.panel/CommandPanelTargetType?): love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder.targetType|targetType(love.forte.simbot.qguild.model.panel.CommandPanelTargetType?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelCreated { // love.forte.simbot.qguild.model.panel/CommandPanelCreated|null[0]
+    final val panelId // love.forte.simbot.qguild.model.panel/CommandPanelCreated.panelId|{}panelId[0]
+        final fun <get-panelId>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelCreated.panelId.<get-panelId>|<get-panelId>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelCreated.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelCreated> { // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelCreated // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelCreated) // love.forte.simbot.qguild.model.panel/CommandPanelCreated.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelCreated){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelCreated.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelCreated> // love.forte.simbot.qguild.model.panel/CommandPanelCreated.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder { // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.<init>|<init>(){}[0]
+
+    final var desc // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.desc|{}desc[0]
+        final fun <get-desc>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.desc.<get-desc>|<get-desc>(){}[0]
+        final fun <set-desc>(kotlin/String?) // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.desc.<set-desc>|<set-desc>(kotlin.String?){}[0]
+    final var link // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.link|{}link[0]
+        final fun <get-link>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.link.<get-link>|<get-link>(){}[0]
+        final fun <set-link>(kotlin/String?) // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.link.<set-link>|<set-link>(kotlin.String?){}[0]
+    final var name // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String?) // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.name.<set-name>|<set-name>(kotlin.String?){}[0]
+    final var onlyAdmin // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.onlyAdmin|{}onlyAdmin[0]
+        final fun <get-onlyAdmin>(): kotlin/Boolean? // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.onlyAdmin.<get-onlyAdmin>|<get-onlyAdmin>(){}[0]
+        final fun <set-onlyAdmin>(kotlin/Boolean?) // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.onlyAdmin.<set-onlyAdmin>|<set-onlyAdmin>(kotlin.Boolean?){}[0]
+    final var type // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.type|{}type[0]
+        final fun <get-type>(): love.forte.simbot.qguild.model.panel/CommandPanelItemType? // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.type.<get-type>|<get-type>(){}[0]
+        final fun <set-type>(love.forte.simbot.qguild.model.panel/CommandPanelItemType?) // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.type.<set-type>|<set-type>(love.forte.simbot.qguild.model.panel.CommandPanelItemType?){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model.panel/CommandPanel.Item // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.build|build(){}[0]
+    final fun desc(kotlin/String?): love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.desc|desc(kotlin.String?){}[0]
+    final fun link(kotlin/String?): love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.link|link(kotlin.String?){}[0]
+    final fun name(kotlin/String?): love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.name|name(kotlin.String?){}[0]
+    final fun onlyAdmin(kotlin/Boolean?): love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.onlyAdmin|onlyAdmin(kotlin.Boolean?){}[0]
+    final fun type(love.forte.simbot.qguild.model.panel/CommandPanelItemType?): love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder // love.forte.simbot.qguild.model.panel/CommandPanelItemBuilder.type|type(love.forte.simbot.qguild.model.panel.CommandPanelItemType?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelPage { // love.forte.simbot.qguild.model.panel/CommandPanelPage|null[0]
+    final val isEnd // love.forte.simbot.qguild.model.panel/CommandPanelPage.isEnd|{}isEnd[0]
+        final fun <get-isEnd>(): kotlin/Boolean // love.forte.simbot.qguild.model.panel/CommandPanelPage.isEnd.<get-isEnd>|<get-isEnd>(){}[0]
+    final val nextCursor // love.forte.simbot.qguild.model.panel/CommandPanelPage.nextCursor|{}nextCursor[0]
+        final fun <get-nextCursor>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelPage.nextCursor.<get-nextCursor>|<get-nextCursor>(){}[0]
+    final val records // love.forte.simbot.qguild.model.panel/CommandPanelPage.records|{}records[0]
+        final fun <get-records>(): kotlin.collections/List<love.forte.simbot.qguild.model.panel/CommandPanelRecord> // love.forte.simbot.qguild.model.panel/CommandPanelPage.records.<get-records>|<get-records>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelPage.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelPage> { // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelPage // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelPage) // love.forte.simbot.qguild.model.panel/CommandPanelPage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelPage){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelPage.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.panel/CommandPanelPage.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelPage> // love.forte.simbot.qguild.model.panel/CommandPanelPage.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelRecord { // love.forte.simbot.qguild.model.panel/CommandPanelRecord|null[0]
+    final val createdAt // love.forte.simbot.qguild.model.panel/CommandPanelRecord.createdAt|{}createdAt[0]
+        final fun <get-createdAt>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelRecord.createdAt.<get-createdAt>|<get-createdAt>(){}[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.panel/CommandPanelRecord.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelRecord.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val panel // love.forte.simbot.qguild.model.panel/CommandPanelRecord.panel|{}panel[0]
+        final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanelRecord.panel.<get-panel>|<get-panel>(){}[0]
+    final val panelId // love.forte.simbot.qguild.model.panel/CommandPanelRecord.panelId|{}panelId[0]
+        final fun <get-panelId>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelRecord.panelId.<get-panelId>|<get-panelId>(){}[0]
+    final val scope // love.forte.simbot.qguild.model.panel/CommandPanelRecord.scope|{}scope[0]
+        final fun <get-scope>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelRecord.scope.<get-scope>|<get-scope>(){}[0]
+    final val targetType // love.forte.simbot.qguild.model.panel/CommandPanelRecord.targetType|{}targetType[0]
+        final fun <get-targetType>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.qguild.model.panel/CommandPanelRecord.targetType.<get-targetType>|<get-targetType>(){}[0]
+    final val updatedAt // love.forte.simbot.qguild.model.panel/CommandPanelRecord.updatedAt|{}updatedAt[0]
+        final fun <get-updatedAt>(): kotlin/String? // love.forte.simbot.qguild.model.panel/CommandPanelRecord.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+    final val userOpenids // love.forte.simbot.qguild.model.panel/CommandPanelRecord.userOpenids|{}userOpenids[0]
+        final fun <get-userOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelRecord.userOpenids.<get-userOpenids>|<get-userOpenids>(){}[0]
+    final val version // love.forte.simbot.qguild.model.panel/CommandPanelRecord.version|{}version[0]
+        final fun <get-version>(): kotlin/Int? // love.forte.simbot.qguild.model.panel/CommandPanelRecord.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelRecord.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelRecord> { // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelRecord // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelRecord) // love.forte.simbot.qguild.model.panel/CommandPanelRecord.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelRecord){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelRecord.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.panel/CommandPanelRecord.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelRecord> // love.forte.simbot.qguild.model.panel/CommandPanelRecord.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate|null[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val op // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.op|{}op[0]
+        final fun <get-op>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp? // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.op.<get-op>|<get-op>(){}[0]
+    final val userOpenids // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.userOpenids|{}userOpenids[0]
+        final fun <get-userOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.userOpenids.<get-userOpenids>|<get-userOpenids>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate> { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate) // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdate){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.Companion.builder|builder(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate> // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.<init>|<init>(){}[0]
+
+    final var op // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.op|{}op[0]
+        final fun <get-op>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp? // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.op.<get-op>|<get-op>(){}[0]
+        final fun <set-op>(love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp?) // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.op.<set-op>|<set-op>(love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp?){}[0]
+
+    final fun addGroupOpenid(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.addGroupOpenid|addGroupOpenid(kotlin.String){}[0]
+    final fun addGroupOpenids(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.addGroupOpenids|addGroupOpenids(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun addUserOpenid(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.addUserOpenid|addUserOpenid(kotlin.String){}[0]
+    final fun addUserOpenids(kotlin.collections/Collection<kotlin/String>): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.addUserOpenids|addUserOpenids(kotlin.collections.Collection<kotlin.String>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdate // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.build|build(){}[0]
+    final fun clearGroupOpenids(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.clearGroupOpenids|clearGroupOpenids(){}[0]
+    final fun clearUserOpenids(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.clearUserOpenids|clearUserOpenids(){}[0]
+    final fun op(love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp?): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateBuilder.op|op(love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.panel/CommandPanelUpdated { // love.forte.simbot.qguild.model.panel/CommandPanelUpdated|null[0]
+    final val version // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelUpdated> { // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelUpdated // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelUpdated) // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelUpdated){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelUpdated> // love.forte.simbot.qguild.model.panel/CommandPanelUpdated.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.model/Announces { // love.forte.simbot.qguild.model/Announces|null[0]
     constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/UInt, kotlin.collections/List<love.forte.simbot.qguild.model/RecommendChannel> = ...) // love.forte.simbot.qguild.model/Announces.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.UInt;kotlin.collections.List<love.forte.simbot.qguild.model.RecommendChannel>){}[0]
 
@@ -6883,6 +7582,187 @@ final value class love.forte.simbot.qguild.event/IntentsAppenderOp { // love.for
     final fun toString(): kotlin/String // love.forte.simbot.qguild.event/IntentsAppenderOp.toString|toString(){}[0]
 }
 
+final value class love.forte.simbot.qguild.model.menu/CustomMenuItemType { // love.forte.simbot.qguild.model.menu/CustomMenuItemType|null[0]
+    final val value // love.forte.simbot.qguild.model.menu/CustomMenuItemType.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model.menu/CustomMenuItemType.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model.menu/CustomMenuItemType.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.menu/CustomMenuItemType> { // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.menu/CustomMenuItemType) // love.forte.simbot.qguild.model.menu/CustomMenuItemType.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.menu.CustomMenuItemType){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion|null[0]
+        final const val LINK_VALUE // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.LINK_VALUE|{}LINK_VALUE[0]
+            final fun <get-LINK_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.LINK_VALUE.<get-LINK_VALUE>|<get-LINK_VALUE>(){}[0]
+        final const val MENU_VALUE // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.MENU_VALUE|{}MENU_VALUE[0]
+            final fun <get-MENU_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.MENU_VALUE.<get-MENU_VALUE>|<get-MENU_VALUE>(){}[0]
+        final const val SEND_MESSAGE_VALUE // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SEND_MESSAGE_VALUE|{}SEND_MESSAGE_VALUE[0]
+            final fun <get-SEND_MESSAGE_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SEND_MESSAGE_VALUE.<get-SEND_MESSAGE_VALUE>|<get-SEND_MESSAGE_VALUE>(){}[0]
+        final const val SWITCH_VALUE // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SWITCH_VALUE|{}SWITCH_VALUE[0]
+            final fun <get-SWITCH_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SWITCH_VALUE.<get-SWITCH_VALUE>|<get-SWITCH_VALUE>(){}[0]
+
+        final val Link // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Link|{}Link[0]
+            final fun <get-Link>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Link.<get-Link>|<get-Link>(){}[0]
+        final val Menu // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Menu|{}Menu[0]
+            final fun <get-Menu>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Menu.<get-Menu>|<get-Menu>(){}[0]
+        final val SendMessage // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SendMessage|{}SendMessage[0]
+            final fun <get-SendMessage>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.SendMessage.<get-SendMessage>|<get-SendMessage>(){}[0]
+        final val Switch // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Switch|{}Switch[0]
+            final fun <get-Switch>(): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.Switch.<get-Switch>|<get-Switch>(){}[0]
+
+        final fun of(kotlin/String): love.forte.simbot.qguild.model.menu/CustomMenuItemType // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.of|of(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.menu/CustomMenuItemType> // love.forte.simbot.qguild.model.menu/CustomMenuItemType.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final value class love.forte.simbot.qguild.model.panel/CommandPanelItemType { // love.forte.simbot.qguild.model.panel/CommandPanelItemType|null[0]
+    final val value // love.forte.simbot.qguild.model.panel/CommandPanelItemType.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelItemType.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model.panel/CommandPanelItemType.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model.panel/CommandPanelItemType.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelItemType.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelItemType> { // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelItemType // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelItemType) // love.forte.simbot.qguild.model.panel/CommandPanelItemType.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelItemType){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion|null[0]
+        final const val COMMAND_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.COMMAND_VALUE|{}COMMAND_VALUE[0]
+            final fun <get-COMMAND_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.COMMAND_VALUE.<get-COMMAND_VALUE>|<get-COMMAND_VALUE>(){}[0]
+        final const val LINK_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.LINK_VALUE|{}LINK_VALUE[0]
+            final fun <get-LINK_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.LINK_VALUE.<get-LINK_VALUE>|<get-LINK_VALUE>(){}[0]
+
+        final val Command // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.Command|{}Command[0]
+            final fun <get-Command>(): love.forte.simbot.qguild.model.panel/CommandPanelItemType // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.Command.<get-Command>|<get-Command>(){}[0]
+        final val Link // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.Link|{}Link[0]
+            final fun <get-Link>(): love.forte.simbot.qguild.model.panel/CommandPanelItemType // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.Link.<get-Link>|<get-Link>(){}[0]
+
+        final fun of(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelItemType // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.of|of(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelItemType> // love.forte.simbot.qguild.model.panel/CommandPanelItemType.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final value class love.forte.simbot.qguild.model.panel/CommandPanelScope { // love.forte.simbot.qguild.model.panel/CommandPanelScope|null[0]
+    final val scope // love.forte.simbot.qguild.model.panel/CommandPanelScope.scope|{}scope[0]
+        final fun <get-scope>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.scope.<get-scope>|<get-scope>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model.panel/CommandPanelScope.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model.panel/CommandPanelScope.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelScope> { // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelScope) // love.forte.simbot.qguild.model.panel/CommandPanelScope.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelScope){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion|null[0]
+        final const val C2C_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.C2C_VALUE|{}C2C_VALUE[0]
+            final fun <get-C2C_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.C2C_VALUE.<get-C2C_VALUE>|<get-C2C_VALUE>(){}[0]
+        final const val CHANNEL_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.CHANNEL_VALUE|{}CHANNEL_VALUE[0]
+            final fun <get-CHANNEL_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.CHANNEL_VALUE.<get-CHANNEL_VALUE>|<get-CHANNEL_VALUE>(){}[0]
+        final const val DM_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.DM_VALUE|{}DM_VALUE[0]
+            final fun <get-DM_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.DM_VALUE.<get-DM_VALUE>|<get-DM_VALUE>(){}[0]
+        final const val GROUP_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.GROUP_VALUE|{}GROUP_VALUE[0]
+            final fun <get-GROUP_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.GROUP_VALUE.<get-GROUP_VALUE>|<get-GROUP_VALUE>(){}[0]
+
+        final val C2C // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.C2C|{}C2C[0]
+            final fun <get-C2C>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.C2C.<get-C2C>|<get-C2C>(){}[0]
+        final val Channel // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.Channel|{}Channel[0]
+            final fun <get-Channel>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.Channel.<get-Channel>|<get-Channel>(){}[0]
+        final val DM // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.DM|{}DM[0]
+            final fun <get-DM>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.DM.<get-DM>|<get-DM>(){}[0]
+        final val Group // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.Group|{}Group[0]
+            final fun <get-Group>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.Group.<get-Group>|<get-Group>(){}[0]
+
+        final fun of(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.of|of(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelScope> // love.forte.simbot.qguild.model.panel/CommandPanelScope.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final value class love.forte.simbot.qguild.model.panel/CommandPanelTargetType { // love.forte.simbot.qguild.model.panel/CommandPanelTargetType|null[0]
+    final val value // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetType> { // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelTargetType) // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelTargetType){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion|null[0]
+        final const val ALL_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.ALL_VALUE|{}ALL_VALUE[0]
+            final fun <get-ALL_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.ALL_VALUE.<get-ALL_VALUE>|<get-ALL_VALUE>(){}[0]
+        final const val SPECIFIC_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.SPECIFIC_VALUE|{}SPECIFIC_VALUE[0]
+            final fun <get-SPECIFIC_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.SPECIFIC_VALUE.<get-SPECIFIC_VALUE>|<get-SPECIFIC_VALUE>(){}[0]
+
+        final val All // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.All|{}All[0]
+            final fun <get-All>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.All.<get-All>|<get-All>(){}[0]
+        final val Specific // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.Specific|{}Specific[0]
+            final fun <get-Specific>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.Specific.<get-Specific>|<get-Specific>(){}[0]
+
+        final fun of(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.of|of(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetType> // love.forte.simbot.qguild.model.panel/CommandPanelTargetType.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final value class love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp|null[0]
+    final val value // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.value|{}value[0]
+        final fun <get-value>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp> { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp) // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.panel.CommandPanelTargetUpdateOp){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion|null[0]
+        final const val ADD_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.ADD_VALUE|{}ADD_VALUE[0]
+            final fun <get-ADD_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.ADD_VALUE.<get-ADD_VALUE>|<get-ADD_VALUE>(){}[0]
+        final const val DEL_VALUE // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.DEL_VALUE|{}DEL_VALUE[0]
+            final fun <get-DEL_VALUE>(): kotlin/String // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.DEL_VALUE.<get-DEL_VALUE>|<get-DEL_VALUE>(){}[0]
+
+        final val Add // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.Add|{}Add[0]
+            final fun <get-Add>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.Add.<get-Add>|<get-Add>(){}[0]
+        final val Del // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.Del|{}Del[0]
+            final fun <get-Del>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.Del.<get-Del>|<get-Del>(){}[0]
+
+        final fun of(kotlin/String): love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.of|of(kotlin.String){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp> // love.forte.simbot.qguild.model.panel/CommandPanelTargetUpdateOp.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final value class love.forte.simbot.qguild.model/Permissions { // love.forte.simbot.qguild.model/Permissions|null[0]
     constructor <init>(kotlin/Long) // love.forte.simbot.qguild.model/Permissions.<init>|<init>(kotlin.Long){}[0]
 
@@ -8033,6 +8913,8 @@ final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiE
 final inline fun <#A: reified kotlin/Throwable> (#A).love.forte.simbot.qguild/initCause0(kotlin/Throwable): #A // love.forte.simbot.qguild/initCause0|initCause0@0:0(kotlin.Throwable){0§<kotlin.Throwable>}[0]
 final inline fun love.forte.simbot.qguild.event/Intents(kotlin/Function1<love.forte.simbot.qguild.event/IntentsAppenderOp, kotlin/Unit>): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/Intents|Intents(kotlin.Function1<love.forte.simbot.qguild.event.IntentsAppenderOp,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.message/buildArk(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.message/ArkBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.message.ArkBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model.menu/CustomMenu(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenu|CustomMenu(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model.panel/CommandPanel(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanel|CommandPanel(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model/MessageKeyboards(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardsBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards|MessageKeyboards(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardsBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model/buildMessageKeyboard(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboard // love.forte.simbot.qguild.model/buildMessageKeyboard|buildMessageKeyboard(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardBuilder,kotlin.Unit>){}[0]
 final suspend fun <#A: kotlin/Any> (love.forte.simbot.qguild.api/QQGuildApi<#A>).love.forte.simbot.qguild.api/request(io.ktor.client/HttpClient, kotlin/String? = ..., io.ktor.http/Url? = ..., kotlin/String? = ...): io.ktor.client.statement/HttpResponse // love.forte.simbot.qguild.api/request|request@love.forte.simbot.qguild.api.QQGuildApi<0:0>(io.ktor.client.HttpClient;kotlin.String?;io.ktor.http.Url?;kotlin.String?){0§<kotlin.Any>}[0]

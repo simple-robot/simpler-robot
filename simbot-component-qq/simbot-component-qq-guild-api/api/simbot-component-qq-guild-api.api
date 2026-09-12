@@ -1516,6 +1516,49 @@ public final class love/forte/simbot/qguild/api/member/GuildRoleMemberList$Compa
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class love/forte/simbot/qguild/api/menu/GetCustomMenuApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/menu/GetCustomMenuApi$Factory;
+	public static final fun create ()Llove/forte/simbot/qguild/api/menu/GetCustomMenuApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/menu/GetCustomMenuApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create ()Llove/forte/simbot/qguild/api/menu/GetCustomMenuApi;
+}
+
+public final class love/forte/simbot/qguild/api/menu/ModifyCustomMenuApi : love/forte/simbot/qguild/api/PutQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Factory;
+	public static final fun create (Llove/forte/simbot/qguild/model/menu/CustomMenu;)Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body {
+	public static final field Companion Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body$Companion;
+	public final fun getMenu ()Llove/forte/simbot/qguild/model/menu/CustomMenu;
+}
+
+public final synthetic class love/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body;)V
+}
+
+public final class love/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Body$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Factory : love/forte/simbot/qguild/api/SimplePutApiDescription {
+	public final synthetic fun create (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi;
+	public final fun create (Llove/forte/simbot/qguild/model/menu/CustomMenu;)Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi$Factory;Llove/forte/simbot/qguild/model/menu/CustomMenu;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/menu/ModifyCustomMenuApi;
+}
+
 public abstract class love/forte/simbot/qguild/api/message/ArkMessageTemplates {
 	public abstract fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
 }
@@ -1548,6 +1591,18 @@ public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$Text
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextThumbnail : love/forte/simbot/qguild/api/message/ArkMessageTemplates {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
+}
+
+public final class love/forte/simbot/qguild/api/message/DeleteChannelMessageApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi$Factory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi;
+}
+
+public final class love/forte/simbot/qguild/api/message/DeleteChannelMessageApi$Factory : love/forte/simbot/qguild/api/SimpleDeleteApiDescription {
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/message/DeleteChannelMessageApi;
 }
 
 public final class love/forte/simbot/qguild/api/message/DeleteMessageApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
@@ -1751,6 +1806,15 @@ public final class love/forte/simbot/qguild/api/message/direct/DmsSendApiKt {
 	public static final synthetic fun create (Llove/forte/simbot/qguild/api/message/direct/DmsSendApi$Factory;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/message/direct/DmsSendApi;
 }
 
+public final class love/forte/simbot/qguild/api/message/group/GroupMessageDeleteApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/message/group/GroupMessageDeleteApi$Factory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/group/GroupMessageDeleteApi;
+}
+
+public final class love/forte/simbot/qguild/api/message/group/GroupMessageDeleteApi$Factory : love/forte/simbot/qguild/api/SimpleDeleteApiDescription {
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/group/GroupMessageDeleteApi;
+}
+
 public final class love/forte/simbot/qguild/api/message/group/GroupMessageSendApi : love/forte/simbot/qguild/api/PostQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/message/group/GroupMessageSendApi$Factory;
 	public static final field MSG_TYPE_ARK I
@@ -1814,6 +1878,15 @@ public final class love/forte/simbot/qguild/api/message/setting/GetMessageSettin
 
 public final class love/forte/simbot/qguild/api/message/setting/GetMessageSettingApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
 	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/setting/GetMessageSettingApi;
+}
+
+public final class love/forte/simbot/qguild/api/message/user/UserMessageDeleteApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/message/user/UserMessageDeleteApi$Factory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/user/UserMessageDeleteApi;
+}
+
+public final class love/forte/simbot/qguild/api/message/user/UserMessageDeleteApi$Factory : love/forte/simbot/qguild/api/SimpleDeleteApiDescription {
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/user/UserMessageDeleteApi;
 }
 
 public final class love/forte/simbot/qguild/api/message/user/UserMessageSendApi : love/forte/simbot/qguild/api/PostQQGuildApi {
@@ -1906,6 +1979,96 @@ public final synthetic class love/forte/simbot/qguild/api/message/user/UserMessa
 
 public final class love/forte/simbot/qguild/api/message/user/UserMessageSendResult$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/api/panel/CreateCommandPanelApi : love/forte/simbot/qguild/api/PostQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/CreateCommandPanelApi$Factory;
+	public static final fun create (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)Llove/forte/simbot/qguild/api/panel/CreateCommandPanelApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/panel/CreateCommandPanelApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final synthetic fun create (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/panel/CreateCommandPanelApi;
+	public final fun create (Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)Llove/forte/simbot/qguild/api/panel/CreateCommandPanelApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/DeleteCommandPanelApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/DeleteCommandPanelApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/panel/DeleteCommandPanelApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/DeleteCommandPanelApi$Factory : love/forte/simbot/qguild/api/SimpleDeleteApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/panel/DeleteCommandPanelApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/GetCommandPanelApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/GetCommandPanelApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/panel/GetCommandPanelApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/GetCommandPanelListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi$Factory;
+	public static final fun create (Llove/forte/simbot/qguild/model/panel/CommandPanelScope;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi;
+	public static final fun create-PXo_lv4 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/panel/GetCommandPanelListApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create (Llove/forte/simbot/qguild/model/panel/CommandPanelScope;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi;
+	public final fun create-PXo_lv4 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi;
+	public static synthetic fun create-PXo_lv4$default (Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/panel/GetCommandPanelListApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelApi : love/forte/simbot/qguild/api/PutQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Factory;
+	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body {
+	public static final field Companion Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body$Companion;
+	public final fun getPanel ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+}
+
+public final synthetic class love/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body;)V
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Body$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Factory : love/forte/simbot/qguild/api/SimplePutApiDescription {
+	public final synthetic fun create (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi;
+	public final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi$Factory;Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanel;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelApi;
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi : love/forte/simbot/qguild/api/PutQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi$Factory;
+	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;
+}
+
+public final class love/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi$Factory : love/forte/simbot/qguild/api/SimplePutApiDescription {
+	public final synthetic fun create (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi;
+	public final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;)Llove/forte/simbot/qguild/api/panel/ModifyCommandPanelTargetApi;
 }
 
 public final class love/forte/simbot/qguild/api/role/AddMemberRoleApi : love/forte/simbot/qguild/api/PutQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
@@ -2244,20 +2407,28 @@ public final class love/forte/simbot/qguild/event/C2CMessageCreate$Companion {
 
 public final class love/forte/simbot/qguild/event/C2CMessageCreate$Data {
 	public static final field Companion Llove/forte/simbot/qguild/event/C2CMessageCreate$Data$Companion;
-	public fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/Integer;Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;)V
+	public synthetic fun <init> (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/Integer;Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/util/List;
-	public final fun copy (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;
+	public final fun component6 ()Ljava/lang/Integer;
+	public final fun component7 ()Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;
+	public final synthetic fun copy (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;
+	public final fun copy (Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/Integer;Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;)Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;
 	public static synthetic fun copy$default (Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;
+	public static synthetic fun copy$default (Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;Ljava/lang/String;Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/Integer;Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;ILjava/lang/Object;)Llove/forte/simbot/qguild/event/C2CMessageCreate$Data;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getAuthor ()Llove/forte/simbot/qguild/event/C2CMessageCreate$Author;
 	public final fun getContent ()Ljava/lang/String;
 	public final fun getId ()Ljava/lang/String;
+	public final fun getMessageScene ()Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;
+	public final fun getMessageType ()Ljava/lang/Integer;
 	public final fun getTimestamp ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -2274,6 +2445,29 @@ public final synthetic class love/forte/simbot/qguild/event/C2CMessageCreate$Dat
 }
 
 public final class love/forte/simbot/qguild/event/C2CMessageCreate$Data$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/event/C2CMessageCreate$MessageScene {
+	public static final field Companion Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getExt ()Ljava/util/List;
+	public final fun getSource ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/event/C2CMessageCreate$MessageScene$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;)V
+}
+
+public final class love/forte/simbot/qguild/event/C2CMessageCreate$MessageScene$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -7686,6 +7880,732 @@ public final synthetic class love/forte/simbot/qguild/model/forum/VideoElem$$ser
 }
 
 public final class love/forte/simbot/qguild/model/forum/VideoElem$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenu$Companion;
+	public static final fun builder ()Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+	public final fun getItems ()Ljava/util/List;
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenu$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenu$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenu;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$Item {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenu$Item$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSendMessage ()Ljava/lang/String;
+	public final fun getSubMenuItems ()Ljava/util/List;
+	public final fun getSwitch ()Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;
+	public final fun getType ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getType-phlp4yc ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenu$Item$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenu$Item$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenu$Item;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenu$Item;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$Item$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$SubItem {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSendMessage ()Ljava/lang/String;
+	public final fun getType ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getType-phlp4yc ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenu$SubItem$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$SubItem$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$Switch {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch$Companion;
+	public final fun getDefaultValue ()Ljava/lang/Boolean;
+	public final fun getSwitchId ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenu$Switch$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenu$Switch$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuBuilder {
+	public fun <init> ()V
+	public final fun addItem (Llove/forte/simbot/qguild/model/menu/CustomMenu$Item;)Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+	public final fun addItems (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public final fun clearItems ()Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+	public final fun item (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/menu/CustomMenuBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuBuilderKt {
+	public static final fun CustomMenu (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/menu/CustomMenu;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuItemBuilder {
+	public fun <init> ()V
+	public final fun addSubMenuItem (Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun addSubMenuItems (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/menu/CustomMenu$Item;
+	public final fun clearSubMenuItems ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSendMessage ()Ljava/lang/String;
+	public final fun getSwitch ()Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;
+	public final fun getType ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getType-phlp4yc ()Ljava/lang/String;
+	public final fun link (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun name (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun sendMessage (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun setLink (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setSendMessage (Ljava/lang/String;)V
+	public final fun setSwitch (Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;)V
+	public final fun setType (Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;)V
+	public final fun setType-SvNwjzI (Ljava/lang/String;)V
+	public final fun subMenuItem (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun switch (Ljava/lang/String;Ljava/lang/Boolean;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun switch (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun switch (Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public static synthetic fun switch$default (Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun type (Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+	public final fun type-SvNwjzI (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuItemType {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenuItemType$Companion;
+	public static final field LINK_VALUE Ljava/lang/String;
+	public static final field MENU_VALUE Ljava/lang/String;
+	public static final field SEND_MESSAGE_VALUE Ljava/lang/String;
+	public static final field SWITCH_VALUE Ljava/lang/String;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getLink ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public static final fun getLink-i_CJe80 ()Ljava/lang/String;
+	public static final fun getMenu ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public static final fun getMenu-i_CJe80 ()Ljava/lang/String;
+	public static final fun getSendMessage ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public static final fun getSendMessage-i_CJe80 ()Ljava/lang/String;
+	public static final fun getSwitch ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public static final fun getSwitch-i_CJe80 ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public static final fun of-O1Dna0o (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenuItemType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenuItemType$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-O1Dna0o (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-JGlkDlk (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuItemType$Companion {
+	public final fun getLink ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getLink-i_CJe80 ()Ljava/lang/String;
+	public final fun getMenu ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getMenu-i_CJe80 ()Ljava/lang/String;
+	public final fun getSendMessage ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getSendMessage-i_CJe80 ()Ljava/lang/String;
+	public final fun getSwitch ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getSwitch-i_CJe80 ()Ljava/lang/String;
+	public final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun of-O1Dna0o (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuSnapshot {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenuSnapshot$Companion;
+	public final fun getMenu ()Llove/forte/simbot/qguild/model/menu/CustomMenu;
+	public final fun getVersion ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenuSnapshot$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenuSnapshot$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenuSnapshot;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenuSnapshot;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuSnapshot$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder {
+	public fun <init> ()V
+	public final fun build ()Llove/forte/simbot/qguild/model/menu/CustomMenu$SubItem;
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSendMessage ()Ljava/lang/String;
+	public final fun getType ()Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;
+	public final fun getType-phlp4yc ()Ljava/lang/String;
+	public final fun link (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder;
+	public final fun name (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder;
+	public final fun sendMessage (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder;
+	public final fun setLink (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setSendMessage (Ljava/lang/String;)V
+	public final fun setType (Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;)V
+	public final fun setType-SvNwjzI (Ljava/lang/String;)V
+	public final fun type (Llove/forte/simbot/qguild/model/menu/CustomMenuItemType;)Llove/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder;
+	public final fun type-SvNwjzI (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuSubItemBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuSwitchBuilder {
+	public fun <init> ()V
+	public final fun build ()Llove/forte/simbot/qguild/model/menu/CustomMenu$Switch;
+	public final fun defaultValue (Ljava/lang/Boolean;)Llove/forte/simbot/qguild/model/menu/CustomMenuSwitchBuilder;
+	public final fun getDefaultValue ()Ljava/lang/Boolean;
+	public final fun getSwitchId ()Ljava/lang/String;
+	public final fun setDefaultValue (Ljava/lang/Boolean;)V
+	public final fun setSwitchId (Ljava/lang/String;)V
+	public final fun switchId (Ljava/lang/String;)Llove/forte/simbot/qguild/model/menu/CustomMenuSwitchBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuUpdated {
+	public static final field Companion Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated$Companion;
+	public final fun getVersion ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/menu/CustomMenuUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/menu/CustomMenuUpdated;)V
+}
+
+public final class love/forte/simbot/qguild/model/menu/CustomMenuUpdated$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanel {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanel$Companion;
+	public static final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun getItems ()Ljava/util/List;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/Integer;
+	public static final fun parse (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanel$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanel;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanel$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun parse (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanel$Item {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanel$Item$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDesc ()Ljava/lang/String;
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOnlyAdmin ()Ljava/lang/Boolean;
+	public final fun getType ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public final fun getType-i9b90OA ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanel$Item$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanel$Item$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanel$Item;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanel$Item;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanel$Item$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelBuilder {
+	public fun <init> ()V
+	public final fun addItem (Llove/forte/simbot/qguild/model/panel/CommandPanel$Item;)Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun addItems (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun clearItems ()Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/Integer;
+	public final fun item (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun remark (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+	public final fun setRemark (Ljava/lang/String;)V
+	public final fun setVersion (Ljava/lang/Integer;)V
+	public final fun version (Ljava/lang/Integer;)Llove/forte/simbot/qguild/model/panel/CommandPanelBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelBuilderKt {
+	public static final fun CommandPanel (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/panel/CommandPanel;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelCreate {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelCreate$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/qguild/model/panel/CommandPanel;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getPanel ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun getScope ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getScope-F8JzJ44 ()Ljava/lang/String;
+	public final fun getTargetType ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun getTargetType-KVvvMyw ()Ljava/lang/String;
+	public final fun getUserOpenids ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelCreate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelCreate$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelCreate$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder {
+	public fun <init> ()V
+	public final fun addGroupOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun addGroupOpenids (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun addUserOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun addUserOpenids (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreate;
+	public final fun clearGroupOpenids ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun clearUserOpenids ()Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun getPanel ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun getScope ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getScope-F8JzJ44 ()Ljava/lang/String;
+	public final fun getTargetType ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun getTargetType-KVvvMyw ()Ljava/lang/String;
+	public final fun panel (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun panel (Llove/forte/simbot/qguild/model/panel/CommandPanel;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun scope (Llove/forte/simbot/qguild/model/panel/CommandPanelScope;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun scope-UeqzmyE (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun setPanel (Llove/forte/simbot/qguild/model/panel/CommandPanel;)V
+	public final fun setScope (Llove/forte/simbot/qguild/model/panel/CommandPanelScope;)V
+	public final fun setScope-UeqzmyE (Ljava/lang/String;)V
+	public final fun setTargetType (Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;)V
+	public final fun setTargetType--INx46o (Ljava/lang/String;)V
+	public final fun targetType (Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+	public final fun targetType--INx46o (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreateBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelCreated {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelCreated$Companion;
+	public final fun getPanelId ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelCreated$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelCreated;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelCreated;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelCreated$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelItemBuilder {
+	public fun <init> ()V
+	public final fun build ()Llove/forte/simbot/qguild/model/panel/CommandPanel$Item;
+	public final fun desc (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+	public final fun getDesc ()Ljava/lang/String;
+	public final fun getLink ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOnlyAdmin ()Ljava/lang/Boolean;
+	public final fun getType ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public final fun getType-i9b90OA ()Ljava/lang/String;
+	public final fun link (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+	public final fun name (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+	public final fun onlyAdmin (Ljava/lang/Boolean;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+	public final fun setDesc (Ljava/lang/String;)V
+	public final fun setLink (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setOnlyAdmin (Ljava/lang/Boolean;)V
+	public final fun setType (Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;)V
+	public final fun setType-OGIPw5I (Ljava/lang/String;)V
+	public final fun type (Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+	public final fun type-OGIPw5I (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemBuilder;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelItemType {
+	public static final field COMMAND_VALUE Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelItemType$Companion;
+	public static final field LINK_VALUE Ljava/lang/String;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getCommand ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public static final fun getCommand-PINMaHo ()Ljava/lang/String;
+	public static final fun getLink ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public static final fun getLink-PINMaHo ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun of-PTl3Vno (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelItemType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelItemType$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-PTl3Vno (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-zhLRpck (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelItemType$Companion {
+	public final fun getCommand ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public final fun getCommand-PINMaHo ()Ljava/lang/String;
+	public final fun getLink ()Llove/forte/simbot/qguild/model/panel/CommandPanelItemType;
+	public final fun getLink-PINMaHo ()Ljava/lang/String;
+	public final fun of-PTl3Vno (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelPage {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelPage$Companion;
+	public final fun getNextCursor ()Ljava/lang/String;
+	public final fun getRecords ()Ljava/util/List;
+	public final fun isEnd ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelPage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelPage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelPage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelPage;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelPage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelRecord {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelRecord$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/panel/CommandPanel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCreatedAt ()Ljava/lang/String;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getPanel ()Llove/forte/simbot/qguild/model/panel/CommandPanel;
+	public final fun getPanelId ()Ljava/lang/String;
+	public final fun getScope ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getScope-t2OB-1c ()Ljava/lang/String;
+	public final fun getTargetType ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun getTargetType-TuT2_Co ()Ljava/lang/String;
+	public final fun getUpdatedAt ()Ljava/lang/String;
+	public final fun getUserOpenids ()Ljava/util/List;
+	public final fun getVersion ()Ljava/lang/Integer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelRecord$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelRecord$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelRecord;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelRecord;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelRecord$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelScope {
+	public static final field C2C_VALUE Ljava/lang/String;
+	public static final field CHANNEL_VALUE Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelScope$Companion;
+	public static final field DM_VALUE Ljava/lang/String;
+	public static final field GROUP_VALUE Ljava/lang/String;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getC2C ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public static final fun getC2C-t2OB-1c ()Ljava/lang/String;
+	public static final fun getChannel ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public static final fun getChannel-t2OB-1c ()Ljava/lang/String;
+	public static final fun getDM ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public static final fun getDM-t2OB-1c ()Ljava/lang/String;
+	public static final fun getGroup ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public static final fun getGroup-t2OB-1c ()Ljava/lang/String;
+	public final fun getScope ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public static final fun of-X52LvlI (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelScope$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelScope$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-X52LvlI (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-SBMO8OU (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelScope$Companion {
+	public final fun getC2C ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getC2C-t2OB-1c ()Ljava/lang/String;
+	public final fun getChannel ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getChannel-t2OB-1c ()Ljava/lang/String;
+	public final fun getDM ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getDM-t2OB-1c ()Ljava/lang/String;
+	public final fun getGroup ()Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun getGroup-t2OB-1c ()Ljava/lang/String;
+	public final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelScope;
+	public final fun of-X52LvlI (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetType {
+	public static final field ALL_VALUE Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType$Companion;
+	public static final field SPECIFIC_VALUE Ljava/lang/String;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getAll ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public static final fun getAll-TuT2_Co ()Ljava/lang/String;
+	public static final fun getSpecific ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public static final fun getSpecific-TuT2_Co ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public static final fun of-D1wkJ3Y (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelTargetType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-D1wkJ3Y (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-U2yLIZ8 (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetType$Companion {
+	public final fun getAll ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun getAll-TuT2_Co ()Ljava/lang/String;
+	public final fun getSpecific ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun getSpecific-TuT2_Co ()Ljava/lang/String;
+	public final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetType;
+	public final fun of-D1wkJ3Y (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getOp ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public final fun getOp-VwTCMNc ()Ljava/lang/String;
+	public final fun getUserOpenids ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder {
+	public fun <init> ()V
+	public final fun addGroupOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun addGroupOpenids (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun addUserOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun addUserOpenids (Ljava/util/Collection;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdate;
+	public final fun clearGroupOpenids ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun clearUserOpenids ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun getOp ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public final fun getOp-VwTCMNc ()Ljava/lang/String;
+	public final fun op (Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun op-L5s1kaM (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateBuilder;
+	public final fun setOp (Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;)V
+	public final fun setOp-L5s1kaM (Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp {
+	public static final field ADD_VALUE Ljava/lang/String;
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp$Companion;
+	public static final field DEL_VALUE Ljava/lang/String;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public static final fun getAdd ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public static final fun getAdd-V8Hp6ew ()Ljava/lang/String;
+	public static final fun getDel ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public static final fun getDel-V8Hp6ew ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public static final fun of-woUGVVg (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-woUGVVg (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-Grc4QtU (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp$Companion {
+	public final fun getAdd ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public final fun getAdd-V8Hp6ew ()Ljava/lang/String;
+	public final fun getDel ()Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public final fun getDel-V8Hp6ew ()Ljava/lang/String;
+	public final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/panel/CommandPanelTargetUpdateOp;
+	public final fun of-woUGVVg (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelUpdated {
+	public static final field Companion Llove/forte/simbot/qguild/model/panel/CommandPanelUpdated$Companion;
+	public final fun getVersion ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/panel/CommandPanelUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/panel/CommandPanelUpdated$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/panel/CommandPanelUpdated;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/panel/CommandPanelUpdated;)V
+}
+
+public final class love/forte/simbot/qguild/model/panel/CommandPanelUpdated$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

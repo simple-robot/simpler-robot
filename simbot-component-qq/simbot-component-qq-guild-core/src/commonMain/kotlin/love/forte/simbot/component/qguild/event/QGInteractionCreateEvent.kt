@@ -62,7 +62,7 @@ public abstract class QGInteractionCreateEvent : QGBotEvent<InteractionCreate>()
         get() = sourceEventEntity.data.id.ID
 
     /**
-     * 互动类型。消息按钮: `11`, 单聊快捷菜单: `12`
+     * 互动类型。消息按钮: `11`, 自定义菜单: `12`
      */
     public val type: Int
         get() = sourceEventEntity.data.type

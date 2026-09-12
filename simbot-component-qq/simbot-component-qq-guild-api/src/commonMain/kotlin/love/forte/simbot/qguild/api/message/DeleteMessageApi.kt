@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2023-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild.api.message
@@ -33,8 +39,19 @@ import kotlin.jvm.JvmStatic
  * - 管理员可以撤回普通成员的消息。
  * - 频道主可以撤回所有人的消息。
  *
+ * Deprecated: 使用 [DeleteChannelMessageApi] 代替。
+ *
+ * @see DeleteChannelMessageApi
  * @author ForteScarlet
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "Use DeleteChannelMessageApi",
+    replaceWith = ReplaceWith(
+        expression = "DeleteChannelMessageApi.create(channelId, messageId, hidetip)",
+        imports = ["love.forte.simbot.qguild.api.message.DeleteChannelMessageApi"]
+    )
+)
 @PrivateDomainOnly
 public class DeleteMessageApi private constructor(
     channelId: String, messageId: String, private val hidetip: Boolean? = null
@@ -61,4 +78,3 @@ public class DeleteMessageApi private constructor(
         hidetip?.also { parameters.append("hidetip", it.toString()) }
     }
 }
-

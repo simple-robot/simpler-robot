@@ -625,6 +625,11 @@ public final class love/forte/simbot/common/text/StringsKt {
 	public static final fun toHex ([B)Ljava/lang/String;
 }
 
+public final class love/forte/simbot/common/utils/RunCatchingUtilKt {
+	public static final fun runCatchingCancellable (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun runCatchingCancellable (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
 public final class love/forte/simbot/common/weak/NonWeakRefImpl : love/forte/simbot/common/weak/WeakRef {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun clear ()V

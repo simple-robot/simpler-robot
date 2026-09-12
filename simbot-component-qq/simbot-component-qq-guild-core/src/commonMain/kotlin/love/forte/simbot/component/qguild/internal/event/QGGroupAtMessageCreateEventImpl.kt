@@ -35,6 +35,7 @@ import love.forte.simbot.component.qguild.internal.group.QGGroupAuthorImpl
 import love.forte.simbot.component.qguild.internal.group.toGroup
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
 import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
+import love.forte.simbot.component.qguild.message.deleteGroupMessage
 import love.forte.simbot.component.qguild.message.sendGroupMessage
 import love.forte.simbot.component.qguild.utils.alsoEmitPostReplyEvent
 import love.forte.simbot.event.InteractionMessage
@@ -71,7 +72,9 @@ internal class QGGroupAtMessageCreateEventImpl(
         sourceEventEntity.data.id.ID,
         sourceEventEntity.data.content,
         sourceEventEntity.data.attachments
-    )
+    ) { options ->
+        bot.deleteGroupMessage(sourceEventEntity.data.groupOpenid, sourceEventEntity.data.id, *options)
+    }
 
     override suspend fun content(): QGGroup =
         sourceEventEntity.data.toGroup(bot, msgSeq)

@@ -18,8 +18,16 @@ open annotation class love.forte.simbot.component.qguild.bot/QGBotManagerConfigu
     constructor <init>() // love.forte.simbot.component.qguild.bot/QGBotManagerConfigurationDsl.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi : kotlin/Annotation { // love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.menu/InternalForInheritanceQGMenuApi.<init>|<init>(){}[0]
+}
+
 open annotation class love.forte.simbot.component.qguild.message/QGSendOnly : kotlin/Annotation { // love.forte.simbot.component.qguild.message/QGSendOnly|null[0]
     constructor <init>() // love.forte.simbot.component.qguild.message/QGSendOnly.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.component.qguild.panel/InternalForInheritanceQGPanelApi : kotlin/Annotation { // love.forte.simbot.component.qguild.panel/InternalForInheritanceQGPanelApi|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.panel/InternalForInheritanceQGPanelApi.<init>|<init>(){}[0]
 }
 
 open annotation class love.forte.simbot.component.qguild/ExperimentalQGApi : kotlin/Annotation { // love.forte.simbot.component.qguild/ExperimentalQGApi|null[0]
@@ -124,8 +132,12 @@ abstract interface love.forte.simbot.component.qguild.bot/QGBot : love.forte.sim
         abstract fun <get-source>(): love.forte.simbot.qguild.stdlib/Bot // love.forte.simbot.component.qguild.bot/QGBot.source.<get-source>|<get-source>(){}[0]
     abstract val userId // love.forte.simbot.component.qguild.bot/QGBot.userId|{}userId[0]
         abstract fun <get-userId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.bot/QGBot.userId.<get-userId>|<get-userId>(){}[0]
+    open val commandPanels // love.forte.simbot.component.qguild.bot/QGBot.commandPanels|{}commandPanels[0]
+        open fun <get-commandPanels>(): love.forte.simbot.component.qguild.panel/QGCommandPanelManager // love.forte.simbot.component.qguild.bot/QGBot.commandPanels.<get-commandPanels>|<get-commandPanels>(){}[0]
     open val contactRelation // love.forte.simbot.component.qguild.bot/QGBot.contactRelation|{}contactRelation[0]
         open fun <get-contactRelation>(): love.forte.simbot.bot/ContactRelation? // love.forte.simbot.component.qguild.bot/QGBot.contactRelation.<get-contactRelation>|<get-contactRelation>(){}[0]
+    open val customMenus // love.forte.simbot.component.qguild.bot/QGBot.customMenus|{}customMenus[0]
+        open fun <get-customMenus>(): love.forte.simbot.component.qguild.menu/QGCustomMenuManager // love.forte.simbot.component.qguild.bot/QGBot.customMenus.<get-customMenus>|<get-customMenus>(){}[0]
     open val id // love.forte.simbot.component.qguild.bot/QGBot.id|{}id[0]
         open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.bot/QGBot.id.<get-id>|<get-id>(){}[0]
 
@@ -664,6 +676,11 @@ abstract interface love.forte.simbot.component.qguild.guild/QGMember : kotlinx.c
     abstract suspend fun unmute() // love.forte.simbot.component.qguild.guild/QGMember.unmute|unmute(){}[0]
 }
 
+abstract interface love.forte.simbot.component.qguild.menu/QGCustomMenuManager { // love.forte.simbot.component.qguild.menu/QGCustomMenuManager|null[0]
+    abstract suspend fun get(): love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot // love.forte.simbot.component.qguild.menu/QGCustomMenuManager.get|get(){}[0]
+    abstract suspend fun update(love.forte.simbot.qguild.model.menu/CustomMenu): love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt // love.forte.simbot.component.qguild.menu/QGCustomMenuManager.update|update(love.forte.simbot.qguild.model.menu.CustomMenu){}[0]
+}
+
 abstract interface love.forte.simbot.component.qguild.message/QGMessageElement : love.forte.simbot.message/Message.Element // love.forte.simbot.component.qguild.message/QGMessageElement|null[0]
 
 abstract interface love.forte.simbot.component.qguild.message/QGMessageReceipt : love.forte.simbot.message/MessageReceipt { // love.forte.simbot.component.qguild.message/QGMessageReceipt|null[0]
@@ -695,6 +712,29 @@ abstract interface love.forte.simbot.component.qguild.message/ReceivingMessagePa
         final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/ReceivingMessageParser.Context.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/ReceivingMessageParser.Context.toString|toString(){}[0]
     }
+}
+
+abstract interface love.forte.simbot.component.qguild.panel/QGCommandPanelHandle : love.forte.simbot.ability/DeleteSupport { // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle|null[0]
+    abstract val id // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.id.<get-id>|<get-id>(){}[0]
+
+    abstract suspend fun addTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>?, kotlin.collections/Collection<love.forte.simbot.common.id/ID>?) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.addTargets|addTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?){}[0]
+    abstract suspend fun delete(kotlin/Array<out love.forte.simbot.ability/DeleteOption>...) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.delete|delete(kotlin.Array<out|love.forte.simbot.ability.DeleteOption>...){}[0]
+    abstract suspend fun get(): love.forte.simbot.component.qguild.panel/QGCommandPanelRecord // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.get|get(){}[0]
+    abstract suspend fun removeTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>?, kotlin.collections/Collection<love.forte.simbot.common.id/ID>?) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.removeTargets|removeTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?){}[0]
+    abstract suspend fun update(love.forte.simbot.qguild.model.panel/CommandPanel): love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.update|update(love.forte.simbot.qguild.model.panel.CommandPanel){}[0]
+    open suspend fun addGroupTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.addGroupTargets|addGroupTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>){}[0]
+    open suspend fun addUserTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.addUserTargets|addUserTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>){}[0]
+    open suspend fun removeGroupTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.removeGroupTargets|removeGroupTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>){}[0]
+    open suspend fun removeUserTargets(kotlin.collections/Collection<love.forte.simbot.common.id/ID>) // love.forte.simbot.component.qguild.panel/QGCommandPanelHandle.removeUserTargets|removeUserTargets(kotlin.collections.Collection<love.forte.simbot.common.id.ID>){}[0]
+}
+
+abstract interface love.forte.simbot.component.qguild.panel/QGCommandPanelManager { // love.forte.simbot.component.qguild.panel/QGCommandPanelManager|null[0]
+    abstract fun handle(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.handle|handle(love.forte.simbot.common.id.ID){}[0]
+    abstract fun list(kotlin/String, kotlin/String? = ..., kotlin/Int? = ..., kotlin/Boolean = ...): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.panel/QGCommandPanelRecord> // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.list|list(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.Boolean){}[0]
+    abstract suspend fun create(love.forte.simbot.qguild.model.panel/CommandPanelCreate): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.create|create(love.forte.simbot.qguild.model.panel.CommandPanelCreate){}[0]
+    abstract suspend fun get(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.panel/QGCommandPanelRecord // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.get|get(love.forte.simbot.common.id.ID){}[0]
+    open fun list(kotlin/String): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.panel/QGCommandPanelRecord> // love.forte.simbot.component.qguild.panel/QGCommandPanelManager.list|list(kotlin.String){}[0]
 }
 
 abstract interface love.forte.simbot.component.qguild.role/QGRoleUpdater { // love.forte.simbot.component.qguild.role/QGRoleUpdater|null[0]
@@ -797,6 +837,10 @@ abstract class love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent 
         abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.id.<get-id>|<get-id>(){}[0]
     abstract val messageContent // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageContent|{}messageContent[0]
         abstract fun <get-messageContent>(): love.forte.simbot.component.qguild.message/QGGroupAndC2CMessageContent // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageContent.<get-messageContent>|<get-messageContent>(){}[0]
+    final val messageScene // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageScene|{}messageScene[0]
+        final fun <get-messageScene>(): love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageScene.<get-messageScene>|<get-messageScene>(){}[0]
+    final val messageType // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageType|{}messageType[0]
+        final fun <get-messageType>(): kotlin/Int? // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
     open val authorId // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.authorId|{}authorId[0]
         open fun <get-authorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.authorId.<get-authorId>|<get-authorId>(){}[0]
     open val time // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.time|{}time[0]
@@ -1326,6 +1370,19 @@ abstract class love.forte.simbot.component.qguild.message/QGSingleMessageReceipt
         abstract fun <get-messageResult>(): love.forte.simbot.qguild.model/Message // love.forte.simbot.component.qguild.message/QGSingleMessageReceipt.messageResult.<get-messageResult>|<get-messageResult>(){}[0]
 }
 
+abstract class love.forte.simbot.component.qguild.panel/QGCommandPanelRecord : love.forte.simbot.component.qguild.panel/QGCommandPanelHandle, love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model.panel/CommandPanelRecord> { // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.<init>|<init>(){}[0]
+
+    final val panel // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.panel|{}panel[0]
+        final fun <get-panel>(): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.panel.<get-panel>|<get-panel>(){}[0]
+    final val scope // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scope|{}scope[0]
+        final fun <get-scope>(): love.forte.simbot.qguild.model.panel/CommandPanelScope // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.scope.<get-scope>|<get-scope>(){}[0]
+    final val targetType // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetType|{}targetType[0]
+        final fun <get-targetType>(): love.forte.simbot.qguild.model.panel/CommandPanelTargetType // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.targetType.<get-targetType>|<get-targetType>(){}[0]
+    final val version // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.version|{}version[0]
+        final fun <get-version>(): kotlin/Int? // love.forte.simbot.component.qguild.panel/QGCommandPanelRecord.version.<get-version>|<get-version>(){}[0]
+}
+
 final class love.forte.simbot.component.qguild.bot.config/CacheConfig { // love.forte.simbot.component.qguild.bot.config/CacheConfig|null[0]
     constructor <init>(kotlin/Boolean = ..., love.forte.simbot.component.qguild.bot.config/TransmitCacheConfig? = ..., love.forte.simbot.component.qguild.bot.config/DynamicCacheConfig? = ...) // love.forte.simbot.component.qguild.bot.config/CacheConfig.<init>|<init>(kotlin.Boolean;love.forte.simbot.component.qguild.bot.config.TransmitCacheConfig?;love.forte.simbot.component.qguild.bot.config.DynamicCacheConfig?){}[0]
 
@@ -1634,6 +1691,28 @@ final class love.forte.simbot.component.qguild.event/QGInternalInterceptionExcep
     constructor <init>(kotlin/String?) // love.forte.simbot.component.qguild.event/QGInternalInterceptionException.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/Throwable?) // love.forte.simbot.component.qguild.event/QGInternalInterceptionException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
     constructor <init>(kotlin/Throwable?) // love.forte.simbot.component.qguild.event/QGInternalInterceptionException.<init>|<init>(kotlin.Throwable?){}[0]
+}
+
+final class love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot : love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model.menu/CustomMenuSnapshot> { // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot|null[0]
+    final val menu // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.menu|{}menu[0]
+        final fun <get-menu>(): love.forte.simbot.qguild.model.menu/CustomMenu? // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.menu.<get-menu>|<get-menu>(){}[0]
+    final val source // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.qguild.model.menu/CustomMenuSnapshot // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.source.<get-source>|<get-source>(){}[0]
+    final val version // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.component.qguild.menu/QGCustomMenuSnapshot.toString|toString(){}[0]
+}
+
+final class love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt : love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model.menu/CustomMenuUpdated> { // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt|null[0]
+    constructor <init>(love.forte.simbot.qguild.model.menu/CustomMenuUpdated) // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.<init>|<init>(love.forte.simbot.qguild.model.menu.CustomMenuUpdated){}[0]
+
+    final val source // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.qguild.model.menu/CustomMenuUpdated // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.source.<get-source>|<get-source>(){}[0]
+    final val version // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.version.<get-version>|<get-version>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt.toString|toString(){}[0]
 }
 
 final class love.forte.simbot.component.qguild.message/QGArk : love.forte.simbot.component.qguild.message/QGMessageElement { // love.forte.simbot.component.qguild.message/QGArk|null[0]
@@ -1961,6 +2040,13 @@ final class love.forte.simbot.component.qguild.message/QGReplyTo : love.forte.si
     final object Companion { // love.forte.simbot.component.qguild.message/QGReplyTo.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.component.qguild.message/QGReplyTo> // love.forte.simbot.component.qguild.message/QGReplyTo.Companion.serializer|serializer(){}[0]
     }
+}
+
+final class love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt : love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model.panel/CommandPanelUpdated> { // love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt|null[0]
+    final val source // love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.qguild.model.panel/CommandPanelUpdated // love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt.source.<get-source>|<get-source>(){}[0]
+    final val version // love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt.version|{}version[0]
+        final fun <get-version>(): kotlin/Int // love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt.version.<get-version>|<get-version>(){}[0]
 }
 
 final class love.forte.simbot.component.qguild/QQGuildComponent : love.forte.simbot.component/Component { // love.forte.simbot.component.qguild/QQGuildComponent|null[0]
@@ -2334,7 +2420,11 @@ final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simb
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, kotlin.collections/List<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody>): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody>){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
+final suspend fun (love.forte.simbot.component.qguild.panel/QGCommandPanelManager).love.forte.simbot.component.qguild.panel/create(love.forte.simbot.qguild.model.panel/CommandPanelScope? = ..., love.forte.simbot.qguild.model.panel/CommandPanelTargetType? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/create|create@love.forte.simbot.component.qguild.panel.QGCommandPanelManager(love.forte.simbot.qguild.model.panel.CommandPanelScope?;love.forte.simbot.qguild.model.panel.CommandPanelTargetType?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.bot/emitEvent(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.stdlib/EmitEventOptions, kotlin/Unit>): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.component.qguild.bot/emitEvent|emitEvent@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.stdlib.EmitEventOptions,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.message/Message, crossinline kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ..., kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ...): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.message.Message;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, love.forte.simbot.message/Message, crossinline kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ..., kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ...): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.message.Message;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.channel/QGForumChannel).love.forte.simbot.component.qguild.channel/createThread(kotlin/Function1<love.forte.simbot.component.qguild.forum/QGThreadCreator, kotlin/Unit>): love.forte.simbot.qguild.api.forum/ThreadPublishResult // love.forte.simbot.component.qguild.channel/createThread|createThread@love.forte.simbot.component.qguild.channel.QGForumChannel(kotlin.Function1<love.forte.simbot.component.qguild.forum.QGThreadCreator,kotlin.Unit>){}[0]
+final suspend inline fun (love.forte.simbot.component.qguild.menu/QGCustomMenuManager).love.forte.simbot.component.qguild.menu/update(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuBuilder, kotlin/Unit>): love.forte.simbot.component.qguild.menu/QGCustomMenuUpdateReceipt // love.forte.simbot.component.qguild.menu/update|update@love.forte.simbot.component.qguild.menu.QGCustomMenuManager(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuBuilder,kotlin.Unit>){}[0]
+final suspend inline fun (love.forte.simbot.component.qguild.panel/QGCommandPanelHandle).love.forte.simbot.component.qguild.panel/update(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelBuilder, kotlin/Unit>): love.forte.simbot.component.qguild.panel/QGCommandPanelUpdateReceipt // love.forte.simbot.component.qguild.panel/update|update@love.forte.simbot.component.qguild.panel.QGCommandPanelHandle(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelBuilder,kotlin.Unit>){}[0]
+final suspend inline fun (love.forte.simbot.component.qguild.panel/QGCommandPanelManager).love.forte.simbot.component.qguild.panel/create(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelCreateBuilder, kotlin/Unit>): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/create|create@love.forte.simbot.component.qguild.panel.QGCommandPanelManager(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelCreateBuilder,kotlin.Unit>){}[0]
