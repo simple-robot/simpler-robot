@@ -67,7 +67,7 @@ dependencyResolutionManagement {
     // https://github.com/JetBrains/kotlin-wrappers
     versionCatalogs {
         register("kotlinWrappers") {
-            val wrappersVersion = "2026.1.10"
+            val wrappersVersion = "2026.9.1"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
     }
