@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       # setup Java
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v5.6.0
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
