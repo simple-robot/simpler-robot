@@ -97,8 +97,7 @@ public interface QGBot : Bot, EventMentionAware {
      * 当前bot的 **appId** 。
      *
      * 如果希望获取当前bot的**用户**ID，
-     * 至少执行一次 [start] 后使用 [userId]，
-     * 或者通过 []
+     * 至少执行一次 [start] 后使用 [userId]，或者通过 [me] 执行查询。
      */
     override val id: ID
         get() = source.ticket.appId.ID
@@ -155,6 +154,7 @@ public interface QGBot : Bot, EventMentionAware {
         return when (event) {
             is QGGroupAtMessageCreateEvent -> true
             is QGAtMessageCreateEvent -> true
+            // 返回 false 则通过 at 和 isMe 进行进一步判断
             else -> false
         }
     }

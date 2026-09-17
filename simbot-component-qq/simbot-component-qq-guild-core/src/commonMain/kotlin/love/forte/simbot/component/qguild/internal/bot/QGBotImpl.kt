@@ -148,8 +148,9 @@ internal class QGBotImpl(
         get() = if (!::botSelf.isInitialized) "" else botSelf.avatar
 
     override fun isMe(id: ID): Boolean {
-        if (id == this.id) return true
-        return ::botSelf.isInitialized && botSelf.id == id.literal
+        return id == this.id || ::botSelf.isInitialized &&
+            // bot 的 self id 似乎并不是 union_openid，跟被at的时候不一样，因此要判断 unionOpenId
+            (botSelf.id == id.literal || botSelf.unionOpenid == id.literal)
     }
 
     override val groupRelation: QGGroupRelation = GroupRelationImpl()
