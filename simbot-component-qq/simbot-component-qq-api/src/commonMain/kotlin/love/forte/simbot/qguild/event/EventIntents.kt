@@ -25,7 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.PrivateDomainOnly
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.event.EventIntents.Companion.READY_TYPE
 import love.forte.simbot.qguild.event.EventIntents.Companion.RESUMED_TYPE
 import love.forte.simbot.qguild.internal.EventNameBasedMarker

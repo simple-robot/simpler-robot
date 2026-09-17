@@ -30,8 +30,8 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.plus
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.event.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext

@@ -27,10 +27,10 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.time.TimeUnit
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimplePatchApiDescription
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 import kotlin.time.Duration

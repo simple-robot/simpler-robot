@@ -38,11 +38,11 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.qguild.QGInternalApi
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.MessageAuditedException
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.api.message.MessageSendApi.Body.Builder
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.message.ContentTextDecoder
 import love.forte.simbot.qguild.message.ContentTextEncoder
 import love.forte.simbot.qguild.model.Message

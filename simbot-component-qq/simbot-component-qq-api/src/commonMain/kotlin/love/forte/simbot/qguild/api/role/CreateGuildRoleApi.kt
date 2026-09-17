@@ -26,10 +26,10 @@ package love.forte.simbot.qguild.api.role
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 import love.forte.simbot.qguild.model.ColorIntSerializer
 import love.forte.simbot.qguild.model.Role
 import kotlin.jvm.JvmOverloads

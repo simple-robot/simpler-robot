@@ -37,6 +37,13 @@ package love.forte.simbot.qguild
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
+@Deprecated(
+    "包路径移动至 simbot-component-qq-common 模块内的 `love.forte.simbot.qguild` 中",
+    ReplaceWith(
+        "ApiModel",
+        "love.forte.simbot.qguild.common.ApiModel"
+    )
+)
 public annotation class ApiModel
 
 /**
@@ -54,6 +61,13 @@ public annotation class ApiModel
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CONSTRUCTOR)
 @MustBeDocumented
+@Deprecated(
+    "包路径移动至 simbot-component-qq-common 模块内的 `love.forte.simbot.qguild` 中",
+    ReplaceWith(
+        "ApiModelConstructor",
+        "love.forte.simbot.qguild.common.ApiModelConstructor"
+    )
+)
 public annotation class ApiModelConstructor
 
 /**
@@ -71,6 +85,34 @@ public annotation class ApiModelConstructor
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
+@Deprecated(
+    "包路径移动至 simbot-component-qq-common 模块内的 `love.forte.simbot.qguild` 中",
+    ReplaceWith(
+        "PrivateDomainOnly",
+        "love.forte.simbot.qguild.common.PrivateDomainOnly"
+    )
+)
 public annotation class PrivateDomainOnly
 
 
+/**
+ * 作为某个事件数据载体类型的构造函数，为了确保兼容性 **不应** 被直接调用。
+ * 在后续版本它们可能会被逐渐过渡为内部或隐藏的构造。
+ *
+ * @since 5.0
+ */
+@RequiresOptIn(
+    message = "作为某个事件数据载体类型的构造函数，为了确保兼容性 **不应** 被直接调用。" +
+        "在后续版本它们可能会被逐渐过渡为内部或隐藏的构造。"
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CONSTRUCTOR)
+@MustBeDocumented
+@Deprecated(
+    "包路径移动至 simbot-component-qq-common 模块内的 `love.forte.simbot.qguild` 中",
+    ReplaceWith(
+        "EventModelConstructor",
+        "love.forte.simbot.qguild.common.EventModelConstructor"
+    )
+)
+public annotation class EventModelConstructor

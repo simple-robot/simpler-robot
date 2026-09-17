@@ -25,6 +25,7 @@ package love.forte.simbot.qguild
 
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
+import love.forte.simbot.qguild.common.QQ
 import kotlin.jvm.JvmField
 
 /**
@@ -46,7 +47,7 @@ public object QQGuild {
      */
     @Deprecated(
         message = "Use QQ.URL instead.",
-        replaceWith = ReplaceWith("QQ.URL", "love.forte.simbot.qguild.QQ")
+        replaceWith = ReplaceWith("QQ.URL", "love.forte.simbot.qguild.common.QQ")
     )
     public const val URL_STRING: String = QQ.URL
 
@@ -61,7 +62,7 @@ public object QQGuild {
         replaceWith = ReplaceWith(
             "Url(QQ.URL)",
             "io.ktor.http.Url",
-            "love.forte.simbot.qguild.QQ",
+            "love.forte.simbot.qguild.common.QQ",
         )
     )
     public val URL: Url = Url(QQ.URL)
@@ -106,7 +107,7 @@ public object QQGuild {
     @JvmField
     @Deprecated(
         message = "Use QQ.DefaultJson instead.",
-        replaceWith = ReplaceWith("QQ.DefaultJson", "love.forte.simbot.qguild.QQ")
+        replaceWith = ReplaceWith("QQ.DefaultJson", "love.forte.simbot.qguild.common.QQ")
     )
     public val DefaultJson: Json = QQ.DefaultJson
 }

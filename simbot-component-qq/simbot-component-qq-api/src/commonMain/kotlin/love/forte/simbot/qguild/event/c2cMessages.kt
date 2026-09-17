@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.Message
 
 /**
@@ -35,7 +36,7 @@ import love.forte.simbot.qguild.model.Message
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.C2C_MESSAGE_CREATE_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.C2C_MESSAGE_CREATE_TYPE)
-public data class C2CMessageCreate(
+public data class C2CMessageCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -56,7 +57,7 @@ public data class C2CMessageCreate(
      *
      */
     @Serializable
-    public data class Data(
+    public data class Data @EventModelConstructor constructor(
         public val id: String,
         public val author: Author,
         public val content: String,
@@ -90,7 +91,7 @@ public data class C2CMessageCreate(
      * @since 5.0
      */
     @Serializable
-    public class MessageScene(
+    public class MessageScene @EventModelConstructor constructor(
         /**
          * 消息来源。
          */
@@ -99,7 +100,27 @@ public data class C2CMessageCreate(
          * 场景扩展信息。
          */
         public val ext: List<String> = emptyList(),
-    )
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is MessageScene) return false
+
+            if (source != other.source) return false
+            if (ext != other.ext) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = source.hashCode()
+            result = 31 * result + ext.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "MessageScene(source=$source, ext=$ext)"
+        }
+    }
 
     /**
      * The [Data.author].
@@ -108,7 +129,7 @@ public data class C2CMessageCreate(
      * `member_openid` 与 `member_role`；待确认跨 C2C/群聊的统一作者模型后补齐。
      */
     @Serializable
-    public data class Author(
+    public data class Author @EventModelConstructor constructor(
         @SerialName("user_openid")
         val userOpenid: String,
     )
@@ -212,7 +233,7 @@ public data class GroupAtMessageCreate(
      * The data of [GroupAtMessageCreate.data]
      */
     @Serializable
-    public data class Data(
+    public data class Data @EventModelConstructor constructor(
         override val id: String,
         override val author: Author,
         override val content: String,
@@ -226,7 +247,7 @@ public data class GroupAtMessageCreate(
      * The [Data.author]
      */
     @Serializable
-    public data class Author(
+    public data class Author @EventModelConstructor constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")
@@ -270,7 +291,7 @@ public data class GroupMessageCreate(
      * The data of [GroupMessageCreate.data]
      */
     @Serializable
-    public data class Data(
+    public data class Data @EventModelConstructor constructor(
         override val id: String,
         override val author: Author,
         override val content: String,
@@ -284,7 +305,7 @@ public data class GroupMessageCreate(
      * The [Data.author]
      */
     @Serializable
-    public data class Author(
+    public data class Author @EventModelConstructor constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")

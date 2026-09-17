@@ -25,9 +25,8 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.QQ
+import love.forte.simbot.qguild.common.EventModelConstructor
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.model.MemberWithGuildId
 import love.forte.simbot.qguild.model.User
 
@@ -39,7 +38,7 @@ import love.forte.simbot.qguild.model.User
 @Serializable
 @SerialName(EventIntents.GuildMembers.GUILD_MEMBER_ADD_TYPE)
 @DispatchTypeName(EventIntents.GuildMembers.GUILD_MEMBER_ADD_TYPE)
-public data class GuildMemberAdd(
+public data class GuildMemberAdd @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventMember
@@ -53,7 +52,7 @@ public data class GuildMemberAdd(
 @Serializable
 @SerialName(EventIntents.GuildMembers.GUILD_MEMBER_UPDATE_TYPE)
 @DispatchTypeName(EventIntents.GuildMembers.GUILD_MEMBER_UPDATE_TYPE)
-public data class GuildMemberUpdate(
+public data class GuildMemberUpdate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventMember
@@ -67,7 +66,7 @@ public data class GuildMemberUpdate(
 @Serializable
 @SerialName(EventIntents.GuildMembers.GUILD_MEMBER_REMOVE_TYPE)
 @DispatchTypeName(EventIntents.GuildMembers.GUILD_MEMBER_REMOVE_TYPE)
-public data class GuildMemberRemove(
+public data class GuildMemberRemove @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventMember
@@ -79,9 +78,8 @@ public data class GuildMemberRemove(
  *
  * 在 [MemberWithGuildId] 基础上，增加 `op_user_id` 代表操作人。
  */
-@ApiModel
 @Serializable
-public data class EventMember @ApiModelConstructor constructor(
+public data class EventMember @EventModelConstructor constructor(
     /**
      * 频道id
      */

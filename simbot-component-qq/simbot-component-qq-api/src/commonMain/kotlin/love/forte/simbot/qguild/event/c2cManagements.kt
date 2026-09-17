@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.EventModelConstructor
 
 
 /**
@@ -33,7 +34,7 @@ import kotlinx.serialization.Serializable
  * @property openid 用户openid
  */
 @Serializable
-public data class C2CManagementData(
+public data class C2CManagementData @EventModelConstructor constructor(
     val timestamp: String,
     val openid: String,
 )
@@ -54,7 +55,7 @@ public sealed class C2CManagementDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.FRIEND_ADD_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.FRIEND_ADD_TYPE)
-public data class FriendAdd(
+public data class FriendAdd @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -69,7 +70,7 @@ public data class FriendAdd(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.FRIEND_DEL_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.FRIEND_DEL_TYPE)
-public data class FriendDel(
+public data class FriendDel @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -84,7 +85,7 @@ public data class FriendDel(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.C2C_MSG_REJECT_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.C2C_MSG_REJECT_TYPE)
-public data class C2CMsgReject(
+public data class C2CMsgReject @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -99,7 +100,7 @@ public data class C2CMsgReject(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.C2C_MSG_RECEIVE_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.C2C_MSG_RECEIVE_TYPE)
-public data class C2CMsgReceive(
+public data class C2CMsgReceive @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")

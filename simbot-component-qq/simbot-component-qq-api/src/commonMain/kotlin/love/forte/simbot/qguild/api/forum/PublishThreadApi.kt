@@ -26,10 +26,10 @@ package love.forte.simbot.qguild.api.forum
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.SimplePutApiDescription
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 import kotlin.jvm.JvmStatic
 
 /**

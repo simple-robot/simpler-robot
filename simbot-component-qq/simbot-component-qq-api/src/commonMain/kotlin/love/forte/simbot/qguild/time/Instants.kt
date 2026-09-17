@@ -23,7 +23,7 @@
 
 package love.forte.simbot.qguild.time
 
-import love.forte.simbot.qguild.QQ
+import love.forte.simbot.qguild.common.QQ
 
 
 /**
@@ -33,7 +33,7 @@ import love.forte.simbot.qguild.QQ
     "Use QQ.ZERO_ISO_INSTANT instead",
     ReplaceWith(
         "QQ.ZERO_ISO_INSTANT",
-        "love.forte.simbot.qguild.QQ"
+        "love.forte.simbot.qguild.common.QQ"
     )
 )
 public const val ZERO_ISO_INSTANT: String = QQ.ZERO_ISO_INSTANT

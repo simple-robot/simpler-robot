@@ -25,8 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
+import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.forum.ForumSourceInfo
 
 /**
@@ -79,7 +78,7 @@ public sealed class OpenForumDispatch : Signal.Dispatch() {
  * {
  *   "guild_id": "47129941624960822",
  *   "channel_id": "1661124",
- *   "author_id": "144115218182563108",
+ *   "author_id": "144115218182563108"
  * }
  * ```
  *
@@ -126,7 +125,7 @@ public sealed class OpenForumThreadDispatch : OpenForumDispatch() {
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_CREATE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_CREATE_TYPE)
-public data class OpenForumThreadCreate(
+public data class OpenForumThreadCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumThreadData
@@ -141,7 +140,7 @@ public data class OpenForumThreadCreate(
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_UPDATE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_UPDATE_TYPE)
-public data class OpenForumThreadUpdate(
+public data class OpenForumThreadUpdate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumThreadData
@@ -156,7 +155,7 @@ public data class OpenForumThreadUpdate(
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_DELETE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_THREAD_DELETE_TYPE)
-public data class OpenForumThreadDelete(
+public data class OpenForumThreadDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumThreadData
@@ -171,8 +170,7 @@ public data class OpenForumThreadDelete(
  *
  */
 @Serializable
-@ApiModel
-public data class OpenForumThreadData @ApiModelConstructor constructor(
+public data class OpenForumThreadData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
@@ -197,7 +195,7 @@ public sealed class OpenForumPostDispatch : OpenForumDispatch() {
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_POST_CREATE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_POST_CREATE_TYPE)
-public data class OpenForumPostCreate(
+public data class OpenForumPostCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumPostData
@@ -212,7 +210,7 @@ public data class OpenForumPostCreate(
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_POST_DELETE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_POST_DELETE_TYPE)
-public data class OpenForumPostDelete(
+public data class OpenForumPostDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumPostData
@@ -227,8 +225,7 @@ public data class OpenForumPostDelete(
  *
  */
 @Serializable
-@ApiModel
-public data class OpenForumPostData @ApiModelConstructor constructor(
+public data class OpenForumPostData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
@@ -252,7 +249,7 @@ public sealed class OpenForumReplyDispatch : OpenForumDispatch() {
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_REPLY_CREATE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_REPLY_CREATE_TYPE)
-public data class OpenForumReplyCreate(
+public data class OpenForumReplyCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumReplyData
@@ -267,7 +264,7 @@ public data class OpenForumReplyCreate(
 @Serializable
 @SerialName(EventIntents.OpenForumsEvent.OPEN_FORUM_REPLY_DELETE_TYPE)
 @DispatchTypeName(EventIntents.OpenForumsEvent.OPEN_FORUM_REPLY_DELETE_TYPE)
-public data class OpenForumReplyDelete(
+public data class OpenForumReplyDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: OpenForumReplyData
@@ -282,8 +279,7 @@ public data class OpenForumReplyDelete(
  *
  */
 @Serializable
-@ApiModel
-public data class OpenForumReplyData @ApiModelConstructor constructor(
+public data class OpenForumReplyData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,

@@ -36,8 +36,8 @@ import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.guild.QGMember
 import love.forte.simbot.event.ChannelEvent
 import love.forte.simbot.event.FuzzyEventTypeImplementation
-import love.forte.simbot.qguild.PrivateDomainOnly
 import love.forte.simbot.qguild.QQGuildApiException
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.event.*
 import love.forte.simbot.qguild.model.forum.*
 import love.forte.simbot.suspendrunner.STP

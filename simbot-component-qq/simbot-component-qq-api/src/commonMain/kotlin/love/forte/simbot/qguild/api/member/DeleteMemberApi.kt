@@ -25,10 +25,10 @@ package love.forte.simbot.qguild.api.member
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.PrivateDomainOnly
 import love.forte.simbot.qguild.api.DeleteQQGuildApi
 import love.forte.simbot.qguild.api.QQGuildApiWithoutResult
 import love.forte.simbot.qguild.api.SimpleDeleteApiDescription
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 

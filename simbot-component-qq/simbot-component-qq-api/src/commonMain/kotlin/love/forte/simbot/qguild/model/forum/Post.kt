@@ -25,8 +25,8 @@ package love.forte.simbot.qguild.model.forum
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 
 /**
  * 话题频道内对主题的评论称为帖子

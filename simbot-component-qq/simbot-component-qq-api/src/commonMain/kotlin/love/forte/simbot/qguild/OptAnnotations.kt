@@ -54,8 +54,6 @@ public annotation class QGApi4J
 )
 public annotation class QGApi4JS
 
-// 好吧可能 OptIn 的 annotation 不能用 actual
-
 /**
  * 一个内部使用的API。
  */

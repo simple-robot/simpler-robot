@@ -24,7 +24,7 @@
 package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.QQ
+import love.forte.simbot.qguild.common.QQ
 import kotlin.jvm.JvmStatic
 
 public typealias MessageKeyboardButton = MessageKeyboard

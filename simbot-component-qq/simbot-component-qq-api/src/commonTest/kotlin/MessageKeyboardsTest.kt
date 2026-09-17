@@ -25,10 +25,10 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.model.MessageKeyboard
 import love.forte.simbot.qguild.model.MessageKeyboards
 import kotlin.test.Test

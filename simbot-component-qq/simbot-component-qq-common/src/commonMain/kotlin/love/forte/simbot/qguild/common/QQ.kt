@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.qguild
+package love.forte.simbot.qguild.common
 
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmField

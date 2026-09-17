@@ -30,9 +30,9 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.qguild.PrivateDomainOnly
 import love.forte.simbot.qguild.api.GetQQGuildApi
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.SimpleMember
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic

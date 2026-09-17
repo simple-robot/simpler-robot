@@ -35,7 +35,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.annotations.InternalSimbotAPI
-import love.forte.simbot.qguild.QQ
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking

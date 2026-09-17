@@ -29,8 +29,8 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.apidefinition.*
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.common.QQ
 
 /**
  * 用于在 [QQGuildApi.request] 及其衍生API中输出相关日志的 [Logger]。

@@ -138,7 +138,6 @@ include(":simbot-component-kook:simbot-component-kook-core")
 
 // qq
 include(":simbot-component-qq:simbot-component-qq-common")
-include(":simbot-component-qq:simbot-component-qq-model")
 include(":simbot-component-qq:simbot-component-qq-api")
 include(":simbot-component-qq:simbot-component-qq-stdlib")
 include(":simbot-component-qq:simbot-component-qq-core")

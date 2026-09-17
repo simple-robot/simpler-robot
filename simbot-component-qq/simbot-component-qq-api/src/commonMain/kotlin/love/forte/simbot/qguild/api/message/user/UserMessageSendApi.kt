@@ -26,11 +26,11 @@ package love.forte.simbot.qguild.api.message.user
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.IgnoreWhenUseFormData
+import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.model.Message
 import love.forte.simbot.qguild.model.MessageKeyboard
 import love.forte.simbot.qguild.model.MessageKeyboards

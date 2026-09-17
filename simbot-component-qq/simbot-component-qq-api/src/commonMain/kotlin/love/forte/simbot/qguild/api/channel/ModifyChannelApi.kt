@@ -26,9 +26,9 @@ package love.forte.simbot.qguild.api.channel
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.PrivateDomainOnly
 import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimplePatchApiDescription
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.PrivateType
 import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SpeakPermission

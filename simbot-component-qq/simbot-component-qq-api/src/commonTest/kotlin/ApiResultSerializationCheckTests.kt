@@ -30,13 +30,13 @@ import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerializationException
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuildResultSerializationException
 import love.forte.simbot.qguild.api.GatewayApis
 import love.forte.simbot.qguild.api.channel.GetChannelApi
 import love.forte.simbot.qguild.api.checkStatus
 import love.forte.simbot.qguild.api.request
 import love.forte.simbot.qguild.api.requestData
+import love.forte.simbot.qguild.common.QQ
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertIs

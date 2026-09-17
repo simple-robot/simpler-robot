@@ -25,11 +25,11 @@ import io.ktor.http.*
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.menu.ModifyCustomMenuApi
 import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
 import love.forte.simbot.qguild.api.panel.ModifyCommandPanelTargetApi
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.model.menu.CustomMenuItemType
 import love.forte.simbot.qguild.model.panel.CommandPanelItemType
 import love.forte.simbot.qguild.model.panel.CommandPanelScope

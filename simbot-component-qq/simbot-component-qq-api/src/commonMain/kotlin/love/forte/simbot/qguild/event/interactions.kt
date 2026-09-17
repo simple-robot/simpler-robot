@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.EventModelConstructor
 
 /**
  * 互动事件的事件体。
@@ -45,7 +46,7 @@ import kotlinx.serialization.Serializable
  * @since 4.4.0
  */
 @Serializable
-public data class InteractionCreateEventData(
+public data class InteractionCreateEventData @EventModelConstructor constructor(
     @SerialName("chat_type")
     val chatType: Int,
     val data: InteractionCreateData,
@@ -117,7 +118,7 @@ public data class InteractionCreateEventData(
  * @since 4.4.0
  */
 @Serializable
-public data class InteractionCreateData(
+public data class InteractionCreateData @EventModelConstructor constructor(
     val type: Int,
     val resolved: InteractionCreateResolvedData,
 )
@@ -134,7 +135,7 @@ public data class InteractionCreateData(
  * @since 4.4.0
  */
 @Serializable
-public data class InteractionCreateResolvedData(
+public data class InteractionCreateResolvedData @EventModelConstructor constructor(
     @SerialName("button_data")
     val buttonData: String? = null,
     @SerialName("button_id")

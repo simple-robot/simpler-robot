@@ -25,9 +25,9 @@ package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
 import love.forte.simbot.qguild.api.ApiDescription
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 

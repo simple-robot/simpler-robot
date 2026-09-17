@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.EventModelConstructor
 
 /**
  * @property timestamp 加入的时间戳
@@ -32,7 +33,7 @@ import kotlinx.serialization.Serializable
  * @property opMemberOpenid 操作添加机器人进群的群成员openid
  */
 @Serializable
-public data class GroupRobotManagementData(
+public data class GroupRobotManagementData @EventModelConstructor constructor(
     val timestamp: String,
     @SerialName("group_openid")
     val groupOpenid: String,
@@ -50,7 +51,7 @@ public data class GroupRobotManagementData(
  * @since 4.4.0
  */
 @Serializable
-public data class GroupMemberManagementData(
+public data class GroupMemberManagementData @EventModelConstructor constructor(
     val timestamp: String,
     @SerialName("group_openid")
     val groupOpenid: String,
@@ -74,7 +75,7 @@ public sealed class GroupRobotManagementDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.GROUP_ADD_ROBOT_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.GROUP_ADD_ROBOT_TYPE)
-public data class GroupAddRobot(
+public data class GroupAddRobot @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -89,7 +90,7 @@ public data class GroupAddRobot(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.GROUP_DEL_ROBOT_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.GROUP_DEL_ROBOT_TYPE)
-public data class GroupDelRobot(
+public data class GroupDelRobot @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -104,7 +105,7 @@ public data class GroupDelRobot(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.GROUP_MSG_REJECT_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.GROUP_MSG_REJECT_TYPE)
-public data class GroupMsgReject(
+public data class GroupMsgReject @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -119,7 +120,7 @@ public data class GroupMsgReject(
 @Serializable
 @SerialName(EventIntents.GroupAndC2CEvent.GROUP_MSG_RECEIVE_TYPE)
 @DispatchTypeName(EventIntents.GroupAndC2CEvent.GROUP_MSG_RECEIVE_TYPE)
-public data class GroupMsgReceive(
+public data class GroupMsgReceive @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -146,7 +147,7 @@ public sealed class GroupMemberManagementDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE)
 @DispatchTypeName(EventIntents.GroupMembers.GROUP_MEMBER_ADD_TYPE)
-public data class GroupMemberAdd(
+public data class GroupMemberAdd @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")
@@ -163,7 +164,7 @@ public data class GroupMemberAdd(
 @Serializable
 @SerialName(EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE)
 @DispatchTypeName(EventIntents.GroupMembers.GROUP_MEMBER_REMOVE_TYPE)
-public data class GroupMemberRemove(
+public data class GroupMemberRemove @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d")

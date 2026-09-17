@@ -25,8 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
+import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.Guild
 
 /**
@@ -49,7 +48,7 @@ public sealed class EventGuildDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.Guilds.GUILD_CREATE_TYPE)
 @DispatchTypeName(EventIntents.Guilds.GUILD_CREATE_TYPE)
-public data class GuildCreate(
+public data class GuildCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventGuild
@@ -66,7 +65,7 @@ public data class GuildCreate(
 @Serializable
 @SerialName(EventIntents.Guilds.GUILD_UPDATE_TYPE)
 @DispatchTypeName(EventIntents.Guilds.GUILD_UPDATE_TYPE)
-public data class GuildUpdate(
+public data class GuildUpdate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventGuild
@@ -84,7 +83,7 @@ public data class GuildUpdate(
 @Serializable
 @SerialName(EventIntents.Guilds.GUILD_DELETE_TYPE)
 @DispatchTypeName(EventIntents.Guilds.GUILD_DELETE_TYPE)
-public data class GuildDelete(
+public data class GuildDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: EventGuild
@@ -98,9 +97,8 @@ public data class GuildDelete(
  * 相比多了 `op_user_id` 字段。
  *
  */
-@ApiModel
 @Serializable
-public data class EventGuild @ApiModelConstructor constructor(
+public data class EventGuild @EventModelConstructor constructor(
     /**
      * 频道ID
      */

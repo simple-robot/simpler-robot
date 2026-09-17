@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.Message
 import love.forte.simbot.qguild.model.MessageAudited
 
@@ -51,7 +52,7 @@ public sealed class MessageDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.PublicGuildMessages.AT_MESSAGE_CREATE_TYPE)
 @DispatchTypeName(EventIntents.PublicGuildMessages.AT_MESSAGE_CREATE_TYPE)
-public data class AtMessageCreate(
+public data class AtMessageCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Message
@@ -65,7 +66,7 @@ public data class AtMessageCreate(
 @Serializable
 @SerialName(EventIntents.PublicGuildMessages.PUBLIC_MESSAGE_DELETE_TYPE)
 @DispatchTypeName(EventIntents.PublicGuildMessages.PUBLIC_MESSAGE_DELETE_TYPE)
-public data class PublicMessageDeleteCreate(
+public data class PublicMessageDeleteCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Unit = Unit // TODO 文档没找到描述。
@@ -82,7 +83,7 @@ public data class PublicMessageDeleteCreate(
 @Serializable
 @SerialName(EventIntents.DirectMessage.DIRECT_MESSAGE_CREATE_TYPE)
 @DispatchTypeName(EventIntents.DirectMessage.DIRECT_MESSAGE_CREATE_TYPE)
-public data class DirectMessageCreate(
+public data class DirectMessageCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Message
@@ -104,7 +105,7 @@ public sealed class MessageAuditedDispatch : Signal.Dispatch() {
 @Serializable
 @SerialName(EventIntents.GuildMessages.MESSAGE_CREATE_TYPE)
 @DispatchTypeName(EventIntents.GuildMessages.MESSAGE_CREATE_TYPE)
-public data class MessageCreate(
+public data class MessageCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Message
@@ -116,7 +117,7 @@ public data class MessageCreate(
 @Serializable
 @SerialName(EventIntents.GuildMessages.MESSAGE_DELETE_TYPE)
 @DispatchTypeName(EventIntents.GuildMessages.MESSAGE_DELETE_TYPE)
-public data class MessageDelete(
+public data class MessageDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Unit = Unit // TODO 文档没找到描述。
@@ -134,7 +135,7 @@ public data class MessageDelete(
 @Serializable
 @SerialName(EventIntents.MessageAudit.MESSAGE_AUDIT_PASS_TYPE)
 @DispatchTypeName(EventIntents.MessageAudit.MESSAGE_AUDIT_PASS_TYPE)
-public data class MessageAuditPass(
+public data class MessageAuditPass @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: MessageAudited
@@ -151,7 +152,7 @@ public data class MessageAuditPass(
 @Serializable
 @SerialName(EventIntents.MessageAudit.MESSAGE_AUDIT_REJECT_TYPE)
 @DispatchTypeName(EventIntents.MessageAudit.MESSAGE_AUDIT_REJECT_TYPE)
-public data class MessageAuditReject(
+public data class MessageAuditReject @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: MessageAudited

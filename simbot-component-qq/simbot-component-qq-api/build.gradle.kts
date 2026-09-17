@@ -43,6 +43,7 @@ kotlin {
         )
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
+        optIn.add("love.forte.simbot.qguild.EventModelConstructor")
         optIn.add("kotlin.ExperimentalVersionOverloading")
     }
 
@@ -65,7 +66,6 @@ kotlin {
 
             dependencies {
                 api(project(":simbot-component-qq:simbot-component-qq-common"))
-                api(project(":simbot-component-qq:simbot-component-qq-model"))
 
                 api(project(":simbot-logger"))
                 api(project(":simbot-commons:simbot-common-apidefinition"))

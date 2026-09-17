@@ -25,10 +25,10 @@ package love.forte.simbot.qguild.api.apipermission
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.api.ApiDescription
 import love.forte.simbot.qguild.api.GetQQGuildApi
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
+import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.model.ApiPermission
 import love.forte.simbot.qguild.model.isAuthorized
 import kotlin.jvm.JvmField

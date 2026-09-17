@@ -25,7 +25,8 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.PrivateDomainOnly
+import love.forte.simbot.qguild.common.EventModelConstructor
+import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.forum.*
 
 
@@ -99,7 +100,7 @@ public sealed class ForumThreadDispatch : ForumDispatch() {
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_THREAD_CREATE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_THREAD_CREATE_TYPE)
-public data class ForumThreadCreate(
+public data class ForumThreadCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Thread
@@ -114,7 +115,7 @@ public data class ForumThreadCreate(
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_THREAD_UPDATE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_THREAD_UPDATE_TYPE)
-public data class ForumThreadUpdate(
+public data class ForumThreadUpdate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Thread
@@ -129,7 +130,7 @@ public data class ForumThreadUpdate(
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_THREAD_DELETE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_THREAD_DELETE_TYPE)
-public data class ForumThreadDelete(
+public data class ForumThreadDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Thread
@@ -157,7 +158,7 @@ public sealed class ForumPostDispatch : ForumDispatch() {
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_POST_CREATE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_POST_CREATE_TYPE)
-public data class ForumPostCreate(
+public data class ForumPostCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Post
@@ -172,7 +173,7 @@ public data class ForumPostCreate(
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_POST_DELETE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_POST_DELETE_TYPE)
-public data class ForumPostDelete(
+public data class ForumPostDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Post
@@ -200,7 +201,7 @@ public sealed class ForumReplyDispatch : ForumDispatch() {
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_REPLY_CREATE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_REPLY_CREATE_TYPE)
-public data class ForumReplyCreate(
+public data class ForumReplyCreate @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Reply
@@ -215,7 +216,7 @@ public data class ForumReplyCreate(
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_REPLY_DELETE_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_REPLY_DELETE_TYPE)
-public data class ForumReplyDelete(
+public data class ForumReplyDelete @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: Reply
@@ -229,7 +230,7 @@ public data class ForumReplyDelete(
 @Serializable
 @SerialName(EventIntents.ForumsEvent.FORUM_PUBLISH_AUDIT_RESULT_TYPE)
 @DispatchTypeName(EventIntents.ForumsEvent.FORUM_PUBLISH_AUDIT_RESULT_TYPE)
-public data class ForumPublishAuditResult(
+public data class ForumPublishAuditResult @EventModelConstructor constructor(
     override val id: String? = null,
     override val s: Long = DEFAULT_SEQ,
     @SerialName("d") override val data: AuditResult

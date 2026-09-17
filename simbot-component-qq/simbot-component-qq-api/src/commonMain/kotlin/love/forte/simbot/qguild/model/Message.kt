@@ -29,9 +29,9 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.qguild.ApiModel
-import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.QQ
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.message.EmbedBuilder
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic

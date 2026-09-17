@@ -337,7 +337,7 @@ public data class Shard(val value: Int, val total: Int) {
 
 
 /**
- * `Range(1, 2)` -> `[1, 2]`
+ * `Shard(1, 2)` -> `[1, 2]`
  */
 internal object SharedSerializer : KSerializer<Shard> {
     private val arraySerializer = IntArraySerializer()

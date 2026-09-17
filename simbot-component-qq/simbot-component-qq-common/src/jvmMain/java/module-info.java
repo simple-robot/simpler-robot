@@ -7,6 +7,8 @@ module simbot.component.qq.common {
     requires transitive org.slf4j;
     requires transitive simbot.common.core;
 
+    requires transitive kotlinx.serialization.json;
 
-    exports love.forte.simbot.qguild;
+
+    exports love.forte.simbot.qguild.common;
 }
