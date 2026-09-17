@@ -33,8 +33,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
+import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.annotations.InternalSimbotAPI
-import love.forte.simbot.qguild.QGApi4J
 import love.forte.simbot.qguild.QQGuild
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
@@ -47,13 +47,13 @@ import kotlin.coroutines.EmptyCoroutineContext
 /**
  * 用于在Java中构建一个默认的 [HttpClient]。
  */
-@QGApi4J
+@Api4J
 public fun newHttpClient(): HttpClient = HttpClient()
 
 /**
  * 用于在Java中构建一个 [Json]。
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun newJson(
     build: Consumer<JsonBuilder> = Consumer {
@@ -71,7 +71,7 @@ public fun newJson(
  * [QQGuildApi.request] for Java
  *
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun QQGuildApi<*>.requestBlocking(
     client: HttpClient,
@@ -86,7 +86,7 @@ public fun QQGuildApi<*>.requestBlocking(
  * [QQGuildApi.requestText] for Java
  *
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun QQGuildApi<*>.requestTextBlocking(
     client: HttpClient,
@@ -100,7 +100,7 @@ public fun QQGuildApi<*>.requestTextBlocking(
 /**
  * [QQGuildApi.requestData] for Java
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun <R : Any> QQGuildApi<R>.requestDataBlocking(
     client: HttpClient,
@@ -115,7 +115,7 @@ public fun <R : Any> QQGuildApi<R>.requestDataBlocking(
  * [QQGuildApi.request] for Java
  *
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun QQGuildApi<*>.requestAsync(
     client: HttpClient,
@@ -131,7 +131,7 @@ public fun QQGuildApi<*>.requestAsync(
  * [QQGuildApi.requestText] for Java
  *
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun QQGuildApi<*>.requestTextAsync(
     client: HttpClient,
@@ -146,7 +146,7 @@ public fun QQGuildApi<*>.requestTextAsync(
 /**
  * [QQGuildApi.requestData] for Java
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 public fun <R : Any> QQGuildApi<R>.requestDataAsync(
     client: HttpClient,
@@ -163,7 +163,7 @@ public fun <R : Any> QQGuildApi<R>.requestDataAsync(
  *
  * @see SuspendReserve
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
 public fun QQGuildApi<*>.requestReserve(
@@ -181,7 +181,7 @@ public fun QQGuildApi<*>.requestReserve(
  *
  * @see SuspendReserve
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
 public fun QQGuildApi<*>.requestTextReserve(
@@ -199,7 +199,7 @@ public fun QQGuildApi<*>.requestTextReserve(
  *
  * @see SuspendReserve
  */
-@QGApi4J
+@Api4J
 @JvmOverloads
 @OptIn(InternalSimbotAPI::class)
 public fun <R : Any> QQGuildApi<R>.requestDataReserve(

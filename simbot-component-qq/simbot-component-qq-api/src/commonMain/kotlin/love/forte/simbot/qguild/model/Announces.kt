@@ -25,9 +25,9 @@ package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.QGApi4J
 import kotlin.jvm.JvmName
 
 
@@ -54,7 +54,7 @@ public data class Announces @ApiModelConstructor constructor(
      * 获取 [announcesType] 的结果并从 [Unsigned integer type](https://kotlinlang.org/docs/unsigned-integer-types.html) 转为Java可用的 [Int]
      *
      */
-    @QGApi4J
+    @Api4J
     public val announcesTypeIntValue: Int get() = announcesType.toInt()
 }
 

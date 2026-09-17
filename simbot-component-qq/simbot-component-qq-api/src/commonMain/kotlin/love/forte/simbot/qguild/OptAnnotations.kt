@@ -30,6 +30,13 @@ package love.forte.simbot.qguild
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @RequiresOptIn("API marked for Java use, not recommended for Kotlin.")
+@Deprecated(
+    "Use Api4J instead",
+    ReplaceWith(
+        "Api4J",
+        imports = ["love.forte.simbot.annotations.Api4J"]
+    )
+)
 public annotation class QGApi4J
 
 /**
@@ -38,6 +45,13 @@ public annotation class QGApi4J
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @RequiresOptIn("API marked for JS use, not recommended for Kotlin.")
+@Deprecated(
+    "Use Api4Js instead",
+    ReplaceWith(
+        "Api4Js",
+        imports = ["love.forte.simbot.annotations.Api4Js"]
+    )
+)
 public annotation class QGApi4JS
 
 // 好吧可能 OptIn 的 annotation 不能用 actual
