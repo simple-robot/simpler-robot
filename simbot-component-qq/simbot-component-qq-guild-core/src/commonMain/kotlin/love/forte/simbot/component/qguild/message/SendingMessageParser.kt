@@ -406,4 +406,4 @@ public class QGMessageForSendingForParse internal constructor() {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class TmfsDsl // TencentMessageForSendingBuilderDsl
+private annotation class TmfsDsl // TencentMessageForSendingBuilderDsl

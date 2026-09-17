@@ -140,7 +140,7 @@ public inline fun <A : Application> A.qqGuildBots(block: QQGuildBotManager.() ->
 @DslMarker
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
-internal annotation class QQGuildUsageBuilderDsl
+private annotation class QQGuildUsageBuilderDsl
 
 
 /**

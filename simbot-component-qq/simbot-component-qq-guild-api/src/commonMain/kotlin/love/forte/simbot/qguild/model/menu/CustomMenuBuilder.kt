@@ -37,7 +37,7 @@ public inline fun CustomMenu(block: CustomMenuBuilder.() -> Unit): CustomMenu =
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class CustomMenuBuilderDsl
+private annotation class CustomMenuBuilderDsl
 
 /**
  * 用于构建 [CustomMenu] 的构建器。

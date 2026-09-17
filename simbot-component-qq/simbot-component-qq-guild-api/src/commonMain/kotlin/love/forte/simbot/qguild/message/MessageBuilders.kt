@@ -66,7 +66,7 @@ public fun buildArk(templateId: String): Message.Ark {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class ArkBuilderDSL
+private annotation class ArkBuilderDSL
 
 
 @ArkBuilderDSL
@@ -96,10 +96,11 @@ public class ArkBuilder(public var templateId: String) {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class ArkKvBuilderDSL
+@Deprecated("Use ArkBuilderDSL instead")
+private annotation class ArkKvBuilderDSL
 
 
-@ArkKvBuilderDSL
+@ArkBuilderDSL
 public class ArkKvListBuilder {
     public var arkKvs: MutableList<Message.Ark.Kv> = mutableListOf()
 
@@ -118,10 +119,11 @@ public class ArkKvListBuilder {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class ArkObjBuilderDSL
+@Deprecated("Use ArkBuilderDSL instead")
+private annotation class ArkObjBuilderDSL
 
 
-@ArkObjBuilderDSL
+@ArkBuilderDSL
 public class ArkObjListBuilder {
     public var objList: MutableList<Message.Ark.Obj> = mutableListOf()
 
@@ -139,10 +141,11 @@ public class ArkObjListBuilder {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class ArkObjKvBuilderDSL
+@Deprecated("Use ArkBuilderDSL instead")
+private annotation class ArkObjKvBuilderDSL
 
 
-@ArkObjKvBuilderDSL
+@ArkBuilderDSL
 public class ArkObjKvListBuilder {
 
     public var objKvs: MutableList<Message.Ark.Obj.Kv> = mutableListOf()
@@ -157,7 +160,7 @@ public class ArkObjKvListBuilder {
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class EmbedBuilderDsl
+private annotation class EmbedBuilderDsl
 
 @EmbedBuilderDsl
 public class EmbedBuilder {

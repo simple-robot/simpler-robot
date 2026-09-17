@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024-2025. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -23,7 +23,7 @@
 
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runTest
-import love.forte.simbot.annotations.ExperimentalSimbotAPI
+import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
@@ -67,7 +67,7 @@ import kotlin.test.assertTrue
 class ReactiveEventResultTests {
 
     @Test
-    @OptIn(ExperimentalSimbotAPI::class, FuzzyEventTypeImplementation::class)
+    @OptIn(FuzzyEventTypeImplementation::class, Api4J::class)
     fun reactiveResultCollectTest() = runTest {
         val app = launchSimpleApplication { }
         val event = object : Event {
