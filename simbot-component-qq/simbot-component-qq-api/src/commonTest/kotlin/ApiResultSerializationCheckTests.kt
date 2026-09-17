@@ -30,7 +30,7 @@ import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerializationException
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuildResultSerializationException
 import love.forte.simbot.qguild.api.GatewayApis
 import love.forte.simbot.qguild.api.channel.GetChannelApi
@@ -62,7 +62,7 @@ class ApiResultSerializationCheckTests {
         }
 
         val resp = GatewayApis.Normal.request(client, "test")
-        val ex = assertFails { checkStatus(resp.bodyAsText(), QQGuild.DefaultJson, resp.status, resp) }
+        val ex = assertFails { checkStatus(resp.bodyAsText(), QQ.DefaultJson, resp.status, resp) }
         assertIs<QQGuildResultSerializationException>(ex)
         assertIs<SerializationException>(ex.cause ?: ex.suppressedExceptions.firstOrNull())
     }

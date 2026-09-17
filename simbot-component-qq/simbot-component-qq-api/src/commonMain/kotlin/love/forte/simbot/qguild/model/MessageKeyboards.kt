@@ -24,7 +24,7 @@
 package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import kotlin.jvm.JvmStatic
 
 public typealias MessageKeyboardButton = MessageKeyboard
@@ -79,7 +79,7 @@ public data class MessageKeyboards internal constructor(val content: Content) {
          */
         @JvmStatic
         public fun parse(jsonString: String): MessageKeyboards {
-            return QQGuild.DefaultJson.decodeFromString(serializer(), jsonString)
+            return QQ.DefaultJson.decodeFromString(serializer(), jsonString)
         }
 
         /**

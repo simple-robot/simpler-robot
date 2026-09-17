@@ -30,6 +30,7 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.plus
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuild
 import love.forte.simbot.qguild.event.*
 import kotlin.coroutines.CoroutineContext
@@ -110,7 +111,7 @@ public class ConfigurableBotConfiguration : BotConfiguration, IntentsAppender {
     /**
      * 请求的服务器地址。默认为 [QQGuild.URL]. 即正式地址。
      */
-    override var serverUrl: Url = QQGuild.URL
+    override var serverUrl: Url = Url(QQ.URL)
 
     /**
      * 使 [BotConfiguration.serverUrl] 为 [QQGuild.SANDBOX_URL]
@@ -190,7 +191,7 @@ public class ConfigurableBotConfiguration : BotConfiguration, IntentsAppender {
      * 如果为null则会使用默认 Json [QQGuild.DefaultJson]
      *
      */
-    override var apiDecoder: Json = QQGuild.DefaultJson
+    override var apiDecoder: Json = QQ.DefaultJson
 
     /**
      * 控制各消息目的地是否将普通内容作为 Markdown 发送。

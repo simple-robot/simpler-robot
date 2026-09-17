@@ -31,6 +31,10 @@ import kotlin.jvm.JvmField
  * [QQ Bot API](https://bot.q.qq.com/wiki/develop/api-v2/) 的一些可能会用到的常量信息，
  * 例如正式和沙箱环境的服务器地址。
  */
+@Deprecated(
+    "基础全局共享的常量类已移至模块 simbot-component-qq-common 并重命名为 `QQ`，" +
+        "此常量类仅用作兼容。"
+)
 public object QQGuild {
     /**
      * 正式环境接口域名 `https://api.bot.qq.com`
@@ -40,7 +44,11 @@ public object QQGuild {
      *
      * @see URL
      */
-    public const val URL_STRING: String = "https://api.bot.qq.com"
+    @Deprecated(
+        message = "Use QQ.URL instead.",
+        replaceWith = ReplaceWith("QQ.URL", "love.forte.simbot.qguild.QQ")
+    )
+    public const val URL_STRING: String = QQ.URL
 
     /**
      * 正式环境接口域名 `https://api.bot.qq.com`
@@ -48,7 +56,15 @@ public object QQGuild {
      * @see URL_STRING
      */
     @JvmField
-    public val URL: Url = Url(URL_STRING)
+    @Deprecated(
+        message = "Use Url(QQ.URL) instead.",
+        replaceWith = ReplaceWith(
+            "Url(QQ.URL)",
+            "io.ktor.http.Url",
+            "love.forte.simbot.qguild.QQ",
+        )
+    )
+    public val URL: Url = Url(QQ.URL)
 
     /**
      * 沙箱环境接口域名 `https://sandbox.api.sgroup.qq.com`
@@ -88,13 +104,10 @@ public object QQGuild {
      *
      */
     @JvmField
-    public val DefaultJson: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        allowSpecialFloatingPointValues = true
-        allowStructuredMapKeys = true
-        prettyPrint = false
-        useArrayPolymorphism = false
-    }
+    @Deprecated(
+        message = "Use QQ.DefaultJson instead.",
+        replaceWith = ReplaceWith("QQ.DefaultJson", "love.forte.simbot.qguild.QQ")
+    )
+    public val DefaultJson: Json = QQ.DefaultJson
 }
 

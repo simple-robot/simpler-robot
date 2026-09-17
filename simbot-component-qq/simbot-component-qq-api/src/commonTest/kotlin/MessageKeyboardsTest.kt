@@ -25,7 +25,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
@@ -122,8 +122,8 @@ class MessageKeyboardsTest {
             keyboards = MessageKeyboards.create(MessageKeyboard.create("template-id"))
         }
 
-        val json = QQGuild.DefaultJson.encodeToString(body)
-        val tree = QQGuild.DefaultJson.parseToJsonElement(json).jsonObject
+        val json = QQ.DefaultJson.encodeToString(body)
+        val tree = QQ.DefaultJson.parseToJsonElement(json).jsonObject
 
         assertEquals(JsonPrimitive("markdown"), tree["content"])
         assertEquals(JsonPrimitive(GroupAndC2CSendBody.MSG_TYPE_MARKDOWN), tree["msg_type"])

@@ -25,7 +25,7 @@ import io.ktor.http.*
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.menu.ModifyCustomMenuApi
 import love.forte.simbot.qguild.api.panel.CreateCommandPanelApi
 import love.forte.simbot.qguild.api.panel.GetCommandPanelListApi.Factory.create
@@ -52,7 +52,7 @@ class MenuPanelApiTests {
                 }
             }
         }
-        val tree = QQGuild.DefaultJson.encodeToString(api.body).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
+        val tree = QQ.DefaultJson.encodeToString(api.body).let(QQ.DefaultJson::parseToJsonElement).jsonObject
         val item = tree.getValue("menu").jsonObject.getValue("items").jsonArray.single().jsonObject
         assertEquals(HttpMethod.Put, api.method)
         assertEquals("/v2/menu", api.url.encodedPath)
@@ -84,9 +84,9 @@ class MenuPanelApiTests {
         assertEquals(HttpMethod.Post, create.method)
         assertEquals("/v2/panels", create.url.encodedPath)
         assertEquals(HttpMethod.Put, target.method)
-        val targetTree = QQGuild.DefaultJson.encodeToString(
+        val targetTree = QQ.DefaultJson.encodeToString(
             target.body
-        ).let(QQGuild.DefaultJson::parseToJsonElement).jsonObject
+        ).let(QQ.DefaultJson::parseToJsonElement).jsonObject
         assertEquals(JsonPrimitive("del"), targetTree["op"])
         assertNull(targetTree["group_openids"])
     }

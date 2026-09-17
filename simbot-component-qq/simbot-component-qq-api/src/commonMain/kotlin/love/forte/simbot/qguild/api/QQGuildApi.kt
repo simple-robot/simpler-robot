@@ -29,6 +29,7 @@ import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.apidefinition.*
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.QQGuild
 
 /**
@@ -114,7 +115,7 @@ public abstract class GetQQGuildApi<R : Any> : GetApiDefinition<R>(), QQGuildApi
     protected open fun URLBuilder.buildUrl() {}
 
     override val url: Url
-        get() = URLBuilder(QQGuild.URL).apply {
+        get() = URLBuilder(Url(QQ.URL)).apply {
             appendEncodedPathSegments(components = path)
             buildUrl()
         }.build()
@@ -129,7 +130,7 @@ public abstract class PostQQGuildApi<R : Any> : PostApiDefinition<R>(), QQGuildA
     protected open fun URLBuilder.buildUrl() {}
 
     override val url: Url
-        get() = URLBuilder(QQGuild.URL).apply {
+        get() = URLBuilder(Url(QQ.URL)).apply {
             appendEncodedPathSegments(components = path)
             buildUrl()
         }.build()
@@ -144,7 +145,7 @@ public abstract class PutQQGuildApi<R : Any> : PutApiDefinition<R>(), QQGuildApi
     protected open fun URLBuilder.buildUrl() {}
 
     override val url: Url
-        get() = URLBuilder(QQGuild.URL).apply {
+        get() = URLBuilder(Url(QQ.URL)).apply {
             appendEncodedPathSegments(components = path)
             buildUrl()
         }.build()
@@ -159,7 +160,7 @@ public abstract class DeleteQQGuildApi<R : Any> : DeleteApiDefinition<R>(), QQGu
     protected open fun URLBuilder.buildUrl() {}
 
     override val url: Url
-        get() = URLBuilder(QQGuild.URL).apply {
+        get() = URLBuilder(Url(QQ.URL)).apply {
             appendEncodedPathSegments(components = path)
             buildUrl()
         }.build()

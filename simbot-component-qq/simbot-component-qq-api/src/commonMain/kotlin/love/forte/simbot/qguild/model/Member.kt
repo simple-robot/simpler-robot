@@ -27,7 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.time.ZERO_ISO_INSTANT
+import love.forte.simbot.qguild.QQ
 
 /**
  * [成员对象(Member)](https://bot.q.qq.com/wiki/develop/api/openapi/member/model.html)
@@ -126,5 +126,5 @@ public data class SimpleMemberWithGuildId @ApiModelConstructor constructor(
      *
      * 如果属性缺失则会使用 [ZERO_ISO_INSTANT]
      */
-    @SerialName("join_at") override val joinedAt: String = ZERO_ISO_INSTANT
+    @SerialName("join_at") override val joinedAt: String = QQ.ZERO_ISO_INSTANT
 ) : MemberWithGuildId

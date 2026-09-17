@@ -27,7 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -76,7 +76,7 @@ public data class MessageKeyboard @ApiModelConstructor constructor(
          */
         @JvmStatic
         public fun parse(jsonString: String): MessageKeyboard {
-            return QQGuild.DefaultJson.decodeFromString(serializer(), jsonString)
+            return QQ.DefaultJson.decodeFromString(serializer(), jsonString)
         }
     }
 

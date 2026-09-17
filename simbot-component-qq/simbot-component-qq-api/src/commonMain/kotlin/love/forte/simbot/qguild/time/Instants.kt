@@ -23,9 +23,17 @@
 
 package love.forte.simbot.qguild.time
 
+import love.forte.simbot.qguild.QQ
+
 
 /**
  * 用在一些不支持获取时间的地方使用的默认值 `"0000-01-01T08:00:00.000+08:00"`。
- *
  */
-public const val ZERO_ISO_INSTANT: String = "0000-01-01T08:00:00.000+08:00"
+@Deprecated(
+    "Use QQ.ZERO_ISO_INSTANT instead",
+    ReplaceWith(
+        "QQ.ZERO_ISO_INSTANT",
+        "love.forte.simbot.qguild.QQ"
+    )
+)
+public const val ZERO_ISO_INSTANT: String = QQ.ZERO_ISO_INSTANT

@@ -31,8 +31,8 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.message.EmbedBuilder
-import love.forte.simbot.qguild.time.ZERO_ISO_INSTANT
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -469,7 +469,7 @@ public data class MessageMember @ApiModelConstructor constructor(
     override val nick: String = "",
     override val roles: List<String> = emptyList(),
     @SerialName("joined_at")
-    override val joinedAt: String = ZERO_ISO_INSTANT
+    override val joinedAt: String = QQ.ZERO_ISO_INSTANT
 ) : Member {
 
     @Transient

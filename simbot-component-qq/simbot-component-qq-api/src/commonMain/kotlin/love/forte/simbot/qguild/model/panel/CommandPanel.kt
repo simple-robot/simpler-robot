@@ -27,7 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.ApiModel
 import love.forte.simbot.qguild.ApiModelConstructor
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmStatic
 
@@ -106,7 +106,7 @@ public class CommandPanel @ApiModelConstructor internal constructor(
          */
         @JvmStatic
         public fun parse(jsonString: String): CommandPanel =
-            QQGuild.DefaultJson.decodeFromString(serializer(), jsonString)
+            QQ.DefaultJson.decodeFromString(serializer(), jsonString)
     }
 
     override fun toString(): String {

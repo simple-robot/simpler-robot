@@ -36,7 +36,6 @@ import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.StringFormat
 import kotlinx.serialization.builtins.serializer
@@ -118,7 +117,7 @@ public suspend fun <R : Any> QQGuildApi<R>.request(
                     setBody(body)
                 } else {
                     try {
-                        val json = QQGuild.DefaultJson
+                        val json = QQ.DefaultJson
                         val ser = guessSerializer(body, json.serializersModule)
                         val bodyJson = json.encodeToString(ser, body)
                         setBody(bodyJson)
@@ -152,7 +151,7 @@ public suspend fun <R : Any> QQGuildApi<R>.request(
 public suspend inline fun <R : Any> QQGuildApi<R>.requestText(
     client: HttpClient,
     token: String?,
-    server: Url? = QQGuild.URL,
+    server: Url? = Url(QQ.URL),
     appId: String? = null,
     useResp: (HttpResponse) -> Unit = {}
 ): String {
@@ -209,14 +208,14 @@ public suspend inline fun <R : Any> QQGuildApi<R>.requestText(
 public suspend fun <R : Any> QQGuildApi<R>.requestData(
     client: HttpClient,
     token: String?,
-    server: Url? = QQGuild.URL,
-    decoder: Json = QQGuild.DefaultJson,
+    server: Url? = Url(QQ.URL),
+    decoder: Json = QQ.DefaultJson,
     appId: String? = null,
 ): R {
     val resp: HttpResponse
     val text = requestText(client, token, server, appId) { resp = it }
 
-    checkStatus(text, QQGuild.DefaultJson, resp.status, resp)
+    checkStatus(text, QQ.DefaultJson, resp.status, resp)
 
     return try {
         decodeResponse(decoder, text)
@@ -235,7 +234,6 @@ public suspend fun <R : Any> QQGuildApi<R>.requestData(
 
 
 @Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalSerializationApi::class)
 internal fun <R : Any> QQGuildApi<R>.decodeResponse(
     decoder: Json, remainingText: String
 ): R {
@@ -287,7 +285,7 @@ internal fun checkStatus(
         // maybe audited
         if (MessageAuditedException.isAuditResultCode(info.code)) {
             throw MessageAuditedException(
-                QQGuild.DefaultJson.decodeFromJsonElement(MessageAudit.serializer(), info.data).messageAudit,
+                QQ.DefaultJson.decodeFromJsonElement(MessageAudit.serializer(), info.data).messageAudit,
                 info,
                 resp.status.value,
                 resp.status.description

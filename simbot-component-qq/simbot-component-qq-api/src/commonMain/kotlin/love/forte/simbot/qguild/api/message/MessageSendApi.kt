@@ -38,7 +38,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.qguild.QGInternalApi
-import love.forte.simbot.qguild.QQGuild
+import love.forte.simbot.qguild.QQ
 import love.forte.simbot.qguild.api.MessageAuditedException
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
@@ -153,7 +153,7 @@ public class MessageSendApi private constructor(
         }
 
         internal val defaultJson: Json
-            get() = QQGuild.DefaultJson
+            get() = QQ.DefaultJson
 
         /**
          * 提供 [Body] 构造 [MessageSendApi]
