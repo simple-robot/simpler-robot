@@ -25,7 +25,6 @@ package love.forte.simbot.qguild.ed25519.annotations
 
 @RequiresOptIn(
     message = "This is an internal API for ed25519 " +
-        "and it may be changed or removed in the future without notice.",
-    level = RequiresOptIn.Level.WARNING
+        "and it may be changed or removed in the future without notice."
 )
 public annotation class InternalEd25519Api

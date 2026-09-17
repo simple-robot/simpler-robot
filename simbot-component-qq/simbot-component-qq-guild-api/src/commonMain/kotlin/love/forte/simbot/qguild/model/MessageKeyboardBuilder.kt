@@ -37,7 +37,7 @@ public inline fun buildMessageKeyboard(block: MessageKeyboardBuilder.() -> Unit)
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class MessageKeyboardBuilderDsl
+private annotation class MessageKeyboardBuilderDsl
 
 /**
  * 用于更便捷构建 [MessageKeyboard] 的构建器，Java 中可用链式 API，Kotlin 额外提供一些 DSL API。

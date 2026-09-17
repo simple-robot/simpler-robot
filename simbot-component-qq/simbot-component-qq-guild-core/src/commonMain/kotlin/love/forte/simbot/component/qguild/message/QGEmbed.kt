@@ -41,7 +41,7 @@ import kotlin.jvm.JvmStatic
  * 更多参考 [文档](https://bot.q.qq.com/wiki/develop/api/openapi/message/template/embed_message.html)
  *
  * Note: [QGEmbed] 似乎不能与 [MessageSendApi.Body.messageReference] 配合使用，
- * 也就是尽可能不要在 [MessageEvent.reply] 中使用 [QGEmbed], 否则会导致此消息不可见。
+ * 也就是尽可能不要在 [love.forte.simbot.event.MessageEvent.reply] 中使用 [QGEmbed], 否则会导致此消息不可见。
  *
  * @see Message.Embed
  * @see MessageSendApi.Body.embed

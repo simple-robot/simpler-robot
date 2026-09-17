@@ -32,15 +32,15 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.kook.ExperimentalKookApi
 import love.forte.simbot.kook.messages.MentionPart
 import love.forte.simbot.kook.objects.MentionRolePart
-import love.forte.simbot.kook.objects.kmd.AtTarget.*
 import kotlin.jvm.JvmOverloads
 
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
 public annotation class KookMarkdownBuilderDsl
 
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
+@Deprecated("Use KookMarkdownBuilderDsl instead")
 public annotation class KookMarkdownBuilderTopDsl
 
 
@@ -103,6 +103,7 @@ public data class RawValueKMarkdown(
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @ExperimentalKookApi
+@KookMarkdownBuilderDsl
 public class KMarkdownBuilder(public val appender: Appendable = StringBuilder()) {
     public constructor(capacity: Int) : this(StringBuilder(capacity))
 
@@ -118,41 +119,35 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
     /**
      * 拼接一个文本
      */
-    @KookMarkdownBuilderDsl
     public fun text(text: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.RawText.appendTo(text, appender) }
 
     /**
      * 拼接一个加粗文本
      */
-    @KookMarkdownBuilderDsl
     public fun bold(value: CharSequence): KMarkdownBuilder = also { KookMarkdownGrammar.Bold.appendTo(value, appender) }
 
     /**
      * 拼接一个倾斜文本
      */
-    @KookMarkdownBuilderDsl
     public fun italic(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Italic.appendTo(value, appender) }
 
     /**
      * 拼接一个加粗倾斜文本
      */
-    @KookMarkdownBuilderDsl
     public fun boldItalic(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.BoldItalic.appendTo(value, appender) }
 
     /**
      * 拼接一个删除线
      */
-    @KookMarkdownBuilderDsl
     public fun strikethrough(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Strikethrough.appendTo(value, appender) }
 
     /**
      * 拼接一个链接。
      */
-    @KookMarkdownBuilderDsl
     public fun link(link: MdLink): KMarkdownBuilder = also { KookMarkdownGrammar.Link.appendTo(link, appender) }
 
     /**
@@ -160,7 +155,6 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
      * @param name 可以为null.
      */
     @JvmOverloads
-    @KookMarkdownBuilderDsl
     public fun link(name: String? = null, url: String): KMarkdownBuilder =
         also { KookMarkdownGrammar.Link.appendTo(name, url, appender) }
 
@@ -168,85 +162,72 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
     /**
      * 追加一个分割线。不会自动在开头换行，但是会在结尾换行，也就是：`---\n`
      */
-    @KookMarkdownBuilderDsl
     public fun divider(): KMarkdownBuilder = also { KookMarkdownGrammar.Divider.appendTo(appender) }
 
     /**
      * 引用。如果想要结束引用内容，需要连续换行两次。
      */
-    @KookMarkdownBuilderDsl
     public fun quote(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Quote.appendTo(value, appender) }
 
     /**
      * 引用，并在结束后自动换行2次。
      */
-    @KookMarkdownBuilderDsl
     public fun quoteAndEnd(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Quote.appendToEnd(value, appender) }
 
     /**
      * 追加下划线内容。
      */
-    @KookMarkdownBuilderDsl
     public fun underscore(value: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Underscore.appendTo(value, appender) }
 
     /**
      * 追加隐藏内容。
      */
-    @KookMarkdownBuilderDsl
     public fun hide(value: CharSequence): KMarkdownBuilder = also { KookMarkdownGrammar.Hide.appendTo(value, appender) }
 
     /**
      * 根据id追加一个emoji
      */
-    @KookMarkdownBuilderDsl
     public fun emoji(id: String): KMarkdownBuilder = also { KookMarkdownGrammar.Emoji.appendTo(id, appender) }
 
     /**
      * 服务器表情。
      */
-    @KookMarkdownBuilderDsl
     public fun serverEmoticons(value: MdServerEmoticons): KMarkdownBuilder =
         also { KookMarkdownGrammar.ServerEmoticons.appendTo(value, appender) }
 
     /**
      * 服务器表情。
      */
-    @KookMarkdownBuilderDsl
     public fun serverEmoticons(name: CharSequence, id: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.ServerEmoticons.appendTo(name, id, appender) }
 
     /**
      * 提及频道
      */
-    @KookMarkdownBuilderDsl
     public fun channel(id: CharSequence): KMarkdownBuilder = also { KookMarkdownGrammar.Channel.appendTo(id, appender) }
 
     /**
      * at
      */
-    @KookMarkdownBuilderDsl
     public fun at(target: AtTarget): KMarkdownBuilder = also { KookMarkdownGrammar.At.appendTo(target, appender) }
 
     /**
      * at
      */
-    @KookMarkdownBuilderDsl
     public fun at(target: CharSequence): KMarkdownBuilder = also { KookMarkdownGrammar.At.appendTo(target, appender) }
 
     /**
      * role
      */
-    @KookMarkdownBuilderDsl
     public fun role(roleId: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.Role.appendTo(roleId, appender) }
 
     /**
      * 行内代码
      */
-    @KookMarkdownBuilderDsl
     public fun inlineCode(code: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.InlineCode.appendTo(code, appender) }
 
@@ -255,7 +236,6 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
      *
      * 结尾处会自动换行。
      */
-    @KookMarkdownBuilderDsl
     public fun codeBlock(code: MdCodeBlock): KMarkdownBuilder =
         also { KookMarkdownGrammar.CodeBlock.appendTo(code, appender) }
 
@@ -265,7 +245,6 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
      * 结尾处会自动换行。
      */
     @JvmOverloads
-    @KookMarkdownBuilderDsl
     public fun codeBlock(language: CharSequence? = null, code: CharSequence): KMarkdownBuilder =
         also { KookMarkdownGrammar.CodeBlock.appendTo(language, code, appender) }
 
@@ -275,27 +254,23 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
     /**
      * 一个空格。
      */
-    @KookMarkdownBuilderDsl
     public fun space(): KMarkdownBuilder = also { appender.append(' ') }
 
     /**
      * 新的一行。
      */
-    @KookMarkdownBuilderDsl
     public fun newLine(): KMarkdownBuilder = also { appender.appendLine() }
 
     /**
      * 追加一个原始信息到md缓冲器中。
      * 会直接进行拼接，不做处理。
      */
-    @KookMarkdownBuilderDsl
     public fun appendRawMd(raw: String): KMarkdownBuilder = also { ap(raw) }
 
 
     /**
      * 通过一个 [KookMarkdownGrammar] 来实现自定义拼接。
      */
-    @KookMarkdownBuilderDsl
     public fun <P> append(grammar: KookMarkdownGrammar<P>, params: P): KMarkdownBuilder = also {
         grammar.appendTo(params, appender)
     }
@@ -314,7 +289,6 @@ public class KMarkdownBuilder(public val appender: Appendable = StringBuilder())
 
 }
 
-@KookMarkdownBuilderTopDsl
 @ExperimentalKookApi
 public inline fun KMarkdownBuilder.aroundLine(
     times: Int = 1,
@@ -324,32 +298,30 @@ public inline fun KMarkdownBuilder.aroundLine(
         for (i in 1..times) {
             newLine()
         }
-        apply(block)
+        block()
         for (i in 1..times) {
             newLine()
         }
     }
 }
 
-@KookMarkdownBuilderTopDsl
 @ExperimentalKookApi
 public inline fun KMarkdownBuilder.preLine(times: Int = 1, block: KMarkdownBuilder.() -> Unit): KMarkdownBuilder {
     return apply {
         for (i in 1..times) {
             newLine()
         }
-        apply(block)
+        block()
     }
 }
 
-@KookMarkdownBuilderTopDsl
 @ExperimentalKookApi
 public inline fun KMarkdownBuilder.postLine(
     times: Int = 1,
     block: KMarkdownBuilder.() -> Unit,
 ): KMarkdownBuilder {
     return apply {
-        apply(block)
+        block()
         for (i in 1..times) {
             newLine()
         }
@@ -360,7 +332,6 @@ public inline fun KMarkdownBuilder.postLine(
 /**
  * Build kmarkdown for raw string.
  */
-@KookMarkdownBuilderDsl
 @ExperimentalKookApi
 public inline fun buildRawKMarkdown(block: KMarkdownBuilder.() -> Unit): String {
     return KMarkdownBuilder().apply(block).buildRaw()
@@ -369,7 +340,6 @@ public inline fun buildRawKMarkdown(block: KMarkdownBuilder.() -> Unit): String 
 /**
  * Build [KMarkdown] instance.
  */
-@KookMarkdownBuilderDsl
 @ExperimentalKookApi
 public inline fun buildKMarkdown(block: KMarkdownBuilder.() -> Unit): KMarkdown {
     return KMarkdownBuilder().apply(block).build()
@@ -393,7 +363,7 @@ public interface KookMarkdownGrammar<P> {
      *
      * for java like:
      * ```java
-     * Source.Markdown.INSTANCE
+     * var markdown = Source.Markdown.INSTANCE;
      * ```
      *
      *
@@ -413,19 +383,29 @@ public interface KookMarkdownGrammar<P> {
      */
     public sealed class Source(public open val name: String) {
 
-        /** 来源 - markdown官方 */
+        /**
+         * 来源 - markdown官方
+         */
         public data object Markdown : Source("official")
 
-        /** 来源 - Kook 官方 */
+        /**
+         * 来源 - Kook 官方
+         */
         public sealed class Kook(name: String) : Source(name) {
-            /** Kook 官方 - 自定义 */
+            /**
+             * Kook 官方 - 自定义
+             */
             public data object Custom : Kook("kook-custom")
 
-            /** Kook 官方 - emoji */
+            /**
+             * Kook 官方 - emoji
+             */
             public data object Emoji : Kook("kook-emoji")
         }
 
-        /** 其他自定义 */
+        /**
+         * 其他自定义
+         */
         public data class Custom(override val name: String) : Source(name)
     }
 
@@ -441,16 +421,24 @@ public interface KookMarkdownGrammar<P> {
         }
     }
 
-    /** 加粗 */
+    /**
+     * 加粗
+     */
     public object Bold : SymmetricalMarkdownKookMarkdownGrammar("**")
 
-    /** 斜体 */
+    /**
+     * 斜体
+     */
     public object Italic : SymmetricalMarkdownKookMarkdownGrammar("*")
 
-    /** 加粗&斜体 */
+    /**
+     * 加粗&斜体
+     */
     public object BoldItalic : SymmetricalMarkdownKookMarkdownGrammar("***")
 
-    /** 删除线 */
+    /**
+     * 删除线
+     */
     public object Strikethrough : SymmetricalMarkdownKookMarkdownGrammar("~~")
 
     /**
@@ -559,7 +547,7 @@ public interface KookMarkdownGrammar<P> {
 
 
     /**
-     * 	\@某角色所有用户
+     * `@`某角色所有用户
      */
     public object Role : SymmetricalKookCustomKookMarkdownGrammar("(rol)")
 
@@ -594,13 +582,17 @@ public interface KookMarkdownGrammar<P> {
 
 }
 
-/** 用于 [超链接语法][KookMarkdownGrammar.Link] 的参数 */
+/**
+ * 用于 [超链接语法][KookMarkdownGrammar.Link] 的参数
+ */
 public data class MdLink
 @JvmOverloads
 constructor(public val name: CharSequence? = null, public val url: CharSequence)
 
 
-/** 用于 [服务器表情][KookMarkdownGrammar.ServerEmoticons] 的参数 */
+/**
+ * 用于 [服务器表情][KookMarkdownGrammar.ServerEmoticons] 的参数
+ */
 public data class MdServerEmoticons(public val name: CharSequence, public val id: CharSequence)
 
 /**

@@ -38,7 +38,7 @@ public inline fun CommandPanel(block: CommandPanelBuilder.() -> Unit): CommandPa
 
 @Retention(AnnotationRetention.BINARY)
 @DslMarker
-internal annotation class CommandPanelBuilderDsl
+private annotation class CommandPanelBuilderDsl
 
 /**
  * 用于构建 [CommandPanel] 的构建器。

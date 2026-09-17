@@ -135,36 +135,32 @@ public class GetGuildMemberListApi private constructor(
         /**
          * 用于构建 [GetGuildMemberListApi] 的构建器，通过 [builder] 获取。
          */
+        @BuilderDSLMarker
         public class Builder internal constructor(private val guildId: String) {
 
             /**
              * 频道 id
              */
-            @BuilderDSLMarker
             public var channelId: String? = null
 
             /**
              * 搜索关键字，在用户名或昵称中搜索
              */
-            @BuilderDSLMarker
             public var search: String? = null
 
             /**
              * 角色 ID，获取特定角色的用户列表
              */
-            @BuilderDSLMarker
             public var roleId: Int? = null
 
             /**
              * 只能为0或1，0是未认证，1是已认证
              */
-            @BuilderDSLMarker
             public var mobileVerified: Int? = null
 
             /**
              * 只能为0或1，0是未认证，1是已认证
              */
-            @BuilderDSLMarker
             public var isMobileVerified: Boolean?
                 get() = mobileVerified?.let { it == 1 }
                 set(value) {
@@ -174,13 +170,11 @@ public class GetGuildMemberListApi private constructor(
             /**
              * 根据活跃时间排序，0是顺序排列，1是倒序排列
              */
-            @BuilderDSLMarker
             public var activeTime: Int? = null
 
             /**
              * 根据活跃时间排序，顺序排列
              */
-            @BuilderDSLMarker
             public fun sortByActiveTime(): Builder = apply {
                 activeTime = SORT_ASC
             }
@@ -188,7 +182,6 @@ public class GetGuildMemberListApi private constructor(
             /**
              * 根据活跃时间排序，倒序排列
              */
-            @BuilderDSLMarker
             public fun sortByActiveTimeDesc(): Builder = apply {
                 activeTime = SORT_DESC
             }
@@ -196,14 +189,12 @@ public class GetGuildMemberListApi private constructor(
             /**
              * 根据加入时间排序，0是顺序排列，1是倒序排列
              */
-            @BuilderDSLMarker
             public var joinedAt: Int? = null
 
 
             /**
              * 根据活跃时间排序，顺序排列
              */
-            @BuilderDSLMarker
             public fun sortByJoinedAt(): Builder = apply {
                 joinedAt = SORT_ASC
             }
@@ -211,7 +202,6 @@ public class GetGuildMemberListApi private constructor(
             /**
              * 根据活跃时间排序，倒序排列
              */
-            @BuilderDSLMarker
             public fun sortByJoinedAtDesc(): Builder = apply {
                 joinedAt = SORT_DESC
             }
@@ -219,19 +209,16 @@ public class GetGuildMemberListApi private constructor(
             /**
              * 目标页数
              */
-            @BuilderDSLMarker
             public var page: Int? = null
 
             /**
              * 每页数据数量
              */
-            @BuilderDSLMarker
             public var pageSize: Int? = null
 
             /**
              * 获取指定 id 所属用户的信息
              */
-            @BuilderDSLMarker
             public var filterUserId: String? = null
 
 

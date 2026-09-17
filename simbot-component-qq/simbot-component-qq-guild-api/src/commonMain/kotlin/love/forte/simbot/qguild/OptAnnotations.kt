@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2022-2026. ForteScarlet.
  *
- * This file is part of simbot-component-qq-guild.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * simbot-component-qq-guild is free software: you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
- * simbot-component-qq-guild is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with simbot-component-qq-guild.
- * If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package love.forte.simbot.qguild
@@ -23,7 +29,7 @@ package love.forte.simbot.qguild
  */
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-@RequiresOptIn("API marked for Java use, not recommended for Kotlin.", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("API marked for Java use, not recommended for Kotlin.")
 public annotation class QGApi4J
 
 /**
@@ -31,7 +37,7 @@ public annotation class QGApi4J
  */
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-@RequiresOptIn("API marked for JS use, not recommended for Kotlin.", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("API marked for JS use, not recommended for Kotlin.")
 public annotation class QGApi4JS
 
 // 好吧可能 OptIn 的 annotation 不能用 actual
@@ -41,7 +47,7 @@ public annotation class QGApi4JS
  */
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-@RequiresOptIn("Internal API", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("Internal API")
 public annotation class QGInternalApi
 
 /**
@@ -60,6 +66,5 @@ public annotation class Generated
 @MustBeDocumented
 @RequiresOptIn(
     "一个实验性的与媒体资源相关的API，可能在未来发生变更或被移除。",
-    level = RequiresOptIn.Level.WARNING
 )
 public annotation class ExperimentalQGMediaApi

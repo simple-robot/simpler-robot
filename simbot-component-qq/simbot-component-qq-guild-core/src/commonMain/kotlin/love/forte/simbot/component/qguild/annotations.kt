@@ -31,7 +31,6 @@ package love.forte.simbot.component.qguild
 @RequiresOptIn(
     message = "一个尚在试验阶段的QQ频道组件API。" +
         "试验阶段的API可能存在漏洞、缺陷，或实现不稳定，且有可能在未来被修改、删除，且没有兼容性保证。",
-    level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented
 public annotation class ExperimentalQGApi
