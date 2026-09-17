@@ -137,10 +137,12 @@ include(":simbot-component-kook:simbot-component-kook-stdlib")
 include(":simbot-component-kook:simbot-component-kook-core")
 
 // qq
-include(":simbot-component-qq:simbot-component-qq-guild-api")
-include(":simbot-component-qq:simbot-component-qq-guild-stdlib")
-include(":simbot-component-qq:simbot-component-qq-guild-core")
-include(":simbot-component-qq:simbot-component-qq-guild-internal-ed25519")
+include(":simbot-component-qq:simbot-component-qq-common")
+include(":simbot-component-qq:simbot-component-qq-model")
+include(":simbot-component-qq:simbot-component-qq-api")
+include(":simbot-component-qq:simbot-component-qq-stdlib")
+include(":simbot-component-qq:simbot-component-qq-core")
+include(":simbot-component-qq:simbot-component-qq-internal-ed25519")
 
 // samples
 include(":samples:qq-webhook-server-ktor")

@@ -8,7 +8,7 @@
   <img alt="simbot logo" src="../.simbot/logo.svg" width="260" />
 </picture>
 <h2>
-    ~ Simple Robot ~ <br/> <small>QQ频道组件</small>
+    ~ Simple Robot ~ <br/> <small>QQ组件</small>
 </h2>
 <a href="https://github.com/simple-robot/simbot-component-qq-guild/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/simple-robot/simbot-component-qq-guild" /></a>
 <a href="https://repo1.maven.org/maven2/love/forte/simbot/component/simbot-component-qq-guild-api/" target="_blank">
@@ -59,7 +59,7 @@ QQ机器人组件是对 [simbot4核心库](https://github.com/simple-robot/simpl
 的组件实现，
 是一个相对高度封装的模块，并提供simbot大部分能力，包括事件监听、多组件协同、Spring Boot Starter 等。
 
-👉 [前往模块](simbot-component-qq-guild-core) 了解更多~
+👉 [前往模块](simbot-component-qq-core) 了解更多~
 
 ## 命名说明
 
