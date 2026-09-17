@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -55,9 +55,6 @@ package love.forte.simbot.event
  *
  * @author ForteScarlet
  */
-@RequiresOptIn(
-    message = "This is a fuzzy event type. It is recommended to implement a more specific event type.",
-    level = RequiresOptIn.Level.WARNING
-)
+@RequiresOptIn(message = "This is a fuzzy event type. It is recommended to implement a more specific event type.")
 @Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 public annotation class FuzzyEventTypeImplementation

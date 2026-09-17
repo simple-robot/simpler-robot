@@ -27,10 +27,7 @@ package love.forte.simbot.kook.api
  * 标记为一个作为 KOOK API 请求而返回的类型，
  * 应由 KOOK API 请求结果进行反序列化实现而不可直接构造。
  */
-@RequiresOptIn(
-    "作为KOOK API请求结果的类型，请避免直接构造",
-    level = RequiresOptIn.Level.WARNING
-)
+@RequiresOptIn("作为KOOK API请求结果的类型，请避免直接构造")
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class ApiResultType

@@ -29,8 +29,8 @@ package love.forte.simbot.annotations
  */
 @Retention(AnnotationRetention.BINARY)
 @RequiresOptIn(
-    message = "一个尚在试验阶段的API。试验阶段的API可能存在漏洞、缺陷，或实现不稳定，且有可能在未来被修改、删除，且没有兼容性保证。",
-    level = RequiresOptIn.Level.WARNING
+    message = "一个尚在试验阶段的API。" +
+        "试验阶段的API可能存在漏洞、缺陷，或实现不稳定，且有可能在未来被修改、删除，且没有兼容性保证。"
 )
 @MustBeDocumented
 public annotation class ExperimentalSimbotAPI
@@ -40,10 +40,7 @@ public annotation class ExperimentalSimbotAPI
  * 它可能会随时变更、删除，且不保证兼容性。
  */
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn(
-    message = "一个仅供 simbot 内部使用的API。它可能会随时变更、删除，且不保证兼容性。",
-    level = RequiresOptIn.Level.WARNING
-)
+@RequiresOptIn(message = "一个仅供 simbot 内部使用的API。它可能会随时变更、删除，且不保证兼容性。")
 @MustBeDocumented
 public annotation class InternalSimbotAPI
 
@@ -67,7 +64,6 @@ public annotation class InternalInheritanceAPI
 @RequiresOptIn(
     message = "一个脆弱的、或者具有复杂的须知、备注、条件的API。" +
         "这类API通常有很多前提条件以及注意事项，需要谨慎使用。",
-    level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented
 public annotation class FragileSimbotAPI
@@ -76,10 +72,7 @@ public annotation class FragileSimbotAPI
  * 一个设计为仅供 Java 用户使用的API
  */
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn(
-    message = "一个设计为仅供 Java 用户使用的API",
-    level = RequiresOptIn.Level.WARNING
-)
+@RequiresOptIn(message = "一个设计为仅供 Java 用户使用的API")
 @MustBeDocumented
 public annotation class Api4J
 
@@ -110,9 +103,6 @@ public annotation class ExperimentalReactiveBridgingApi
  * 一个设计为仅供 JS 用户使用的API
  */
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn(
-    message = "一个设计为仅供 JS 用户使用的API",
-    level = RequiresOptIn.Level.WARNING
-)
+@RequiresOptIn(message = "一个设计为仅供 JS 用户使用的API")
 @MustBeDocumented
 public annotation class Api4Js

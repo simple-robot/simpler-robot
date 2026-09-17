@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2025. ForteScarlet.
+ *     Copyright (c) 2025-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -34,7 +34,6 @@ package love.forte.simbot.resource
         "The implementation of `Resource` should be internal. " +
         "Currently, `Resource` does not guarantee the stability " +
         "and compatibility of third-party implementations in the future.",
-    level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented
 public annotation class ResourceImplementation
