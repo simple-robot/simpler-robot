@@ -128,7 +128,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 0
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 频道事件 `intents` */
+        /**
+         * 频道事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -136,22 +138,34 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当机器人加入新guild时 */
+        /**
+         * 当机器人加入新guild时
+         */
         public const val GUILD_CREATE_TYPE: String = "GUILD_CREATE"
 
-        /** 当guild资料发生变更时 */
+        /**
+         * 当guild资料发生变更时
+         */
         public const val GUILD_UPDATE_TYPE: String = "GUILD_UPDATE"
 
-        /** 当机器人退出guild时 */
+        /**
+         * 当机器人退出guild时
+         */
         public const val GUILD_DELETE_TYPE: String = "GUILD_DELETE"
 
-        /** 当channel被创建时 */
+        /**
+         * 当channel被创建时
+         */
         public const val CHANNEL_CREATE_TYPE: String = "CHANNEL_CREATE"
 
-        /** 当channel被更新时 */
+        /**
+         * 当channel被更新时
+         */
         public const val CHANNEL_UPDATE_TYPE: String = "CHANNEL_UPDATE"
 
-        /** 当channel被删除时 */
+        /**
+         * 当channel被删除时
+         */
         public const val CHANNEL_DELETE_TYPE: String = "CHANNEL_DELETE"
     }
 
@@ -167,7 +181,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 1
         internal const val INTENTS = 1 shl INTENTS_INDEX
 
-        /** 频道成员事件 `intents` */
+        /**
+         * 频道成员事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -175,13 +191,19 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当成员加入时 */
+        /**
+         * 当成员加入时
+         */
         public const val GUILD_MEMBER_ADD_TYPE: String = "GUILD_MEMBER_ADD"
 
-        /** 当成员资料变更时 */
+        /**
+         * 当成员资料变更时
+         */
         public const val GUILD_MEMBER_UPDATE_TYPE: String = "GUILD_MEMBER_UPDATE"
 
-        /** 当成员被移除时 */
+        /**
+         * 当成员被移除时
+         */
         public const val GUILD_MEMBER_REMOVE_TYPE: String = "GUILD_MEMBER_REMOVE"
 
     }
@@ -198,7 +220,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 9
         internal const val INTENTS = 1 shl INTENTS_INDEX
 
-        /** 频道消息事件 `intents` */
+        /**
+         * 频道消息事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -206,10 +230,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 发送消息事件，代表频道内的全部消息，而不只是 at 机器人的消息。内容与 AT_MESSAGE_CREATE 相同 */
+        /**
+         * 发送消息事件，代表频道内的全部消息，而不只是 at 机器人的消息。内容与 AT_MESSAGE_CREATE 相同
+         */
         public const val MESSAGE_CREATE_TYPE: String = "MESSAGE_CREATE"
 
-        /** 删除（撤回）消息事件 */
+        /**
+         * 删除（撤回）消息事件
+         */
         public const val MESSAGE_DELETE_TYPE: String = "MESSAGE_DELETE"
     }
 
@@ -224,7 +252,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 10
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 表情表态事件 `intents` */
+        /**
+         * 表情表态事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -232,10 +262,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 为消息添加表情表态 */
+        /**
+         * 为消息添加表情表态
+         */
         public const val MESSAGE_REACTION_ADD_TYPE: String = "MESSAGE_REACTION_ADD"
 
-        /** 为消息删除表情表态 */
+        /**
+         * 为消息删除表情表态
+         */
         public const val MESSAGE_REACTION_REMOVE_TYPE: String = "MESSAGE_REACTION_REMOVE"
 
     }
@@ -251,7 +285,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 12
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 表情表态事件 `intents` */
+        /**
+         * 表情表态事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -259,10 +295,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当收到用户发给机器人的私信消息时 */
+        /**
+         * 当收到用户发给机器人的私信消息时
+         */
         public const val DIRECT_MESSAGE_CREATE_TYPE: String = "DIRECT_MESSAGE_CREATE"
 
-        /** 删除（撤回）消息事件 */
+        /**
+         * 删除（撤回）消息事件
+         */
         public const val DIRECT_MESSAGE_DELETE_TYPE: String = "DIRECT_MESSAGE_DELETE"
 
     }
@@ -283,7 +323,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 18
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 论坛事件 `intents` */
+        /**
+         * 论坛事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -291,25 +333,39 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当用户创建主题时 */
+        /**
+         * 当用户创建主题时
+         */
         public const val OPEN_FORUM_THREAD_CREATE_TYPE: String = "OPEN_FORUM_THREAD_CREATE"
 
-        /** 当用户更新主题时 */
+        /**
+         * 当用户更新主题时
+         */
         public const val OPEN_FORUM_THREAD_UPDATE_TYPE: String = "OPEN_FORUM_THREAD_UPDATE"
 
-        /** 当用户删除主题时 */
+        /**
+         * 当用户删除主题时
+         */
         public const val OPEN_FORUM_THREAD_DELETE_TYPE: String = "OPEN_FORUM_THREAD_DELETE"
 
-        /** 当用户创建帖子时 */
+        /**
+         * 当用户创建帖子时
+         */
         public const val OPEN_FORUM_POST_CREATE_TYPE: String = "OPEN_FORUM_POST_CREATE"
 
-        /** 当用户删除帖子时 */
+        /**
+         * 当用户删除帖子时
+         */
         public const val OPEN_FORUM_POST_DELETE_TYPE: String = "OPEN_FORUM_POST_DELETE"
 
-        /** 当用户回复评论时 */
+        /**
+         * 当用户回复评论时
+         */
         public const val OPEN_FORUM_REPLY_CREATE_TYPE: String = "OPEN_FORUM_REPLY_CREATE"
 
-        /** 当用户删除评论时 */
+        /**
+         * 当用户删除评论时
+         */
         public const val OPEN_FORUM_REPLY_DELETE_TYPE: String = "OPEN_FORUM_REPLY_DELETE"
 
     }
@@ -325,7 +381,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 19
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 音视频/直播子频道成员进出事件 `intents` */
+        /**
+         * 音视频/直播子频道成员进出事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -333,10 +391,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当用户进入音视频/直播子频道 */
+        /**
+         * 当用户进入音视频/直播子频道
+         */
         public const val AUDIO_OR_LIVE_CHANNEL_MEMBER_ENTER_TYPE: String = "AUDIO_OR_LIVE_CHANNEL_MEMBER_ENTER"
 
-        /** 当用户离开音视频/直播子频道 */
+        /**
+         * 当用户离开音视频/直播子频道
+         */
         public const val AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT_TYPE: String = "AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT"
 
     }
@@ -407,7 +469,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 25
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** C2C群聊相关事件 `intents` */
+        /**
+         * C2C群聊相关事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -482,7 +546,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 26
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 互动事件 `intents` */
+        /**
+         * 互动事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -490,7 +556,9 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 互动事件创建时 */
+        /**
+         * 互动事件创建时
+         */
         public const val INTERACTION_CREATE_TYPE: String = "INTERACTION_CREATE"
 
     }
@@ -506,7 +574,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 27
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 互动事件 `intents` */
+        /**
+         * 互动事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -514,10 +584,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 消息审核通过 */
+        /**
+         * 消息审核通过
+         */
         public const val MESSAGE_AUDIT_PASS_TYPE: String = "MESSAGE_AUDIT_PASS"
 
-        /** 消息审核不通过 */
+        /**
+         * 消息审核不通过
+         */
         public const val MESSAGE_AUDIT_REJECT_TYPE: String = "MESSAGE_AUDIT_REJECT"
 
     }
@@ -540,7 +614,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 28
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 论坛事件 `intents` */
+        /**
+         * 论坛事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -548,28 +624,44 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当用户创建主题时 */
+        /**
+         * 当用户创建主题时
+         */
         public const val FORUM_THREAD_CREATE_TYPE: String = "FORUM_THREAD_CREATE"
 
-        /** 当用户更新主题时 */
+        /**
+         * 当用户更新主题时
+         */
         public const val FORUM_THREAD_UPDATE_TYPE: String = "FORUM_THREAD_UPDATE"
 
-        /** 当用户删除主题时 */
+        /**
+         * 当用户删除主题时
+         */
         public const val FORUM_THREAD_DELETE_TYPE: String = "FORUM_THREAD_DELETE"
 
-        /** 当用户创建帖子时 */
+        /**
+         * 当用户创建帖子时
+         */
         public const val FORUM_POST_CREATE_TYPE: String = "FORUM_POST_CREATE"
 
-        /** 当用户删除帖子时 */
+        /**
+         * 当用户删除帖子时
+         */
         public const val FORUM_POST_DELETE_TYPE: String = "FORUM_POST_DELETE"
 
-        /** 当用户回复评论时 */
+        /**
+         * 当用户回复评论时
+         */
         public const val FORUM_REPLY_CREATE_TYPE: String = "FORUM_REPLY_CREATE"
 
-        /** 当用户删除评论时 */
+        /**
+         * 当用户删除评论时
+         */
         public const val FORUM_REPLY_DELETE_TYPE: String = "FORUM_REPLY_DELETE"
 
-        /** 当用户发表审核通过时 */
+        /**
+         * 当用户发表审核通过时
+         */
         public const val FORUM_PUBLISH_AUDIT_RESULT_TYPE: String = "FORUM_PUBLISH_AUDIT_RESULT"
 
     }
@@ -588,7 +680,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 29
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 论坛事件 `intents` */
+        /**
+         * 论坛事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -596,16 +690,24 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 音频开始播放时 */
+        /**
+         * 音频开始播放时
+         */
         public const val AUDIO_START_TYPE: String = "AUDIO_START"
 
-        /** 音频播放结束时 */
+        /**
+         * 音频播放结束时
+         */
         public const val AUDIO_FINISH_TYPE: String = "AUDIO_FINISH"
 
-        /** 上麦时 */
+        /**
+         * 上麦时
+         */
         public const val AUDIO_ON_MIC_TYPE: String = "AUDIO_ON_MIC"
 
-        /** 下麦时 */
+        /**
+         * 下麦时
+         */
         public const val AUDIO_OFF_MIC_TYPE: String = "AUDIO_OFF_MIC"
 
     }
@@ -622,7 +724,9 @@ public sealed class EventIntents {
         public const val INTENTS_INDEX: Int = 30
         internal const val INTENTS: Int = 1 shl INTENTS_INDEX
 
-        /** 论坛事件 `intents` */
+        /**
+         * 论坛事件 `intents`
+         */
         @get:JvmStatic
         @get:JvmName("getIntents")
         public val intents: Intents = Intents(INTENTS)
@@ -630,10 +734,14 @@ public sealed class EventIntents {
         override val intentsValue: Int
             get() = INTENTS
 
-        /** 当收到@机器人的消息时 */
+        /**
+         * 当收到@机器人的消息时
+         */
         public const val AT_MESSAGE_CREATE_TYPE: String = "AT_MESSAGE_CREATE"
 
-        /** 当频道的消息被删除时 */
+        /**
+         * 当频道的消息被删除时
+         */
         public const val PUBLIC_MESSAGE_DELETE_TYPE: String = "PUBLIC_MESSAGE_DELETE"
 
     }

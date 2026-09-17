@@ -32,15 +32,23 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public enum class MessageDestination {
-    /** QQ频道的文字子频道。 */
+    /**
+     * QQ频道的文字子频道。
+     */
     CHANNEL,
 
-    /** QQ频道的私信会话。 */
+    /**
+     * QQ频道的私信会话。
+     */
     DMS,
 
-    /** QQ群。 */
+    /**
+     * QQ群。
+     */
     GROUP,
 
-    /** QQ 用户的 C2C 私信会话。 */
+    /**
+     * QQ 用户的 C2C 私信会话。
+     */
     USER,
 }

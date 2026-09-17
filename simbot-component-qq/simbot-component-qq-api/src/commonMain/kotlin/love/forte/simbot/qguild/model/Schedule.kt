@@ -79,22 +79,34 @@ public data class Schedule @ApiModelConstructor constructor(
      * @see Schedule.remindType
      */
     public object RemindTypes {
-        /** 不提醒 */
+        /**
+         * 不提醒
+         */
         public const val NO_REMIND: String = "0"
 
-        /** 开始时提醒 */
+        /**
+         * 开始时提醒
+         */
         public const val AT_START: String = "1"
 
-        /** 开始前 5 分钟提醒 */
+        /**
+         * 开始前 5 分钟提醒
+         */
         public const val AT_5_MINUTES_BEFORE_START: String = "2"
 
-        /** 开始前 15 分钟提醒 */
+        /**
+         * 开始前 15 分钟提醒
+         */
         public const val AT_15_MINUTES_BEFORE_START: String = "3"
 
-        /** 开始前 30 分钟提醒 */
+        /**
+         * 开始前 30 分钟提醒
+         */
         public const val AT_30_MINUTES_BEFORE_START: String = "4"
 
-        /** 开始前 60 分钟提醒 */
+        /**
+         * 开始前 60 分钟提醒
+         */
         public const val AT_60_MINUTES_BEFORE_START: String = "5"
     }
 

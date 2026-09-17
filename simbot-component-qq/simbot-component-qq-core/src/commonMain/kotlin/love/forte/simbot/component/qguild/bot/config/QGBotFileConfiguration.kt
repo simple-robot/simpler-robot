@@ -306,11 +306,17 @@ public data class QGBotFileConfiguration(
      */
     @Serializable
     public data class TimeoutConfig(
-        /** @see BotConfiguration.apiHttpRequestTimeoutMillis */
+        /**
+         * @see BotConfiguration.apiHttpRequestTimeoutMillis
+         */
         val apiHttpRequestTimeoutMillis: Long? = null,
-        /** @see BotConfiguration.apiHttpConnectTimeoutMillis */
+        /**
+         * @see BotConfiguration.apiHttpConnectTimeoutMillis
+         */
         val apiHttpConnectTimeoutMillis: Long? = null,
-        /** @see BotConfiguration.apiHttpSocketTimeoutMillis */
+        /**
+         * @see BotConfiguration.apiHttpSocketTimeoutMillis
+         */
         val apiHttpSocketTimeoutMillis: Long? = null,
     )
 
@@ -323,11 +329,17 @@ public data class QGBotFileConfiguration(
      */
     @Serializable
     public data class RetryConfig(
-        /** 最大重试次数；为 `null` 时不启用重试。 */
+        /**
+         * 最大重试次数；为 `null` 时不启用重试。
+         */
         val maxRetries: Int? = null,
-        /** 是否使用 Ktor 默认指数退避。 */
+        /**
+         * 是否使用 Ktor 默认指数退避。
+         */
         val exponentialDelay: Boolean = false,
-        /** 是否重试服务器错误响应。 */
+        /**
+         * 是否重试服务器错误响应。
+         */
         val retryOnServerErrors: Boolean = false,
     )
 

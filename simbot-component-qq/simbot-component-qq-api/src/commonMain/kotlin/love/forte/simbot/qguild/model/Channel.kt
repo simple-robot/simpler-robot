@@ -47,19 +47,29 @@ import kotlin.jvm.JvmSynthetic
  */
 public interface Channel : Comparable<Channel> {
 
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     public val id: String
 
-    /** 频道 id */
+    /**
+     * 频道 id
+     */
     public val guildId: String
 
-    /** 子频道名 */
+    /**
+     * 子频道名
+     */
     public val name: String
 
-    /** 子频道类型 [ChannelType] */
+    /**
+     * 子频道类型 [ChannelType]
+     */
     public val type: ChannelType
 
-    /** 子频道子类型 [ChannelSubType] */
+    /**
+     * 子频道子类型 [ChannelSubType]
+     */
     public val subType: ChannelSubType
 
     /**
@@ -74,22 +84,34 @@ public interface Channel : Comparable<Channel> {
      */
     public val position: Int
 
-    /** 所属分组 id，仅对子频道有效，对 子频道分组（ChannelType=4） 无效 */
+    /**
+     * 所属分组 id，仅对子频道有效，对 子频道分组（ChannelType=4） 无效
+     */
     public val parentId: String
 
-    /** 创建人 id */
+    /**
+     * 创建人 id
+     */
     public val ownerId: String
 
-    /** 子频道私密类型 [PrivateType] */
+    /**
+     * 子频道私密类型 [PrivateType]
+     */
     public val privateType: PrivateType?
 
-    /** 子频道发言权限 [SpeakPermission] */
+    /**
+     * 子频道发言权限 [SpeakPermission]
+     */
     public val speakPermission: SpeakPermission?
 
-    /** 用于标识应用子频道应用类型，仅应用子频道时会使用该字段，具体定义请参考 [应用子频道的应用类型](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E5%BA%94%E7%94%A8%E5%AD%90%E9%A2%91%E9%81%93%E7%9A%84%E5%BA%94%E7%94%A8%E7%B1%BB%E5%9E%8B) */
+    /**
+     * 用于标识应用子频道应用类型，仅应用子频道时会使用该字段，具体定义请参考 [应用子频道的应用类型](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E5%BA%94%E7%94%A8%E5%AD%90%E9%A2%91%E9%81%93%E7%9A%84%E5%BA%94%E7%94%A8%E7%B1%BB%E5%9E%8B)
+     */
     public val applicationId: String?
 
-    /** 用户拥有的子频道权限 [Permissions] */
+    /**
+     * 用户拥有的子频道权限 [Permissions]
+     */
     @get:JvmSynthetic
     public val permissions: Permissions?
 
@@ -109,15 +131,25 @@ public interface Channel : Comparable<Channel> {
 @ApiModel
 @Serializable
 public data class SimpleChannel @ApiModelConstructor constructor(
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     override val id: String,
-    /** 频道 id */
+    /**
+     * 频道 id
+     */
     @SerialName("guild_id") override val guildId: String,
-    /** 子频道名 */
+    /**
+     * 子频道名
+     */
     override val name: String,
-    /** 子频道类型 [ChannelType] */
+    /**
+     * 子频道类型 [ChannelType]
+     */
     override val type: ChannelType,
-    /** 子频道子类型 [ChannelSubType] */
+    /**
+     * 子频道子类型 [ChannelSubType]
+     */
     @SerialName("sub_type") override val subType: ChannelSubType,
     /**
      * 排序值，具体请参考 有[关 position 的说明](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E6%9C%89%E5%85%B3-position-%E7%9A%84%E8%AF%B4%E6%98%8E)
@@ -130,17 +162,29 @@ public data class SimpleChannel @ApiModelConstructor constructor(
      *
      */
     override val position: Int,
-    /** 所属分组 id，仅对子频道有效，对 子频道分组（ChannelType=4） 无效 */
+    /**
+     * 所属分组 id，仅对子频道有效，对 子频道分组（ChannelType=4） 无效
+     */
     @SerialName("parent_id") override val parentId: String,
-    /** 创建人 id */
+    /**
+     * 创建人 id
+     */
     @SerialName("owner_id") override val ownerId: String,
-    /** 子频道私密类型 [PrivateType] */
+    /**
+     * 子频道私密类型 [PrivateType]
+     */
     @SerialName("private_type") override val privateType: PrivateType? = null,
-    /** 子频道发言权限 [SpeakPermission] */
+    /**
+     * 子频道发言权限 [SpeakPermission]
+     */
     @SerialName("speak_permission") override val speakPermission: SpeakPermission? = null,
-    /** 用于标识应用子频道应用类型，仅应用子频道时会使用该字段，具体定义请参考 [应用子频道的应用类型](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E5%BA%94%E7%94%A8%E5%AD%90%E9%A2%91%E9%81%93%E7%9A%84%E5%BA%94%E7%94%A8%E7%B1%BB%E5%9E%8B) */
+    /**
+     * 用于标识应用子频道应用类型，仅应用子频道时会使用该字段，具体定义请参考 [应用子频道的应用类型](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E5%BA%94%E7%94%A8%E5%AD%90%E9%A2%91%E9%81%93%E7%9A%84%E5%BA%94%E7%94%A8%E7%B1%BB%E5%9E%8B)
+     */
     @SerialName("application_id") override val applicationId: String? = null,
-    /** 用户拥有的子频道权限 [Permissions] */
+    /**
+     * 用户拥有的子频道权限 [Permissions]
+     */
     @get:JvmSynthetic
     override val permissions: Permissions? = null
 ) : Channel
@@ -156,27 +200,39 @@ public data class SimpleChannel @ApiModelConstructor constructor(
 @Serializable(ChannelTypeSerializer::class)
 public class ChannelType private constructor(public val value: Int) {
     public companion object {
-        /** 文字子频道 */
+        /**
+         * 文字子频道
+         */
         @JvmField
         public val TEXT: ChannelType = ChannelType(0)
 
-        /** 语音子频道 */
+        /**
+         * 语音子频道
+         */
         @JvmField
         public val VOICE: ChannelType = ChannelType(2)
 
-        /** 子频道分组 */
+        /**
+         * 子频道分组
+         */
         @JvmField
         public val CATEGORY: ChannelType = ChannelType(4)
 
-        /** 直播子频道 */
+        /**
+         * 直播子频道
+         */
         @JvmField
         public val LIVE: ChannelType = ChannelType(10005)
 
-        /** 应用子频道 */
+        /**
+         * 应用子频道
+         */
         @JvmField
         public val APP: ChannelType = ChannelType(10006)
 
-        /** 论坛子频道 */
+        /**
+         * 论坛子频道
+         */
         @JvmField
         public val FORUM: ChannelType = ChannelType(10007)
 
@@ -250,19 +306,27 @@ internal object ChannelTypeSerializer : KSerializer<ChannelType> {
 @Serializable(ChannelSubTypeSerializer::class)
 public class ChannelSubType private constructor(public val value: Int) {
     public companion object {
-        /** 闲聊 (value = 0) */
+        /**
+         * 闲聊 (value = 0)
+         */
         @JvmField
         public val SMALL_TALK: ChannelSubType = ChannelSubType(0)
 
-        /** 公告 (value = 1) */
+        /**
+         * 公告 (value = 1)
+         */
         @JvmField
         public val ANNOUNCEMENT: ChannelSubType = ChannelSubType(1)
 
-        /** 攻略 (value = 2) */
+        /**
+         * 攻略 (value = 2)
+         */
         @JvmField
         public val STRATEGY: ChannelSubType = ChannelSubType(2)
 
-        /** 开黑 (value = 3) */
+        /**
+         * 开黑 (value = 3)
+         */
         @JvmField
         public val PLAY_TOGETHER: ChannelSubType = ChannelSubType(3)
 
@@ -286,7 +350,9 @@ public class ChannelSubType private constructor(public val value: Int) {
     }
 }
 
-/** Serializer for [ChannelSubType] */
+/**
+ * Serializer for [ChannelSubType]
+ */
 internal object ChannelSubTypeSerializer : KSerializer<ChannelSubType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ChannelSubType", PrimitiveKind.INT)
     override fun deserialize(decoder: Decoder): ChannelSubType = ChannelSubType.valueOf(decoder.decodeInt())
@@ -302,17 +368,25 @@ internal object ChannelSubTypeSerializer : KSerializer<ChannelSubType> {
  */
 @Serializable(PrivateTypeSerializer::class)
 public enum class PrivateType(public val value: Int) {
-    /** 公开频道 */
+    /**
+     * 公开频道
+     */
     PUBLIC(0),
 
-    /** 群主管理员可见 */
+    /**
+     * 群主管理员可见
+     */
     ADMIN_ONLY(1),
 
-    /** 群主管理员+指定成员，可使用 [修改子频道权限接口](https://bot.q.qq.com/wiki/develop/api/openapi/channel_permissions/put_channel_permissions.html) 指定成员 */
+    /**
+     * 群主管理员+指定成员，可使用 [修改子频道权限接口](https://bot.q.qq.com/wiki/develop/api/openapi/channel_permissions/put_channel_permissions.html) 指定成员
+     */
     ADMIN_AND_DESIGNATED_MEMBER(2)
 }
 
-/** Serializer for [PrivateType] */
+/**
+ * Serializer for [PrivateType]
+ */
 internal object PrivateTypeSerializer : KSerializer<PrivateType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("PrivateType", PrimitiveKind.INT)
 
@@ -337,17 +411,25 @@ internal object PrivateTypeSerializer : KSerializer<PrivateType> {
  */
 @Serializable(SpeakPermissionSerializer::class)
 public enum class SpeakPermission(public val value: Int) {
-    /** 无效类型 */
+    /**
+     * 无效类型
+     */
     INVALID(0),
 
-    /** 所有人 */
+    /**
+     * 所有人
+     */
     ALL(1),
 
-    /** 群主管理员+指定成员，可使用 [修改子频道权限接口](https://bot.q.qq.com/wiki/develop/api/openapi/channel_permissions/put_channel_permissions.html) 指定成员 */
+    /**
+     * 群主管理员+指定成员，可使用 [修改子频道权限接口](https://bot.q.qq.com/wiki/develop/api/openapi/channel_permissions/put_channel_permissions.html) 指定成员
+     */
     ADMIN_AND_DESIGNATED_MEMBER(2)
 }
 
-/** Serializer for [SpeakPermission] */
+/**
+ * Serializer for [SpeakPermission]
+ */
 internal object SpeakPermissionSerializer : KSerializer<SpeakPermission> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SpeakPermission", PrimitiveKind.INT)
 

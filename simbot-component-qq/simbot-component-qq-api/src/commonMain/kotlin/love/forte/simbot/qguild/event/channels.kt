@@ -101,19 +101,33 @@ public data class ChannelDelete(
 @ApiModel
 @Serializable
 public data class EventChannel @ApiModelConstructor constructor(
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     val id: String,
-    /** 频道 id */
+    /**
+     * 频道 id
+     */
     @SerialName("guild_id") val guildId: String,
-    /** 子频道名 */
+    /**
+     * 子频道名
+     */
     val name: String,
-    /** 子频道类型 [ChannelType] */
+    /**
+     * 子频道类型 [ChannelType]
+     */
     val type: ChannelType,
-    /** 子频道子类型 [ChannelSubType] */
+    /**
+     * 子频道子类型 [ChannelSubType]
+     */
     @SerialName("sub_type") val subType: ChannelSubType,
-    /** 创建人 id */
+    /**
+     * 创建人 id
+     */
     @SerialName("owner_id") val ownerId: String,
-    /** 操作人 */
+    /**
+     * 操作人
+     */
     @SerialName("op_user_id") val opUserId: String,
 )
 

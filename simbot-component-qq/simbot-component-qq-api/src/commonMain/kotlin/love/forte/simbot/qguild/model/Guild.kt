@@ -35,31 +35,49 @@ import love.forte.simbot.qguild.ApiModelConstructor
  * 频道对象中所涉及的 ID 类数据，都仅在机器人场景流通，与真实的 ID 无关。请不要理解为真实的 ID -私信场景下的 guild_id 为私信临时频道的 ID，获取私信来源频道信息请使用 `src_guild_id`
  */
 public interface Guild {
-    /** 频道ID */
+    /**
+     * 频道ID
+     */
     public val id: String
 
-    /** 频道名称 */
+    /**
+     * 频道名称
+     */
     public val name: String
 
-    /** 频道头像地址 */
+    /**
+     * 频道头像地址
+     */
     public val icon: String
 
-    /** 创建人用户ID */
+    /**
+     * 创建人用户ID
+     */
     public val ownerId: String
 
-    /** 当前人是否是创建人 */
+    /**
+     * 当前人是否是创建人
+     */
     public val isOwner: Boolean
 
-    /** 成员数 */
+    /**
+     * 成员数
+     */
     public val memberCount: Int
 
-    /** 最大成员数 */
+    /**
+     * 最大成员数
+     */
     public val maxMembers: Int
 
-    /** 描述 */
+    /**
+     * 描述
+     */
     public val description: String
 
-    /** 加入时间 */
+    /**
+     * 加入时间
+     */
     public val joinedAt: String
 }
 
@@ -70,24 +88,42 @@ public interface Guild {
 @ApiModel
 @Serializable
 public data class SimpleGuild @ApiModelConstructor constructor(
-    /** 频道ID */
+    /**
+     * 频道ID
+     */
     override val id: String,
-    /** 频道名称 */
+    /**
+     * 频道名称
+     */
     override val name: String,
-    /** 频道头像地址 */
+    /**
+     * 频道头像地址
+     */
     override val icon: String,
-    /** 创建人用户ID */
+    /**
+     * 创建人用户ID
+     */
     @SerialName("owner_id") override val ownerId: String,
-    /** 当前人是否是创建人 */
+    /**
+     * 当前人是否是创建人
+     */
     @SerialName("owner") override val isOwner: Boolean,
-    /** 成员数 */
+    /**
+     * 成员数
+     */
     @SerialName("member_count") override val memberCount: Int,
-    /** 最大成员数 */
+    /**
+     * 最大成员数
+     */
     @SerialName("max_members") override val maxMembers: Int,
-    /** 描述 */
+    /**
+     * 描述
+     */
     override val description: String,
 
-    /** 加入时间 */
+    /**
+     * 加入时间
+     */
     @SerialName("joined_at") override val joinedAt: String
 ) : Guild
 

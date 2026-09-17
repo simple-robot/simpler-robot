@@ -33,19 +33,33 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public data class MessageAudited(
-    /** 消息审核 id */
+    /**
+     * 消息审核 id
+     */
     @SerialName("audit_id") val auditId: String,
-    /** 消息 id，只有审核通过事件才会有值 */
+    /**
+     * 消息 id，只有审核通过事件才会有值
+     */
     @SerialName("message_id") val messageId: String? = null,
-    /** 频道 id */
+    /**
+     * 频道 id
+     */
     @SerialName("guild_id") val guildId: String,
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     @SerialName("channel_id") val channelId: String,
-    /** 消息审核时间 */
+    /**
+     * 消息审核时间
+     */
     @SerialName("audit_time") val auditTime: String,
-    /** 消息创建时间 */
+    /**
+     * 消息创建时间
+     */
     @SerialName("create_time") val createTime: String,
-    /** 子频道消息 seq，用于消息间的排序，seq 在同一子频道中按从先到后的顺序递增，不同的子频道之间消息无法排序 */
+    /**
+     * 子频道消息 seq，用于消息间的排序，seq 在同一子频道中按从先到后的顺序递增，不同的子频道之间消息无法排序
+     */
     @SerialName("seq_in_channel") val seqInChannel: String
 )
 

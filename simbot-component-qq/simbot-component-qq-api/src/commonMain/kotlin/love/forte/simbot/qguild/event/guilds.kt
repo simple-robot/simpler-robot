@@ -101,24 +101,44 @@ public data class GuildDelete(
 @ApiModel
 @Serializable
 public data class EventGuild @ApiModelConstructor constructor(
-    /** 频道ID */
+    /**
+     * 频道ID
+     */
     override val id: String,
-    /** 频道名称 */
+    /**
+     * 频道名称
+     */
     override val name: String,
-    /** 频道头像地址 */
+    /**
+     * 频道头像地址
+     */
     override val icon: String,
-    /** 创建人用户ID */
+    /**
+     * 创建人用户ID
+     */
     @SerialName("owner_id") override val ownerId: String,
-    /** 当前人是否是创建人 */
+    /**
+     * 当前人是否是创建人
+     */
     @SerialName("owner") override val isOwner: Boolean,
-    /** 成员数 */
+    /**
+     * 成员数
+     */
     @SerialName("member_count") override val memberCount: Int,
-    /** 最大成员数 */
+    /**
+     * 最大成员数
+     */
     @SerialName("max_members") override val maxMembers: Int,
-    /** 描述 */
+    /**
+     * 描述
+     */
     override val description: String,
-    /** 加入时间 */
+    /**
+     * 加入时间
+     */
     @SerialName("joined_at") override val joinedAt: String,
-    /** 操作人 */
+    /**
+     * 操作人
+     */
     @SerialName("op_user_id") val opUserId: String
 ) : Guild

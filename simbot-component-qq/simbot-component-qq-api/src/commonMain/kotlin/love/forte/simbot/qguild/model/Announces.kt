@@ -37,13 +37,21 @@ import kotlin.jvm.JvmName
 @ApiModel
 @Serializable
 public data class Announces @ApiModelConstructor constructor(
-    /** 频道 id */
+    /**
+     * 频道 id
+     */
     @SerialName("guild_id") val guildId: String,
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     @SerialName("channel_id") val channelId: String,
-    /** 消息 id */
+    /**
+     * 消息 id
+     */
     @SerialName("message_id") val messageId: String,
-    /** 公告类别 0:成员公告 1:欢迎公告，默认成员公告 */
+    /**
+     * 公告类别 0:成员公告 1:欢迎公告，默认成员公告
+     */
     @SerialName("announces_type") @get:JvmName("getAnnouncesType") val announcesType: UInt,
     /**
      * [RecommendChannel] 数组
@@ -66,8 +74,12 @@ public data class Announces @ApiModelConstructor constructor(
 @ApiModel
 @Serializable
 public data class RecommendChannel @ApiModelConstructor constructor(
-    /** 子频道 id */
+    /**
+     * 子频道 id
+     */
     @SerialName("channel_id") val channelId: String,
-    /** 推荐语 */
+    /**
+     * 推荐语
+     */
     val introduce: String
 )

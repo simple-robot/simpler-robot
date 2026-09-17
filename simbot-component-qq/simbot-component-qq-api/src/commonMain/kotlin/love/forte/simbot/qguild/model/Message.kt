@@ -283,7 +283,9 @@ public data class Message @ApiModelConstructor constructor(
          */
         @Serializable
         public data class Obj(
-            /** ark obj kv列表 */
+            /**
+             * ark obj kv列表
+             */
             @SerialName("obj_kv") public val objKv: List<Kv> = emptyList()
         ) {
 

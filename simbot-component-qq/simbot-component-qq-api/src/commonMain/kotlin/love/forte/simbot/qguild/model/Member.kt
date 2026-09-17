@@ -124,7 +124,7 @@ public data class SimpleMemberWithGuildId @ApiModelConstructor constructor(
     /**
      * 用户加入频道的时间
      *
-     * 如果属性缺失则会使用 [ZERO_ISO_INSTANT]
+     * 如果属性缺失则会使用 [QQ.ZERO_ISO_INSTANT]
      */
     @SerialName("join_at") override val joinedAt: String = QQ.ZERO_ISO_INSTANT
 ) : MemberWithGuildId

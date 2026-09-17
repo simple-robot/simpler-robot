@@ -45,17 +45,29 @@ import kotlin.jvm.JvmStatic
 @ApiModel
 @Serializable
 public data class Role @ApiModelConstructor constructor(
-    /** 身份组ID */
+    /**
+     * 身份组ID
+     */
     val id: String,
-    /** 名称 */
+    /**
+     * 名称
+     */
     val name: String,
-    /** ARGB的HEX十六进制颜色值转换后的十进制数值 */
+    /**
+     * ARGB的HEX十六进制颜色值转换后的十进制数值
+     */
     @Serializable(ColorIntSerializer::class) val color: Int,
-    /** 是否在成员列表中单独展示: 0-否, 1-是 */
+    /**
+     * 是否在成员列表中单独展示: 0-否, 1-是
+     */
     val hoist: Int,
-    /** 人数 */
+    /**
+     * 人数
+     */
     val number: Int,
-    /** 成员上限 */
+    /**
+     * 成员上限
+     */
     @SerialName("member_limit") val memberLimit: Int,
 ) {
 

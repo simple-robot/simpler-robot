@@ -34,10 +34,14 @@ import love.forte.simbot.qguild.event.Signal.Resume.Data
 import kotlin.jvm.JvmField
 
 
-/** @suppress */
+/**
+ * @suppress
+ */
 public sealed interface ReceivedSignal // 接收的，下行
 
-/** @suppress */
+/**
+ * @suppress
+ */
 public sealed interface SendingSignal // 发送的，上行
 
 /**
