@@ -112,7 +112,10 @@ class MessageKeyboardsTest {
 
         assertEquals(2, keyboards.content.rows.size)
         assertEquals("确认", keyboards.content.rows[0].buttons.single().renderData?.label)
-        assertEquals(MessageKeyboard.ActionPermission(type = 2), keyboards.content.rows[0].buttons.single().action?.permission)
+        assertEquals(
+            MessageKeyboard.ActionPermission(type = 2),
+            keyboards.content.rows[0].buttons.single().action?.permission
+        )
         assertEquals("template-id", keyboards.content.rows[1].buttons.single().id)
     }
 

@@ -21,8 +21,6 @@
  *
  */
 
-package test
-
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.statement.*
@@ -57,8 +55,8 @@ class ApiResultSerializationCheckTests {
                     status = HttpStatusCode.BadRequest,
 //                    headers = headersOf(HttpHeaders.ContentType, "application/json")
                 )
-            }) {
-
+            }
+        ) {
         }
 
         val resp = GatewayApis.Normal.request(client, "test")
@@ -75,8 +73,8 @@ class ApiResultSerializationCheckTests {
                     content = ByteReadChannel("""<html></html>"""),
                     status = HttpStatusCode.OK,
                 )
-            }) {
-
+            }
+        ) {
         }
 
         val ex = assertFails { GetChannelApi.create("test").requestData(client, "test") }

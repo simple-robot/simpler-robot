@@ -80,7 +80,7 @@ public class CreateGuildRoleApi private constructor(
     override val resultDeserializationStrategy: DeserializationStrategy<GuildRoleCreated>
         get() = GuildRoleCreated.serializer()
 
-    override fun createBody(): Any? = _body
+    override fun createBody(): Any = _body
 
     @Serializable
     private data class NewBody(

@@ -44,6 +44,7 @@ import kotlinx.serialization.json.Json
 import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.logger.isDebugEnabled
 import love.forte.simbot.qguild.*
+import love.forte.simbot.qguild.common.QQ
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
