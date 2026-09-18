@@ -35,6 +35,9 @@ public final class love/forte/simbot/qguild/ErrInfo$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract interface annotation class love/forte/simbot/qguild/EventModelConstructor : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class love/forte/simbot/qguild/ExperimentalQGMediaApi : java/lang/annotation/Annotation {
 }
 
@@ -2453,8 +2456,11 @@ public final class love/forte/simbot/qguild/event/C2CMessageCreate$MessageScene 
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getExt ()Ljava/util/List;
 	public final fun getSource ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final synthetic class love/forte/simbot/qguild/event/C2CMessageCreate$MessageScene$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -6158,8 +6164,8 @@ public final class love/forte/simbot/qguild/model/MessageKeyboard$Action {
 	public final fun component5 ()Ljava/lang/Integer;
 	public final fun component6 ()Ljava/lang/String;
 	public final fun component7 ()I
-	public final synthetic fun copy$love_forte_simbot_component_simbot_component_qq_guild_api (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;)Llove/forte/simbot/qguild/model/MessageKeyboard$Action;
-	public static synthetic fun copy$love_forte_simbot_component_simbot_component_qq_guild_api$default (Llove/forte/simbot/qguild/model/MessageKeyboard$Action;Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/model/MessageKeyboard$Action;
+	public final synthetic fun copy$love_forte_simbot_component_simbot_component_qq_api (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;)Llove/forte/simbot/qguild/model/MessageKeyboard$Action;
+	public static synthetic fun copy$love_forte_simbot_component_simbot_component_qq_api$default (Llove/forte/simbot/qguild/model/MessageKeyboard$Action;Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/model/MessageKeyboard$Action;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnchor ()Ljava/lang/Integer;
 	public final fun getData ()Ljava/lang/String;

@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <love.forte.simbot.component:simbot-component-qq-guild-stdlib>
+// Library unique name: <love.forte.simbot.component:simbot-component-qq-stdlib>
 final enum class love.forte.simbot.qguild.stdlib/MessageDestination : kotlin/Enum<love.forte.simbot.qguild.stdlib/MessageDestination> { // love.forte.simbot.qguild.stdlib/MessageDestination|null[0]
     enum entry CHANNEL // love.forte.simbot.qguild.stdlib/MessageDestination.CHANNEL|null[0]
     enum entry DMS // love.forte.simbot.qguild.stdlib/MessageDestination.DMS|null[0]

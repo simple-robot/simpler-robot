@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <love.forte.simbot.component:simbot-component-qq-guild-api>
+// Library unique name: <love.forte.simbot.component:simbot-component-qq-api>
 open annotation class love.forte.simbot.qguild.event/DispatchTypeName : kotlin/Annotation { // love.forte.simbot.qguild.event/DispatchTypeName|null[0]
     constructor <init>(kotlin/String) // love.forte.simbot.qguild.event/DispatchTypeName.<init>|<init>(kotlin.String){}[0]
 
@@ -19,6 +19,10 @@ open annotation class love.forte.simbot.qguild/ApiModel : kotlin/Annotation { //
 
 open annotation class love.forte.simbot.qguild/ApiModelConstructor : kotlin/Annotation { // love.forte.simbot.qguild/ApiModelConstructor|null[0]
     constructor <init>() // love.forte.simbot.qguild/ApiModelConstructor.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild/EventModelConstructor : kotlin/Annotation { // love.forte.simbot.qguild/EventModelConstructor|null[0]
+    constructor <init>() // love.forte.simbot.qguild/EventModelConstructor.<init>|<init>(){}[0]
 }
 
 open annotation class love.forte.simbot.qguild/ExperimentalQGMediaApi : kotlin/Annotation { // love.forte.simbot.qguild/ExperimentalQGMediaApi|null[0]
@@ -2314,6 +2318,10 @@ final class love.forte.simbot.qguild.event/C2CMessageCreate : love.forte.simbot.
             final fun <get-ext>(): kotlin.collections/List<kotlin/String> // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.ext.<get-ext>|<get-ext>(){}[0]
         final val source // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.source|{}source[0]
             final fun <get-source>(): kotlin/String? // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.source.<get-source>|<get-source>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.toString|toString(){}[0]
 
         final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene> { // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer|null[0]
             final val descriptor // love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene.$serializer.descriptor|{}descriptor[0]
@@ -8910,7 +8918,6 @@ final inline fun (love.forte.simbot.qguild.event/IntentsAppender).love.forte.sim
 final inline fun (love.forte.simbot.qguild/QQGuildApiException).love.forte.simbot.qguild/ifNotFoundThenNoSuch(kotlin/Boolean = ..., kotlin/Function0<kotlin/String>): kotlin/Nothing // love.forte.simbot.qguild/ifNotFoundThenNoSuch|ifNotFoundThenNoSuch@love.forte.simbot.qguild.QQGuildApiException(kotlin.Boolean;kotlin.Function0<kotlin.String>){}[0]
 final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiException).love.forte.simbot.qguild/ifNotFoundThen(kotlin/Boolean = ..., kotlin/Function0<#A>): #A // love.forte.simbot.qguild/ifNotFoundThen|ifNotFoundThen@love.forte.simbot.qguild.QQGuildApiException(kotlin.Boolean;kotlin.Function0<0:0>){0§<kotlin.Any?>}[0]
 final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiException).love.forte.simbot.qguild/ifNotFoundThenNull(kotlin/Boolean = ...): #A? // love.forte.simbot.qguild/ifNotFoundThenNull|ifNotFoundThenNull@love.forte.simbot.qguild.QQGuildApiException(kotlin.Boolean){0§<kotlin.Any?>}[0]
-final inline fun <#A: reified kotlin/Throwable> (#A).love.forte.simbot.qguild/initCause0(kotlin/Throwable): #A // love.forte.simbot.qguild/initCause0|initCause0@0:0(kotlin.Throwable){0§<kotlin.Throwable>}[0]
 final inline fun love.forte.simbot.qguild.event/Intents(kotlin/Function1<love.forte.simbot.qguild.event/IntentsAppenderOp, kotlin/Unit>): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/Intents|Intents(kotlin.Function1<love.forte.simbot.qguild.event.IntentsAppenderOp,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.message/buildArk(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.message/ArkBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.message.ArkBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model.menu/CustomMenu(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenu|CustomMenu(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuBuilder,kotlin.Unit>){}[0]

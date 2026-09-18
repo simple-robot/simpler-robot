@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <love.forte.simbot.component:simbot-component-qq-guild-core>
+// Library unique name: <love.forte.simbot.component:simbot-component-qq-core>
 open annotation class love.forte.simbot.component.qguild.bot.config/UsedOnlyForConfigSerialization : kotlin/Annotation { // love.forte.simbot.component.qguild.bot.config/UsedOnlyForConfigSerialization|null[0]
     constructor <init>() // love.forte.simbot.component.qguild.bot.config/UsedOnlyForConfigSerialization.<init>|<init>(){}[0]
 }
