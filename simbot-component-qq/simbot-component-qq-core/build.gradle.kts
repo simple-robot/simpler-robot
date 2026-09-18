@@ -27,7 +27,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.dokka)
     alias(libs.plugins.suspendTransform)
-    id("simbot-maven-publish")
+    id("simbot-qq-relocation-publish")
 }
 
 configJavaCompileWithModule("simbot.component.qq.core")

@@ -25,7 +25,7 @@ plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
     alias(libs.plugins.dokka)
-    id("simbot-maven-publish")
+    id("simbot-qq-relocation-publish")
 }
 
 configJavaCompileWithModule("simbot.component.qq.internal.ed25519s")
