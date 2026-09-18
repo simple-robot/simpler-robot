@@ -6,7 +6,6 @@ module simbot.component.qq.api {
     requires transitive kotlinx.serialization.json;
     // simbot
     requires transitive simbot.component.qq.common;
-    requires transitive simbot.component.qq.model;
     requires transitive simbot.logger;
     requires static simbot.common.annotations;
     requires transitive org.slf4j;
