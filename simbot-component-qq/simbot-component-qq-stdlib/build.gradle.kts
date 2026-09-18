@@ -35,7 +35,6 @@ configJavaCompileWithModule("simbot.component.qq.stdlib")
 kotlin {
     compilerOptions {
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
-        optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
         optIn.add("love.forte.simbot.qguild.common.ApiModelConstructor")
     }
 

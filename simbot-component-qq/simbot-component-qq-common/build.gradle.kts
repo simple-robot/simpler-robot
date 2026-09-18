@@ -41,7 +41,6 @@ kotlin {
             "-Xconsistent-data-class-copy-visibility"
         )
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
-        optIn.add("love.forte.simbot.qguild.ApiModelConstructor")
         optIn.add("love.forte.simbot.qguild.common.ApiModelConstructor")
         optIn.add("kotlin.ExperimentalVersionOverloading")
     }

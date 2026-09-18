@@ -25,9 +25,13 @@ package love.forte.simbot.qguild.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.qguild.*
+import love.forte.simbot.qguild.ErrInfo
+import love.forte.simbot.qguild.QGInternalApi
+import love.forte.simbot.qguild.QQGuildApiException
 import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.api.message.direct.DmsSendApi
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
 
 
 /**

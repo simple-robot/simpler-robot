@@ -37,6 +37,7 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.event.QGGroupMessageCreateEventImpl
 import love.forte.simbot.event.ChatGroupMessageEventPreReplyEvent
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.event.GroupMessageCreate
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -47,6 +48,7 @@ import kotlin.test.assertTrue
  *
  * @author ForteScarlet
  */
+@OptIn(EventModelConstructor::class)
 class QGGroupMessageCreateInteractionTests : AbstractInteractionTests() {
 
     private fun event(bot: QGBotImpl): QGGroupMessageCreateEventImpl {
