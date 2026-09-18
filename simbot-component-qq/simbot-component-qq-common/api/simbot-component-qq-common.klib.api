@@ -1,0 +1,53 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <love.forte.simbot.component:simbot-component-qq-common>
+open annotation class love.forte.simbot.qguild.common/ApiModel : kotlin/Annotation { // love.forte.simbot.qguild.common/ApiModel|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/ApiModel.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/ApiModelConstructor : kotlin/Annotation { // love.forte.simbot.qguild.common/ApiModelConstructor|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/ApiModelConstructor.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/EventModelConstructor : kotlin/Annotation { // love.forte.simbot.qguild.common/EventModelConstructor|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/EventModelConstructor.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/ExperimentalQGMediaApi : kotlin/Annotation { // love.forte.simbot.qguild.common/ExperimentalQGMediaApi|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/ExperimentalQGMediaApi.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/Generated : kotlin/Annotation { // love.forte.simbot.qguild.common/Generated|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/Generated.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/PrivateDomainOnly : kotlin/Annotation { // love.forte.simbot.qguild.common/PrivateDomainOnly|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/PrivateDomainOnly.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/QGApi4J : kotlin/Annotation { // love.forte.simbot.qguild.common/QGApi4J|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/QGApi4J.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/QGApi4JS : kotlin/Annotation { // love.forte.simbot.qguild.common/QGApi4JS|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/QGApi4JS.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/QGInternalApi : kotlin/Annotation { // love.forte.simbot.qguild.common/QGInternalApi|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/QGInternalApi.<init>|<init>(){}[0]
+}
+
+final object love.forte.simbot.qguild.common/QQ { // love.forte.simbot.qguild.common/QQ|null[0]
+    final const val URL // love.forte.simbot.qguild.common/QQ.URL|{}URL[0]
+        final fun <get-URL>(): kotlin/String // love.forte.simbot.qguild.common/QQ.URL.<get-URL>|<get-URL>(){}[0]
+    final const val ZERO_ISO_INSTANT // love.forte.simbot.qguild.common/QQ.ZERO_ISO_INSTANT|{}ZERO_ISO_INSTANT[0]
+        final fun <get-ZERO_ISO_INSTANT>(): kotlin/String // love.forte.simbot.qguild.common/QQ.ZERO_ISO_INSTANT.<get-ZERO_ISO_INSTANT>|<get-ZERO_ISO_INSTANT>(){}[0]
+
+    final val DefaultJson // love.forte.simbot.qguild.common/QQ.DefaultJson|{}DefaultJson[0]
+        final fun <get-DefaultJson>(): kotlinx.serialization.json/Json // love.forte.simbot.qguild.common/QQ.DefaultJson.<get-DefaultJson>|<get-DefaultJson>(){}[0]
+}

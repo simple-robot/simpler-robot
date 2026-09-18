@@ -1,0 +1,66 @@
+/*
+ *     Copyright (c) 2023-2026. ForteScarlet.
+ *
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
+ *
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+package love.forte.simbot.qguild.model
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.ApiModel
+import love.forte.simbot.qguild.common.ApiModelConstructor
+
+/**
+ * [用户对象](https://bot.q.qq.com/wiki/develop/api/openapi/user/model.html#user)
+ *
+ * 用户对象中所涉及的 ID 类数据，都仅在机器人场景流通，与真实的 ID 无关。请不要理解为真实的 ID
+ *
+ */
+@ApiModel
+@Serializable
+public data class User @ApiModelConstructor constructor(
+    /**
+     * 用户 id
+     */
+    val id: String,
+    /**
+     * 用户名
+     */
+    val username: String,
+    /**
+     * 用户头像地址
+     */
+    val avatar: String = "",
+    /**
+     * 是否是机器人
+     */
+    @SerialName("bot") val isBot: Boolean = false,
+    /**
+     * 跨应用统一用户 OpenID（需特殊申请）
+     */
+    @SerialName("union_openid") val unionOpenid: String? = null,
+    /**
+     * 跨应用统一用户账号（需特殊申请）
+     */
+    @SerialName("union_user_account") val unionUserAccount: String? = null,
+)
+
+

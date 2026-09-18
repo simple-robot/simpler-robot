@@ -1,0 +1,34 @@
+public abstract interface annotation class love/forte/simbot/qguild/common/ApiModel : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/ApiModelConstructor : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/EventModelConstructor : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/ExperimentalQGMediaApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/Generated : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/PrivateDomainOnly : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/QGApi4J : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/QGApi4JS : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/QGInternalApi : java/lang/annotation/Annotation {
+}
+
+public final class love/forte/simbot/qguild/common/QQ {
+	public static final field DefaultJson Lkotlinx/serialization/json/Json;
+	public static final field INSTANCE Llove/forte/simbot/qguild/common/QQ;
+	public static final field URL Ljava/lang/String;
+	public static final field ZERO_ISO_INSTANT Ljava/lang/String;
+}
+
