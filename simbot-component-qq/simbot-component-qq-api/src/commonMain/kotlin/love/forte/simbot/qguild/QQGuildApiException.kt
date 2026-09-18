@@ -28,14 +28,21 @@ import io.ktor.websocket.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
+import love.forte.simbot.common.exception.initExceptionCause
 
 /**
- * 初始化 cause, 并得到自身（或结果）
- * 在 JVM 平台上生效。
+ * 初始化 cause 或 添加 suppressed.
+ *
+ * 在 JVM 平台上通过 `initCause` 生效。
  * 在其他平台会使用 [addSuppressed] 添加 [cause]。
+ *
+ * @return [T] self.
  */
 @QGInternalApi
-public expect inline fun <reified T : Throwable> T.initCause0(cause: Throwable): T
+public inline fun <reified T : Throwable> T.initCause0(cause: Throwable): T {
+    initExceptionCause(cause)
+    return this
+}
 
 /**
  * QQ频道API请求过程中出现的异常
