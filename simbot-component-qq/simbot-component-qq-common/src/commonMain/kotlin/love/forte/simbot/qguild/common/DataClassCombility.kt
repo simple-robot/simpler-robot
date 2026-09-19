@@ -27,4 +27,7 @@ package love.forte.simbot.qguild.common
 public object DataClassCompatibilities {
     public const val DEPRECATED_MESSAGE: String =
         "此类型不再作为 data class 进行公开，请尽量避免使用 data class 默认生成的相关语法/特性。"
+
+    public const val DEPRECATED_CONSTRUCTOR_MESSAGE: String =
+        "旧数据类时的遗留公开构造，仅保留用于保证兼容性，请勿直接调用作为数据序列化的类型的构造函数"
 }

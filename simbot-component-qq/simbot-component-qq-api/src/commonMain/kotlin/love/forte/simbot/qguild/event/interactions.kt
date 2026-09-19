@@ -21,6 +21,8 @@
  *
  */
 
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
@@ -39,7 +41,6 @@ import kotlin.jvm.JvmStatic
  * @since 5.0
  * @see InteractionCreateEventData
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -106,7 +107,6 @@ public value class InteractionChatType private constructor(public val value: Int
  * @since 5.0
  * @see InteractionCreateEventData
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -238,7 +238,6 @@ public value class InteractionType private constructor(public val value: Int) {
  * @since 5.0
  * @see InteractionCreateEventData
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -313,9 +312,12 @@ public value class InteractionScene private constructor(public val value: String
 @Serializable
 public class InteractionCreateEventData internal constructor(
     public val id: String,
+    @get:JvmExposeBoxed
     public val type: InteractionType,
+    @get:JvmExposeBoxed
     public val scene: InteractionScene? = null,
     @SerialName("chat_type")
+    @get:JvmExposeBoxed
     public val chatType: InteractionChatType,
     public val timestamp: String,
     @SerialName("guild_id")
@@ -337,7 +339,7 @@ public class InteractionCreateEventData internal constructor(
     public val applicationId: String? = null,
 ) {
     @Deprecated(
-        "旧数据类时的遗留公开构造，仅保留用于保证兼容性，请勿直接调用作为数据序列化的类型的构造函数",
+        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
         level = DeprecationLevel.ERROR
     )
     @EventModelConstructor
@@ -603,11 +605,12 @@ public class InteractionCreateEventData internal constructor(
  */
 @Serializable
 public class InteractionCreateData internal constructor(
+    @get:JvmExposeBoxed
     public val type: InteractionType,
     public val resolved: InteractionCreateResolvedData,
 ) {
     @Deprecated(
-        "旧数据类时的遗留公开构造，仅保留用于保证兼容性，请勿直接调用作为数据序列化的类型的构造函数",
+        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
         level = DeprecationLevel.ERROR
     )
     @EventModelConstructor
@@ -661,7 +664,6 @@ public class InteractionCreateData internal constructor(
  * @since 5.0
  * @see InteractionCreateResolvedData
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -709,7 +711,6 @@ public value class InteractionResolvedFeedbackOpt private constructor(public val
  * @since 5.0
  * @see InteractionCreateResolvedData
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -755,7 +756,6 @@ public value class InteractionResolvedAction private constructor(public val valu
  *
  * @since 5.0
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -801,7 +801,6 @@ public value class AuthorizeDataOptScene private constructor(public val value: S
  *
  * @since 5.0
  */
-@OptIn(ExperimentalStdlibApi::class)
 @JvmInline
 @JvmExposeBoxed
 @Serializable
@@ -870,8 +869,10 @@ public class InteractionCreateResolvedData internal constructor(
     @SerialName("message_id")
     public val messageId: String? = null,
     @SerialName("feedback_opt")
+    @get:JvmExposeBoxed
     public val feedbackOpt: InteractionResolvedFeedbackOpt? = null,
     public val checked: Int? = null,
+    @get:JvmExposeBoxed
     public val action: InteractionResolvedAction? = null,
     @SerialName("message_scene")
     public val messageScene: InteractionMessageScene? = null,
@@ -879,7 +880,7 @@ public class InteractionCreateResolvedData internal constructor(
     public val authorizeData: AuthorizeData? = null,
 ) {
     @Deprecated(
-        "旧数据类时的遗留公开构造，仅保留用于保证兼容性，请勿直接调用作为数据序列化的类型的构造函数",
+        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
         level = DeprecationLevel.ERROR
     )
     @EventModelConstructor
@@ -1020,7 +1021,9 @@ public class InteractionMessageScene internal constructor(
  */
 @Serializable
 public class AuthorizeData internal constructor(
+    @get:JvmExposeBoxed
     public val optScene: AuthorizeDataOptScene? = null,
+    @get:JvmExposeBoxed
     public val scope: AuthorizeDataScope? = null,
 ) {
     override fun equals(other: Any?): Boolean {

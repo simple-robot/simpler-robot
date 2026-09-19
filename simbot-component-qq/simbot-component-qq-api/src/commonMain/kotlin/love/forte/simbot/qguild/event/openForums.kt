@@ -25,11 +25,13 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.forum.ForumSourceInfo
 
 /**
- * [开放论坛事件(OpenForumEvent)](https://bot.q.qq.com/wiki/develop/api/gateway/open_forum.html) 相关的事件父类。
+ * [开放论坛事件(OpenForumEvent)](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/open_forum.html)
+ * 相关的事件父类。
  *
  * ## 发送时机
  * 用户在话题子频道内发帖、评论、回复评论时产生该事件
@@ -163,18 +165,61 @@ public data class OpenForumThreadDelete @EventModelConstructor constructor(
 
 
 /**
- *
  * 开放论坛事件中 **_主题事件_** 的内容。
  *
  * @see OpenForumEventData
- *
  */
 @Serializable
-public data class OpenForumThreadData @EventModelConstructor constructor(
+public class OpenForumThreadData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
-) : OpenForumEventData()
+) : OpenForumEventData() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OpenForumThreadData) return false
+
+        if (guildId != other.guildId) return false
+        if (channelId != other.channelId) return false
+        if (authorId != other.authorId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = guildId.hashCode()
+        result = 31 * result + channelId.hashCode()
+        result = 31 * result + authorId.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "OpenForumThreadData(guildId='$guildId', channelId='$channelId', authorId='$authorId')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channelId"))
+    public operator fun component2(): String = channelId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("authorId"))
+    public operator fun component3(): String = authorId
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        channelId: String = this.channelId,
+        authorId: String = this.authorId,
+    ): OpenForumThreadData = OpenForumThreadData(
+        guildId = guildId,
+        channelId = channelId,
+        authorId = authorId,
+    )
+    //endregion
+}
 
 
 /**
@@ -225,11 +270,56 @@ public data class OpenForumPostDelete @EventModelConstructor constructor(
  *
  */
 @Serializable
-public data class OpenForumPostData @EventModelConstructor constructor(
+public class OpenForumPostData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
-) : OpenForumEventData()
+) : OpenForumEventData() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OpenForumPostData) return false
+
+        if (guildId != other.guildId) return false
+        if (channelId != other.channelId) return false
+        if (authorId != other.authorId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = guildId.hashCode()
+        result = 31 * result + channelId.hashCode()
+        result = 31 * result + authorId.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "OpenForumPostData(guildId='$guildId', channelId='$channelId', authorId='$authorId')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channelId"))
+    public operator fun component2(): String = channelId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("authorId"))
+    public operator fun component3(): String = authorId
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        channelId: String = this.channelId,
+        authorId: String = this.authorId,
+    ): OpenForumPostData = OpenForumPostData(
+        guildId = guildId,
+        channelId = channelId,
+        authorId = authorId,
+    )
+    //endregion
+}
 
 /**
  * 开放论坛事件的 **_回复事件_**。
@@ -279,8 +369,53 @@ public data class OpenForumReplyDelete @EventModelConstructor constructor(
  *
  */
 @Serializable
-public data class OpenForumReplyData @EventModelConstructor constructor(
+public class OpenForumReplyData @EventModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
     @SerialName("channel_id") override val channelId: String,
     @SerialName("author_id") override val authorId: String,
-) : OpenForumEventData()
+) : OpenForumEventData() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OpenForumReplyData) return false
+
+        if (guildId != other.guildId) return false
+        if (channelId != other.channelId) return false
+        if (authorId != other.authorId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = guildId.hashCode()
+        result = 31 * result + channelId.hashCode()
+        result = 31 * result + authorId.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "OpenForumReplyData(guildId='$guildId', channelId='$channelId', authorId='$authorId')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channelId"))
+    public operator fun component2(): String = channelId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("authorId"))
+    public operator fun component3(): String = authorId
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        channelId: String = this.channelId,
+        authorId: String = this.authorId,
+    ): OpenForumReplyData = OpenForumReplyData(
+        guildId = guildId,
+        channelId = channelId,
+        authorId = authorId,
+    )
+    //endregion
+}
