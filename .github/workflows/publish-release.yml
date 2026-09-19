@@ -202,7 +202,7 @@ jobs:
         # Create gitHub release
         # https://github.com/marketplace/actions/gh-release
       - name: Create Github Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.PUSH_TOKEN }}
           body_path: .changelog/${{ github.ref_name }}.md
