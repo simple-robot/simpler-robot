@@ -163,7 +163,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 #kotlinxBenchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinxBenchmark" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.10" }
 # Kover
 # https://www.jetbrains.com/help/qodana/code-coverage.html
 # https://github.com/Kotlin/kotlinx-kover
