@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.EventModelConstructor
 
 /**
@@ -33,13 +34,57 @@ import love.forte.simbot.qguild.common.EventModelConstructor
  * @property opMemberOpenid 操作添加机器人进群的群成员openid
  */
 @Serializable
-public data class GroupRobotManagementData @EventModelConstructor constructor(
-    val timestamp: String,
+public class GroupRobotManagementData @EventModelConstructor constructor(
+    public val timestamp: String,
     @SerialName("group_openid")
-    val groupOpenid: String,
+    public val groupOpenid: String,
     @SerialName("op_member_openid")
-    val opMemberOpenid: String,
-)
+    public val opMemberOpenid: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GroupRobotManagementData) return false
+
+        if (timestamp != other.timestamp) return false
+        if (groupOpenid != other.groupOpenid) return false
+        if (opMemberOpenid != other.opMemberOpenid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = timestamp.hashCode()
+        result = 31 * result + groupOpenid.hashCode()
+        result = 31 * result + opMemberOpenid.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "GroupRobotManagementData(" +
+            "timestamp='$timestamp', " +
+            "groupOpenid='$groupOpenid', " +
+            "opMemberOpenid='$opMemberOpenid')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+    public operator fun component1(): String = timestamp
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("groupOpenid"))
+    public operator fun component2(): String = groupOpenid
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("opMemberOpenid"))
+    public operator fun component3(): String = opMemberOpenid
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        timestamp: String = this.timestamp,
+        groupOpenid: String = this.groupOpenid,
+        opMemberOpenid: String = this.opMemberOpenid,
+    ): GroupRobotManagementData = GroupRobotManagementData(timestamp, groupOpenid, opMemberOpenid)
+    //endregion
+}
 
 /**
  * [GroupMemberManagementDispatch] 事件的数据体。
@@ -51,13 +96,58 @@ public data class GroupRobotManagementData @EventModelConstructor constructor(
  * @since 4.4.0
  */
 @Serializable
-public data class GroupMemberManagementData @EventModelConstructor constructor(
-    val timestamp: String,
+public class GroupMemberManagementData @EventModelConstructor constructor(
+    public val timestamp: String,
     @SerialName("group_openid")
-    val groupOpenid: String,
+    public val groupOpenid: String,
     @SerialName("member_openid")
-    val memberOpenid: String,
-)
+    public val memberOpenid: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GroupMemberManagementData) return false
+
+        if (timestamp != other.timestamp) return false
+        if (groupOpenid != other.groupOpenid) return false
+        if (memberOpenid != other.memberOpenid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = timestamp.hashCode()
+        result = 31 * result + groupOpenid.hashCode()
+        result = 31 * result + memberOpenid.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "GroupMemberManagementData(" +
+            "timestamp='$timestamp', " +
+            "groupOpenid='$groupOpenid', " +
+            "memberOpenid='$memberOpenid')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+    public operator fun component1(): String = timestamp
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("groupOpenid"))
+    public operator fun component2(): String = groupOpenid
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberOpenid"))
+    public operator fun component3(): String = memberOpenid
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        timestamp: String = this.timestamp,
+        groupOpenid: String = this.groupOpenid,
+        memberOpenid: String = this.memberOpenid,
+    ): GroupMemberManagementData = GroupMemberManagementData(timestamp, groupOpenid, memberOpenid)
+    //endregion
+}
+
 
 /**
  * 群聊模块-群管理相关事件。

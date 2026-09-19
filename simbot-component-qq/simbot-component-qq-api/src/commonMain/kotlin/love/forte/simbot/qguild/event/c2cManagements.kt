@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.EventModelConstructor
 
 
@@ -34,10 +35,45 @@ import love.forte.simbot.qguild.common.EventModelConstructor
  * @property openid 用户openid
  */
 @Serializable
-public data class C2CManagementData @EventModelConstructor constructor(
-    val timestamp: String,
-    val openid: String,
-)
+public class C2CManagementData @EventModelConstructor constructor(
+    public val timestamp: String,
+    public val openid: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is C2CManagementData) return false
+
+        if (timestamp != other.timestamp) return false
+        if (openid != other.openid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = timestamp.hashCode()
+        result = 31 * result + openid.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "C2CManagementData(timestamp='$timestamp', openid='$openid')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+    public operator fun component1(): String = timestamp
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("openid"))
+    public operator fun component2(): String = openid
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        timestamp: String = this.timestamp,
+        openid: String = this.openid,
+    ): C2CManagementData = C2CManagementData(timestamp, openid)
+    //endregion
+}
 
 /**
  * 用户模块-用户管理相关事件。
