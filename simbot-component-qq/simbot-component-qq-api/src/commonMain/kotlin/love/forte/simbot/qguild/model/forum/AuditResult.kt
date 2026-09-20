@@ -55,6 +55,7 @@ import kotlin.jvm.JvmExposeBoxed
 @ApiModel
 @Serializable
 public class AuditResult internal constructor(
+    private val m: Int = 0,
     @SerialName("guild_id")
     override val guildId: String,
     @SerialName("channel_id")
@@ -89,6 +90,7 @@ public class AuditResult internal constructor(
         result: Int,
         errMsg: String,
     ) : this(
+        m = 0,
         guildId = guildId,
         channelId = channelId,
         authorId = authorId,

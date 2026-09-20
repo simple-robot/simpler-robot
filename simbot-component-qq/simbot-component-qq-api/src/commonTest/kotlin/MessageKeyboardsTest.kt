@@ -30,6 +30,7 @@ import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.api.message.user.UserMessageSendApi
 import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.model.MessageKeyboard
+import love.forte.simbot.qguild.model.MessageKeyboardActionPermissionType
 import love.forte.simbot.qguild.model.MessageKeyboards
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -113,7 +114,7 @@ class MessageKeyboardsTest {
         assertEquals(2, keyboards.content.rows.size)
         assertEquals("确认", keyboards.content.rows[0].buttons.single().renderData?.label)
         assertEquals(
-            MessageKeyboard.ActionPermission(type = 2),
+            MessageKeyboard.ActionPermission(type = MessageKeyboardActionPermissionType.AllAccessible),
             keyboards.content.rows[0].buttons.single().action?.permission
         )
         assertEquals("template-id", keyboards.content.rows[1].buttons.single().id)

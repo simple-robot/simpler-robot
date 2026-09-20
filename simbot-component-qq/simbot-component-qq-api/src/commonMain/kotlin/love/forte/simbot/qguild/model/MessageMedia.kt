@@ -27,6 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 
 
 /**
@@ -41,14 +42,61 @@ import love.forte.simbot.qguild.common.ApiModelConstructor
  */
 @ApiModel
 @Serializable
-public data class MessageMedia @ApiModelConstructor constructor(
+public class MessageMedia @ApiModelConstructor constructor(
     @SerialName("file_uuid")
-    val fileUuid: String,
+    public val fileUuid: String,
     @SerialName("file_info")
-    val fileInfo: String,
-    val ttl: Int,
-    val id: String? = null,
-)
+    public val fileInfo: String,
+    public val ttl: Int,
+    public val id: String? = null,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MessageMedia) return false
+
+        if (fileUuid != other.fileUuid) return false
+        if (fileInfo != other.fileInfo) return false
+        if (ttl != other.ttl) return false
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fileUuid.hashCode()
+        result = 31 * result + fileInfo.hashCode()
+        result = 31 * result + ttl
+        result = 31 * result + (id?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "MessageMedia(fileUuid='$fileUuid', fileInfo='$fileInfo', ttl=$ttl, id=$id)"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("fileUuid"))
+    public operator fun component1(): String = fileUuid
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("fileInfo"))
+    public operator fun component2(): String = fileInfo
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("ttl"))
+    public operator fun component3(): Int = ttl
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component4(): String? = id
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        fileUuid: String = this.fileUuid,
+        fileInfo: String = this.fileInfo,
+        ttl: Int = this.ttl,
+        id: String? = this.id,
+    ): MessageMedia = MessageMedia(fileUuid, fileInfo, ttl, id)
+    //endregion
+}
 
 /**
  * [富媒体消息](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/send-receive/rich-media.html)
@@ -59,11 +107,29 @@ public data class MessageMedia @ApiModelConstructor constructor(
  */
 @ApiModel
 @Serializable
-public data class SendMessageMedia @ApiModelConstructor constructor(
-    // TODO
+public class SendMessageMedia @ApiModelConstructor constructor(
     @SerialName("file_info")
-    val fileInfo: String,
-)
+    public val fileInfo: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SendMessageMedia) return false
+        return fileInfo == other.fileInfo
+    }
+
+    override fun hashCode(): Int = fileInfo.hashCode()
+
+    override fun toString(): String = "SendMessageMedia(fileInfo='$fileInfo')"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("fileInfo"))
+    public operator fun component1(): String = fileInfo
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(fileInfo: String = this.fileInfo): SendMessageMedia = SendMessageMedia(fileInfo)
+    //endregion
+}
 
 /**
  * [MessageMedia] to [SendMessageMedia]

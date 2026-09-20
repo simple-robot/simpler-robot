@@ -26,7 +26,7 @@ package love.forte.simbot.qguild.api.channel.schedules
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.model.Schedule
-import love.forte.simbot.qguild.model.Schedule.RemindTypes
+import love.forte.simbot.qguild.model.ScheduleRemindType
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -62,7 +62,7 @@ public data class ScheduleRequestBody(
      */
     @SerialName("jump_channel_id") val jumpChannelId: String,
     /**
-     * 日程提醒类型，取值参考 [RemindTypes]。
+     * 日程提醒类型，取值参考 [ScheduleRemindType]。
      */
     @SerialName("remind_type") val remindType: String,
 ) {
@@ -80,7 +80,7 @@ public data class ScheduleRequestBody(
             startTimestamp = startTimestamp,
             endTimestamp = endTimestamp,
             jumpChannelId = jumpChannelId,
-            remindType = remindType,
+            remindType = remindType.value,
         )
     }
 }

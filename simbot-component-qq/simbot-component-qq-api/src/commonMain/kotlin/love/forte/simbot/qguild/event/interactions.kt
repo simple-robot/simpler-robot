@@ -604,7 +604,7 @@ public class InteractionCreateEventData internal constructor(
  * @since 4.4.0
  */
 @Serializable
-public class InteractionCreateData internal constructor(
+public class InteractionCreateData @JvmExposeBoxed internal constructor(
     @get:JvmExposeBoxed
     public val type: InteractionType,
     public val resolved: InteractionCreateResolvedData,

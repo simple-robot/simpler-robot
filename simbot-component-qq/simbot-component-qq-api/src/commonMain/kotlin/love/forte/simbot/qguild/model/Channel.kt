@@ -33,6 +33,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -73,7 +74,7 @@ public interface Channel : Comparable<Channel> {
     public val subType: ChannelSubType
 
     /**
-     * 排序值，具体请参考 [有关 position 的说明](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E6%9C%89%E5%85%B3-position-%E7%9A%84%E8%AF%B4%E6%98%8E)
+     * 排序值，具体请参考 [有关 position 的说明](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/manage/channel/model.html#%E6%9C%89%E5%85%B3-position-%E7%9A%84%E8%AF%B4%E6%98%8E)
      *
      * - position 从 1 开始
      * - 当子频道类型为 子频道分组（ChannelType=4）时，由于 position 1 被未分组占用，所以 position 只能从 2 开始
@@ -127,67 +128,146 @@ public interface Channel : Comparable<Channel> {
  * [Channel] 的基础实现。
  *
  * @see Channel
+ * @property id 子频道 ID。
+ * @property guildId 频道 ID。
+ * @property name 子频道名。
+ * @property type 子频道类型 [ChannelType]。
+ * @property subType 子频道子类型 [ChannelSubType]。
+ * @property position 排序值。
+ * @property parentId 所属分组 ID。
+ * @property ownerId 创建人 ID。
+ * @property privateType 子频道私密类型 [PrivateType]。
+ * @property speakPermission 子频道发言权限 [SpeakPermission]。
+ * @property applicationId 应用子频道应用类型标识。
+ * @property permissions 用户拥有的子频道权限 [Permissions]。
  */
 @ApiModel
 @Serializable
-public data class SimpleChannel @ApiModelConstructor constructor(
-    /**
-     * 子频道 id
-     */
+public class SimpleChannel @ApiModelConstructor constructor(
     override val id: String,
-    /**
-     * 频道 id
-     */
     @SerialName("guild_id") override val guildId: String,
-    /**
-     * 子频道名
-     */
     override val name: String,
-    /**
-     * 子频道类型 [ChannelType]
-     */
     override val type: ChannelType,
-    /**
-     * 子频道子类型 [ChannelSubType]
-     */
     @SerialName("sub_type") override val subType: ChannelSubType,
-    /**
-     * 排序值，具体请参考 有[关 position 的说明](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E6%9C%89%E5%85%B3-position-%E7%9A%84%E8%AF%B4%E6%98%8E)
-     *
-     * - position 从 1 开始
-     * - 当子频道类型为 子频道分组（ChannelType=4）时，由于 position 1 被未分组占用，所以 position 只能从 2 开始
-     * - 如果不传默认追加到分组下最后一个
-     * - 如果填写一个已经存在的值，那么会插入在原来的元素之前
-     * - 如果填写一个较大值，与不填是相同的表现，同时存储的值会根据真实的 position 进行重新计算，并不会直接使用传入的值
-     *
-     */
     override val position: Int,
-    /**
-     * 所属分组 id，仅对子频道有效，对 子频道分组（ChannelType=4） 无效
-     */
     @SerialName("parent_id") override val parentId: String,
-    /**
-     * 创建人 id
-     */
     @SerialName("owner_id") override val ownerId: String,
-    /**
-     * 子频道私密类型 [PrivateType]
-     */
     @SerialName("private_type") override val privateType: PrivateType? = null,
-    /**
-     * 子频道发言权限 [SpeakPermission]
-     */
     @SerialName("speak_permission") override val speakPermission: SpeakPermission? = null,
-    /**
-     * 用于标识应用子频道应用类型，仅应用子频道时会使用该字段，具体定义请参考 [应用子频道的应用类型](https://bot.q.qq.com/wiki/develop/api/openapi/channel/model.html#%E5%BA%94%E7%94%A8%E5%AD%90%E9%A2%91%E9%81%93%E7%9A%84%E5%BA%94%E7%94%A8%E7%B1%BB%E5%9E%8B)
-     */
     @SerialName("application_id") override val applicationId: String? = null,
-    /**
-     * 用户拥有的子频道权限 [Permissions]
-     */
     @get:JvmSynthetic
     override val permissions: Permissions? = null
-) : Channel
+) : Channel {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SimpleChannel) return false
+
+        if (id != other.id) return false
+        if (guildId != other.guildId) return false
+        if (name != other.name) return false
+        if (type != other.type) return false
+        if (subType != other.subType) return false
+        if (position != other.position) return false
+        if (parentId != other.parentId) return false
+        if (ownerId != other.ownerId) return false
+        if (privateType != other.privateType) return false
+        if (speakPermission != other.speakPermission) return false
+        if (applicationId != other.applicationId) return false
+        if (permissions != other.permissions) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + guildId.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + subType.hashCode()
+        result = 31 * result + position
+        result = 31 * result + parentId.hashCode()
+        result = 31 * result + ownerId.hashCode()
+        result = 31 * result + privateType.hashCode()
+        result = 31 * result + speakPermission.hashCode()
+        result = 31 * result + applicationId.hashCode()
+        result = 31 * result + permissions.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "SimpleChannel(" +
+            "id='$id', " +
+            "guildId='$guildId', " +
+            "name='$name', " +
+            "type=$type, " +
+            "subType=$subType, " +
+            "position=$position, " +
+            "parentId='$parentId', " +
+            "ownerId='$ownerId', " +
+            "privateType=$privateType, " +
+            "speakPermission=$speakPermission, " +
+            "applicationId=$applicationId, " +
+            "permissions=$permissions)"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component1(): String = id
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component2(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
+    public operator fun component3(): String = name
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
+    public operator fun component4(): ChannelType = type
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("subType"))
+    public operator fun component5(): ChannelSubType = subType
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("position"))
+    public operator fun component6(): Int = position
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("parentId"))
+    public operator fun component7(): String = parentId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("ownerId"))
+    public operator fun component8(): String = ownerId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("privateType"))
+    public operator fun component9(): PrivateType? = privateType
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("speakPermission"))
+    public operator fun component10(): SpeakPermission? = speakPermission
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("applicationId"))
+    public operator fun component11(): String? = applicationId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("permissions"))
+    public operator fun component12(): Permissions? = permissions
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        id: String = this.id,
+        guildId: String = this.guildId,
+        name: String = this.name,
+        type: ChannelType = this.type,
+        subType: ChannelSubType = this.subType,
+        position: Int = this.position,
+        parentId: String = this.parentId,
+        ownerId: String = this.ownerId,
+        privateType: PrivateType? = this.privateType,
+        speakPermission: SpeakPermission? = this.speakPermission,
+        applicationId: String? = this.applicationId,
+        permissions: Permissions? = this.permissions,
+    ): SimpleChannel = SimpleChannel(
+        id, guildId, name, type, subType, position, parentId, ownerId,
+        privateType, speakPermission, applicationId, permissions
+    )
+    //endregion
+}
 
 
 /**
@@ -348,6 +428,24 @@ public class ChannelSubType private constructor(public val value: Int) {
         @JvmStatic
         public fun valueOf(type: Int): ChannelSubType = known.find { it.value == type } ?: ChannelSubType(type)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ChannelSubType) return false
+
+        if (value != other.value) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return value
+    }
+
+
+    override fun toString(): String {
+        return "ChannelSubType(value=$value)"
+    }
 }
 
 /**
@@ -444,7 +542,5 @@ internal object SpeakPermissionSerializer : KSerializer<SpeakPermission> {
         encoder.encodeInt(value.value)
     }
 }
-
-
 
 

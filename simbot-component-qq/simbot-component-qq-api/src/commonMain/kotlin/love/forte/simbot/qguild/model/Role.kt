@@ -32,6 +32,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -40,35 +41,23 @@ import kotlin.jvm.JvmStatic
  *
  *
  *
+ * @property id 身份组ID
+ * @property name 名称
+ * @property color ARGB的HEX十六进制颜色值转换后的十进制数值
+ * @property hoist 是否在成员列表中单独展示: 0-否, 1-是
+ * @property number 人数
+ * @property memberLimit 成员上限
  * @author ForteScarlet
  */
 @ApiModel
 @Serializable
-public data class Role @ApiModelConstructor constructor(
-    /**
-     * 身份组ID
-     */
-    val id: String,
-    /**
-     * 名称
-     */
-    val name: String,
-    /**
-     * ARGB的HEX十六进制颜色值转换后的十进制数值
-     */
-    @Serializable(ColorIntSerializer::class) val color: Int,
-    /**
-     * 是否在成员列表中单独展示: 0-否, 1-是
-     */
-    val hoist: Int,
-    /**
-     * 人数
-     */
-    val number: Int,
-    /**
-     * 成员上限
-     */
-    @SerialName("member_limit") val memberLimit: Int,
+public class Role @ApiModelConstructor constructor(
+    public val id: String,
+    public val name: String,
+    @Serializable(ColorIntSerializer::class) public val color: Int,
+    public val hoist: Int,
+    public val number: Int,
+    @SerialName("member_limit") public val memberLimit: Int,
 ) {
 
     /**
@@ -76,7 +65,72 @@ public data class Role @ApiModelConstructor constructor(
      *
      * @see hoist
      */
-    val isHoistBool: Boolean get() = hoist == 1
+    public val isHoistBool: Boolean get() = hoist == 1
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Role) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (color != other.color) return false
+        if (hoist != other.hoist) return false
+        if (number != other.number) return false
+        if (memberLimit != other.memberLimit) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + color
+        result = 31 * result + hoist
+        result = 31 * result + number
+        result = 31 * result + memberLimit
+        return result
+    }
+
+    override fun toString(): String {
+        return "Role(" +
+            "id='$id', " +
+            "name='$name', " +
+            "color=$color, " +
+            "hoist=$hoist, " +
+            "number=$number, " +
+            "memberLimit=$memberLimit)"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component1(): String = id
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
+    public operator fun component2(): String = name
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("color"))
+    public operator fun component3(): Int = color
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("hoist"))
+    public operator fun component4(): Int = hoist
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("number"))
+    public operator fun component5(): Int = number
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberLimit"))
+    public operator fun component6(): Int = memberLimit
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        id: String = this.id,
+        name: String = this.name,
+        color: Int = this.color,
+        hoist: Int = this.hoist,
+        number: Int = this.number,
+        memberLimit: Int = this.memberLimit,
+    ): Role = Role(id, name, color, hoist, number, memberLimit)
+    //endregion
 
     public companion object {
         /**

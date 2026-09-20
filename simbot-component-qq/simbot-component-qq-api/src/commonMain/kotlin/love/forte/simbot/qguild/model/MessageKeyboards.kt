@@ -24,6 +24,7 @@
 package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.QQ
 import kotlin.jvm.JvmStatic
 
@@ -43,21 +44,85 @@ public typealias MessageKeyboardButton = MessageKeyboard
  * @see MessageKeyboard
  * @see MessageKeyboardsBuilder
  *
+ * @property content 按钮内容。
  * @author ForteScarlet
  */
 @Serializable
-public data class MessageKeyboards internal constructor(val content: Content) {
+public class MessageKeyboards internal constructor(public val content: Content) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MessageKeyboards) return false
+        return content == other.content
+    }
+
+    override fun hashCode(): Int = content.hashCode()
+
+    override fun toString(): String = "MessageKeyboards(content=$content)"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("content"))
+    public operator fun component1(): Content = content
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(content: Content = this.content): MessageKeyboards = MessageKeyboards(content)
+    //endregion
+
     /**
      * 按钮内容，包含若干 [行][rows]。
+     *
+     * @property rows 行内容。
      */
     @Serializable
-    public data class Content internal constructor(public val rows: List<ContentRow>)
+    public class Content internal constructor(public val rows: List<ContentRow>) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Content) return false
+            return rows == other.rows
+        }
+
+        override fun hashCode(): Int = rows.hashCode()
+
+        override fun toString(): String = "Content(rows=$rows)"
+
+        //region data-class 兼容
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("rows"))
+        public operator fun component1(): List<ContentRow> = rows
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(rows: List<ContentRow> = this.rows): Content = Content(rows)
+        //endregion
+    }
 
     /**
      * 每行的内容，包含若干 [按钮][buttons]。
+     *
+     * @property buttons 按钮列表。
      */
     @Serializable
-    public data class ContentRow internal constructor(public val buttons: List<MessageKeyboardButton>)
+    public class ContentRow internal constructor(public val buttons: List<MessageKeyboardButton>) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ContentRow) return false
+            return buttons == other.buttons
+        }
+
+        override fun hashCode(): Int = buttons.hashCode()
+
+        override fun toString(): String = "ContentRow(buttons=$buttons)"
+
+        //region data-class 兼容
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("buttons"))
+        public operator fun component1(): List<MessageKeyboardButton> = buttons
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            buttons: List<MessageKeyboardButton> = this.buttons,
+        ): ContentRow = ContentRow(buttons)
+        //endregion
+    }
 
     public companion object {
         /**

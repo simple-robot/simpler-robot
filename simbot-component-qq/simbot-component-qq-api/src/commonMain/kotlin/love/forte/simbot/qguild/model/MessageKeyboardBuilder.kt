@@ -50,13 +50,26 @@ public class MessageKeyboardBuilder(public var id: String? = null) {
     public var renderData: MessageKeyboard.RenderData? = null
     public var action: MessageKeyboard.Action? = null
 
-    private fun MessageKeyboard.RenderData.doCopy(): MessageKeyboard.RenderData = copy()
+    private fun MessageKeyboard.RenderData.doCopy(): MessageKeyboard.RenderData = MessageKeyboard.RenderData(
+        label = label,
+        visitedLabel = visitedLabel,
+        style = MessageKeyboardStyle.of(style.value),
+    )
 
-    private fun MessageKeyboard.Action.doCopy(): MessageKeyboard.Action = copy(
-        permission = permission?.copy(
-            specifyUserIds = permission.specifyUserIds?.toList(),
-            specifyRoleIds = permission.specifyRoleIds?.toList()
-        )
+    private fun MessageKeyboard.Action.doCopy(): MessageKeyboard.Action = MessageKeyboard.Action(
+        permission = permission?.let {
+            MessageKeyboard.ActionPermission(
+                type = MessageKeyboardActionPermissionType.of(it.type.value),
+                specifyUserIds = it.specifyUserIds?.toList(),
+                specifyRoleIds = it.specifyRoleIds?.toList(),
+            )
+        },
+        data = data,
+        reply = reply,
+        enter = enter,
+        anchor = anchor,
+        unsupportTips = unsupportTips,
+        type = MessageKeyboardActionType.of(type.value),
     )
 
     /**
@@ -91,7 +104,11 @@ public class MessageKeyboardBuilder(public var id: String? = null) {
         visitedLabel: String = label,
         style: Int = 0
     ): MessageKeyboardBuilder = also {
-        renderData = MessageKeyboard.RenderData(label, visitedLabel, style)
+        renderData = MessageKeyboard.RenderData(
+            label = label,
+            visitedLabel = visitedLabel,
+            style = MessageKeyboardStyle.of(style),
+        )
     }
 
     /**
@@ -125,9 +142,9 @@ public class MessageKeyboardBuilder(public var id: String? = null) {
             data = data,
             reply = reply,
             enter = enter,
-            anchor = anchor,
+            anchor = anchor?.let(MessageKeyboardActionAnchor::of),
             unsupportTips = unsupportTips,
-            type = type
+            type = MessageKeyboardActionType.of(type)
         )
     }
 
@@ -162,7 +179,7 @@ public class MessageKeyboardRenderDataBuilder {
     public fun from(renderData: MessageKeyboard.RenderData): MessageKeyboardRenderDataBuilder = also {
         label = renderData.label
         visitedLabel = renderData.visitedLabel
-        style = renderData.style
+        style = renderData.style.value
     }
 
     /**
@@ -193,7 +210,7 @@ public class MessageKeyboardRenderDataBuilder {
         MessageKeyboard.RenderData(
             label = label,
             visitedLabel = visitedLabel ?: label,
-            style = style
+            style = MessageKeyboardStyle.of(style),
         )
 }
 
@@ -218,16 +235,19 @@ public class MessageKeyboardActionBuilder {
      * 基于现有 [action] 填充当前构建器。
      */
     public fun from(action: MessageKeyboard.Action): MessageKeyboardActionBuilder = also {
-        permission = action.permission?.copy(
-            specifyUserIds = action.permission.specifyUserIds,
-            specifyRoleIds = action.permission.specifyRoleIds
-        )
+        permission = action.permission?.let {
+            MessageKeyboard.ActionPermission(
+                type = MessageKeyboardActionPermissionType.of(it.type.value),
+                specifyUserIds = it.specifyUserIds,
+                specifyRoleIds = it.specifyRoleIds,
+            )
+        }
         data = action.data
         reply = action.reply
         enter = action.enter
-        anchor = action.anchor
+        anchor = action.anchor?.value
         unsupportTips = action.unsupportTips
-        type = action.type
+        type = action.type.value
     }
 
     /**
@@ -311,9 +331,9 @@ public class MessageKeyboardActionBuilder {
             data = data,
             reply = reply,
             enter = enter,
-            anchor = anchor,
+            anchor = anchor?.let(MessageKeyboardActionAnchor::of),
             unsupportTips = unsupportTips,
-            type = type
+            type = MessageKeyboardActionType.of(type)
         )
 }
 
@@ -333,7 +353,7 @@ public class MessageKeyboardActionPermissionBuilder {
      * 基于现有 [permission] 填充当前构建器。
      */
     public fun from(permission: MessageKeyboard.ActionPermission): MessageKeyboardActionPermissionBuilder = also {
-        type = permission.type
+        type = permission.type.value
         specifyUserIds = permission.specifyUserIds?.toMutableList() ?: mutableListOf()
         specifyRoleIds = permission.specifyRoleIds?.toMutableList() ?: mutableListOf()
     }
@@ -392,7 +412,7 @@ public class MessageKeyboardActionPermissionBuilder {
      */
     public fun build(): MessageKeyboard.ActionPermission =
         MessageKeyboard.ActionPermission(
-            type = type,
+            type = MessageKeyboardActionPermissionType.of(type),
             specifyUserIds = specifyUserIds.ifEmpty { null },
             specifyRoleIds = specifyRoleIds.ifEmpty { null }
         )

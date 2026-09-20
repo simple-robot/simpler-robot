@@ -27,6 +27,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.QQ
 
 /**
@@ -74,57 +75,139 @@ public interface MemberWithGuildId : Member {
  * [Member] 的简单基本实现。
  *
  * @see Member
+ * @property user 用户的频道基础信息，只有成员相关接口中会填充此信息。
+ * @property nick 用户的昵称。
+ * @property roles 用户在频道内的身份组 ID。
+ * @property joinedAt 用户加入频道的时间。
  */
 @ApiModel
 @Serializable
-public data class SimpleMember @ApiModelConstructor constructor(
-    /**
-     * 用户的频道基础信息，只有成员相关接口中会填充此信息
-     */
+public class SimpleMember @ApiModelConstructor constructor(
     override val user: User,
-    /**
-     * 用户的昵称
-     */
     override val nick: String,
-    /**
-     * 用户在频道内的身份组ID, 默认值可参考 [DefaultRoles](https://bot.q.qq.com/wiki/develop/api/openapi/guild/role_model.html#DefaultRoles)
-     */
     override val roles: List<String> = emptyList(),
-    /**
-     * 用户加入频道的时间
-     */
     @SerialName("joined_at") override val joinedAt: String
-) : Member
+) : Member {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SimpleMember) return false
+
+        if (user != other.user) return false
+        if (nick != other.nick) return false
+        if (roles != other.roles) return false
+        if (joinedAt != other.joinedAt) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = user.hashCode()
+        result = 31 * result + nick.hashCode()
+        result = 31 * result + roles.hashCode()
+        result = 31 * result + joinedAt.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "SimpleMember(user=$user, nick='$nick', roles=$roles, joinedAt='$joinedAt')"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("user"))
+    public operator fun component1(): User = user
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("nick"))
+    public operator fun component2(): String = nick
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("roles"))
+    public operator fun component3(): List<String> = roles
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("joinedAt"))
+    public operator fun component4(): String = joinedAt
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        user: User = this.user,
+        nick: String = this.nick,
+        roles: List<String> = this.roles,
+        joinedAt: String = this.joinedAt,
+    ): SimpleMember = SimpleMember(user, nick, roles, joinedAt)
+    //endregion
+}
 
 /**
  * [MemberWithGuildId] 的简单基本实现。
  *
  * @see MemberWithGuildId
+ * @property guildId 频道 ID。
+ * @property user 用户的频道基础信息，只有成员相关接口中会填充此信息。
+ * @property nick 用户的昵称。
+ * @property roles 用户在频道内的身份组 ID。
+ * @property joinedAt 用户加入频道的时间。
  */
 @ApiModel
 @Serializable
-public data class SimpleMemberWithGuildId @ApiModelConstructor constructor(
-
-    /**
-     * 频道id
-     */
+public class SimpleMemberWithGuildId @ApiModelConstructor constructor(
     @SerialName("guild_id") override val guildId: String,
-    /**
-     * 用户的频道基础信息，只有成员相关接口中会填充此信息
-     */
     override val user: User,
-    /**
-     * 用户的昵称
-     */
     override val nick: String,
-    /**
-     * 用户在频道内的身份组ID, 默认值可参考 [DefaultRoles](https://bot.q.qq.com/wiki/develop/api/openapi/guild/role_model.html#DefaultRoles)
-     */
     override val roles: List<String> = emptyList(),
-    /**
-     * 用户加入频道的时间
-     *
-     * 如果属性缺失则会使用 [QQ.ZERO_ISO_INSTANT]
-     */
     @SerialName("join_at") override val joinedAt: String = QQ.ZERO_ISO_INSTANT
-) : MemberWithGuildId
+) : MemberWithGuildId {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SimpleMemberWithGuildId) return false
+
+        if (guildId != other.guildId) return false
+        if (user != other.user) return false
+        if (nick != other.nick) return false
+        if (roles != other.roles) return false
+        if (joinedAt != other.joinedAt) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = guildId.hashCode()
+        result = 31 * result + user.hashCode()
+        result = 31 * result + nick.hashCode()
+        result = 31 * result + roles.hashCode()
+        result = 31 * result + joinedAt.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "SimpleMemberWithGuildId(" +
+            "guildId='$guildId', " +
+            "user=$user, " +
+            "nick='$nick', " +
+            "roles=$roles, " +
+            "joinedAt='$joinedAt')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("user"))
+    public operator fun component2(): User = user
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("nick"))
+    public operator fun component3(): String = nick
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("roles"))
+    public operator fun component4(): List<String> = roles
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("joinedAt"))
+    public operator fun component5(): String = joinedAt
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        user: User = this.user,
+        nick: String = this.nick,
+        roles: List<String> = this.roles,
+        joinedAt: String = this.joinedAt,
+    ): SimpleMemberWithGuildId = SimpleMemberWithGuildId(guildId, user, nick, roles, joinedAt)
+    //endregion
+}
