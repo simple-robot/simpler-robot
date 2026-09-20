@@ -128,7 +128,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
      *
      * @property label 按钮上的文字
      * @property visitedLabel 点击后按钮上的文字
-     * @property style 按钮样式：0 灰色线框，1 蓝色线框
+     * @property buttonStyle 按钮样式：0 灰色线框，1 蓝色线框
      */
     @ApiModel
     @Serializable
@@ -140,8 +140,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         private val _deprecatedStyle: Int = 0,
         public val label: String,
         public val visitedLabel: String,
+        @SerialName("style")
         @get:JvmExposeBoxed
-        public val style: MessageKeyboardStyle,
+        public val buttonStyle: MessageKeyboardStyle,
     ) {
         /**
          * 兼容旧版 `Int` 类型的构造函数。
@@ -155,8 +156,12 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             _deprecatedStyle = style,
             label = label,
             visitedLabel = visitedLabel,
-            style = MessageKeyboardStyle.of(style),
+            buttonStyle = MessageKeyboardStyle.of(style),
         )
+
+        @Deprecated("Use buttonStyle instead.", ReplaceWith("buttonStyle.value"))
+        public val style: Int
+            get() = buttonStyle.value
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -164,7 +169,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
 
             if (label != other.label) return false
             if (visitedLabel != other.visitedLabel) return false
-            if (style != other.style) return false
+            if (buttonStyle != other.buttonStyle) return false
 
             return true
         }
@@ -172,12 +177,12 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         override fun hashCode(): Int {
             var result = label.hashCode()
             result = 31 * result + visitedLabel.hashCode()
-            result = 31 * result + style.hashCode()
+            result = 31 * result + buttonStyle.hashCode()
             return result
         }
 
         override fun toString(): String =
-            "RenderData(label='$label', visitedLabel='$visitedLabel', style=$style)"
+            "RenderData(label='$label', visitedLabel='$visitedLabel', style=$buttonStyle)"
 
         //region data-class 兼容
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("label"))
@@ -186,19 +191,19 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("visitedLabel"))
         public operator fun component2(): String = visitedLabel
 
-        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("style.value"))
-        public operator fun component3(): Int = style.value
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("buttonStyle.value"))
+        public operator fun component3(): Int = buttonStyle.value
 
         @Suppress("DeprecatedCallableAddReplaceWith")
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
         public fun copy(
             label: String = this.label,
             visitedLabel: String = this.visitedLabel,
-            style: Int = this.style.value,
+            style: Int = this.buttonStyle.value,
         ): RenderData = RenderData(
             label = label,
             visitedLabel = visitedLabel,
-            style = MessageKeyboardStyle.of(style),
+            buttonStyle = MessageKeyboardStyle.of(style),
         )
         //endregion
     }
@@ -207,7 +212,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
      * [Action.permission].
      * 参考 [官方文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/trans/msg-btn.html)
      *
-     * @property type 参考 [MessageKeyboardActionPermissionType]
+     * @property permissionType 参考 [MessageKeyboardActionPermissionType]
      * @property specifyUserIds 有权限的用户 id 的列表
      * @property specifyRoleIds 有权限的身份组 id 的列表（仅频道可用）
      */
@@ -217,8 +222,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         @Suppress("unused", "ConstructorParameterNaming")
         @Deprecated("Unused", level = DeprecationLevel.HIDDEN)
         private val _deprecatedType: Int = 0,
+        @SerialName("type")
         @get:JvmExposeBoxed
-        public val type: MessageKeyboardActionPermissionType,
+        public val permissionType: MessageKeyboardActionPermissionType,
         @SerialName("specify_user_ids")
         public val specifyUserIds: List<String>? = null,
         @SerialName("specify_role_ids")
@@ -238,16 +244,20 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             specifyRoleIds: List<String>? = null,
         ) : this(
             _deprecatedType = type,
-            type = MessageKeyboardActionPermissionType.of(type),
+            permissionType = MessageKeyboardActionPermissionType.of(type),
             specifyUserIds = specifyUserIds,
             specifyRoleIds = specifyRoleIds,
         )
+
+        @Deprecated("Use permissionType instead.", ReplaceWith("permissionType.value"))
+        public val type: Int
+            get() = permissionType.value
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ActionPermission) return false
 
-            if (type != other.type) return false
+            if (permissionType != other.permissionType) return false
             if (specifyUserIds != other.specifyUserIds) return false
             if (specifyRoleIds != other.specifyRoleIds) return false
 
@@ -255,7 +265,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         }
 
         override fun hashCode(): Int {
-            var result = type.hashCode()
+            var result = permissionType.hashCode()
             result = 31 * result + specifyUserIds.hashCode()
             result = 31 * result + specifyRoleIds.hashCode()
             return result
@@ -263,14 +273,14 @@ public class MessageKeyboard @ApiModelConstructor constructor(
 
         override fun toString(): String {
             return "ActionPermission(" +
-                "type=$type, " +
+                "type=$permissionType, " +
                 "specifyUserIds=$specifyUserIds, " +
                 "specifyRoleIds=$specifyRoleIds)"
         }
 
         //region data-class 兼容
-        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-        public operator fun component1(): Int = type.value
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("permissionType.value"))
+        public operator fun component1(): Int = permissionType.value
 
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("specifyUserIds"))
         public operator fun component2(): List<String>? = specifyUserIds
@@ -281,11 +291,11 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         @Suppress("DeprecatedCallableAddReplaceWith")
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
         public fun copy(
-            type: Int = this.type.value,
+            type: Int = this.permissionType.value,
             specifyUserIds: List<String>? = this.specifyUserIds,
             specifyRoleIds: List<String>? = this.specifyRoleIds,
         ): ActionPermission = ActionPermission(
-            type = MessageKeyboardActionPermissionType.of(type),
+            permissionType = MessageKeyboardActionPermissionType.of(type),
             specifyUserIds = specifyUserIds,
             specifyRoleIds = specifyRoleIds,
         )
@@ -299,7 +309,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
              */
             @JvmStatic
             public val AdminOnly: ActionPermission = ActionPermission(
-                type = MessageKeyboardActionPermissionType.AdminOnly,
+                permissionType = MessageKeyboardActionPermissionType.AdminOnly,
             )
 
             /**
@@ -309,7 +319,7 @@ public class MessageKeyboard @ApiModelConstructor constructor(
              */
             @JvmStatic
             public val AllAccessible: ActionPermission = ActionPermission(
-                type = MessageKeyboardActionPermissionType.AllAccessible,
+                permissionType = MessageKeyboardActionPermissionType.AllAccessible,
             )
         }
     }
@@ -322,9 +332,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
      * @property data 操作相关的数据
      * @property reply 指令按钮可用，指令是否带引用回复本消息，默认 false。支持版本 8983
      * @property enter 指令按钮可用，点击按钮后直接自动发送 data，仅单聊可用，默认 false。支持版本 8983
-     * @property anchor 本字段仅在指令按钮下有效，设置为 1 时点击按钮自动唤起手机 QQ 选图器
+     * @property actionAnchor 本字段仅在指令按钮下有效，设置为 1 时点击按钮自动唤起手机 QQ 选图器
      * @property unsupportTips 客户端不支持本 action 时弹出的 toast 文案
-     * @property type 0 跳转按钮，1 回调按钮，2 指令按钮
+     * @property actionType 0 跳转按钮，1 回调按钮，2 指令按钮
      */
     @ApiModel
     @Serializable
@@ -338,12 +348,14 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         public val data: String?,
         public val reply: Boolean? = null,
         public val enter: Boolean? = null,
+        @SerialName("anchor")
         @get:JvmExposeBoxed
-        public val anchor: MessageKeyboardActionAnchor? = null,
+        public val actionAnchor: MessageKeyboardActionAnchor? = null,
         @SerialName("unsupport_tips")
         public val unsupportTips: String,
+        @SerialName("type")
         @get:JvmExposeBoxed
-        public val type: MessageKeyboardActionType = MessageKeyboardActionType.Command,
+        public val actionType: MessageKeyboardActionType = MessageKeyboardActionType.Command,
     ) {
         /**
          * 兼容旧版 `Int` 类型的构造函数。
@@ -368,10 +380,18 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             data = data,
             reply = reply,
             enter = enter,
-            anchor = anchor?.let(MessageKeyboardActionAnchor::of),
+            actionAnchor = anchor?.let(MessageKeyboardActionAnchor::of),
             unsupportTips = unsupportTips,
-            type = MessageKeyboardActionType.of(type),
+            actionType = MessageKeyboardActionType.of(type),
         )
+
+        @Deprecated("Use actionAnchor instead.", ReplaceWith("actionAnchor?.value"))
+        public val anchor: Int?
+            get() = actionAnchor?.value
+
+        @Deprecated("Use actionType instead.", ReplaceWith("actionType.value"))
+        public val type: Int
+            get() = actionType.value
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -381,9 +401,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             if (data != other.data) return false
             if (reply != other.reply) return false
             if (enter != other.enter) return false
-            if (anchor != other.anchor) return false
+            if (actionAnchor != other.actionAnchor) return false
             if (unsupportTips != other.unsupportTips) return false
-            if (type != other.type) return false
+            if (actionType != other.actionType) return false
 
             return true
         }
@@ -393,9 +413,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             result = 31 * result + (data?.hashCode() ?: 0)
             result = 31 * result + (reply?.hashCode() ?: 0)
             result = 31 * result + (enter?.hashCode() ?: 0)
-            result = 31 * result + (anchor?.hashCode() ?: 0)
+            result = 31 * result + (actionAnchor?.hashCode() ?: 0)
             result = 31 * result + unsupportTips.hashCode()
-            result = 31 * result + type.hashCode()
+            result = 31 * result + actionType.hashCode()
             return result
         }
 
@@ -405,9 +425,9 @@ public class MessageKeyboard @ApiModelConstructor constructor(
                 "data=$data, " +
                 "reply=$reply, " +
                 "enter=$enter, " +
-                "anchor=$anchor, " +
+                "anchor=$actionAnchor, " +
                 "unsupportTips='$unsupportTips', " +
-                "type=$type)"
+                "type=$actionType)"
         }
 
         //region data-class 兼容
@@ -423,14 +443,14 @@ public class MessageKeyboard @ApiModelConstructor constructor(
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("enter"))
         public operator fun component4(): Boolean? = enter
 
-        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("anchor"))
-        public operator fun component5(): Int? = anchor?.value
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("actionAnchor?.value"))
+        public operator fun component5(): Int? = actionAnchor?.value
 
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("unsupportTips"))
         public operator fun component6(): String = unsupportTips
 
-        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-        public operator fun component7(): Int = type.value
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("actionType.value"))
+        public operator fun component7(): Int = actionType.value
 
         @Suppress("DeprecatedCallableAddReplaceWith")
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
@@ -439,17 +459,17 @@ public class MessageKeyboard @ApiModelConstructor constructor(
             data: String? = this.data,
             reply: Boolean? = this.reply,
             enter: Boolean? = this.enter,
-            anchor: Int? = this.anchor?.value,
+            anchor: Int? = this.actionAnchor?.value,
             unsupportTips: String = this.unsupportTips,
-            type: Int = this.type.value,
+            type: Int = this.actionType.value,
         ): Action = Action(
             permission = permission,
             data = data,
             reply = reply,
             enter = enter,
-            anchor = anchor?.let(MessageKeyboardActionAnchor::of),
+            actionAnchor = anchor?.let(MessageKeyboardActionAnchor::of),
             unsupportTips = unsupportTips,
-            type = MessageKeyboardActionType.of(type),
+            actionType = MessageKeyboardActionType.of(type),
         )
         //endregion
     }

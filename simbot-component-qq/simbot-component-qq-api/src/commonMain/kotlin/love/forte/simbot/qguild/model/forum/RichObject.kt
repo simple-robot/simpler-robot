@@ -37,7 +37,7 @@ import kotlin.jvm.JvmExposeBoxed
  *
  * 参考[forum文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#RichObject)
  *
- * @property type 富文本类型。
+ * @property richType 富文本类型。
  * @property textInfo 文本信息。
  * @property atInfo `@` 信息。
  * @property urlInfo 链接信息。
@@ -49,8 +49,9 @@ import kotlin.jvm.JvmExposeBoxed
 @Serializable
 public class RichObject @ApiModelConstructor internal constructor(
     private val m: Int = 0,
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: RichType,
+    public val richType: RichType,
     @SerialName("text_info")
     public val textInfo: TextInfo,
     @SerialName("at_info")
@@ -79,7 +80,7 @@ public class RichObject @ApiModelConstructor internal constructor(
         channelInfo: String,
     ) : this(
         m = 0,
-        type = RichType.of(type),
+        richType = RichType.of(type),
         textInfo = textInfo,
         atInfo = atInfo,
         urlInfo = urlInfo,
@@ -87,11 +88,15 @@ public class RichObject @ApiModelConstructor internal constructor(
         channelInfo = channelInfo,
     )
 
+    @Deprecated("Use richType instead.", ReplaceWith("richType.value"))
+    public val type: Int
+        get() = richType.value
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RichObject) return false
 
-        if (type != other.type) return false
+        if (richType != other.richType) return false
         if (textInfo != other.textInfo) return false
         if (atInfo != other.atInfo) return false
         if (urlInfo != other.urlInfo) return false
@@ -102,7 +107,7 @@ public class RichObject @ApiModelConstructor internal constructor(
     }
 
     override fun hashCode(): Int {
-        var result = type.hashCode()
+        var result = richType.hashCode()
         result = 31 * result + textInfo.hashCode()
         result = 31 * result + atInfo.hashCode()
         result = 31 * result + urlInfo.hashCode()
@@ -113,7 +118,7 @@ public class RichObject @ApiModelConstructor internal constructor(
 
     override fun toString(): String {
         return "RichObject(" +
-            "type=$type, " +
+            "type=$richType, " +
             "textInfo=$textInfo, " +
             "atInfo='$atInfo', " +
             "urlInfo='$urlInfo', " +
@@ -122,8 +127,8 @@ public class RichObject @ApiModelConstructor internal constructor(
     }
 
     //region data-class 兼容
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-    public operator fun component1(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("richType.value"))
+    public operator fun component1(): Int = richType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("textInfo"))
     public operator fun component2(): TextInfo = textInfo
@@ -143,14 +148,14 @@ public class RichObject @ApiModelConstructor internal constructor(
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
     public fun copy(
-        type: Int = this.type.value,
+        type: Int = this.richType.value,
         textInfo: TextInfo = this.textInfo,
         atInfo: String = this.atInfo,
         urlInfo: String = this.urlInfo,
         emojiInfo: String = this.emojiInfo,
         channelInfo: String = this.channelInfo,
     ): RichObject = RichObject(
-        type = RichType.of(type),
+        richType = RichType.of(type),
         textInfo = textInfo,
         atInfo = atInfo,
         urlInfo = urlInfo,
@@ -251,7 +256,7 @@ public class TextInfo @ApiModelConstructor constructor(
  *
  * 参考[forum文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#AtInfo)
  *
- * @property type `@` 类型。
+ * @property atType `@` 类型。
  * @property userInfo 用户信息。
  * @property roleInfo 角色组信息。
  * @property guildInfo 频道信息。
@@ -263,8 +268,9 @@ public class AtInfo
 @ApiModelConstructor
 @JvmExposeBoxed
 internal constructor(
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: AtType,
+    public val atType: AtType,
     @SerialName("user_info")
     public val userInfo: String,
     @SerialName("role_info")
@@ -286,17 +292,21 @@ internal constructor(
         roleInfo: String,
         guildInfo: String,
     ) : this(
-        type = AtType.of(type),
+        atType = AtType.of(type),
         userInfo = userInfo,
         roleInfo = roleInfo,
         guildInfo = guildInfo,
     )
 
+    @Deprecated("Use atType instead.", ReplaceWith("atType.value"))
+    public val type: Int
+        get() = atType.value
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AtInfo) return false
 
-        if (type != other.type) return false
+        if (atType != other.atType) return false
         if (userInfo != other.userInfo) return false
         if (roleInfo != other.roleInfo) return false
         if (guildInfo != other.guildInfo) return false
@@ -305,7 +315,7 @@ internal constructor(
     }
 
     override fun hashCode(): Int {
-        var result = type.hashCode()
+        var result = atType.hashCode()
         result = 31 * result + userInfo.hashCode()
         result = 31 * result + roleInfo.hashCode()
         result = 31 * result + guildInfo.hashCode()
@@ -313,12 +323,12 @@ internal constructor(
     }
 
     override fun toString(): String {
-        return "AtInfo(type=$type, userInfo='$userInfo', roleInfo='$roleInfo', guildInfo='$guildInfo')"
+        return "AtInfo(type=$atType, userInfo='$userInfo', roleInfo='$roleInfo', guildInfo='$guildInfo')"
     }
 
     //region data-class 兼容
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-    public operator fun component1(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("atType.value"))
+    public operator fun component1(): Int = atType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("userInfo"))
     public operator fun component2(): String = userInfo
@@ -332,12 +342,12 @@ internal constructor(
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
     public fun copy(
-        type: Int = this.type.value,
+        type: Int = this.atType.value,
         userInfo: String = this.userInfo,
         roleInfo: String = this.roleInfo,
         guildInfo: String = this.guildInfo,
     ): AtInfo = AtInfo(
-        type = AtType.of(type),
+        atType = AtType.of(type),
         userInfo = userInfo,
         roleInfo = roleInfo,
         guildInfo = guildInfo,
@@ -802,8 +812,9 @@ internal constructor(
     public val image: ImageElem,
     public val video: VideoElem,
     public val url: URLElem,
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: ElemType,
+    public val elemType: ElemType,
 ) {
     /**
      * 兼容旧版 `Int` 类型的构造函数。
@@ -824,8 +835,12 @@ internal constructor(
         image = image,
         video = video,
         url = url,
-        type = ElemType.of(type),
+        elemType = ElemType.of(type),
     )
+
+    @Deprecated("Use elemType instead.", ReplaceWith("elemType.value"))
+    public val type: Int
+        get() = elemType.value
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -835,7 +850,7 @@ internal constructor(
         if (image != other.image) return false
         if (video != other.video) return false
         if (url != other.url) return false
-        if (type != other.type) return false
+        if (elemType != other.elemType) return false
 
         return true
     }
@@ -845,12 +860,12 @@ internal constructor(
         result = 31 * result + image.hashCode()
         result = 31 * result + video.hashCode()
         result = 31 * result + url.hashCode()
-        result = 31 * result + type.hashCode()
+        result = 31 * result + elemType.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Elem(text=$text, image=$image, video=$video, url=$url, type=$type)"
+        return "Elem(text=$text, image=$image, video=$video, url=$url, type=$elemType)"
     }
 
     //region data-class 兼容
@@ -866,8 +881,8 @@ internal constructor(
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("url"))
     public operator fun component4(): URLElem = url
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-    public operator fun component5(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("elemType.value"))
+    public operator fun component5(): Int = elemType.value
 
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
@@ -876,13 +891,13 @@ internal constructor(
         image: ImageElem = this.image,
         video: VideoElem = this.video,
         url: URLElem = this.url,
-        type: Int = this.type.value,
+        type: Int = this.elemType.value,
     ): Elem = Elem(
         text = text,
         image = image,
         video = video,
         url = url,
-        type = ElemType.of(type),
+        elemType = ElemType.of(type),
     )
     //endregion
 }
@@ -1324,7 +1339,7 @@ public class URLElem @ApiModelConstructor constructor(
  *
  * 参考[forum文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#ParagraphProps)
  *
- * @property alignment 段落对齐方向。
+ * @property paragraphAlignment 段落对齐方向。
  * @author ForteScarlet
  */
 @ApiModel
@@ -1333,8 +1348,9 @@ public class ParagraphProps
 @ApiModelConstructor
 @JvmExposeBoxed
 internal constructor(
+    @SerialName("alignment")
     @get:JvmExposeBoxed
-    public val alignment: Alignment,
+    public val paragraphAlignment: Alignment,
 ) {
     /**
      * 兼容旧版 `Int` 类型的构造函数。
@@ -1346,23 +1362,29 @@ internal constructor(
     @ApiModelConstructor
     public constructor(alignment: Int) : this(Alignment.of(alignment))
 
+    @Deprecated("Use paragraphAlignment instead.", ReplaceWith("paragraphAlignment.value"))
+    public val alignment: Int
+        get() = paragraphAlignment.value
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ParagraphProps) return false
-        return alignment == other.alignment
+        return paragraphAlignment == other.paragraphAlignment
     }
 
-    override fun hashCode(): Int = alignment.hashCode()
+    override fun hashCode(): Int = paragraphAlignment.hashCode()
 
-    override fun toString(): String = "ParagraphProps(alignment=$alignment)"
+    override fun toString(): String = "ParagraphProps(alignment=$paragraphAlignment)"
 
     //region data-class 兼容
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("alignment.value"))
-    public operator fun component1(): Int = alignment.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("paragraphAlignment.value"))
+    public operator fun component1(): Int = paragraphAlignment.value
 
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
-    public fun copy(alignment: Int = this.alignment.value): ParagraphProps = ParagraphProps(Alignment.of(alignment))
+    public fun copy(
+        alignment: Int = this.paragraphAlignment.value
+    ): ParagraphProps = ParagraphProps(Alignment.of(alignment))
     //endregion
 }
 
@@ -1371,7 +1393,7 @@ internal constructor(
  *
  * 新代码请使用 [Alignment]。
  *
- * @see ParagraphProps.alignment
+ * @see ParagraphProps.paragraphAlignment
  * @author ForteScarlet
  */
 public object Alignments {

@@ -337,48 +337,42 @@ public class Message @ApiModelConstructor constructor(
          *
          * @property name 字段名。
          */
-        @Serializable(MessageEmbedFieldSerializer::class)
+        @Serializable//(MessageEmbedFieldSerializer::class)
         public class Field(
             public val name: String,
-            value: String? = null,
+            @EncodeDefault(EncodeDefault.Mode.NEVER)
+            public val value: String? = null,
         ) {
-            @Transient
-            private val hiddenValue: String? = value
-
-            @Deprecated("not exists", level = DeprecationLevel.HIDDEN)
-            @Transient
-            public val value: String? get() = hiddenValue
-
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other !is Field) return false
 
                 if (name != other.name) return false
-                if (hiddenValue != other.hiddenValue) return false
+                if (value != other.value) return false
 
                 return true
             }
 
             override fun hashCode(): Int {
                 var result = name.hashCode()
-                result = 31 * result + hiddenValue.hashCode()
+                result = 31 * result + value.hashCode()
                 return result
             }
 
-            override fun toString(): String = "Field(name='$name', value=$hiddenValue)"
+            override fun toString(): String = "Field(name='$name', value=$value)"
 
             //region data-class 兼容
             @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
             public operator fun component1(): String = name
 
             @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("value"))
-            public operator fun component2(): String? = hiddenValue
+            public operator fun component2(): String? = value
 
             @Suppress("DeprecatedCallableAddReplaceWith")
             @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
             public fun copy(
                 name: String = this.name,
-                value: String? = hiddenValue,
+                value: String? = this.value,
             ): Field = Field(name, value)
             //endregion
         }

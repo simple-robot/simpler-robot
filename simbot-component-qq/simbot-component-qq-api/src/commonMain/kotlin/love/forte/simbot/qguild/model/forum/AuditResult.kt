@@ -45,7 +45,7 @@ import kotlin.jvm.JvmExposeBoxed
  * @property threadId 主题ID
  * @property postId 帖子ID
  * @property replyId 回复ID
- * @property type AuditType审核的类型
+ * @property auditType 审核类型
  * @property result 审核结果. 0:成功 1:失败
  * @property errMsg result不为0时错误信息
  *
@@ -68,8 +68,9 @@ public class AuditResult internal constructor(
     public val postId: String,
     @SerialName("reply_id")
     public val replyId: String,
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: AuditType,
+    public val auditType: AuditType,
     public val result: Int,
     @SerialName("err_msg")
     public val errMsg: String,
@@ -97,10 +98,14 @@ public class AuditResult internal constructor(
         threadId = threadId,
         postId = postId,
         replyId = replyId,
-        type = AuditType.of(type),
+        auditType = AuditType.of(type),
         result = result,
         errMsg = errMsg,
     )
+
+    @Deprecated("Use auditType instead.", ReplaceWith("auditType.value"))
+    public val type: Int
+        get() = auditType.value
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -112,7 +117,7 @@ public class AuditResult internal constructor(
         if (threadId != other.threadId) return false
         if (postId != other.postId) return false
         if (replyId != other.replyId) return false
-        if (type != other.type) return false
+        if (auditType != other.auditType) return false
         if (result != other.result) return false
         if (errMsg != other.errMsg) return false
 
@@ -126,7 +131,7 @@ public class AuditResult internal constructor(
         hash = 31 * hash + threadId.hashCode()
         hash = 31 * hash + postId.hashCode()
         hash = 31 * hash + replyId.hashCode()
-        hash = 31 * hash + type.hashCode()
+        hash = 31 * hash + auditType.hashCode()
         hash = 31 * hash + result
         hash = 31 * hash + errMsg.hashCode()
         return hash
@@ -140,7 +145,7 @@ public class AuditResult internal constructor(
             "threadId='$threadId', " +
             "postId='$postId', " +
             "replyId='$replyId', " +
-            "type=$type, " +
+            "type=$auditType, " +
             "result=$result, " +
             "errMsg='$errMsg')"
     }
@@ -164,8 +169,8 @@ public class AuditResult internal constructor(
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("replyId"))
     public operator fun component6(): String = replyId
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
-    public operator fun component7(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("auditType.value"))
+    public operator fun component7(): Int = auditType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("result"))
     public operator fun component8(): Int = result
@@ -182,7 +187,7 @@ public class AuditResult internal constructor(
         threadId: String = this.threadId,
         postId: String = this.postId,
         replyId: String = this.replyId,
-        type: Int = this.type.value,
+        type: Int = this.auditType.value,
         result: Int = this.result,
         errMsg: String = this.errMsg,
     ): AuditResult = AuditResult(
@@ -192,7 +197,7 @@ public class AuditResult internal constructor(
         threadId = threadId,
         postId = postId,
         replyId = replyId,
-        type = AuditType.of(type),
+        auditType = AuditType.of(type),
         result = result,
         errMsg = errMsg,
     )

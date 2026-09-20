@@ -295,9 +295,9 @@ public value class InteractionScene private constructor(public val value: String
  * 参考：https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/interaction_create.html
  *
  * @property id 互动事件 ID, 用于回应互动事件
- * @property type 互动类型。消息按钮: `11`, 自定义菜单: `12`
- * @property scene 事件发生的场景: `c2c`, `group`, `guild`
- * @property chatType `0` 频道场景, `1` 群聊场景, `2` 单聊场景
+ * @property interactionType 互动类型。消息按钮: `11`, 自定义菜单: `12`
+ * @property interactionScene 事件发生的场景: `c2c`, `group`, `guild`
+ * @property interactionChatType `0` 频道场景, `1` 群聊场景, `2` 单聊场景
  * @property timestamp 触发时间 RFC 3339 格式
  * @property guildId 频道 openid, 仅频道场景提供
  * @property channelId 文字子频道 openid, 仅频道场景提供
@@ -312,13 +312,15 @@ public value class InteractionScene private constructor(public val value: String
 @Serializable
 public class InteractionCreateEventData internal constructor(
     public val id: String,
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: InteractionType,
+    public val interactionType: InteractionType,
     @get:JvmExposeBoxed
-    public val scene: InteractionScene? = null,
+    @SerialName("scene")
+    public val interactionScene: InteractionScene? = null,
     @SerialName("chat_type")
     @get:JvmExposeBoxed
-    public val chatType: InteractionChatType,
+    public val interactionChatType: InteractionChatType,
     public val timestamp: String,
     @SerialName("guild_id")
     public val guildId: String? = null,
@@ -357,32 +359,44 @@ public class InteractionCreateEventData internal constructor(
         userOpenid: String? = null,
         version: Int = 1,
     ) : this(
-        chatType = InteractionChatType.of(chatType),
+        interactionChatType = InteractionChatType.of(chatType),
         data = data,
         groupMemberOpenid = groupMemberOpenid,
         groupOpenid = groupOpenid,
         id = id,
-        scene = scene?.let { InteractionScene.of(it) },
+        interactionScene = scene?.let { InteractionScene.of(it) },
         timestamp = timestamp,
-        type = InteractionType.of(type),
+        interactionType = InteractionType.of(type),
         guildId = guildId,
         channelId = channelId,
         userOpenid = userOpenid,
         version = version,
     )
 
+    @Deprecated("Use interactionScene instead.", ReplaceWith("interactionScene?.value"))
+    public val scene: String?
+        get() = interactionScene?.value
+
+    @Deprecated("Use interactionType instead.", ReplaceWith("interactionType.value"))
+    public val type: Int
+        get() = interactionType.value
+
+    @Deprecated("Use interactionChatType instead.", ReplaceWith("interactionChatType.value"))
+    public val chatType: Int
+        get() = interactionChatType.value
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is InteractionCreateEventData) return false
 
-        if (chatType != other.chatType) return false
+        if (interactionChatType != other.interactionChatType) return false
         if (data != other.data) return false
         if (groupMemberOpenid != other.groupMemberOpenid) return false
         if (groupOpenid != other.groupOpenid) return false
         if (id != other.id) return false
-        if (scene != other.scene) return false
+        if (interactionScene != other.interactionScene) return false
         if (timestamp != other.timestamp) return false
-        if (type != other.type) return false
+        if (interactionType != other.interactionType) return false
         if (guildId != other.guildId) return false
         if (channelId != other.channelId) return false
         if (userOpenid != other.userOpenid) return false
@@ -392,14 +406,14 @@ public class InteractionCreateEventData internal constructor(
     }
 
     override fun hashCode(): Int {
-        var result = chatType.hashCode()
+        var result = interactionChatType.hashCode()
         result = 31 * result + data.hashCode()
         result = 31 * result + groupMemberOpenid.hashCode()
         result = 31 * result + groupOpenid.hashCode()
         result = 31 * result + id.hashCode()
-        result = 31 * result + scene.hashCode()
+        result = 31 * result + interactionScene.hashCode()
         result = 31 * result + timestamp.hashCode()
-        result = 31 * result + type.hashCode()
+        result = 31 * result + interactionType.hashCode()
         result = 31 * result + guildId.hashCode()
         result = 31 * result + channelId.hashCode()
         result = 31 * result + userOpenid.hashCode()
@@ -409,14 +423,14 @@ public class InteractionCreateEventData internal constructor(
 
     override fun toString(): String {
         return "InteractionCreateEventData(" +
-            "chatType=$chatType, " +
+            "chatType=$interactionChatType, " +
             "data=$data, " +
             "groupMemberOpenid=$groupMemberOpenid, " +
             "groupOpenid=$groupOpenid, " +
             "id='$id', " +
-            "scene=$scene, " +
+            "scene=$interactionScene, " +
             "timestamp='$timestamp', " +
-            "type=$type, " +
+            "type=$interactionType, " +
             "guildId=$guildId, " +
             "channelId=$channelId, " +
             "userOpenid=$userOpenid, " +
@@ -424,8 +438,8 @@ public class InteractionCreateEventData internal constructor(
     }
 
     //region data-class 兼容
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("chatType.value"))
-    public operator fun component1(): Int = chatType.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("interactionChatType.value"))
+    public operator fun component1(): Int = interactionChatType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("data"))
     public operator fun component2(): InteractionCreateData = data
@@ -439,14 +453,14 @@ public class InteractionCreateEventData internal constructor(
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
     public operator fun component5(): String = id
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("scene?.value"))
-    public operator fun component6(): String? = scene?.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("interactionScene?.value"))
+    public operator fun component6(): String? = interactionScene?.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
     public operator fun component7(): String = timestamp
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type.value"))
-    public operator fun component8(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("interactionType.value"))
+    public operator fun component8(): Int = interactionType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
     public operator fun component9(): String? = guildId
@@ -463,27 +477,27 @@ public class InteractionCreateEventData internal constructor(
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
     public fun copy(
-        chatType: Int = this.chatType.value,
+        chatType: Int = this.interactionChatType.value,
         data: InteractionCreateData = this.data,
         groupMemberOpenid: String? = this.groupMemberOpenid,
         groupOpenid: String? = this.groupOpenid,
         id: String = this.id,
-        scene: String? = this.scene?.value,
+        scene: String? = this.interactionScene?.value,
         timestamp: String = this.timestamp,
-        type: Int = this.type.value,
+        type: Int = this.interactionType.value,
         guildId: String? = this.guildId,
         channelId: String? = this.channelId,
         userOpenid: String? = this.userOpenid,
         version: Int = this.version,
     ): InteractionCreateEventData = InteractionCreateEventData(
-        chatType = InteractionChatType.of(chatType),
+        interactionChatType = InteractionChatType.of(chatType),
         data = data,
         groupMemberOpenid = groupMemberOpenid,
         groupOpenid = groupOpenid,
         id = id,
-        scene = scene?.let { InteractionScene.of(it) },
+        interactionScene = scene?.let { InteractionScene.of(it) },
         timestamp = timestamp,
-        type = InteractionType.of(type),
+        interactionType = InteractionType.of(type),
         guildId = guildId,
         channelId = channelId,
         userOpenid = userOpenid,
@@ -558,7 +572,7 @@ public class InteractionCreateEventData internal constructor(
         public const val TYPE_MENU: Int = InteractionType.CALLBACK_COMMAND_VALUE
 
         /**
-         * 表示*C2C 单聊场景*的 [InteractionCreateEventData.scene]。
+         * 表示*C2C 单聊场景*的 [InteractionCreateEventData.interactionScene]。
          */
         @Deprecated(
             "Use InteractionScene.C2C_VALUE instead.",
@@ -570,7 +584,7 @@ public class InteractionCreateEventData internal constructor(
         public const val SCENE_C2C: String = InteractionScene.C2C_VALUE
 
         /**
-         * 表示*群聊场景*的 [InteractionCreateEventData.scene]。
+         * 表示*群聊场景*的 [InteractionCreateEventData.interactionScene]。
          */
         @Deprecated(
             "Use InteractionScene.GROUP_VALUE instead.",
@@ -582,7 +596,7 @@ public class InteractionCreateEventData internal constructor(
         public const val SCENE_GROUP: String = InteractionScene.GROUP_VALUE
 
         /**
-         * 表示*频道场景*的 [InteractionCreateEventData.scene]。
+         * 表示*频道场景*的 [InteractionCreateEventData.interactionScene]。
          */
         @Deprecated(
             "Use InteractionScene.GUILD_VALUE instead.",
@@ -598,15 +612,16 @@ public class InteractionCreateEventData internal constructor(
 /**
  * 互动事件的数据。
  *
- * @property type 互动类型。消息按钮: `11`, 自定义菜单: `12`
+ * @property interactionType 互动类型。消息按钮: `11`, 自定义菜单: `12`
  * @property resolved 互动事件解析后的数据
  *
  * @since 4.4.0
  */
 @Serializable
 public class InteractionCreateData @JvmExposeBoxed internal constructor(
+    @SerialName("type")
     @get:JvmExposeBoxed
-    public val type: InteractionType,
+    public val interactionType: InteractionType,
     public val resolved: InteractionCreateResolvedData,
 ) {
     @Deprecated(
@@ -619,29 +634,33 @@ public class InteractionCreateData @JvmExposeBoxed internal constructor(
         resolved: InteractionCreateResolvedData,
     ) : this(InteractionType.of(type), resolved)
 
+    @Deprecated("Use interactionType instead.", ReplaceWith("interactionType.value"))
+    public val type: Int
+        get() = interactionType.value
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is InteractionCreateData) return false
 
-        if (type != other.type) return false
+        if (interactionType != other.interactionType) return false
         if (resolved != other.resolved) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = type.hashCode()
+        var result = interactionType.hashCode()
         result = 31 * result + resolved.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "InteractionCreateData(type=$type, resolved=$resolved)"
+        return "InteractionCreateData(type=$interactionType, resolved=$resolved)"
     }
 
     //region data-class 兼容
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
-    public operator fun component1(): Int = type.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("interactionType.value"))
+    public operator fun component1(): Int = interactionType.value
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("resolved"))
     public operator fun component2(): InteractionCreateResolvedData = resolved
@@ -649,7 +668,7 @@ public class InteractionCreateData @JvmExposeBoxed internal constructor(
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
     public fun copy(
-        type: Int = this.type.value,
+        type: Int = this.interactionType.value,
         resolved: InteractionCreateResolvedData = this.resolved,
     ): InteractionCreateData = InteractionCreateData(InteractionType.of(type), resolved)
     //endregion
@@ -896,6 +915,22 @@ public class InteractionCreateResolvedData internal constructor(
         userId = userId,
         featureId = featureId,
         messageId = messageId,
+        feedbackOpt = null,
+        checked = null,
+        action = null,
+    )
+
+    @Deprecated(
+        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
+        level = DeprecationLevel.ERROR
+    )
+    @EventModelConstructor
+    public constructor() : this(
+        buttonData = null,
+        buttonId = null,
+        userId = null,
+        featureId = null,
+        messageId = null,
         feedbackOpt = null,
         checked = null,
         action = null,

@@ -80,7 +80,7 @@ public data class ScheduleRequestBody(
             startTimestamp = startTimestamp,
             endTimestamp = endTimestamp,
             jumpChannelId = jumpChannelId,
-            remindType = remindType.value,
+            remindType = scheduleRemindType.value,
         )
     }
 }

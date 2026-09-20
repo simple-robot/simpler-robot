@@ -27,6 +27,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import love.forte.simbot.qguild.event.C2CMessageCreate
+import love.forte.simbot.qguild.event.C2CMessageType
 import love.forte.simbot.qguild.event.resolveDispatchSerializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,7 +42,7 @@ class C2CMessageCreateTests {
         val element = json.decodeFromString(JsonElement.serializer(), raw).jsonObject
         val serializer = assertNotNull(resolveDispatchSerializer(element))
         val event = assertIs<C2CMessageCreate>(json.decodeFromJsonElement(serializer, element))
-        assertEquals(0, event.data.messageType)
+        assertEquals(C2CMessageType.Text, event.data.messageType)
         assertEquals("custom_menu", event.data.messageScene?.source)
         assertEquals(listOf("search=1"), event.data.messageScene?.ext)
     }

@@ -45,7 +45,7 @@ import kotlin.jvm.JvmExposeBoxed
  * @property endTimestamp 日程结束时间戳(ms)
  * @property creator 创建者
  * @property jumpChannelId 日程开始时跳转到的子频道 id
- * @property remindType 日程提醒类型，取值参考 [ScheduleRemindType]
+ * @property scheduleRemindType 日程提醒类型，取值参考 [ScheduleRemindType]
  * @author ForteScarlet
  */
 @ApiModel
@@ -62,7 +62,7 @@ internal constructor(
     public val creator: SimpleMember,
     @SerialName("jump_channel_id") public val jumpChannelId: String,
     @get:JvmExposeBoxed
-    @SerialName("remind_type") public val remindType: ScheduleRemindType,
+    @SerialName("remind_type") public val scheduleRemindType: ScheduleRemindType,
 ) {
     /**
      * 兼容旧版 `String` 类型的构造函数。
@@ -90,8 +90,12 @@ internal constructor(
         endTimestamp = endTimestamp,
         creator = creator,
         jumpChannelId = jumpChannelId,
-        remindType = ScheduleRemindType.of(remindType),
+        scheduleRemindType = ScheduleRemindType.of(remindType),
     )
+
+    @Deprecated("Use scheduleRemindType instead.", ReplaceWith("scheduleRemindType.value"))
+    public val remindType: String
+        get() = scheduleRemindType.value
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -104,7 +108,7 @@ internal constructor(
         if (endTimestamp != other.endTimestamp) return false
         if (creator != other.creator) return false
         if (jumpChannelId != other.jumpChannelId) return false
-        if (remindType != other.remindType) return false
+        if (scheduleRemindType != other.scheduleRemindType) return false
 
         return true
     }
@@ -117,7 +121,7 @@ internal constructor(
         result = 31 * result + endTimestamp.hashCode()
         result = 31 * result + creator.hashCode()
         result = 31 * result + jumpChannelId.hashCode()
-        result = 31 * result + remindType.hashCode()
+        result = 31 * result + scheduleRemindType.hashCode()
         return result
     }
 
@@ -130,7 +134,7 @@ internal constructor(
             "endTimestamp=$endTimestamp, " +
             "creator=$creator, " +
             "jumpChannelId='$jumpChannelId', " +
-            "remindType=$remindType)"
+            "remindType=$scheduleRemindType)"
     }
 
     //region data-class 兼容
@@ -155,8 +159,8 @@ internal constructor(
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("jumpChannelId"))
     public operator fun component7(): String = jumpChannelId
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("remindType.value"))
-    public operator fun component8(): String = remindType.value
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("scheduleRemindType.value"))
+    public operator fun component8(): String = scheduleRemindType.value
 
     @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
@@ -168,7 +172,7 @@ internal constructor(
         endTimestamp: Long = this.endTimestamp,
         creator: SimpleMember = this.creator,
         jumpChannelId: String = this.jumpChannelId,
-        remindType: String = this.remindType.value,
+        remindType: String = this.scheduleRemindType.value,
     ): Schedule = Schedule(
         id = id,
         name = name,
@@ -177,7 +181,7 @@ internal constructor(
         endTimestamp = endTimestamp,
         creator = creator,
         jumpChannelId = jumpChannelId,
-        remindType = ScheduleRemindType.of(remindType),
+        scheduleRemindType = ScheduleRemindType.of(remindType),
     )
     //endregion
 

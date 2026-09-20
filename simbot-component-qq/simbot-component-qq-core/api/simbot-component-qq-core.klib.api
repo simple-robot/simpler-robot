@@ -840,7 +840,7 @@ abstract class love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent 
     final val messageScene // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageScene|{}messageScene[0]
         final fun <get-messageScene>(): love.forte.simbot.qguild.event/C2CMessageCreate.MessageScene? // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageScene.<get-messageScene>|<get-messageScene>(){}[0]
     final val messageType // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageType|{}messageType[0]
-        final fun <get-messageType>(): kotlin/Int? // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
+        final fun <get-messageType>(): love.forte.simbot.qguild.event/C2CMessageType? // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.messageType.<get-messageType>|<get-messageType>(){}[0]
     open val authorId // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.authorId|{}authorId[0]
         open fun <get-authorId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.authorId.<get-authorId>|<get-authorId>(){}[0]
     open val time // love.forte.simbot.component.qguild.event/QGC2CMessageCreateEvent.time|{}time[0]

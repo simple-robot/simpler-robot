@@ -21,15 +21,94 @@
  *
  */
 
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.Message
+import kotlin.jvm.JvmExposeBoxed
+import kotlin.jvm.JvmInline
+import kotlin.jvm.JvmStatic
 
 /**
- * [单聊消息](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/message/send-receive/event.html#单聊消息)
+ * C2C 单聊消息类型。
+ *
+ * 已知类型：`0` 普通文本、`3` 结构化卡片、`101` 并行消息、`102` 聊天记录、`103` 引用消息。
+ *
+ * [of] 限制为当前已知类型；通过序列化读取上游新增的类型时仍会保留其原始值。
+ *
+ * @since 5.0
+ * @see C2CMessageCreate.Data.messageType
+ */
+@JvmInline
+@JvmExposeBoxed
+@Serializable
+public value class C2CMessageType private constructor(public val value: Int) {
+    public companion object {
+        /** 普通文本消息的原始值。 */
+        public const val TEXT_VALUE: Int = 0
+
+        /** 结构化卡片消息的原始值。 */
+        public const val ARK_VALUE: Int = 3
+
+        /** 并行消息的原始值。 */
+        public const val PARALLEL_MESSAGE_VALUE: Int = 101
+
+        /** 聊天记录消息的原始值。 */
+        public const val CHAT_RECORD_VALUE: Int = 102
+
+        /** 引用消息的原始值。 */
+        public const val REFERENCE_MESSAGE_VALUE: Int = 103
+
+        /** 普通文本消息。 */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val Text: C2CMessageType = C2CMessageType(TEXT_VALUE)
+
+        /** 结构化卡片消息。 */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val Ark: C2CMessageType = C2CMessageType(ARK_VALUE)
+
+        /** 并行消息。 */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val ParallelMessage: C2CMessageType = C2CMessageType(PARALLEL_MESSAGE_VALUE)
+
+        /** 聊天记录消息。 */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val ChatRecord: C2CMessageType = C2CMessageType(CHAT_RECORD_VALUE)
+
+        /** 引用消息。 */
+        @JvmStatic
+        @get:JvmExposeBoxed
+        public val ReferenceMessage: C2CMessageType = C2CMessageType(REFERENCE_MESSAGE_VALUE)
+
+        /**
+         * 根据当前已知的原始值构建 [C2CMessageType]。
+         *
+         * @throws IllegalArgumentException [value] 不是已知的消息类型值时抛出
+         */
+        @JvmStatic
+        @JvmExposeBoxed
+        public fun of(value: Int): C2CMessageType = when (value) {
+            TEXT_VALUE -> Text
+            ARK_VALUE -> Ark
+            PARALLEL_MESSAGE_VALUE -> ParallelMessage
+            CHAT_RECORD_VALUE -> ChatRecord
+            REFERENCE_MESSAGE_VALUE -> ReferenceMessage
+            else -> throw IllegalArgumentException("Unknown C2C message type: $value")
+        }
+    }
+}
+
+/**
+ * [单聊消息](https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/c2c_message_create.html)
  *
  * 触发场景	用户在单聊发送消息给机器人
  */
@@ -50,14 +129,14 @@ public data class C2CMessageCreate @EventModelConstructor constructor(
      * @property author 发送者
      * @property content 文本消息内容
      * @property timestamp 消息生产时间（RFC3339）
-     * @property messageType 消息类型
+     * @property messageType 消息类型。0=普通文本, 3=结构化卡片, 101=并行消息, 102=聊天记录, 103=引用消息
      * @property messageScene 消息场景；自定义菜单开关操作的设置结果位于 [MessageScene.ext] 中
      * @property attachments 富媒体文件附件，文件类型："图片，语音，视频，文件"
      * `{"content_type": "", "filename": "", "height": "", "width": "", "size": "", "url": ""}`
      *
      */
     @Serializable
-    public data class Data @EventModelConstructor constructor(
+    public class Data internal constructor(
         public val id: String,
         public val author: Author,
         public val content: String,
@@ -69,17 +148,98 @@ public data class C2CMessageCreate @EventModelConstructor constructor(
          * @since 5.0
          */
         @SerialName("message_type")
-        @IntroducedAt("5.0")
-        public val messageType: Int? = null,
+        @get:JvmExposeBoxed
+        public val messageType: C2CMessageType? = null,
         /**
          * 消息场景信息。
          *
          * @since 5.0
          */
         @SerialName("message_scene")
-        @IntroducedAt("5.0")
         public val messageScene: MessageScene? = null,
     ) {
+        @Deprecated(
+            DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
+            level = DeprecationLevel.ERROR
+        )
+        @EventModelConstructor
+        public constructor(
+            id: String,
+            author: Author,
+            content: String,
+            timestamp: String,
+            attachments: List<Message.Attachment> = emptyList(),
+        ) : this(
+            id = id,
+            author = author,
+            content = content,
+            timestamp = timestamp,
+            attachments = attachments,
+            messageType = null,
+            messageScene = null,
+        )
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+        public operator fun component1(): String = id
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("author"))
+        public operator fun component2(): Author = author
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("content"))
+        public operator fun component3(): String = content
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+        public operator fun component4(): String = timestamp
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("attachments"))
+        public operator fun component5(): List<Message.Attachment> = attachments
+
+        // 旧 data class 的 copy 签名只包含原五项，并保留新增字段当前值。
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            id: String = this.id,
+            author: Author = this.author,
+            content: String = this.content,
+            timestamp: String = this.timestamp,
+            attachments: List<Message.Attachment> = this.attachments,
+        ): Data = Data(
+            id = id,
+            author = author,
+            content = content,
+            timestamp = timestamp,
+            attachments = attachments,
+            messageType = messageType,
+            messageScene = messageScene,
+        )
+
+        // 未发布的 5.0 字段不进入旧 data class 的相等性、哈希和字符串表示。
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Data) return false
+
+            if (id != other.id) return false
+            if (author != other.author) return false
+            if (content != other.content) return false
+            if (timestamp != other.timestamp) return false
+            if (attachments != other.attachments) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = id.hashCode()
+            result = 31 * result + author.hashCode()
+            result = 31 * result + content.hashCode()
+            result = 31 * result + timestamp.hashCode()
+            result = 31 * result + attachments.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "Data(id=$id, author=$author, content=$content, timestamp=$timestamp, attachments=$attachments)"
+        }
+
         // TODO: 官方单聊消息事件还声明了 `ark_data` 和 `msg_elements`；待抽象对应 ARK 与消息元素模型后补齐。
     }
 
@@ -88,17 +248,14 @@ public data class C2CMessageCreate @EventModelConstructor constructor(
      *
      * [ext] 中的元素是 `key=value` 形式的扩展信息。自定义菜单的开关操作会在此处携带开关设置结果。
      *
+     * @property source 消息来源。
+     * @property ext 场景扩展信息。
+     *
      * @since 5.0
      */
     @Serializable
-    public class MessageScene @EventModelConstructor constructor(
-        /**
-         * 消息来源。
-         */
+    public class MessageScene @EventModelConstructor internal constructor(
         public val source: String? = null,
-        /**
-         * 场景扩展信息。
-         */
         public val ext: List<String> = emptyList(),
     ) {
         override fun equals(other: Any?): Boolean {
@@ -126,13 +283,33 @@ public data class C2CMessageCreate @EventModelConstructor constructor(
      * The [Data.author].
      *
      * TODO: 官方单聊消息事件还声明了 `id`、`username`、`bot`、`union_openid`、`union_user_account`、
-     * `member_openid` 与 `member_role`；待确认跨 C2C/群聊的统一作者模型后补齐。
+     *  `member_openid` 与 `member_role`；待确认跨 C2C/群聊的统一作者模型后补齐。
      */
     @Serializable
-    public data class Author @EventModelConstructor constructor(
+    public class Author @EventModelConstructor constructor(
         @SerialName("user_openid")
-        val userOpenid: String,
-    )
+        public val userOpenid: String,
+    ) {
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("userOpenid"))
+        public operator fun component1(): String = userOpenid
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(userOpenid: String = this.userOpenid): Author = Author(userOpenid)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Author) return false
+
+            if (userOpenid != other.userOpenid) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int = userOpenid.hashCode()
+
+        override fun toString(): String = "Author(userOpenid=$userOpenid)"
+    }
 }
 
 /**
@@ -233,7 +410,7 @@ public data class GroupAtMessageCreate(
      * The data of [GroupAtMessageCreate.data]
      */
     @Serializable
-    public data class Data @EventModelConstructor constructor(
+    public class Data @EventModelConstructor constructor(
         override val id: String,
         override val author: Author,
         override val content: String,
@@ -241,19 +418,116 @@ public data class GroupAtMessageCreate(
         @SerialName("group_openid")
         override val groupOpenid: String,
         override val attachments: List<Message.Attachment> = emptyList(),
-    ) : GroupMessageData
+    ) : GroupMessageData {
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+        public operator fun component1(): String = id
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("author"))
+        public operator fun component2(): Author = author
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("content"))
+        public operator fun component3(): String = content
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+        public operator fun component4(): String = timestamp
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("groupOpenid"))
+        public operator fun component5(): String = groupOpenid
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("attachments"))
+        public operator fun component6(): List<Message.Attachment> = attachments
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            id: String = this.id,
+            author: Author = this.author,
+            content: String = this.content,
+            timestamp: String = this.timestamp,
+            groupOpenid: String = this.groupOpenid,
+            attachments: List<Message.Attachment> = this.attachments,
+        ): Data = Data(id, author, content, timestamp, groupOpenid, attachments)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Data) return false
+
+            if (id != other.id) return false
+            if (author != other.author) return false
+            if (content != other.content) return false
+            if (timestamp != other.timestamp) return false
+            if (groupOpenid != other.groupOpenid) return false
+            if (attachments != other.attachments) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = id.hashCode()
+            result = 31 * result + author.hashCode()
+            result = 31 * result + content.hashCode()
+            result = 31 * result + timestamp.hashCode()
+            result = 31 * result + groupOpenid.hashCode()
+            result = 31 * result + attachments.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "Data(id=$id, author=$author, content=$content, timestamp=$timestamp, " +
+                "groupOpenid=$groupOpenid, attachments=$attachments)"
+        }
+    }
 
     /**
      * The [Data.author]
      */
     @Serializable
-    public data class Author @EventModelConstructor constructor(
+    public class Author @EventModelConstructor constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")
         override val memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
         override val bot: Boolean = false,
-    ) : GroupMessageAuthor
+    ) : GroupMessageAuthor {
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberOpenid"))
+        public operator fun component1(): String = memberOpenid
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberRole"))
+        public operator fun component2(): GroupMessageAuthorRole = memberRole
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("bot"))
+        public operator fun component3(): Boolean = bot
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            memberOpenid: String = this.memberOpenid,
+            memberRole: GroupMessageAuthorRole = this.memberRole,
+            bot: Boolean = this.bot,
+        ): Author = Author(memberOpenid, memberRole, bot)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Author) return false
+
+            if (memberOpenid != other.memberOpenid) return false
+            if (memberRole != other.memberRole) return false
+            if (bot != other.bot) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = memberOpenid.hashCode()
+            result = 31 * result + memberRole.hashCode()
+            result = 31 * result + bot.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "Author(memberOpenid=$memberOpenid, memberRole=$memberRole, bot=$bot)"
+        }
+    }
 }
 
 
@@ -291,7 +565,7 @@ public data class GroupMessageCreate(
      * The data of [GroupMessageCreate.data]
      */
     @Serializable
-    public data class Data @EventModelConstructor constructor(
+    public class Data @EventModelConstructor constructor(
         override val id: String,
         override val author: Author,
         override val content: String,
@@ -299,17 +573,114 @@ public data class GroupMessageCreate(
         @SerialName("group_openid")
         override val groupOpenid: String,
         override val attachments: List<Message.Attachment> = emptyList(),
-    ) : GroupMessageData
+    ) : GroupMessageData {
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+        public operator fun component1(): String = id
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("author"))
+        public operator fun component2(): Author = author
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("content"))
+        public operator fun component3(): String = content
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+        public operator fun component4(): String = timestamp
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("groupOpenid"))
+        public operator fun component5(): String = groupOpenid
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("attachments"))
+        public operator fun component6(): List<Message.Attachment> = attachments
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            id: String = this.id,
+            author: Author = this.author,
+            content: String = this.content,
+            timestamp: String = this.timestamp,
+            groupOpenid: String = this.groupOpenid,
+            attachments: List<Message.Attachment> = this.attachments,
+        ): Data = Data(id, author, content, timestamp, groupOpenid, attachments)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Data) return false
+
+            if (id != other.id) return false
+            if (author != other.author) return false
+            if (content != other.content) return false
+            if (timestamp != other.timestamp) return false
+            if (groupOpenid != other.groupOpenid) return false
+            if (attachments != other.attachments) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = id.hashCode()
+            result = 31 * result + author.hashCode()
+            result = 31 * result + content.hashCode()
+            result = 31 * result + timestamp.hashCode()
+            result = 31 * result + groupOpenid.hashCode()
+            result = 31 * result + attachments.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "Data(id=$id, author=$author, content=$content, timestamp=$timestamp, " +
+                "groupOpenid=$groupOpenid, attachments=$attachments)"
+        }
+    }
 
     /**
      * The [Data.author]
      */
     @Serializable
-    public data class Author @EventModelConstructor constructor(
+    public class Author @EventModelConstructor constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")
         override val memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
         override val bot: Boolean = false,
-    ) : GroupMessageAuthor
+    ) : GroupMessageAuthor {
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberOpenid"))
+        public operator fun component1(): String = memberOpenid
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberRole"))
+        public operator fun component2(): GroupMessageAuthorRole = memberRole
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("bot"))
+        public operator fun component3(): Boolean = bot
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            memberOpenid: String = this.memberOpenid,
+            memberRole: GroupMessageAuthorRole = this.memberRole,
+            bot: Boolean = this.bot,
+        ): Author = Author(memberOpenid, memberRole, bot)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Author) return false
+
+            if (memberOpenid != other.memberOpenid) return false
+            if (memberRole != other.memberRole) return false
+            if (bot != other.bot) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = memberOpenid.hashCode()
+            result = 31 * result + memberRole.hashCode()
+            result = 31 * result + bot.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "Author(memberOpenid=$memberOpenid, memberRole=$memberRole, bot=$bot)"
+        }
+    }
 }

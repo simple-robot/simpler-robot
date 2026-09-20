@@ -895,7 +895,8 @@ public abstract class love/forte/simbot/component/qguild/event/QGC2CMessageCreat
 	public abstract fun getMessageContent ()Llove/forte/simbot/component/qguild/message/QGGroupAndC2CMessageContent;
 	public synthetic fun getMessageContent ()Llove/forte/simbot/message/MessageContent;
 	public final fun getMessageScene ()Llove/forte/simbot/qguild/event/C2CMessageCreate$MessageScene;
-	public final fun getMessageType ()Ljava/lang/Integer;
+	public final fun getMessageType ()Llove/forte/simbot/qguild/event/C2CMessageType;
+	public final fun getMessageType-pRSzLWw ()Llove/forte/simbot/qguild/event/C2CMessageType;
 	public fun getTime ()Llove/forte/simbot/common/time/Timestamp;
 	public abstract synthetic fun reply (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun reply (Llove/forte/simbot/message/Message;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

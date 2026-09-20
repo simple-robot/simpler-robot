@@ -4,6 +4,12 @@ public abstract interface annotation class love/forte/simbot/qguild/common/ApiMo
 public abstract interface annotation class love/forte/simbot/qguild/common/ApiModelConstructor : java/lang/annotation/Annotation {
 }
 
+public final class love/forte/simbot/qguild/common/DataClassCompatibilities {
+	public static final field DEPRECATED_CONSTRUCTOR_MESSAGE Ljava/lang/String;
+	public static final field DEPRECATED_MESSAGE Ljava/lang/String;
+	public static final field INSTANCE Llove/forte/simbot/qguild/common/DataClassCompatibilities;
+}
+
 public abstract interface annotation class love/forte/simbot/qguild/common/EventModelConstructor : java/lang/annotation/Annotation {
 }
 
