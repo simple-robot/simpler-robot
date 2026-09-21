@@ -32,6 +32,7 @@ import love.forte.simbot.qguild.api.message.MessageSendApi
 import love.forte.simbot.qguild.api.message.direct.DmsSendApi
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 
 
 /**
@@ -108,7 +109,9 @@ public class MessageAuditedException : QQGuildApiException {
  */
 @ApiModel
 @Serializable
-internal data class MessageAudit(@SerialName("message_audit") val messageAudit: MessageAuditedId)
+internal data class MessageAudit
+@ApiModelConstructor
+constructor(@SerialName("message_audit") val messageAudit: MessageAuditedId)
 
 
 /**
@@ -119,4 +122,24 @@ internal data class MessageAudit(@SerialName("message_audit") val messageAudit: 
  */
 @ApiModel
 @Serializable
-public data class MessageAuditedId @ApiModelConstructor constructor(@SerialName("audit_id") val auditId: String)
+public class MessageAuditedId @ApiModelConstructor public constructor(
+    @SerialName("audit_id") public val auditId: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MessageAuditedId) return false
+        if (auditId != other.auditId) return false
+        return true
+    }
+
+    override fun hashCode(): Int = auditId.hashCode()
+
+    override fun toString(): String = "MessageAuditedId(auditId=$auditId)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("auditId"))
+    public operator fun component1(): String = auditId
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(auditId: String = this.auditId): MessageAuditedId = MessageAuditedId(auditId)
+}

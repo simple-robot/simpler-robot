@@ -23,8 +23,11 @@
 
 package love.forte.simbot.qguild.api.message
 
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.message.buildArk
 import love.forte.simbot.qguild.model.Message
+import kotlin.jvm.JvmStatic
 
 
 /**
@@ -74,7 +77,59 @@ public sealed class ArkMessageTemplates {
             }
         }
 
-        public data class Desc(public val desc: String, public val link: String? = null)
+        /**
+         * 模板中的文本链接条目。
+         *
+         * @property desc 条目描述。
+         * @property link 条目链接。
+         */
+        public class Desc @ApiModelConstructor public constructor(
+            public val desc: String,
+            public val link: String? = null,
+        ) {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (other !is Desc) return false
+
+                if (desc != other.desc) return false
+                if (link != other.link) return false
+
+                return true
+            }
+
+            override fun hashCode(): Int {
+                var result = desc.hashCode()
+                result = 31 * result + link.hashCode()
+                return result
+            }
+
+            override fun toString(): String = "Desc(desc=$desc, link=$link)"
+
+            //region data-class 兼容
+            @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("desc"))
+            public operator fun component1(): String = desc
+
+            @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("link"))
+            public operator fun component2(): String? = link
+
+            @Suppress("DeprecatedCallableAddReplaceWith")
+            @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+            public fun copy(
+                desc: String = this.desc,
+                link: String? = this.link,
+            ): Desc = Desc(desc, link)
+            //endregion
+
+            public companion object {
+                /**
+                 * 构造一个 [Desc]。
+                 *
+                 * @since 5.0
+                 */
+                @JvmStatic
+                public fun of(desc: String, link: String? = null): Desc = Desc(desc, link)
+            }
+        }
     }
 
 
@@ -149,7 +204,6 @@ public sealed class ArkMessageTemplates {
 
 
 }
-
 
 
 

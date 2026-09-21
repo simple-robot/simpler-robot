@@ -28,6 +28,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.*
 import kotlin.jvm.JvmStatic
@@ -77,57 +79,126 @@ public class CreateChannelApi private constructor(
 
     /**
      * [CreateChannelApi] 的请求体。
+     *
+     * @property name 子频道名称
+     * @property type 子频道类型 [ChannelType]
+     * @property subType 子频道子类型 [ChannelSubType]
+     * @property position 子频道排序，必填；当子频道类型为 `子频道分组（ChannelType=4）` 时，必须大于等于 `2`
+     * @property parentId 子频道所属分组 ID
+     * @property privateType 子频道私密类型 [PrivateType]
+     * @property privateUserIds 子频道私密类型成员 ID
+     * @property speakPermission 子频道发言权限 [SpeakPermission]
+     * @property applicationId 应用类型子频道应用 AppID，仅应用子频道需要该字段
      */
     @Serializable
-    public data class Body(
-        /**
-         * 子频道名称
-         */
-        val name: String,
-        /**
-         * 子频道类型 [ChannelType]
-         */
-        val type: ChannelType,
-        /**
-         * 子频道子类型 [ChannelSubType]
-         */
+    public class Body @ApiModelConstructor public constructor(
+        public val name: String,
+        public val type: ChannelType,
         @SerialName("sub_type")
-        val subType: ChannelSubType,
-        /**
-         * 子频道排序，必填；当子频道类型为 `子频道分组（ChannelType=4）` 时，必须大于等于 `2`
-         */
-        val position: Int,
-
-        /**
-         * 子频道所属分组ID
-         */
+        public val subType: ChannelSubType,
+        public val position: Int,
         @SerialName("parent_id")
-        val parentId: String,
-
-        /**
-         * 子频道私密类型 [PrivateType]
-         */
+        public val parentId: String,
         @SerialName("private_type")
-        val privateType: PrivateType,
-
-        /**
-         * 子频道私密类型成员 ID
-         */
+        public val privateType: PrivateType,
         @SerialName("private_user_ids")
-        val privateUserIds: List<String>,
-
-        /**
-         * 子频道发言权限 [SpeakPermission]
-         */
+        public val privateUserIds: List<String>,
         @SerialName("speak_permission")
-        val speakPermission: SpeakPermission,
-
-        /**
-         * 应用类型子频道应用 AppID，仅应用子频道需要该字段
-         */
+        public val speakPermission: SpeakPermission,
         @SerialName("application_id")
-        val applicationId: String? = null
+        public val applicationId: String? = null
     ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+            if (name != other.name) return false
+            if (type != other.type) return false
+            if (subType != other.subType) return false
+            if (position != other.position) return false
+            if (parentId != other.parentId) return false
+            if (privateType != other.privateType) return false
+            if (privateUserIds != other.privateUserIds) return false
+            if (speakPermission != other.speakPermission) return false
+            if (applicationId != other.applicationId) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = name.hashCode()
+            result = 31 * result + type.hashCode()
+            result = 31 * result + subType.hashCode()
+            result = 31 * result + position
+            result = 31 * result + parentId.hashCode()
+            result = 31 * result + privateType.hashCode()
+            result = 31 * result + privateUserIds.hashCode()
+            result = 31 * result + speakPermission.hashCode()
+            result = 31 * result + applicationId.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "Body(" +
+                "name=$name, " +
+                "type=$type, " +
+                "subType=$subType, " +
+                "position=$position, " +
+                "parentId=$parentId, " +
+                "privateType=$privateType, " +
+                "privateUserIds=$privateUserIds, " +
+                "speakPermission=$speakPermission, " +
+                "applicationId=$applicationId)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
+        public operator fun component1(): String = name
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
+        public operator fun component2(): ChannelType = type
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("subType"))
+        public operator fun component3(): ChannelSubType = subType
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("position"))
+        public operator fun component4(): Int = position
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("parentId"))
+        public operator fun component5(): String = parentId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("privateType"))
+        public operator fun component6(): PrivateType = privateType
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("privateUserIds"))
+        public operator fun component7(): List<String> = privateUserIds
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("speakPermission"))
+        public operator fun component8(): SpeakPermission = speakPermission
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("applicationId"))
+        public operator fun component9(): String? = applicationId
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            name: String = this.name,
+            type: ChannelType = this.type,
+            subType: ChannelSubType = this.subType,
+            position: Int = this.position,
+            parentId: String = this.parentId,
+            privateType: PrivateType = this.privateType,
+            privateUserIds: List<String> = this.privateUserIds,
+            speakPermission: SpeakPermission = this.speakPermission,
+            applicationId: String? = this.applicationId,
+        ): Body = Body(
+            name = name,
+            type = type,
+            subType = subType,
+            position = position,
+            parentId = parentId,
+            privateType = privateType,
+            privateUserIds = privateUserIds,
+            speakPermission = speakPermission,
+            applicationId = applicationId,
+        )
+
         /**
          * Builder for [Body].
          *
@@ -229,6 +300,34 @@ public class CreateChannelApi private constructor(
         }
 
         public companion object {
+            /**
+             * 创建一个 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(
+                name: String,
+                type: ChannelType,
+                subType: ChannelSubType,
+                position: Int,
+                parentId: String,
+                privateType: PrivateType,
+                privateUserIds: List<String>,
+                speakPermission: SpeakPermission,
+                applicationId: String? = null,
+            ): Body = Body(
+                name = name,
+                type = type,
+                subType = subType,
+                position = position,
+                parentId = parentId,
+                privateType = privateType,
+                privateUserIds = privateUserIds,
+                speakPermission = speakPermission,
+                applicationId = applicationId,
+            )
+
             /**
              * 创建 [Builder]
              */

@@ -59,6 +59,9 @@ private object BotInfoDeserializationStrategy : DeserializationStrategy<User> {
     override val descriptor: SerialDescriptor = serializer.descriptor
 
     override fun deserialize(decoder: Decoder): User {
-        return serializer.deserialize(decoder).copy(isBot = true)
+        return serializer.deserialize(decoder).withIsBot(true)
     }
+
+    private fun User.withIsBot(isBot: Boolean): User =
+        User(id, username, avatar, isBot, unionOpenid, unionUserAccount)
 }

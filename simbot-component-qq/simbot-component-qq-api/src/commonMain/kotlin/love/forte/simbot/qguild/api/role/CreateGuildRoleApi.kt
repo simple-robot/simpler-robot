@@ -30,6 +30,7 @@ import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.model.ColorIntSerializer
 import love.forte.simbot.qguild.model.Role
 import kotlin.jvm.JvmOverloads
@@ -98,20 +99,42 @@ public class CreateGuildRoleApi private constructor(
 
 /**
  * [CreateGuildRoleApi] 创建成功后的返回值
+ *
+ * @property roleId 身份组 ID
+ * @property role 所创建的频道身份组对象。与文档描述不符，实际可能为 null。
  */
 @ApiModel
 @Serializable
-public data class GuildRoleCreated @ApiModelConstructor constructor(
-    /**
-     * 身份组 ID
-     */
-    @SerialName("role_id") val roleId: String,
-    /**
-     * 所创建的频道身份组对象
-     */
-    val role: Role? = null
-    // TODO 与文档描述不符，实际上为null
-    //  see https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1ZCS7xZH0UF&contentID=1jDEHr&businessType=2&from=181174&shareSource=5&biz=ka
-)
+public class GuildRoleCreated @ApiModelConstructor public constructor(
+    @SerialName("role_id") public val roleId: String,
+    public val role: Role? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GuildRoleCreated) return false
+        if (roleId != other.roleId) return false
+        if (role != other.role) return false
+        return true
+    }
 
+    override fun hashCode(): Int {
+        var result = roleId.hashCode()
+        result = 31 * result + role.hashCode()
+        return result
+    }
 
+    override fun toString(): String = "GuildRoleCreated(roleId=$roleId, role=$role)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("roleId"))
+    public operator fun component1(): String = roleId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("role"))
+    public operator fun component2(): Role? = role
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        roleId: String = this.roleId,
+        role: Role? = this.role,
+    ): GuildRoleCreated = GuildRoleCreated(roleId, role)
+}

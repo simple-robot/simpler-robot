@@ -30,6 +30,8 @@ import kotlinx.serialization.Transient
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.model.MessageMedia
 import kotlin.io.encoding.Base64
 import kotlin.jvm.JvmOverloads
@@ -170,15 +172,65 @@ public class UploadUserFilesApi private constructor(
      * @property url 需要发送媒体资源的url
      * @property srvSendMsg 设置 true 会直接发送消息到目标端，且会占用主动消息频次
      */
+    @Suppress("DEPRECATION")
     @Serializable
     @Deprecated("Use `BodyValue`")
-    public data class Body(
+    public class Body @ApiModelConstructor public constructor(
         @SerialName("file_type")
-        val fileType: Int,
-        val url: String,
+        public val fileType: Int,
+        public val url: String,
         @SerialName("srv_send_msg")
-        val srvSendMsg: Boolean,
-    )
+        public val srvSendMsg: Boolean,
+    ) {
+        public companion object {
+            /**
+             * 构造 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(fileType: Int, url: String, srvSendMsg: Boolean): Body = Body(fileType, url, srvSendMsg)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+
+            if (fileType != other.fileType) return false
+            if (url != other.url) return false
+            if (srvSendMsg != other.srvSendMsg) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = fileType
+            result = 31 * result + url.hashCode()
+            result = 31 * result + srvSendMsg.hashCode()
+            return result
+        }
+
+        override fun toString(): String = "Body(fileType=$fileType, url=$url, srvSendMsg=$srvSendMsg)"
+
+        //region data-class 兼容
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("fileType"))
+        public operator fun component1(): Int = fileType
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("url"))
+        public operator fun component2(): String = url
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("srvSendMsg"))
+        public operator fun component3(): Boolean = srvSendMsg
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            fileType: Int = this.fileType,
+            url: String = this.url,
+            srvSendMsg: Boolean = this.srvSendMsg,
+        ): Body = Body(fileType, url, srvSendMsg)
+        //endregion
+    }
 
     /**
      * The body for [UploadUserFilesApi].

@@ -42,6 +42,8 @@ import love.forte.simbot.qguild.api.MessageAuditedException
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.api.message.MessageSendApi.Body.Builder
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.QQ
 import love.forte.simbot.qguild.message.ContentTextDecoder
 import love.forte.simbot.qguild.message.ContentTextEncoder
@@ -179,47 +181,99 @@ public class MessageSendApi private constructor(
      * [fileImage] 存在时将会使用 `multipart/form-data` 的形式发送，否则使用 `application/json`。
      *
      * 使用 [Builder] 构建。
+     *
+     * @property content 选填，消息内容，文本内容，支持[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)
+     * @property embed 选填，embed 消息，一种特殊的 ark，详情参考 [Embed消息](https://bot.q.qq.com/wiki/develop/api/openapi/message/template/embed_message.html)
+     * @property ark 选填，ark 消息
+     * @property messageReference 选填，引用消息
+     * @property image 选填，图片url地址，平台会转存该图片，用于下发图片消息
+     * @property msgId 选填，要回复的消息id, 在 `AT_CREATE_MESSAGE` 事件中获取。
+     * @property eventId 选填，要回复的事件id, 在各事件对象中获取。
+     * @property markdown 选填，markdown 消息
      */
     @Serializable
-    public data class Body internal constructor(
-        /**
-         * 选填，消息内容，文本内容，支持[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)
-         */
+    public class Body @ApiModelConstructor internal constructor(
         public val content: String?,
 
-        /**
-         * 选填，embed 消息，一种特殊的 ark，详情参考 [Embed消息](https://bot.q.qq.com/wiki/develop/api/openapi/message/template/embed_message.html)
-         */
         public val embed: Message.Embed?,
-        /**
-         * 选填，ark 消息
-         */
         public val ark: Message.Ark?,
-        /**
-         * 选填，引用消息
-         */
         @SerialName("message_reference")
         @IgnoreWhenUseFormData // TODO 疑似不支持使用form转json发送，暂时忽略
         public val messageReference: Message.Reference?,
-        /**
-         * 选填，图片url地址，平台会转存该图片，用于下发图片消息
-         */
         public val image: String?,
-        /**
-         * 选填，要回复的消息id, 在 `AT_CREATE_MESSAGE` 事件中获取。
-         */
         @SerialName("msg_id")
         public val msgId: String?,
-        /**
-         * 选填，要回复的事件id, 在各事件对象中获取。
-         */
         @SerialName("eventId")
         public val eventId: String?,
-        /**
-         * 选填，markdown 消息
-         */
         public val markdown: Message.Markdown?,
     ) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+            if (content != other.content) return false
+            if (embed != other.embed) return false
+            if (ark != other.ark) return false
+            if (messageReference != other.messageReference) return false
+            if (image != other.image) return false
+            if (msgId != other.msgId) return false
+            if (eventId != other.eventId) return false
+            if (markdown != other.markdown) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = content.hashCode()
+            result = 31 * result + embed.hashCode()
+            result = 31 * result + ark.hashCode()
+            result = 31 * result + messageReference.hashCode()
+            result = 31 * result + image.hashCode()
+            result = 31 * result + msgId.hashCode()
+            result = 31 * result + eventId.hashCode()
+            result = 31 * result + markdown.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "Body(content=$content, embed=$embed, ark=$ark, messageReference=$messageReference, " +
+                "image=$image, msgId=$msgId, eventId=$eventId, markdown=$markdown)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("content"))
+        public operator fun component1(): String? = content
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("embed"))
+        public operator fun component2(): Message.Embed? = embed
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("ark"))
+        public operator fun component3(): Message.Ark? = ark
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("messageReference"))
+        public operator fun component4(): Message.Reference? = messageReference
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("image"))
+        public operator fun component5(): String? = image
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("msgId"))
+        public operator fun component6(): String? = msgId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("eventId"))
+        public operator fun component7(): String? = eventId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("markdown"))
+        public operator fun component8(): Message.Markdown? = markdown
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            content: String? = this.content,
+            embed: Message.Embed? = this.embed,
+            ark: Message.Ark? = this.ark,
+            messageReference: Message.Reference? = this.messageReference,
+            image: String? = this.image,
+            msgId: String? = this.msgId,
+            eventId: String? = this.eventId,
+            markdown: Message.Markdown? = this.markdown,
+        ): Body = Body(content, embed, ark, messageReference, image, msgId, eventId, markdown)
 
         /**
          * 可使用的类型：
@@ -338,8 +392,17 @@ public class MessageSendApi private constructor(
                     content = " "
                 }
                 val currentMarkdown = markdown ?: Message.Markdown()
-                markdown = currentMarkdown.copy(content = (currentMarkdown.content ?: "") + append)
+                markdown = currentMarkdown.withContent((currentMarkdown.content ?: "") + append)
             }
+
+            /**
+             * 创建一个新的内容为 [content] 的 Markdown 副本。
+             *
+             * @param newContent 新的内容
+             * @since 5.0
+             */
+            private fun Message.Markdown.withContent(newContent: String?): Message.Markdown =
+                Message.Markdown(templateId, customTemplateId, params, newContent)
 
             public fun setFileImage(byteArray: ByteArray) {
                 fileImage = byteArray
@@ -380,6 +443,23 @@ public class MessageSendApi private constructor(
         }
 
         public companion object {
+
+            /**
+             * 创建一个 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(
+                content: String? = null,
+                embed: Message.Embed? = null,
+                ark: Message.Ark? = null,
+                messageReference: Message.Reference? = null,
+                image: String? = null,
+                msgId: String? = null,
+                eventId: String? = null,
+                markdown: Message.Markdown? = null,
+            ): Body = Body(content, embed, ark, messageReference, image, msgId, eventId, markdown)
 
             /**
              * 得到一个 [Builder]。

@@ -337,7 +337,7 @@ public class Message @ApiModelConstructor constructor(
          *
          * @property name 字段名。
          */
-        @Serializable//(MessageEmbedFieldSerializer::class)
+        @Serializable
         public class Field(
             public val name: String,
             @EncodeDefault(EncodeDefault.Mode.NEVER)
@@ -679,6 +679,7 @@ public class Message @ApiModelConstructor constructor(
         public val content: String? = null,
     ) {
 
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Markdown) return false
@@ -970,6 +971,7 @@ public class MessageMember @ApiModelConstructor constructor(
 
 
 @OptIn(ExperimentalSerializationApi::class)
+@Deprecated("unused")
 internal object MessageEmbedFieldSerializer : KSerializer<Message.Embed.Field> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("MessageEmbedField") {
         element<String>("name")

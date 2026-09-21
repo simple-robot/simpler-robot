@@ -27,6 +27,8 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.QQGuildApiWithoutResult
 import love.forte.simbot.qguild.api.SimplePutApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -82,9 +84,45 @@ public class AddMemberRoleApi private constructor(
         channelId?.let { cid -> Body(ChannelId(cid)) }
 
     @Serializable
-    private data class Body(val channel: ChannelId)
+    private class Body @ApiModelConstructor constructor(val channel: ChannelId) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+            if (channel != other.channel) return false
+            return true
+        }
+
+        override fun hashCode(): Int = channel.hashCode()
+
+        override fun toString(): String = "Body(channel=$channel)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channel"))
+        operator fun component1(): ChannelId = channel
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        fun copy(channel: ChannelId = this.channel): Body = Body(channel)
+    }
 
     @Serializable
-    private data class ChannelId(val id: String)
+    private class ChannelId @ApiModelConstructor constructor(val id: String) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ChannelId) return false
+            if (id != other.id) return false
+            return true
+        }
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "ChannelId(id=$id)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+        operator fun component1(): String = id
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        fun copy(id: String = this.id): ChannelId = ChannelId(id)
+    }
 
 }

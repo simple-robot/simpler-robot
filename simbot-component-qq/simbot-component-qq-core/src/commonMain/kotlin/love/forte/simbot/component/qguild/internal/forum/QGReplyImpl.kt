@@ -49,8 +49,10 @@ internal class QGReplyImpl(
             ?: throw NoSuchElementException("author(id=$authorId)")
 
     override suspend fun thread(): QGThread {
-        val (thread) = try {
-            GetThreadApi.create(source.channelId, source.replyInfo.threadId).requestDataBy(bot.source)
+        val thread = try {
+            GetThreadApi.create(source.channelId, source.replyInfo.threadId)
+                .requestDataBy(bot.source)
+                .thread
         } catch (apiEx: QQGuildApiException) {
             apiEx.ifNotFoundThenNoSuch {
                 "thread(id=${source.replyInfo.threadId}) by reply(id=${source.replyInfo.replyId})"

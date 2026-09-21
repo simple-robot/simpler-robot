@@ -483,6 +483,7 @@ public final class love/forte/simbot/qguild/api/apipermission/DemandApiPermissio
 	public final fun getChannelId ()Ljava/lang/String;
 	public final fun getDesc ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;Ljava/lang/String;)Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -497,6 +498,7 @@ public final synthetic class love/forte/simbot/qguild/api/apipermission/DemandAp
 }
 
 public final class love/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Body$Companion {
+	public final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;Ljava/lang/String;)Llove/forte/simbot/qguild/api/apipermission/DemandApiPermissionApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -570,6 +572,7 @@ public final class love/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body {
 	public final fun getAppId ()Ljava/lang/String;
 	public final fun getClientSecret ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -584,6 +587,7 @@ public final synthetic class love/forte/simbot/qguild/api/app/GetAppAccessTokenA
 }
 
 public final class love/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body$Companion {
+	public final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/app/GetAppAccessTokenApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -626,6 +630,7 @@ public final class love/forte/simbot/qguild/api/channel/CreateChannelApi$Body {
 	public final fun getSubType ()Llove/forte/simbot/qguild/model/ChannelSubType;
 	public final fun getType ()Llove/forte/simbot/qguild/model/ChannelType;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/ChannelType;Llove/forte/simbot/qguild/model/ChannelSubType;ILjava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Ljava/util/List;Llove/forte/simbot/qguild/model/SpeakPermission;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -673,6 +678,8 @@ public final class love/forte/simbot/qguild/api/channel/CreateChannelApi$Body$Bu
 
 public final class love/forte/simbot/qguild/api/channel/CreateChannelApi$Body$Companion {
 	public final fun builder ()Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body$Builder;
+	public final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/ChannelType;Llove/forte/simbot/qguild/model/ChannelSubType;ILjava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Ljava/util/List;Llove/forte/simbot/qguild/model/SpeakPermission;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;
+	public static synthetic fun of$default (Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body$Companion;Ljava/lang/String;Llove/forte/simbot/qguild/model/ChannelType;Llove/forte/simbot/qguild/model/ChannelSubType;ILjava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Ljava/util/List;Llove/forte/simbot/qguild/model/SpeakPermission;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/channel/CreateChannelApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -749,6 +756,7 @@ public final class love/forte/simbot/qguild/api/channel/ModifyChannelApi$Body {
 	public final fun getPrivateType ()Llove/forte/simbot/qguild/model/PrivateType;
 	public final fun getSpeakPermission ()Llove/forte/simbot/qguild/model/SpeakPermission;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Llove/forte/simbot/qguild/model/SpeakPermission;)Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -784,6 +792,8 @@ public final class love/forte/simbot/qguild/api/channel/ModifyChannelApi$Body$Bu
 
 public final class love/forte/simbot/qguild/api/channel/ModifyChannelApi$Body$Companion {
 	public final fun builder ()Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body$Builder;
+	public final fun of (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Llove/forte/simbot/qguild/model/SpeakPermission;)Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;
+	public static synthetic fun of$default (Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body$Companion;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Llove/forte/simbot/qguild/model/PrivateType;Llove/forte/simbot/qguild/model/SpeakPermission;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/channel/ModifyChannelApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -981,6 +991,7 @@ public final class love/forte/simbot/qguild/api/channel/schedules/ScheduleReques
 	public final fun getRemindType ()Ljava/lang/String;
 	public final fun getStartTimestamp ()J
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Ljava/lang/String;JJLjava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;
 	public static final fun of (Llove/forte/simbot/qguild/model/Schedule;)Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;
 	public fun toString ()Ljava/lang/String;
 }
@@ -996,6 +1007,7 @@ public final synthetic class love/forte/simbot/qguild/api/channel/schedules/Sche
 }
 
 public final class love/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody$Companion {
+	public final fun of (Ljava/lang/String;Ljava/lang/String;JJLjava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;
 	public final fun of (Llove/forte/simbot/qguild/model/Schedule;)Llove/forte/simbot/qguild/api/channel/schedules/ScheduleRequestBody;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
@@ -1026,6 +1038,7 @@ public final class love/forte/simbot/qguild/api/files/UploadGroupFilesApi$Body {
 	public final fun getSrvSendMsg ()Z
 	public final fun getUrl ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1040,6 +1053,7 @@ public final synthetic class love/forte/simbot/qguild/api/files/UploadGroupFiles
 }
 
 public final class love/forte/simbot/qguild/api/files/UploadGroupFilesApi$Body$Companion {
+	public final fun of (ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadGroupFilesApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -1103,6 +1117,7 @@ public final class love/forte/simbot/qguild/api/files/UploadUserFilesApi$Body {
 	public final fun getSrvSendMsg ()Z
 	public final fun getUrl ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadUserFilesApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1117,6 +1132,7 @@ public final synthetic class love/forte/simbot/qguild/api/files/UploadUserFilesA
 }
 
 public final class love/forte/simbot/qguild/api/files/UploadUserFilesApi$Body$Companion {
+	public final fun of (ILjava/lang/String;Z)Llove/forte/simbot/qguild/api/files/UploadUserFilesApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -1403,6 +1419,7 @@ public final class love/forte/simbot/qguild/api/interaction/InteractionResponseB
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCode ()I
 	public fun hashCode ()I
+	public static final fun of (I)Llove/forte/simbot/qguild/api/interaction/InteractionResponseBody;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1417,6 +1434,7 @@ public final synthetic class love/forte/simbot/qguild/api/interaction/Interactio
 }
 
 public final class love/forte/simbot/qguild/api/interaction/InteractionResponseBody$Companion {
+	public final fun of (I)Llove/forte/simbot/qguild/api/interaction/InteractionResponseBody;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -1578,6 +1596,7 @@ public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$Text
 }
 
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc {
+	public static final field Companion Llove/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -1588,7 +1607,13 @@ public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$Text
 	public final fun getDesc ()Ljava/lang/String;
 	public final fun getLink ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc;
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc$Companion {
+	public final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc;
+	public static synthetic fun of$default (Llove/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc$Companion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/message/ArkMessageTemplates$TextLinkList$Desc;
 }
 
 public final class love/forte/simbot/qguild/api/message/ArkMessageTemplates$TextThumbnail : love/forte/simbot/qguild/api/message/ArkMessageTemplates {
@@ -1699,6 +1724,8 @@ public final class love/forte/simbot/qguild/api/message/MessageSendApi$Body {
 	public final fun component6 ()Ljava/lang/String;
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Llove/forte/simbot/qguild/model/Message$Markdown;
+	public final fun copy (Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Embed;Llove/forte/simbot/qguild/model/Message$Ark;Llove/forte/simbot/qguild/model/Message$Reference;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Markdown;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
+	public static synthetic fun copy$default (Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Embed;Llove/forte/simbot/qguild/model/Message$Ark;Llove/forte/simbot/qguild/model/Message$Reference;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Markdown;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArk ()Llove/forte/simbot/qguild/model/Message$Ark;
 	public final fun getContent ()Ljava/lang/String;
@@ -1710,6 +1737,7 @@ public final class love/forte/simbot/qguild/api/message/MessageSendApi$Body {
 	public final fun getMessageReference ()Llove/forte/simbot/qguild/model/Message$Reference;
 	public final fun getMsgId ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Embed;Llove/forte/simbot/qguild/model/Message$Ark;Llove/forte/simbot/qguild/model/Message$Reference;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Markdown;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1757,6 +1785,8 @@ public final class love/forte/simbot/qguild/api/message/MessageSendApi$Body$Buil
 public final class love/forte/simbot/qguild/api/message/MessageSendApi$Body$Companion {
 	public final fun builder ()Llove/forte/simbot/qguild/api/message/MessageSendApi$Body$Builder;
 	public final synthetic fun invoke (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
+	public final fun of (Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Embed;Llove/forte/simbot/qguild/model/Message$Ark;Llove/forte/simbot/qguild/model/Message$Reference;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Markdown;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
+	public static synthetic fun of$default (Llove/forte/simbot/qguild/api/message/MessageSendApi$Body$Companion;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Embed;Llove/forte/simbot/qguild/model/Message$Ark;Llove/forte/simbot/qguild/model/Message$Reference;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/Message$Markdown;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/message/MessageSendApi$Body;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

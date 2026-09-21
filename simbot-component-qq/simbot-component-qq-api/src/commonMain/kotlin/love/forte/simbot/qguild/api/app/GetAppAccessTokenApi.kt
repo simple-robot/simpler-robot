@@ -30,6 +30,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -76,11 +77,60 @@ public class GetAppAccessTokenApi private constructor(
         appendEncodedPathSegments(components = PATH)
     }.build()
 
+    /**
+     * 获取调用凭证的请求体。
+     *
+     * @property appId 应用 ID。
+     * @property clientSecret 应用密钥。
+     */
     @Serializable
-    public data class Body(
-        val appId: String,
-        val clientSecret: String
-    )
+    public class Body @ApiModelConstructor public constructor(
+        public val appId: String,
+        public val clientSecret: String
+    ) {
+        public companion object {
+            /**
+             * 构造 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(appId: String, clientSecret: String): Body = Body(appId, clientSecret)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+
+            if (appId != other.appId) return false
+            if (clientSecret != other.clientSecret) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = appId.hashCode()
+            result = 31 * result + clientSecret.hashCode()
+            return result
+        }
+
+        override fun toString(): String = "Body(appId=$appId, clientSecret=$clientSecret)"
+
+        //region data-class 兼容
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("appId"))
+        public operator fun component1(): String = appId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("clientSecret"))
+        public operator fun component2(): String = clientSecret
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            appId: String = this.appId,
+            clientSecret: String = this.clientSecret,
+        ): Body = Body(appId, clientSecret)
+        //endregion
+    }
 }
 
 /**
@@ -90,9 +140,42 @@ public class GetAppAccessTokenApi private constructor(
  */
 @ApiModel
 @Serializable
-public data class AppAccessToken @ApiModelConstructor constructor(
+public class AppAccessToken @ApiModelConstructor public constructor(
     @SerialName("access_token")
-    val accessToken: String,
+    public val accessToken: String,
     @SerialName("expires_in")
-    val expiresIn: Int,
-)
+    public val expiresIn: Int,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AppAccessToken) return false
+
+        if (accessToken != other.accessToken) return false
+        if (expiresIn != other.expiresIn) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = accessToken.hashCode()
+        result = 31 * result + expiresIn
+        return result
+    }
+
+    override fun toString(): String = "AppAccessToken(accessToken=$accessToken, expiresIn=$expiresIn)"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("accessToken"))
+    public operator fun component1(): String = accessToken
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("expiresIn"))
+    public operator fun component2(): Int = expiresIn
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        accessToken: String = this.accessToken,
+        expiresIn: Int = this.expiresIn,
+    ): AppAccessToken = AppAccessToken(accessToken, expiresIn)
+    //endregion
+}

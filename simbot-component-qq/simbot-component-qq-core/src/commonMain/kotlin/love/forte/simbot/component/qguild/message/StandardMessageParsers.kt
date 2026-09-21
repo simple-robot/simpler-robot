@@ -91,12 +91,15 @@ internal fun GroupAndC2CSendBody.appendContent(content: String, asMarkdown: Bool
             this.content = " "
         }
         val currentMarkdown = markdown ?: Message.Markdown()
-        markdown = currentMarkdown.copy(content = (currentMarkdown.content ?: "") + content)
+        markdown = currentMarkdown.withContent((currentMarkdown.content ?: "") + content)
         msgType = GroupAndC2CSendBody.MSG_TYPE_MARKDOWN
     } else {
         this.content += content
     }
 }
+
+private fun Message.Markdown.withContent(newContent: String?): Message.Markdown =
+    Message.Markdown(templateId, customTemplateId, params, newContent)
 
 /**
  * 解析 [Face] 为 [内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html) 中的 `表情` 使用。

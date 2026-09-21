@@ -34,6 +34,7 @@ import love.forte.simbot.qguild.api.GetQQGuildApi
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.SimpleMember
 import kotlin.jvm.JvmOverloads
@@ -113,20 +114,45 @@ public class GetGuildRoleMemberListApi private constructor(
 
 /**
  * [GetGuildRoleMemberListApi] 的响应体包装类。
+ *
+ * @property data 一组用户信息对象
+ * @property next 下一次请求的分页标识
  */
 @ApiModel
 @Serializable
-public data class GuildRoleMemberList @ApiModelConstructor constructor(
-    /**
-     * 一组用户信息对象
-     */
-    val data: List<SimpleMember>,
+public class GuildRoleMemberList @ApiModelConstructor public constructor(
+    public val data: List<SimpleMember>,
+    public val next: String
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GuildRoleMemberList) return false
+        if (data != other.data) return false
+        if (next != other.next) return false
+        return true
+    }
 
-    /**
-     * 下一次请求的分页标识
-     */
-    val next: String
-)
+    override fun hashCode(): Int {
+        var result = data.hashCode()
+        result = 31 * result + next.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "GuildRoleMemberList(data=$data, next=$next)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("data"))
+    public operator fun component1(): List<SimpleMember> = data
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("next"))
+    public operator fun component2(): String = next
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        data: List<SimpleMember> = this.data,
+        next: String = this.next,
+    ): GuildRoleMemberList = GuildRoleMemberList(data, next)
+}
 
 
 /**
@@ -145,12 +171,12 @@ public inline fun GetGuildRoleMemberListApi.Factory.createFlow(
 ): Flow<SimpleMember> = flow {
     var after: String? = startIndex
     while (true) {
-        val (list, next) = create(guildId = guildId, roleId = roleId, startIndex = after, limit = batch).doRequest()
-        if (list.isEmpty()) {
+        val result = create(guildId = guildId, roleId = roleId, startIndex = after, limit = batch).doRequest()
+        if (result.data.isEmpty()) {
             break
         }
 
-        list.forEach { emit(it) }
-        after = next
+        result.data.forEach { emit(it) }
+        after = result.next
     }
 }

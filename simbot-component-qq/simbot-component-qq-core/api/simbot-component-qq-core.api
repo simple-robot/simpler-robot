@@ -1466,7 +1466,13 @@ public abstract class love/forte/simbot/component/qguild/event/QGInteractionCrea
 	public final fun getGroupOpenid ()Llove/forte/simbot/common/id/ID;
 	public final fun getGuildId ()Llove/forte/simbot/common/id/ID;
 	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getInteractionChatType ()Llove/forte/simbot/qguild/event/InteractionChatType;
+	public final fun getInteractionChatType-G5AW5WM ()I
 	public final fun getInteractionId ()Llove/forte/simbot/common/id/ID;
+	public final fun getInteractionScene ()Llove/forte/simbot/qguild/event/InteractionScene;
+	public final fun getInteractionScene-OJxF7HA ()Ljava/lang/String;
+	public final fun getInteractionType ()Llove/forte/simbot/qguild/event/InteractionType;
+	public final fun getInteractionType-SWdS_Go ()I
 	public final fun getResolved ()Llove/forte/simbot/qguild/event/InteractionCreateResolvedData;
 	public final fun getScene ()Ljava/lang/String;
 	public synthetic fun getSourceEventEntity ()Ljava/lang/Object;

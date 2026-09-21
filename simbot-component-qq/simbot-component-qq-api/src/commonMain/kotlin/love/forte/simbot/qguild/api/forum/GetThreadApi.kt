@@ -27,6 +27,8 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.GetQQGuildApi
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.forum.Thread
 import kotlin.jvm.JvmStatic
@@ -65,4 +67,22 @@ public class GetThreadApi(channelId: String, threadId: String) : GetQQGuildApi<T
  * [GetThreadApi] 响应体。
  */
 @Serializable
-public data class ThreadInfoResult(val thread: Thread)
+public class ThreadInfoResult @ApiModelConstructor public constructor(public val thread: Thread) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ThreadInfoResult) return false
+        if (thread != other.thread) return false
+        return true
+    }
+
+    override fun hashCode(): Int = thread.hashCode()
+
+    override fun toString(): String = "ThreadInfoResult(thread=$thread)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("thread"))
+    public operator fun component1(): Thread = thread
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(thread: Thread = this.thread): ThreadInfoResult = ThreadInfoResult(thread)
+}

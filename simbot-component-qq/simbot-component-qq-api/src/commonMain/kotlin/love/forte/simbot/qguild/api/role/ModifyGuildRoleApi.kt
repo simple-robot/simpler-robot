@@ -29,6 +29,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimpleApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.model.ColorIntSerializer
 import love.forte.simbot.qguild.model.Role
 import kotlin.jvm.JvmOverloads
@@ -94,21 +96,50 @@ public class ModifyGuildRoleApi private constructor(
 
 /**
  * [ModifyGuildRoleApi] 的响应体类型。
+ *
+ * @property guildId 频道ID
+ * @property roleId 身份组ID
+ * @property role 修改后的频道身份组对象
  */
 @Serializable
-public data class GuildRoleModified(
-    /**
-     * 频道ID
-     */
+public class GuildRoleModified @ApiModelConstructor public constructor(
     @SerialName("guild_id") public val guildId: String,
-
-    /**
-     * 身份组ID
-     */
     @SerialName("role_id") public val roleId: String,
-
-    /**
-     * 修改后的频道身份组对象
-     */
     public val role: Role,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GuildRoleModified) return false
+        if (guildId != other.guildId) return false
+        if (roleId != other.roleId) return false
+        if (role != other.role) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = guildId.hashCode()
+        result = 31 * result + roleId.hashCode()
+        result = 31 * result + role.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "GuildRoleModified(guildId=$guildId, roleId=$roleId, role=$role)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("roleId"))
+    public operator fun component2(): String = roleId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("role"))
+    public operator fun component3(): Role = role
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        roleId: String = this.roleId,
+        role: Role = this.role,
+    ): GuildRoleModified = GuildRoleModified(guildId, roleId, role)
+}

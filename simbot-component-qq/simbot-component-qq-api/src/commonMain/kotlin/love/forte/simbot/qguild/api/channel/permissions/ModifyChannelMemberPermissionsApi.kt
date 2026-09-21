@@ -91,11 +91,14 @@ public class ModifyChannelMemberPermissionsApi private constructor(
 
     override fun createBody(): Any = _body
 
+    /**
+     * 请求体。
+     *
+     * @property add 需要追加的权限位图
+     * @property remove 需要移除的权限位图
+     */
     @Serializable
-    private data class Body(
-        val add: Permissions?,
-        val remove: Permissions?
-    ) {
+    private data class Body(val add: Permissions?, val remove: Permissions?) {
         init {
             require(add != null || remove != null) {
                 "At least one of the parameters should not be null"

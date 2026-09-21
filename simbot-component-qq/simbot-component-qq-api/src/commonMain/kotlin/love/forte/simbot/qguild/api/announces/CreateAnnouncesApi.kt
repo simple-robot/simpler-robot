@@ -68,10 +68,11 @@ public class CreateAnnouncesApi private constructor(
 
     override fun createBody(): Any = Body(messageId)
 
+    /**
+     * 请求体。
+     *
+     * @property messageId 消息 ID
+     */
     @Serializable
-    private data class Body(
-        @SerialName("message_id") val messageId: String,
-    )
-
-
+    private data class Body(@SerialName("message_id") val messageId: String)
 }

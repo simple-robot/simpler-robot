@@ -28,6 +28,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.GetQQGuildApi
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmStatic
 
 
@@ -58,6 +60,28 @@ public class GetChannelOnlineNumsApi(channelId: String) : GetQQGuildApi<OnlineNu
 
 /**
  * Result of [GetChannelOnlineNumsApi]
+ *
+ * @property onlineNums 在线成员数
  */
 @Serializable
-public data class OnlineNumsResult(@SerialName("online_nums") val onlineNums: Int)
+public class OnlineNumsResult @ApiModelConstructor public constructor(
+    @SerialName("online_nums") public val onlineNums: Int
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is OnlineNumsResult) return false
+        if (onlineNums != other.onlineNums) return false
+        return true
+    }
+
+    override fun hashCode(): Int = onlineNums
+
+    override fun toString(): String = "OnlineNumsResult(onlineNums=$onlineNums)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("onlineNums"))
+    public operator fun component1(): Int = onlineNums
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(onlineNums: Int = this.onlineNums): OnlineNumsResult = OnlineNumsResult(onlineNums)
+}

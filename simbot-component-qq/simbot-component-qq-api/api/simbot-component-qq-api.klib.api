@@ -439,6 +439,7 @@ final class love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi : 
         }
 
         final object Companion { // love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi.Body.Companion|null[0]
+            final fun of(kotlin/String, love.forte.simbot.qguild.model/ApiPermissionDemandIdentify, kotlin/String): love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi.Body // love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi.Body.Companion.of|of(kotlin.String;love.forte.simbot.qguild.model.ApiPermissionDemandIdentify;kotlin.String){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi.Body> // love.forte.simbot.qguild.api.apipermission/DemandApiPermissionApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -521,6 +522,7 @@ final class love.forte.simbot.qguild.api.app/GetAppAccessTokenApi : love.forte.s
         }
 
         final object Companion { // love.forte.simbot.qguild.api.app/GetAppAccessTokenApi.Body.Companion|null[0]
+            final fun of(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.app/GetAppAccessTokenApi.Body // love.forte.simbot.qguild.api.app/GetAppAccessTokenApi.Body.Companion.of|of(kotlin.String;kotlin.String){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.app/GetAppAccessTokenApi.Body> // love.forte.simbot.qguild.api.app/GetAppAccessTokenApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -691,6 +693,7 @@ final class love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody {
 
     final object Companion { // love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody.Companion|null[0]
         final fun (love.forte.simbot.qguild.model/Schedule).toCreateBody(): love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody // love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody.Companion.toCreateBody|toCreateBody@love.forte.simbot.qguild.model.Schedule(){}[0]
+        final fun of(kotlin/String, kotlin/String, kotlin/Long, kotlin/Long, kotlin/String, kotlin/String): love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody // love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody.Companion.of|of(kotlin.String;kotlin.String;kotlin.Long;kotlin.Long;kotlin.String;kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody> // love.forte.simbot.qguild.api.channel.schedules/ScheduleRequestBody.Companion.serializer|serializer(){}[0]
     }
 }
@@ -793,6 +796,7 @@ final class love.forte.simbot.qguild.api.channel/CreateChannelApi : love.forte.s
             final val $childSerializers // love.forte.simbot.qguild.api.channel/CreateChannelApi.Body.Companion.$childSerializers|{}$childSerializers[0]
 
             final fun builder(): love.forte.simbot.qguild.api.channel/CreateChannelApi.Body.Builder // love.forte.simbot.qguild.api.channel/CreateChannelApi.Body.Companion.builder|builder(){}[0]
+            final fun of(kotlin/String, love.forte.simbot.qguild.model/ChannelType, love.forte.simbot.qguild.model/ChannelSubType, kotlin/Int, kotlin/String, love.forte.simbot.qguild.model/PrivateType, kotlin.collections/List<kotlin/String>, love.forte.simbot.qguild.model/SpeakPermission, kotlin/String? = ...): love.forte.simbot.qguild.api.channel/CreateChannelApi.Body // love.forte.simbot.qguild.api.channel/CreateChannelApi.Body.Companion.of|of(kotlin.String;love.forte.simbot.qguild.model.ChannelType;love.forte.simbot.qguild.model.ChannelSubType;kotlin.Int;kotlin.String;love.forte.simbot.qguild.model.PrivateType;kotlin.collections.List<kotlin.String>;love.forte.simbot.qguild.model.SpeakPermission;kotlin.String?){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.channel/CreateChannelApi.Body> // love.forte.simbot.qguild.api.channel/CreateChannelApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -906,6 +910,7 @@ final class love.forte.simbot.qguild.api.channel/ModifyChannelApi : love.forte.s
 
         final object Companion { // love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body.Companion|null[0]
             final fun builder(): love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body.Builder // love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body.Companion.builder|builder(){}[0]
+            final fun of(kotlin/String? = ..., kotlin/Int? = ..., kotlin/String? = ..., love.forte.simbot.qguild.model/PrivateType? = ..., love.forte.simbot.qguild.model/SpeakPermission? = ...): love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body // love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body.Companion.of|of(kotlin.String?;kotlin.Int?;kotlin.String?;love.forte.simbot.qguild.model.PrivateType?;love.forte.simbot.qguild.model.SpeakPermission?){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body> // love.forte.simbot.qguild.api.channel/ModifyChannelApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -974,6 +979,7 @@ final class love.forte.simbot.qguild.api.files/UploadGroupFilesApi : love.forte.
         }
 
         final object Companion { // love.forte.simbot.qguild.api.files/UploadGroupFilesApi.Body.Companion|null[0]
+            final fun of(kotlin/Int, kotlin/String, kotlin/Boolean): love.forte.simbot.qguild.api.files/UploadGroupFilesApi.Body // love.forte.simbot.qguild.api.files/UploadGroupFilesApi.Body.Companion.of|of(kotlin.Int;kotlin.String;kotlin.Boolean){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.files/UploadGroupFilesApi.Body> // love.forte.simbot.qguild.api.files/UploadGroupFilesApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -1055,6 +1061,7 @@ final class love.forte.simbot.qguild.api.files/UploadUserFilesApi : love.forte.s
         }
 
         final object Companion { // love.forte.simbot.qguild.api.files/UploadUserFilesApi.Body.Companion|null[0]
+            final fun of(kotlin/Int, kotlin/String, kotlin/Boolean): love.forte.simbot.qguild.api.files/UploadUserFilesApi.Body // love.forte.simbot.qguild.api.files/UploadUserFilesApi.Body.Companion.of|of(kotlin.Int;kotlin.String;kotlin.Boolean){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.files/UploadUserFilesApi.Body> // love.forte.simbot.qguild.api.files/UploadUserFilesApi.Body.Companion.serializer|serializer(){}[0]
         }
     }
@@ -1339,6 +1346,7 @@ final class love.forte.simbot.qguild.api.interaction/InteractionResponseBody { /
     }
 
     final object Companion { // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.Companion|null[0]
+        final fun of(kotlin/Int): love.forte.simbot.qguild.api.interaction/InteractionResponseBody // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.Companion.of|of(kotlin.Int){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.interaction/InteractionResponseBody> // love.forte.simbot.qguild.api.interaction/InteractionResponseBody.Companion.serializer|serializer(){}[0]
     }
 }
@@ -1713,6 +1721,7 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
         final fun component6(): kotlin/String? // love.forte.simbot.qguild.api.message/MessageSendApi.Body.component6|component6(){}[0]
         final fun component7(): kotlin/String? // love.forte.simbot.qguild.api.message/MessageSendApi.Body.component7|component7(){}[0]
         final fun component8(): love.forte.simbot.qguild.model/Message.Markdown? // love.forte.simbot.qguild.api.message/MessageSendApi.Body.component8|component8(){}[0]
+        final fun copy(kotlin/String? = ..., love.forte.simbot.qguild.model/Message.Embed? = ..., love.forte.simbot.qguild.model/Message.Ark? = ..., love.forte.simbot.qguild.model/Message.Reference? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., love.forte.simbot.qguild.model/Message.Markdown? = ...): love.forte.simbot.qguild.api.message/MessageSendApi.Body // love.forte.simbot.qguild.api.message/MessageSendApi.Body.copy|copy(kotlin.String?;love.forte.simbot.qguild.model.Message.Embed?;love.forte.simbot.qguild.model.Message.Ark?;love.forte.simbot.qguild.model.Message.Reference?;kotlin.String?;kotlin.String?;kotlin.String?;love.forte.simbot.qguild.model.Message.Markdown?){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.api.message/MessageSendApi.Body.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.api.message/MessageSendApi.Body.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.qguild.api.message/MessageSendApi.Body.toString|toString(){}[0]
@@ -1772,6 +1781,7 @@ final class love.forte.simbot.qguild.api.message/MessageSendApi : love.forte.sim
 
         final object Companion { // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Companion|null[0]
             final fun builder(): love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Companion.builder|builder(){}[0]
+            final fun of(kotlin/String? = ..., love.forte.simbot.qguild.model/Message.Embed? = ..., love.forte.simbot.qguild.model/Message.Ark? = ..., love.forte.simbot.qguild.model/Message.Reference? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., love.forte.simbot.qguild.model/Message.Markdown? = ...): love.forte.simbot.qguild.api.message/MessageSendApi.Body // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Companion.of|of(kotlin.String?;love.forte.simbot.qguild.model.Message.Embed?;love.forte.simbot.qguild.model.Message.Ark?;love.forte.simbot.qguild.model.Message.Reference?;kotlin.String?;kotlin.String?;kotlin.String?;love.forte.simbot.qguild.model.Message.Markdown?){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.api.message/MessageSendApi.Body> // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Companion.serializer|serializer(){}[0]
             final inline fun invoke(kotlin/Function1<love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder, kotlin/Unit>): love.forte.simbot.qguild.api.message/MessageSendApi.Body // love.forte.simbot.qguild.api.message/MessageSendApi.Body.Companion.invoke|invoke(kotlin.Function1<love.forte.simbot.qguild.api.message.MessageSendApi.Body.Builder,kotlin.Unit>){}[0]
         }
@@ -9126,6 +9136,10 @@ sealed class love.forte.simbot.qguild.api.message/ArkMessageTemplates { // love.
             final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc.equals|equals(kotlin.Any?){}[0]
             final fun hashCode(): kotlin/Int // love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc.hashCode|hashCode(){}[0]
             final fun toString(): kotlin/String // love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc.toString|toString(){}[0]
+
+            final object Companion { // love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc.Companion|null[0]
+                final fun of(kotlin/String, kotlin/String? = ...): love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc // love.forte.simbot.qguild.api.message/ArkMessageTemplates.TextLinkList.Desc.Companion.of|of(kotlin.String;kotlin.String?){}[0]
+            }
         }
     }
 

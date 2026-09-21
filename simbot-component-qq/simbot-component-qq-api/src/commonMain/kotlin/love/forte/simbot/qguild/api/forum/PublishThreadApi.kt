@@ -30,6 +30,7 @@ import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.SimplePutApiDescription
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmStatic
 
 /**
@@ -180,7 +181,37 @@ public enum class ThreadPublishFormat(public val value: Int) {
  */
 @ApiModel
 @Serializable
-public data class ThreadPublishResult @ApiModelConstructor constructor(
-    @SerialName("task_id") val taskId: String,
-    @SerialName("create_time") val createTime: String
-)
+public class ThreadPublishResult @ApiModelConstructor public constructor(
+    @SerialName("task_id") public val taskId: String,
+    @SerialName("create_time") public val createTime: String
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ThreadPublishResult) return false
+        if (taskId != other.taskId) return false
+        if (createTime != other.createTime) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = taskId.hashCode()
+        result = 31 * result + createTime.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "ThreadPublishResult(taskId=$taskId, createTime=$createTime)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("taskId"))
+    public operator fun component1(): String = taskId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("createTime"))
+    public operator fun component2(): String = createTime
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        taskId: String = this.taskId,
+        createTime: String = this.createTime,
+    ): ThreadPublishResult = ThreadPublishResult(taskId, createTime)
+}
