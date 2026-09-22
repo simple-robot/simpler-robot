@@ -26,6 +26,8 @@ package love.forte.simbot.qguild.api
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 
 
 /**
@@ -77,7 +79,24 @@ public sealed class GatewayInfo {
  */
 @SerialName("n")
 @Serializable
-public data class Gateway(override val url: String) : GatewayInfo()
+public class Gateway @ApiModelConstructor public constructor(override val url: String) : GatewayInfo() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Gateway) return false
+        if (url != other.url) return false
+        return true
+    }
+
+    override fun hashCode(): Int = url.hashCode()
+    override fun toString(): String = "Gateway(url=$url)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("url"))
+    public operator fun component1(): String = url
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(url: String = this.url): Gateway = Gateway(url)
+}
 
 
 /**
@@ -88,36 +107,107 @@ public data class Gateway(override val url: String) : GatewayInfo()
  */
 @SerialName("s")
 @Serializable
-public data class GatewayWithShard(
+public class GatewayWithShard @ApiModelConstructor public constructor(
     override val url: String,
     public val shards: Int,
     @SerialName("session_start_limit")
     public val sessionStartLimit: SessionStartLimit
-) : GatewayInfo()
+) : GatewayInfo() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GatewayWithShard) return false
+        if (url != other.url) return false
+        if (shards != other.shards) return false
+        if (sessionStartLimit != other.sessionStartLimit) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = url.hashCode()
+        result = 31 * result + shards
+        result = 31 * result + sessionStartLimit.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "GatewayWithShard(url=$url, shards=$shards, sessionStartLimit=$sessionStartLimit)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("url"))
+    public operator fun component1(): String = url
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("shards"))
+    public operator fun component2(): Int = shards
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("sessionStartLimit"))
+    public operator fun component3(): SessionStartLimit = sessionStartLimit
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        url: String = this.url,
+        shards: Int = this.shards,
+        sessionStartLimit: SessionStartLimit = this.sessionStartLimit,
+    ): GatewayWithShard = GatewayWithShard(url, shards, sessionStartLimit)
+}
 
 
 /**
  *
  * [参考文档](https://bot.q.qq.com/wiki/develop/api/openapi/wss/shard_url_get.html#sessionstartlimit)
+ *
+ * @property total 每 24 小时可创建 Session 数
+ * @property remaining 目前还可以创建的 Session 数
+ * @property resetAfter 重置计数的剩余时间(ms)
+ * @property maxConcurrency 每 5s 可以创建的 Session 数
  */
 @Serializable
-public data class SessionStartLimit(
-    /**
-     * 每 24 小时可创建 Session 数
-     */
+public class SessionStartLimit @ApiModelConstructor public constructor(
     public val total: Int,
-    /**
-     * 目前还可以创建的 Session 数
-     */
     public val remaining: Int,
-    /**
-     * 重置计数的剩余时间(ms)
-     */
     @SerialName("reset_after")
     public val resetAfter: Int,
-    /**
-     * 每 5s 可以创建的 Session 数
-     */
     @SerialName("max_concurrency")
     public val maxConcurrency: Int,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SessionStartLimit) return false
+        if (total != other.total) return false
+        if (remaining != other.remaining) return false
+        if (resetAfter != other.resetAfter) return false
+        if (maxConcurrency != other.maxConcurrency) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = total
+        result = 31 * result + remaining
+        result = 31 * result + resetAfter
+        result = 31 * result + maxConcurrency
+        return result
+    }
+
+    override fun toString(): String =
+        "SessionStartLimit(total=$total, remaining=$remaining, resetAfter=$resetAfter, maxConcurrency=$maxConcurrency)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("total"))
+    public operator fun component1(): Int = total
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("remaining"))
+    public operator fun component2(): Int = remaining
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("resetAfter"))
+    public operator fun component3(): Int = resetAfter
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("maxConcurrency"))
+    public operator fun component4(): Int = maxConcurrency
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        total: Int = this.total,
+        remaining: Int = this.remaining,
+        resetAfter: Int = this.resetAfter,
+        maxConcurrency: Int = this.maxConcurrency,
+    ): SessionStartLimit = SessionStartLimit(total, remaining, resetAfter, maxConcurrency)
+}

@@ -25,6 +25,7 @@ package love.forte.simbot.qguild.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.model.Channel
 import love.forte.simbot.qguild.model.ChannelSubType
@@ -98,35 +99,106 @@ public data class ChannelDelete @EventModelConstructor constructor(
  *
  */
 @Serializable
-public data class EventChannel @EventModelConstructor constructor(
+public class EventChannel @EventModelConstructor constructor(
     /**
      * 子频道 id
      */
-    val id: String,
+    public val id: String,
     /**
      * 频道 id
      */
-    @SerialName("guild_id") val guildId: String,
+    @SerialName("guild_id") public val guildId: String,
     /**
      * 子频道名
      */
-    val name: String,
+    public val name: String,
     /**
      * 子频道类型 [ChannelType]
      */
-    val type: ChannelType,
+    public val type: ChannelType,
     /**
      * 子频道子类型 [ChannelSubType]
      */
-    @SerialName("sub_type") val subType: ChannelSubType,
+    @SerialName("sub_type") public val subType: ChannelSubType,
     /**
      * 创建人 id
      */
-    @SerialName("owner_id") val ownerId: String,
+    @SerialName("owner_id") public val ownerId: String,
     /**
      * 操作人
      */
-    @SerialName("op_user_id") val opUserId: String,
-)
+    @SerialName("op_user_id") public val opUserId: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is EventChannel) return false
 
+        if (id != other.id) return false
+        if (guildId != other.guildId) return false
+        if (name != other.name) return false
+        if (type != other.type) return false
+        if (subType != other.subType) return false
+        if (ownerId != other.ownerId) return false
+        if (opUserId != other.opUserId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + guildId.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + subType.hashCode()
+        result = 31 * result + ownerId.hashCode()
+        result = 31 * result + opUserId.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "EventChannel(" +
+            "id='$id', " +
+            "guildId='$guildId', " +
+            "name='$name', " +
+            "type=$type, " +
+            "subType=$subType, " +
+            "ownerId='$ownerId', " +
+            "opUserId='$opUserId')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component1(): String = id
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component2(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
+    public operator fun component3(): String = name
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
+    public operator fun component4(): ChannelType = type
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("subType"))
+    public operator fun component5(): ChannelSubType = subType
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("ownerId"))
+    public operator fun component6(): String = ownerId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("opUserId"))
+    public operator fun component7(): String = opUserId
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        id: String = this.id,
+        guildId: String = this.guildId,
+        name: String = this.name,
+        type: ChannelType = this.type,
+        subType: ChannelSubType = this.subType,
+        ownerId: String = this.ownerId,
+        opUserId: String = this.opUserId,
+    ): EventChannel = EventChannel(id, guildId, name, type, subType, ownerId, opUserId)
+    //endregion
+}
 

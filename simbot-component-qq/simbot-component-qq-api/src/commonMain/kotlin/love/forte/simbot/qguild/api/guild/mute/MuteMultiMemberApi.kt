@@ -31,6 +31,7 @@ import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimplePatchApiDescription
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 import kotlin.time.Duration
@@ -109,4 +110,24 @@ public class MuteMultiMemberApi private constructor(
  */
 @ApiModel
 @Serializable
-public data class MultiMuteResult @ApiModelConstructor constructor(@SerialName("user_ids") val userIds: List<String>)
+public class MultiMuteResult @ApiModelConstructor public constructor(
+    @SerialName("user_ids") public val userIds: List<String>
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MultiMuteResult) return false
+        if (userIds != other.userIds) return false
+        return true
+    }
+
+    override fun hashCode(): Int = userIds.hashCode()
+
+    override fun toString(): String = "MultiMuteResult(userIds=$userIds)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("userIds"))
+    public operator fun component1(): List<String> = userIds
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(userIds: List<String> = this.userIds): MultiMuteResult = MultiMuteResult(userIds)
+}

@@ -26,6 +26,9 @@
 
 package love.forte.simbot.qguild.model
 
+import kotlinx.serialization.Serializable
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 
 /**
  *
@@ -36,7 +39,44 @@ package love.forte.simbot.qguild.model
  *
  * @author ForteScarlet
  */
-public data class Emoji(val id: String, val type: Int)
+@Serializable
+public class Emoji @ApiModelConstructor constructor(
+    public val id: String,
+    public val type: Int,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Emoji) return false
+
+        if (id != other.id) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + type
+        return result
+    }
+
+    override fun toString(): String = "Emoji(id='$id', type=$type)"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component1(): String = id
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("type"))
+    public operator fun component2(): Int = type
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        id: String = this.id,
+        type: Int = this.type,
+    ): Emoji = Emoji(id, type)
+    //endregion
+}
 
 /**
  * [EmojiType](https://bot.q.qq.com/wiki/develop/api/openapi/emoji/model.html#emojitype)

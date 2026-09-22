@@ -30,10 +30,9 @@ import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.utils.toTimestamp
 import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.qguild.api.interaction.InteractionResponseApi
-import love.forte.simbot.qguild.event.InteractionCreate
-import love.forte.simbot.qguild.event.InteractionCreateData
-import love.forte.simbot.qguild.event.InteractionCreateResolvedData
+import love.forte.simbot.qguild.event.*
 import love.forte.simbot.suspendrunner.ST
+import kotlin.jvm.JvmExposeBoxed
 
 /**
  * 互动事件创建（按钮回调）。
@@ -41,7 +40,7 @@ import love.forte.simbot.suspendrunner.ST
  * @see InteractionCreate
  * @since 4.4.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@OptIn(FuzzyEventTypeImplementation::class, ExperimentalStdlibApi::class)
 public abstract class QGInteractionCreateEvent : QGBotEvent<InteractionCreate>() {
     /**
      * 原始的互动事件。
@@ -62,28 +61,58 @@ public abstract class QGInteractionCreateEvent : QGBotEvent<InteractionCreate>()
         get() = sourceEventEntity.data.id.ID
 
     /**
-     * 互动类型。消息按钮: `11`, 自定义菜单: `12`
-     */
-    public val type: Int
-        get() = sourceEventEntity.data.type
-
-    /**
      * 互动事件的数据。
      */
     public val data: InteractionCreateData
         get() = sourceEventEntity.data.data
 
     /**
+     * 互动类型。消息按钮: `11`, 自定义菜单: `12`
+     */
+    @Deprecated("Use interactionType instead.", ReplaceWith("interactionType.value"))
+    public val type: Int
+        get() = sourceEventEntity.data.interactionType.value
+
+    /**
+     * 互动类型。
+     *
+     * @since 5.0
+     */
+    @get:JvmExposeBoxed
+    public val interactionType: InteractionType
+        get() = sourceEventEntity.data.interactionType
+
+    /**
      * 事件发生的场景: `c2c`, `group`, `guild`
      */
+    @Deprecated("Use interactionScene instead.", ReplaceWith("interactionScene?.value"))
     public val scene: String?
-        get() = sourceEventEntity.data.scene
+        get() = sourceEventEntity.data.interactionScene?.value
+
+    /**
+     * 互动事件发生场景
+     *
+     * @since 5.0
+     */
+    @get:JvmExposeBoxed
+    public val interactionScene: InteractionScene?
+        get() = sourceEventEntity.data.interactionScene
 
     /**
      * `0` 频道场景, `1` 群聊场景, `2` 单聊场景
      */
+    @Deprecated("Use interactionChatType instead.", ReplaceWith("interactionChatType.value"))
     public val chatType: Int
-        get() = sourceEventEntity.data.chatType
+        get() = sourceEventEntity.data.interactionChatType.value
+
+    /**
+     * 互动事件的聊天场景
+     *
+     * @since 5.0
+     */
+    @get:JvmExposeBoxed
+    public val interactionChatType: InteractionChatType
+        get() = sourceEventEntity.data.interactionChatType
 
     /**
      * 频道 openid, 仅频道场景提供

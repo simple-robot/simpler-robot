@@ -39,9 +39,13 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(
             "-Xexpect-actual-classes",
-            "-Xconsistent-data-class-copy-visibility"
+            "-Xconsistent-data-class-copy-visibility",
+            // The feature "companion blocks and extensions" is experimental and should be enabled explicitly. This can be done by supplying the compiler argument '-XXLanguage:+CompanionBlocksAndExtensions', but note that no stability guarantees are provided.
+            // "-Xcompanion-blocks-and-extensions",
+            // "-XXLanguage:+CompanionBlocksAndExtensions"
         )
         optIn.add("love.forte.simbot.qguild.QGInternalApi")
+        optIn.add("love.forte.simbot.qguild.common.QGInternalApi")
         optIn.add("love.forte.simbot.qguild.common.ApiModelConstructor")
         optIn.add("love.forte.simbot.qguild.common.EventModelConstructor")
         optIn.add("kotlin.ExperimentalVersionOverloading")

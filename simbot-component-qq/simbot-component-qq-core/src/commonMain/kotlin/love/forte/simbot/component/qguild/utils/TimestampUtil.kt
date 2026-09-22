@@ -31,6 +31,7 @@ import kotlin.time.Instant
 /**
  * Parse iso 8601 datetime string to [Timestamp]
  *
+ * @throws IllegalArgumentException if the text cannot be parsed or the boundaries of [Instant] are exceeded.
  * @see Instant.parse
  */
 public fun String.toTimestamp(): Timestamp = StandardInstantTimestamp(Instant.parse(this))

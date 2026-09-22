@@ -82,13 +82,12 @@ public class DeleteMemberApi private constructor(
 
     /**
      * [DeleteMemberApi] 请求用的参数体，由内部构建并使用。
+     *
+     * @property deleteHistoryMsgDays 删除成员的同时，撤回该成员的消息，可以指定撤回消息的时间范围
      */
     @Serializable
     private data class Body(
         @SerialName("add_blacklist") val addBlacklist: Boolean,
-        /**
-         * 删除成员的同时，撤回该成员的消息，可以指定撤回消息的时间范围
-         */
         @SerialName("delete_history_msg_days") val deleteHistoryMsgDays: Int
     ) {
         init {

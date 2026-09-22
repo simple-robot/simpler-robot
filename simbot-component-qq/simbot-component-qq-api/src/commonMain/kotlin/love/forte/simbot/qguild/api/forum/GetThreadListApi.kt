@@ -31,6 +31,7 @@ import love.forte.simbot.qguild.api.NumberAsBooleanSerializer
 import love.forte.simbot.qguild.api.SimpleGetApiDescription
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.forum.Thread
 import kotlin.jvm.JvmStatic
@@ -65,18 +66,44 @@ public class GetThreadListApi private constructor(channelId: String) : GetQQGuil
 
 /**
  * API [GetThreadListApi] 的响应体。
+ *
+ * @property threads 帖子列表对象（返回值里面的content字段，可参照RichText结构）
+ * @property isFinish 是否拉取完毕(0:否；1:是)
  */
 @ApiModel
 @Serializable
-public data class ThreadListResult @ApiModelConstructor constructor(
-    /**
-     * 帖子列表对象（返回值里面的content字段，可参照RichText结构）
-     */
-    val threads: List<Thread>,
-    /**
-     * 是否拉取完毕(0:否；1:是)
-     */
+public class ThreadListResult @ApiModelConstructor public constructor(
+    public val threads: List<Thread>,
     @SerialName("is_finish")
     @Serializable(with = NumberAsBooleanSerializer::class)
-    val isFinish: Boolean
-) : Iterable<Thread> by threads
+    public val isFinish: Boolean
+) : Iterable<Thread> by threads {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ThreadListResult) return false
+        if (threads != other.threads) return false
+        if (isFinish != other.isFinish) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = threads.hashCode()
+        result = 31 * result + isFinish.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "ThreadListResult(threads=$threads, isFinish=$isFinish)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("threads"))
+    public operator fun component1(): List<Thread> = threads
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("isFinish"))
+    public operator fun component2(): Boolean = isFinish
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        threads: List<Thread> = this.threads,
+        isFinish: Boolean = this.isFinish,
+    ): ThreadListResult = ThreadListResult(threads, isFinish)
+}

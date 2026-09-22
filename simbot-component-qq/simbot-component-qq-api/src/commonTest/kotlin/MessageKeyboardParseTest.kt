@@ -21,7 +21,7 @@
  *
  */
 
-import love.forte.simbot.qguild.model.MessageKeyboard
+import love.forte.simbot.qguild.model.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -79,23 +79,23 @@ class MessageKeyboardParseTest {
             MessageKeyboard.RenderData(
                 label = "立即查看",
                 visitedLabel = "已查看",
-                style = 1
+                buttonStyle = MessageKeyboardStyle.Blue
             ),
             keyboard.renderData
         )
         assertEquals(
             MessageKeyboard.Action(
                 permission = MessageKeyboard.ActionPermission(
-                    type = 0,
+                    permissionType = MessageKeyboardActionPermissionType.SpecifiedUser,
                     specifyUserIds = listOf("1001", "1002"),
                     specifyRoleIds = listOf("2001")
                 ),
                 data = "payload",
                 reply = true,
                 enter = false,
-                anchor = 1,
+                actionAnchor = MessageKeyboardActionAnchor.SelectImage,
                 unsupportTips = "当前客户端暂不支持",
-                type = 1
+                actionType = MessageKeyboardActionType.Callback
             ),
             keyboard.action
         )

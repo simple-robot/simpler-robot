@@ -21,73 +21,158 @@
  *
  */
 
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package love.forte.simbot.qguild.model.forum
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.common.ApiModel
-import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
+import kotlin.jvm.JvmExposeBoxed
+
 
 /**
  *
  * 论坛帖子审核结果事件
  *
- * 参考[forum文档](https://bot.q.qq.com/wiki/develop/api/openapi/forum/model.html#thread)
+ * 参考[forum文档](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/content/forum/model.html#AuditResult)
  *
+ * @property guildId 频道ID
+ * @property channelId 子频道ID
+ * @property authorId 作者ID
+ * @property threadId 主题ID
+ * @property postId 帖子ID
+ * @property replyId 回复ID
+ * @property auditType 审核类型
+ * @property result 审核结果. 0:成功 1:失败
+ * @property errMsg result不为0时错误信息
+ *
+ * @since 5.0
  * @author ForteScarlet
  */
 @ApiModel
 @Serializable
-public data class AuditResult @ApiModelConstructor constructor(
-    /**
-     * 频道ID
-     */
+public class AuditResult internal constructor(
     @SerialName("guild_id")
     override val guildId: String,
-    /**
-     * 子频道ID
-     */
     @SerialName("channel_id")
     override val channelId: String,
-    /**
-     * 作者ID
-     */
     @SerialName("author_id")
     override val authorId: String,
-    /**
-     * 主题ID
-     */
     @SerialName("thread_id")
-    val threadId: String,
-    /**
-     * 帖子ID
-     */
+    public val threadId: String,
     @SerialName("post_id")
-    val postId: String,
-    /**
-     * 回复ID
-     */
+    public val postId: String,
     @SerialName("reply_id")
-    val replyId: String,
-    /**
-     * AuditType审核的类型
-     *
-     * @see AuditTypes
-     *
-     * _uint32_
-     */
-    val type: Int,
-    /**
-     * 审核结果. 0:成功 1:失败
-     * _uint32_
-     */
-    val result: Int,
-    /**
-     * result不为0时错误信息
-     */
+    public val replyId: String,
+    @SerialName("type")
+    @get:JvmExposeBoxed
+    public val auditType: AuditType,
+    public val result: Int,
     @SerialName("err_msg")
-    val errMsg: String,
-) : ForumSourceInfo
+    public val errMsg: String,
+) : ForumSourceInfo {
+    @Deprecated("Use auditType instead.", ReplaceWith("auditType.value"))
+    public val type: Int
+        get() = auditType.value
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AuditResult) return false
+
+        if (guildId != other.guildId) return false
+        if (channelId != other.channelId) return false
+        if (authorId != other.authorId) return false
+        if (threadId != other.threadId) return false
+        if (postId != other.postId) return false
+        if (replyId != other.replyId) return false
+        if (auditType != other.auditType) return false
+        if (result != other.result) return false
+        if (errMsg != other.errMsg) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var hash = guildId.hashCode()
+        hash = 31 * hash + channelId.hashCode()
+        hash = 31 * hash + authorId.hashCode()
+        hash = 31 * hash + threadId.hashCode()
+        hash = 31 * hash + postId.hashCode()
+        hash = 31 * hash + replyId.hashCode()
+        hash = 31 * hash + auditType.hashCode()
+        hash = 31 * hash + result
+        hash = 31 * hash + errMsg.hashCode()
+        return hash
+    }
+
+    override fun toString(): String {
+        return "AuditResult(" +
+            "guildId='$guildId', " +
+            "channelId='$channelId', " +
+            "authorId='$authorId', " +
+            "threadId='$threadId', " +
+            "postId='$postId', " +
+            "replyId='$replyId', " +
+            "type=$auditType, " +
+            "result=$result, " +
+            "errMsg='$errMsg')"
+    }
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("guildId"))
+    public operator fun component1(): String = guildId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channelId"))
+    public operator fun component2(): String = channelId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("authorId"))
+    public operator fun component3(): String = authorId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("threadId"))
+    public operator fun component4(): String = threadId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("postId"))
+    public operator fun component5(): String = postId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("replyId"))
+    public operator fun component6(): String = replyId
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("auditType.value"))
+    public operator fun component7(): Int = auditType.value
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("result"))
+    public operator fun component8(): Int = result
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("errMsg"))
+    public operator fun component9(): String = errMsg
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        guildId: String = this.guildId,
+        channelId: String = this.channelId,
+        authorId: String = this.authorId,
+        threadId: String = this.threadId,
+        postId: String = this.postId,
+        replyId: String = this.replyId,
+        type: Int = this.auditType.value,
+        result: Int = this.result,
+        errMsg: String = this.errMsg,
+    ): AuditResult = AuditResult(
+        guildId = guildId,
+        channelId = channelId,
+        authorId = authorId,
+        threadId = threadId,
+        postId = postId,
+        replyId = replyId,
+        auditType = AuditType.of(type),
+        result = result,
+        errMsg = errMsg,
+    )
+    //endregion
+}
 
 /**
  * 部分审核类型的常量。
@@ -99,15 +184,36 @@ public object AuditTypes {
     /**
      * 帖子
      */
-    public const val PUBLISH_THREAD: Int = 1
+    @Deprecated(
+        "Use AuditType.PUBLISH_THREAD_VALUE instead.",
+        ReplaceWith(
+            "AuditType.PUBLISH_THREAD_VALUE",
+            "love.forte.simbot.qguild.model.forum.AuditType"
+        )
+    )
+    public const val PUBLISH_THREAD: Int = AuditType.PUBLISH_THREAD_VALUE
 
     /**
      * 评论
      */
-    public const val PUBLISH_POST: Int = 2
+    @Deprecated(
+        "Use AuditType.PUBLISH_POST_VALUE instead.",
+        ReplaceWith(
+            "AuditType.PUBLISH_POST_VALUE",
+            "love.forte.simbot.qguild.model.forum.AuditType"
+        )
+    )
+    public const val PUBLISH_POST: Int = AuditType.PUBLISH_POST_VALUE
 
     /**
      * 回复
      */
-    public const val PUBLISH_REPLY: Int = 3
+    @Deprecated(
+        "Use AuditType.PUBLISH_REPLY_VALUE instead.",
+        ReplaceWith(
+            "AuditType.PUBLISH_REPLY_VALUE",
+            "love.forte.simbot.qguild.model.forum.AuditType"
+        )
+    )
+    public const val PUBLISH_REPLY: Int = AuditType.PUBLISH_REPLY_VALUE
 }

@@ -49,8 +49,10 @@ internal class QGPostImpl(
             ?: throw NoSuchElementException("author(id=$authorId)")
 
     override suspend fun thread(): QGThread {
-        val (thread) = try {
-            GetThreadApi.create(source.channelId, source.postInfo.threadId).requestDataBy(bot.source)
+        val thread = try {
+            GetThreadApi.create(source.channelId, source.postInfo.threadId)
+                .requestDataBy(bot.source)
+                .thread
         } catch (apiEx: QQGuildApiException) {
             apiEx.ifNotFoundThenNoSuch {
                 "thread(id=${source.postInfo.threadId}) by post(id=${source.postInfo.postId})"

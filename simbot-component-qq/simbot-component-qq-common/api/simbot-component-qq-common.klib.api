@@ -42,6 +42,13 @@ open annotation class love.forte.simbot.qguild.common/QGInternalApi : kotlin/Ann
     constructor <init>() // love.forte.simbot.qguild.common/QGInternalApi.<init>|<init>(){}[0]
 }
 
+final object love.forte.simbot.qguild.common/DataClassCompatibilities { // love.forte.simbot.qguild.common/DataClassCompatibilities|null[0]
+    final const val DEPRECATED_CONSTRUCTOR_MESSAGE // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE|{}DEPRECATED_CONSTRUCTOR_MESSAGE[0]
+        final fun <get-DEPRECATED_CONSTRUCTOR_MESSAGE>(): kotlin/String // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE.<get-DEPRECATED_CONSTRUCTOR_MESSAGE>|<get-DEPRECATED_CONSTRUCTOR_MESSAGE>(){}[0]
+    final const val DEPRECATED_MESSAGE // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_MESSAGE|{}DEPRECATED_MESSAGE[0]
+        final fun <get-DEPRECATED_MESSAGE>(): kotlin/String // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_MESSAGE.<get-DEPRECATED_MESSAGE>|<get-DEPRECATED_MESSAGE>(){}[0]
+}
+
 final object love.forte.simbot.qguild.common/QQ { // love.forte.simbot.qguild.common/QQ|null[0]
     final const val URL // love.forte.simbot.qguild.common/QQ.URL|{}URL[0]
         final fun <get-URL>(): kotlin/String // love.forte.simbot.qguild.common/QQ.URL.<get-URL>|<get-URL>(){}[0]

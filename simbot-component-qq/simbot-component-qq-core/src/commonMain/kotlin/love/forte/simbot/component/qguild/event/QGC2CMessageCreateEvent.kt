@@ -37,8 +37,10 @@ import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.qguild.event.C2CMessageCreate
+import love.forte.simbot.qguild.event.C2CMessageType
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
+import kotlin.jvm.JvmExposeBoxed
 
 
 /**
@@ -68,7 +70,9 @@ public abstract class QGC2CMessageCreateEvent : QGBaseMessageEvent<C2CMessageCre
      *
      * @since 5.0
      */
-    public val messageType: Int?
+    @OptIn(ExperimentalStdlibApi::class)
+    @get:JvmExposeBoxed
+    public val messageType: C2CMessageType?
         get() = sourceEventEntity.data.messageType
 
     /**

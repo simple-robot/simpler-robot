@@ -28,6 +28,8 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.model.MessageKeyboard
 import love.forte.simbot.qguild.model.MessageKeyboards
 import kotlin.jvm.JvmOverloads
@@ -133,7 +135,36 @@ public class GroupMessageSendApi private constructor(
  * The result of [GroupMessageSendApi]
  */
 @Serializable
-public data class GroupMessageSendResult(
-    val id: String,
-    val timestamp: String,
-)
+public class GroupMessageSendResult @ApiModelConstructor public constructor(
+    public val id: String,
+    public val timestamp: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GroupMessageSendResult) return false
+
+        if (id != other.id) return false
+        if (timestamp != other.timestamp) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int = 31 * id.hashCode() + timestamp.hashCode()
+
+    override fun toString(): String = "GroupMessageSendResult(id=$id, timestamp=$timestamp)"
+
+    //region data-class 兼容
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("id"))
+    public operator fun component1(): String = id
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("timestamp"))
+    public operator fun component2(): String = timestamp
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(
+        id: String = this.id,
+        timestamp: String = this.timestamp,
+    ): GroupMessageSendResult = GroupMessageSendResult(id, timestamp)
+    //endregion
+}

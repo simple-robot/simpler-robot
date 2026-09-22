@@ -28,6 +28,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PatchQQGuildApi
 import love.forte.simbot.qguild.api.SimplePatchApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.common.PrivateDomainOnly
 import love.forte.simbot.qguild.model.PrivateType
 import love.forte.simbot.qguild.model.SimpleChannel
@@ -82,30 +84,73 @@ public class ModifyChannelApi private constructor(
      *
      * 需要修改哪个字段，就传递哪个字段即可。
      *
+     * @property name 子频道名
+     * @property position 排序
+     * @property parentId 分组 id
+     * @property privateType 子频道私密类型 [PrivateType]
+     * @property speakPermission 子频道发言权限 [SpeakPermission]
      */
     @Serializable
-    public data class Body(
-        /**
-         * 子频道名
-         */
-        val name: String? = null,
-        /**
-         * 排序
-         */
-        val position: Int? = null,
-        /**
-         * 分组 id
-         */
-        @SerialName("parent_id") val parentId: String? = null,
-        /**
-         * 子频道私密类型 [PrivateType]
-         */
-        @SerialName("private_type") val privateType: PrivateType? = null,
-        /**
-         * 子频道发言权限 [SpeakPermission]
-         */
-        @SerialName("speak_permission") val speakPermission: SpeakPermission? = null
+    public class Body @ApiModelConstructor public constructor(
+        public val name: String? = null,
+        public val position: Int? = null,
+        @SerialName("parent_id") public val parentId: String? = null,
+        @SerialName("private_type") public val privateType: PrivateType? = null,
+        @SerialName("speak_permission") public val speakPermission: SpeakPermission? = null
     ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+            if (name != other.name) return false
+            if (position != other.position) return false
+            if (parentId != other.parentId) return false
+            if (privateType != other.privateType) return false
+            if (speakPermission != other.speakPermission) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = name.hashCode()
+            result = 31 * result + position.hashCode()
+            result = 31 * result + parentId.hashCode()
+            result = 31 * result + privateType.hashCode()
+            result = 31 * result + speakPermission.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "Body(" +
+                "name=$name, " +
+                "position=$position, " +
+                "parentId=$parentId, " +
+                "privateType=$privateType, " +
+                "speakPermission=$speakPermission)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("name"))
+        public operator fun component1(): String? = name
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("position"))
+        public operator fun component2(): Int? = position
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("parentId"))
+        public operator fun component3(): String? = parentId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("privateType"))
+        public operator fun component4(): PrivateType? = privateType
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("speakPermission"))
+        public operator fun component5(): SpeakPermission? = speakPermission
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            name: String? = this.name,
+            position: Int? = this.position,
+            parentId: String? = this.parentId,
+            privateType: PrivateType? = this.privateType,
+            speakPermission: SpeakPermission? = this.speakPermission,
+        ): Body = Body(name, position, parentId, privateType, speakPermission)
+
         /**
          * [Builder] for [Body]
          */
@@ -167,6 +212,20 @@ public class ModifyChannelApi private constructor(
         }
 
         public companion object {
+            /**
+             * 创建一个 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(
+                name: String? = null,
+                position: Int? = null,
+                parentId: String? = null,
+                privateType: PrivateType? = null,
+                speakPermission: SpeakPermission? = null,
+            ): Body = Body(name, position, parentId, privateType, speakPermission)
+
             /**
              * 创建一个 [Builder].
              */

@@ -29,6 +29,8 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.ApiDescription
 import love.forte.simbot.qguild.api.PostQQGuildApi
 import love.forte.simbot.qguild.api.SimplePostApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import love.forte.simbot.qguild.model.ApiPermissionDemand
 import love.forte.simbot.qguild.model.ApiPermissionDemandIdentify
 import love.forte.simbot.qguild.model.ApiPermissionDemandIdentify.Companion.toIdentify
@@ -70,7 +72,7 @@ public class DemandApiPermissionApi private constructor(
             channelId: String,
             apiIdentify: ApiPermissionDemandIdentify,
             desc: String,
-        ): DemandApiPermissionApi = DemandApiPermissionApi(guildId, Body(channelId, apiIdentify, desc))
+        ): DemandApiPermissionApi = DemandApiPermissionApi(guildId, Body.of(channelId, apiIdentify, desc))
 
         /**
          * 构造 [DemandApiPermissionApi].
@@ -96,20 +98,68 @@ public class DemandApiPermissionApi private constructor(
 
     /**
      * 用于在 [DemandApiPermissionApi] 中进行请求的
+     *
+     * @property channelId 授权链接发送的子频道 id
+     * @property apiIdentify api 权限需求标识对象
+     * @property desc 机器人申请对应的 API 接口权限后可以使用功能的描述
      */
     @Serializable
-    public data class Body(
-        /**
-         * 授权链接发送的子频道 id
-         */
-        @SerialName("channel_id") val channelId: String,
-        /**
-         * api 权限需求标识对象
-         */
-        @SerialName("api_identify") val apiIdentify: ApiPermissionDemandIdentify,
-        /**
-         * 机器人申请对应的 API 接口权限后可以使用功能的描述
-         */
-        val desc: String,
-    )
+    public class Body @ApiModelConstructor public constructor(
+        @SerialName("channel_id") public val channelId: String,
+        @SerialName("api_identify") public val apiIdentify: ApiPermissionDemandIdentify,
+        public val desc: String,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Body) return false
+            if (channelId != other.channelId) return false
+            if (apiIdentify != other.apiIdentify) return false
+            if (desc != other.desc) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = channelId.hashCode()
+            result = 31 * result + apiIdentify.hashCode()
+            result = 31 * result + desc.hashCode()
+            return result
+        }
+
+        override fun toString(): String = "Body(channelId=$channelId, apiIdentify=$apiIdentify, desc=$desc)"
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("channelId"))
+        public operator fun component1(): String = channelId
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("apiIdentify"))
+        public operator fun component2(): ApiPermissionDemandIdentify = apiIdentify
+
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("desc"))
+        public operator fun component3(): String = desc
+
+        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+        public fun copy(
+            channelId: String = this.channelId,
+            apiIdentify: ApiPermissionDemandIdentify = this.apiIdentify,
+            desc: String = this.desc,
+        ): Body = Body(channelId, apiIdentify, desc)
+
+        public companion object {
+            /**
+             * 构造一个 [Body]。
+             *
+             * @since 5.0
+             */
+            @JvmStatic
+            public fun of(
+                channelId: String,
+                apiIdentify: ApiPermissionDemandIdentify,
+                desc: String,
+            ): Body = Body(
+                channelId = channelId,
+                apiIdentify = apiIdentify,
+                desc = desc
+            )
+        }
+    }
 }

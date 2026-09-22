@@ -27,6 +27,8 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.api.PutQQGuildApi
 import love.forte.simbot.qguild.api.QQGuildApiWithoutResult
 import love.forte.simbot.qguild.api.SimplePutApiDescription
+import love.forte.simbot.qguild.common.ApiModelConstructor
+import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmStatic
 
 /**
@@ -80,4 +82,32 @@ public class InteractionResponseApi private constructor(
  * @since 4.4.0
  */
 @Serializable
-public data class InteractionResponseBody(val code: Int)
+public class InteractionResponseBody @ApiModelConstructor public constructor(public val code: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is InteractionResponseBody) return false
+        if (code != other.code) return false
+        return true
+    }
+
+    override fun hashCode(): Int = code
+
+    override fun toString(): String = "InteractionResponseBody(code=$code)"
+
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("code"))
+    public operator fun component1(): Int = code
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
+    public fun copy(code: Int = this.code): InteractionResponseBody = InteractionResponseBody(code)
+
+    public companion object {
+        /**
+         * 创建一个 [InteractionResponseBody]。
+         *
+         * @since 5.0
+         */
+        @JvmStatic
+        public fun of(code: Int): InteractionResponseBody = InteractionResponseBody(code)
+    }
+}

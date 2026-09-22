@@ -31,18 +31,14 @@ import kotlinx.serialization.Serializable
  *
  * [MuteAllApi] 和 [MuteMemberApi] 的请求参数体。
  *
+ * @property muteEndTimestamp 禁言到期时间戳，绝对时间戳，单位：秒（与 mute_seconds 字段同时赋值的话，以该字段为准）
+ * @property muteSeconds 禁言多少秒（两个字段二选一，默认以 mute_end_timestamp 为准）
+ *
  * @author ForteScarlet
  */
 @Serializable
 internal data class MuteBody(
-    /**
-     * 禁言到期时间戳，绝对时间戳，单位：秒（与 mute_seconds 字段同时赋值的话，以该字段为准）
-     */
     @SerialName("mute_end_timestamp") val muteEndTimestamp: String? = null,
-
-    /**
-     * 禁言多少秒（两个字段二选一，默认以 mute_end_timestamp 为准）
-     */
     @SerialName("mute_seconds") val muteSeconds: String? = null
 ) {
     companion object {
