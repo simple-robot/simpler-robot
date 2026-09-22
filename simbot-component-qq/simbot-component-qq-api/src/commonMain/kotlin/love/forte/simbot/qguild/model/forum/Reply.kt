@@ -159,7 +159,12 @@ public class ReplyInfo @ApiModelConstructor constructor(
     }
 
     override fun toString(): String {
-        return "ReplyInfo(threadId='$threadId', postId='$postId', replyId='$replyId', content='$content', dateTime='$dateTime')"
+        return "ReplyInfo(" +
+            "threadId='$threadId', " +
+            "postId='$postId', " +
+            "replyId='$replyId', " +
+            "content='$content', " +
+            "dateTime='$dateTime')"
     }
 
     //region data-class 兼容
