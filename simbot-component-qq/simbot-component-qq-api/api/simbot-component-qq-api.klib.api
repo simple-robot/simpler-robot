@@ -6051,6 +6051,7 @@ final class love.forte.simbot.qguild.model/ApiPermissionDemandIdentify { // love
 
     final object Companion { // love.forte.simbot.qguild.model/ApiPermissionDemandIdentify.Companion|null[0]
         final fun (love.forte.simbot.qguild.api/ApiDescription).toIdentify(): love.forte.simbot.qguild.model/ApiPermissionDemandIdentify // love.forte.simbot.qguild.model/ApiPermissionDemandIdentify.Companion.toIdentify|toIdentify@love.forte.simbot.qguild.api.ApiDescription(){}[0]
+        final fun of(kotlin/String, kotlin/String): love.forte.simbot.qguild.model/ApiPermissionDemandIdentify // love.forte.simbot.qguild.model/ApiPermissionDemandIdentify.Companion.of|of(kotlin.String;kotlin.String){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model/ApiPermissionDemandIdentify> // love.forte.simbot.qguild.model/ApiPermissionDemandIdentify.Companion.serializer|serializer(){}[0]
     }
 }

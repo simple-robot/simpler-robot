@@ -5990,6 +5990,7 @@ public final class love/forte/simbot/qguild/model/ApiPermissionDemandIdentify {
 	public final fun getMethod ()Ljava/lang/String;
 	public final fun getPath ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;
 	public static final fun of (Llove/forte/simbot/qguild/api/ApiDescription;)Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;
 	public fun toString ()Ljava/lang/String;
 }
@@ -6005,6 +6006,7 @@ public final synthetic class love/forte/simbot/qguild/model/ApiPermissionDemandI
 }
 
 public final class love/forte/simbot/qguild/model/ApiPermissionDemandIdentify$Companion {
+	public final fun of (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;
 	public final fun of (Llove/forte/simbot/qguild/api/ApiDescription;)Llove/forte/simbot/qguild/model/ApiPermissionDemandIdentify;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
