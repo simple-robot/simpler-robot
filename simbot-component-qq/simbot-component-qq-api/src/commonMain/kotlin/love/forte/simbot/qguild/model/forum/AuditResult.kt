@@ -28,7 +28,6 @@ package love.forte.simbot.qguild.model.forum
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.common.ApiModel
-import love.forte.simbot.qguild.common.ApiModelConstructor
 import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmExposeBoxed
 
@@ -55,7 +54,6 @@ import kotlin.jvm.JvmExposeBoxed
 @ApiModel
 @Serializable
 public class AuditResult internal constructor(
-    private val m: Int = 0,
     @SerialName("guild_id")
     override val guildId: String,
     @SerialName("channel_id")
@@ -75,34 +73,6 @@ public class AuditResult internal constructor(
     @SerialName("err_msg")
     public val errMsg: String,
 ) : ForumSourceInfo {
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR
-    )
-    @ApiModelConstructor
-    public constructor(
-        guildId: String,
-        channelId: String,
-        authorId: String,
-        threadId: String,
-        postId: String,
-        replyId: String,
-        type: Int,
-        result: Int,
-        errMsg: String,
-    ) : this(
-        m = 0,
-        guildId = guildId,
-        channelId = channelId,
-        authorId = authorId,
-        threadId = threadId,
-        postId = postId,
-        replyId = replyId,
-        auditType = AuditType.of(type),
-        result = result,
-        errMsg = errMsg,
-    )
-
     @Deprecated("Use auditType instead.", ReplaceWith("auditType.value"))
     public val type: Int
         get() = auditType.value

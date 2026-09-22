@@ -42,8 +42,9 @@ import kotlin.jvm.JvmSynthetic
  * 代表当前收到的消息是事件(包含用户的聊天消息及系统的通知消息等)。
  *
  */
-@Serializable(with = EventSerializer::class)
+@Serializable
 public data class Event<out E : EventExtra>(
+// @Serializable(with = EventSerializer::class)
 
     /**
      * 消息通道类型, `GROUP` 为组播消息, `PERSON` 为单播消息, `BROADCAST` 为广播消息

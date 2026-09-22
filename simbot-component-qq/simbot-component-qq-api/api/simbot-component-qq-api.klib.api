@@ -3639,8 +3639,6 @@ final class love.forte.simbot.qguild.event/InteractionCreate : love.forte.simbot
 }
 
 final class love.forte.simbot.qguild.event/InteractionCreateData { // love.forte.simbot.qguild.event/InteractionCreateData|null[0]
-    constructor <init>(kotlin/Int, love.forte.simbot.qguild.event/InteractionCreateResolvedData) // love.forte.simbot.qguild.event/InteractionCreateData.<init>|<init>(kotlin.Int;love.forte.simbot.qguild.event.InteractionCreateResolvedData){}[0]
-
     final val interactionType // love.forte.simbot.qguild.event/InteractionCreateData.interactionType|{}interactionType[0]
         final fun <get-interactionType>(): love.forte.simbot.qguild.event/InteractionType // love.forte.simbot.qguild.event/InteractionCreateData.interactionType.<get-interactionType>|<get-interactionType>(){}[0]
     final val resolved // love.forte.simbot.qguild.event/InteractionCreateData.resolved|{}resolved[0]
@@ -4501,8 +4499,6 @@ final class love.forte.simbot.qguild.model.forum/AtGuildInfo { // love.forte.sim
 }
 
 final class love.forte.simbot.qguild.model.forum/AtInfo { // love.forte.simbot.qguild.model.forum/AtInfo|null[0]
-    constructor <init>(kotlin/Int, kotlin/String, kotlin/String, kotlin/String) // love.forte.simbot.qguild.model.forum/AtInfo.<init>|<init>(kotlin.Int;kotlin.String;kotlin.String;kotlin.String){}[0]
-
     final val atType // love.forte.simbot.qguild.model.forum/AtInfo.atType|{}atType[0]
         final fun <get-atType>(): love.forte.simbot.qguild.model.forum/AtType // love.forte.simbot.qguild.model.forum/AtInfo.atType.<get-atType>|<get-atType>(){}[0]
     final val guildInfo // love.forte.simbot.qguild.model.forum/AtInfo.guildInfo|{}guildInfo[0]
@@ -4599,8 +4595,6 @@ final class love.forte.simbot.qguild.model.forum/AtUserInfo { // love.forte.simb
 }
 
 final class love.forte.simbot.qguild.model.forum/AuditResult : love.forte.simbot.qguild.model.forum/ForumSourceInfo { // love.forte.simbot.qguild.model.forum/AuditResult|null[0]
-    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/Int, kotlin/Int, kotlin/String) // love.forte.simbot.qguild.model.forum/AuditResult.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.Int;kotlin.Int;kotlin.String){}[0]
-
     final val auditType // love.forte.simbot.qguild.model.forum/AuditResult.auditType|{}auditType[0]
         final fun <get-auditType>(): love.forte.simbot.qguild.model.forum/AuditType // love.forte.simbot.qguild.model.forum/AuditResult.auditType.<get-auditType>|<get-auditType>(){}[0]
     final val authorId // love.forte.simbot.qguild.model.forum/AuditResult.authorId|{}authorId[0]
@@ -4680,8 +4674,6 @@ final class love.forte.simbot.qguild.model.forum/ChannelInfo { // love.forte.sim
 }
 
 final class love.forte.simbot.qguild.model.forum/Elem { // love.forte.simbot.qguild.model.forum/Elem|null[0]
-    constructor <init>(love.forte.simbot.qguild.model.forum/TextElem, love.forte.simbot.qguild.model.forum/ImageElem, love.forte.simbot.qguild.model.forum/VideoElem, love.forte.simbot.qguild.model.forum/URLElem, kotlin/Int) // love.forte.simbot.qguild.model.forum/Elem.<init>|<init>(love.forte.simbot.qguild.model.forum.TextElem;love.forte.simbot.qguild.model.forum.ImageElem;love.forte.simbot.qguild.model.forum.VideoElem;love.forte.simbot.qguild.model.forum.URLElem;kotlin.Int){}[0]
-
     final val elemType // love.forte.simbot.qguild.model.forum/Elem.elemType|{}elemType[0]
         final fun <get-elemType>(): love.forte.simbot.qguild.model.forum/ElemType // love.forte.simbot.qguild.model.forum/Elem.elemType.<get-elemType>|<get-elemType>(){}[0]
     final val image // love.forte.simbot.qguild.model.forum/Elem.image|{}image[0]
@@ -4813,8 +4805,6 @@ final class love.forte.simbot.qguild.model.forum/Paragraph { // love.forte.simbo
 }
 
 final class love.forte.simbot.qguild.model.forum/ParagraphProps { // love.forte.simbot.qguild.model.forum/ParagraphProps|null[0]
-    constructor <init>(kotlin/Int) // love.forte.simbot.qguild.model.forum/ParagraphProps.<init>|<init>(kotlin.Int){}[0]
-
     final val alignment // love.forte.simbot.qguild.model.forum/ParagraphProps.alignment|{}alignment[0]
         final fun <get-alignment>(): kotlin/Int // love.forte.simbot.qguild.model.forum/ParagraphProps.alignment.<get-alignment>|<get-alignment>(){}[0]
     final val paragraphAlignment // love.forte.simbot.qguild.model.forum/ParagraphProps.paragraphAlignment|{}paragraphAlignment[0]
@@ -5060,8 +5050,6 @@ final class love.forte.simbot.qguild.model.forum/ReplyInfo { // love.forte.simbo
 }
 
 final class love.forte.simbot.qguild.model.forum/RichObject { // love.forte.simbot.qguild.model.forum/RichObject|null[0]
-    constructor <init>(kotlin/Int, love.forte.simbot.qguild.model.forum/TextInfo, kotlin/String, kotlin/String, kotlin/String, kotlin/String) // love.forte.simbot.qguild.model.forum/RichObject.<init>|<init>(kotlin.Int;love.forte.simbot.qguild.model.forum.TextInfo;kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
-
     final val atInfo // love.forte.simbot.qguild.model.forum/RichObject.atInfo|{}atInfo[0]
         final fun <get-atInfo>(): kotlin/String // love.forte.simbot.qguild.model.forum/RichObject.atInfo.<get-atInfo>|<get-atInfo>(){}[0]
     final val channelInfo // love.forte.simbot.qguild.model.forum/RichObject.channelInfo|{}channelInfo[0]
@@ -5906,10 +5894,8 @@ final class love.forte.simbot.qguild.model.panel/CommandPanelUpdated { // love.f
 }
 
 final class love.forte.simbot.qguild.model/Announces { // love.forte.simbot.qguild.model/Announces|null[0]
-    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/UInt, kotlin.collections/List<love.forte.simbot.qguild.model/RecommendChannel> = ...) // love.forte.simbot.qguild.model/Announces.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.UInt;kotlin.collections.List<love.forte.simbot.qguild.model.RecommendChannel>){}[0]
-
     final val announcesType // love.forte.simbot.qguild.model/Announces.announcesType|{}announcesType[0]
-        final fun <get-announcesType>(): kotlin/UInt // love.forte.simbot.qguild.model/Announces.announcesType.<get-announcesType>|<get-announcesType>(){}[0]
+        final fun <get-announcesType>(): love.forte.simbot.qguild.model/AnnouncesType // love.forte.simbot.qguild.model/Announces.announcesType.<get-announcesType>|<get-announcesType>(){}[0]
     final val announcesTypeIntValue // love.forte.simbot.qguild.model/Announces.announcesTypeIntValue|{}announcesTypeIntValue[0]
         final fun <get-announcesTypeIntValue>(): kotlin/Int // love.forte.simbot.qguild.model/Announces.announcesTypeIntValue.<get-announcesTypeIntValue>|<get-announcesTypeIntValue>(){}[0]
     final val channelId // love.forte.simbot.qguild.model/Announces.channelId|{}channelId[0]
@@ -5920,8 +5906,6 @@ final class love.forte.simbot.qguild.model/Announces { // love.forte.simbot.qgui
         final fun <get-messageId>(): kotlin/String // love.forte.simbot.qguild.model/Announces.messageId.<get-messageId>|<get-messageId>(){}[0]
     final val recommendChannels // love.forte.simbot.qguild.model/Announces.recommendChannels|{}recommendChannels[0]
         final fun <get-recommendChannels>(): kotlin.collections/List<love.forte.simbot.qguild.model/RecommendChannel> // love.forte.simbot.qguild.model/Announces.recommendChannels.<get-recommendChannels>|<get-recommendChannels>(){}[0]
-    final val typeOfAnnounces // love.forte.simbot.qguild.model/Announces.typeOfAnnounces|{}typeOfAnnounces[0]
-        final fun <get-typeOfAnnounces>(): love.forte.simbot.qguild.model/AnnouncesType // love.forte.simbot.qguild.model/Announces.typeOfAnnounces.<get-typeOfAnnounces>|<get-typeOfAnnounces>(){}[0]
 
     final fun component1(): kotlin/String // love.forte.simbot.qguild.model/Announces.component1|component1(){}[0]
     final fun component2(): kotlin/String // love.forte.simbot.qguild.model/Announces.component2|component2(){}[0]
@@ -6713,9 +6697,6 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
     final fun toString(): kotlin/String // love.forte.simbot.qguild.model/MessageKeyboard.toString|toString(){}[0]
 
     final class Action { // love.forte.simbot.qguild.model/MessageKeyboard.Action|null[0]
-        constructor <init>(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/String?, kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ..., kotlin/String) // love.forte.simbot.qguild.model/MessageKeyboard.Action.<init>|<init>(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?;kotlin.String){}[0]
-        constructor <init>(love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission? = ..., kotlin/String?, kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Int? = ..., kotlin/String, kotlin/Int = ...) // love.forte.simbot.qguild.model/MessageKeyboard.Action.<init>|<init>(love.forte.simbot.qguild.model.MessageKeyboard.ActionPermission?;kotlin.String?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Int?;kotlin.String;kotlin.Int){}[0]
-
         final val actionAnchor // love.forte.simbot.qguild.model/MessageKeyboard.Action.actionAnchor|{}actionAnchor[0]
             final fun <get-actionAnchor>(): love.forte.simbot.qguild.model/MessageKeyboardActionAnchor? // love.forte.simbot.qguild.model/MessageKeyboard.Action.actionAnchor.<get-actionAnchor>|<get-actionAnchor>(){}[0]
         final val actionType // love.forte.simbot.qguild.model/MessageKeyboard.Action.actionType|{}actionType[0]
@@ -6762,8 +6743,6 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
     }
 
     final class ActionPermission { // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission|null[0]
-        constructor <init>(kotlin/Int, kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ...) // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.<init>|<init>(kotlin.Int;kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?){}[0]
-
         final val permissionType // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.permissionType|{}permissionType[0]
             final fun <get-permissionType>(): love.forte.simbot.qguild.model/MessageKeyboardActionPermissionType // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.permissionType.<get-permissionType>|<get-permissionType>(){}[0]
         final val specifyRoleIds // love.forte.simbot.qguild.model/MessageKeyboard.ActionPermission.specifyRoleIds|{}specifyRoleIds[0]
@@ -6802,8 +6781,6 @@ final class love.forte.simbot.qguild.model/MessageKeyboard { // love.forte.simbo
     }
 
     final class RenderData { // love.forte.simbot.qguild.model/MessageKeyboard.RenderData|null[0]
-        constructor <init>(kotlin/String, kotlin/String, kotlin/Int) // love.forte.simbot.qguild.model/MessageKeyboard.RenderData.<init>|<init>(kotlin.String;kotlin.String;kotlin.Int){}[0]
-
         final val buttonStyle // love.forte.simbot.qguild.model/MessageKeyboard.RenderData.buttonStyle|{}buttonStyle[0]
             final fun <get-buttonStyle>(): love.forte.simbot.qguild.model/MessageKeyboardStyle // love.forte.simbot.qguild.model/MessageKeyboard.RenderData.buttonStyle.<get-buttonStyle>|<get-buttonStyle>(){}[0]
         final val label // love.forte.simbot.qguild.model/MessageKeyboard.RenderData.label|{}label[0]
@@ -7310,8 +7287,6 @@ final class love.forte.simbot.qguild.model/Role { // love.forte.simbot.qguild.mo
 }
 
 final class love.forte.simbot.qguild.model/Schedule { // love.forte.simbot.qguild.model/Schedule|null[0]
-    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/Long, kotlin/Long, love.forte.simbot.qguild.model/SimpleMember, kotlin/String, kotlin/String) // love.forte.simbot.qguild.model/Schedule.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.Long;kotlin.Long;love.forte.simbot.qguild.model.SimpleMember;kotlin.String;kotlin.String){}[0]
-
     final val creator // love.forte.simbot.qguild.model/Schedule.creator|{}creator[0]
         final fun <get-creator>(): love.forte.simbot.qguild.model/SimpleMember // love.forte.simbot.qguild.model/Schedule.creator.<get-creator>|<get-creator>(){}[0]
     final val description // love.forte.simbot.qguild.model/Schedule.description|{}description[0]

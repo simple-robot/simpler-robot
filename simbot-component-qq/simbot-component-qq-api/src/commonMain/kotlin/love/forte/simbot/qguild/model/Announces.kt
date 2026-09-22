@@ -33,7 +33,6 @@ import love.forte.simbot.qguild.common.ApiModelConstructor
 import love.forte.simbot.qguild.common.DataClassCompatibilities
 import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmInline
-import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -100,50 +99,28 @@ public class Announces internal constructor(
     public val messageId: String,
     @SerialName("announces_type")
     @get:JvmExposeBoxed
-    public val typeOfAnnounces: AnnouncesType,
-    @Deprecated(
-        "Use `typeOfAnnounces` instead.",
-        ReplaceWith("typeOfAnnounces.value.toUInt()")
-    )
-    @get:JvmName("getAnnouncesType")
-    @SerialName("_deprecated_announces_type")
-    public val announcesType: UInt = typeOfAnnounces.value.toUInt(),
+    public val announcesType: AnnouncesType,
     @SerialName("recommend_channels")
     public val recommendChannels: List<RecommendChannel> = emptyList()
 ) {
-    @Deprecated(DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE, level = DeprecationLevel.ERROR)
-    @ApiModelConstructor
-    public constructor(
-        guildId: String,
-        channelId: String,
-        messageId: String,
-        announcesType: UInt,
-        recommendChannels: List<RecommendChannel> = emptyList()
-    ) : this(
-        guildId = guildId,
-        channelId = channelId,
-        messageId = messageId,
-        typeOfAnnounces = AnnouncesType.of(announcesType.toInt()),
-        recommendChannels = recommendChannels,
-    )
 
     /**
-     * 获取 [announcesType] 的结果并从 [Unsigned integer type](https://kotlinlang.org/docs/unsigned-integer-types.html) 转为Java可用的 [Int]
+     * 获取 [announcesType] 的结果并转为 [Int]
      *
      */
     @Api4J
     @Deprecated(
-        "Use `typeOfAnnounces` instead.",
-        ReplaceWith("typeOfAnnounces.value")
+        "Use `announcesType` instead.",
+        ReplaceWith("announcesType.value")
     )
-    public val announcesTypeIntValue: Int get() = typeOfAnnounces.value
+    public val announcesTypeIntValue: Int get() = announcesType.value
 
     override fun toString(): String {
         return "Announces(" +
             "guildId='$guildId', " +
             "channelId='$channelId', " +
             "messageId='$messageId', " +
-            "typeOfAnnounces=$typeOfAnnounces, " +
+            "announcesType=$announcesType, " +
             "recommendChannels=$recommendChannels)"
     }
 
@@ -157,8 +134,8 @@ public class Announces internal constructor(
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("messageId"))
     public operator fun component3(): String = messageId
 
-    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("announcesType"))
-    public operator fun component4(): UInt = typeOfAnnounces.value.toUInt()
+    @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("announcesType.value.toUInt()"))
+    public operator fun component4(): UInt = announcesType.value.toUInt()
 
     @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("recommendChannels"))
     public operator fun component5(): List<RecommendChannel> = recommendChannels
@@ -169,13 +146,13 @@ public class Announces internal constructor(
         guildId: String = this.guildId,
         channelId: String = this.channelId,
         messageId: String = this.messageId,
-        announcesType: UInt = this.typeOfAnnounces.value.toUInt(),
+        announcesType: UInt = this.announcesType.value.toUInt(),
         recommendChannels: List<RecommendChannel> = this.recommendChannels,
     ): Announces = Announces(
         guildId = guildId,
         channelId = channelId,
         messageId = messageId,
-        typeOfAnnounces = AnnouncesType.of(announcesType.toInt()),
+        announcesType = AnnouncesType.of(announcesType.toInt()),
         recommendChannels = recommendChannels
     )
 
@@ -186,7 +163,7 @@ public class Announces internal constructor(
         if (guildId != other.guildId) return false
         if (channelId != other.channelId) return false
         if (messageId != other.messageId) return false
-        if (typeOfAnnounces != other.typeOfAnnounces) return false
+        if (announcesType != other.announcesType) return false
         if (recommendChannels != other.recommendChannels) return false
 
         return true
@@ -196,7 +173,7 @@ public class Announces internal constructor(
         var result = guildId.hashCode()
         result = 31 * result + channelId.hashCode()
         result = 31 * result + messageId.hashCode()
-        result = 31 * result + typeOfAnnounces.hashCode()
+        result = 31 * result + announcesType.hashCode()
         result = 31 * result + recommendChannels.hashCode()
         return result
     }

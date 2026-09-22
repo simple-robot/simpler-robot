@@ -53,7 +53,6 @@ import kotlin.jvm.JvmExposeBoxed
 public class Schedule
 @ApiModelConstructor @JvmExposeBoxed
 internal constructor(
-    private val m: Int = 0,
     public val id: String,
     public val name: String,
     public val description: String,
@@ -64,35 +63,6 @@ internal constructor(
     @get:JvmExposeBoxed
     @SerialName("remind_type") public val scheduleRemindType: ScheduleRemindType,
 ) {
-    /**
-     * 兼容旧版 `String` 类型的构造函数。
-     */
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR,
-    )
-    @ApiModelConstructor
-    public constructor(
-        id: String,
-        name: String,
-        description: String,
-        startTimestamp: Long,
-        endTimestamp: Long,
-        creator: SimpleMember,
-        jumpChannelId: String,
-        remindType: String,
-    ) : this(
-        m = 0,
-        id = id,
-        name = name,
-        description = description,
-        startTimestamp = startTimestamp,
-        endTimestamp = endTimestamp,
-        creator = creator,
-        jumpChannelId = jumpChannelId,
-        scheduleRemindType = ScheduleRemindType.of(remindType),
-    )
-
     @Deprecated("Use scheduleRemindType instead.", ReplaceWith("scheduleRemindType.value"))
     public val remindType: String
         get() = scheduleRemindType.value

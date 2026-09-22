@@ -4345,8 +4345,6 @@ public final class love/forte/simbot/qguild/event/InteractionCreate$Companion {
 
 public final class love/forte/simbot/qguild/event/InteractionCreateData {
 	public static final field Companion Llove/forte/simbot/qguild/event/InteractionCreateData$Companion;
-	public fun <init> (ILlove/forte/simbot/qguild/event/InteractionCreateResolvedData;)V
-	public fun <init> (Llove/forte/simbot/qguild/event/InteractionType;Llove/forte/simbot/qguild/event/InteractionCreateResolvedData;)V
 	public final fun component1 ()I
 	public final fun component2 ()Llove/forte/simbot/qguild/event/InteractionCreateResolvedData;
 	public final fun copy (ILlove/forte/simbot/qguild/event/InteractionCreateResolvedData;)Llove/forte/simbot/qguild/event/InteractionCreateData;
@@ -5833,9 +5831,7 @@ public final class love/forte/simbot/qguild/message/MessageBuildersKt {
 
 public final class love/forte/simbot/qguild/model/Announces {
 	public static final field Companion Llove/forte/simbot/qguild/model/Announces$Companion;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
@@ -5844,14 +5840,13 @@ public final class love/forte/simbot/qguild/model/Announces {
 	public final fun copy-dZZXe8Y (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;)Llove/forte/simbot/qguild/model/Announces;
 	public static synthetic fun copy-dZZXe8Y$default (Llove/forte/simbot/qguild/model/Announces;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ILjava/lang/Object;)Llove/forte/simbot/qguild/model/Announces;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAnnouncesType ()I
+	public final fun getAnnouncesType ()Llove/forte/simbot/qguild/model/AnnouncesType;
+	public final fun getAnnouncesType-3x4IPfY ()I
 	public final fun getAnnouncesTypeIntValue ()I
 	public final fun getChannelId ()Ljava/lang/String;
 	public final fun getGuildId ()Ljava/lang/String;
 	public final fun getMessageId ()Ljava/lang/String;
 	public final fun getRecommendChannels ()Ljava/util/List;
-	public final fun getTypeOfAnnounces ()Llove/forte/simbot/qguild/model/AnnouncesType;
-	public final fun getTypeOfAnnounces-3x4IPfY ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -6705,12 +6700,8 @@ public final synthetic class love/forte/simbot/qguild/model/MessageKeyboard$$ser
 
 public final class love/forte/simbot/qguild/model/MessageKeyboard$Action {
 	public static final field Companion Llove/forte/simbot/qguild/model/MessageKeyboard$Action$Companion;
-	public synthetic fun <init> (ILlove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Llove/forte/simbot/qguild/model/MessageKeyboardActionAnchor;Ljava/lang/String;ILkotlin/jvm/internal/BoxingConstructorMarker;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (ILlove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Llove/forte/simbot/qguild/model/MessageKeyboardActionAnchor;Ljava/lang/String;Llove/forte/simbot/qguild/model/MessageKeyboardActionType;)V
-	public fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;)V
-	public fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;I)V
-	public synthetic fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Llove/forte/simbot/qguild/model/MessageKeyboardActionAnchor;Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Llove/forte/simbot/qguild/model/MessageKeyboardActionAnchor;Ljava/lang/String;Llove/forte/simbot/qguild/model/MessageKeyboardActionType;)V
 	public final fun component1 ()Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/Boolean;
@@ -6752,8 +6743,6 @@ public final class love/forte/simbot/qguild/model/MessageKeyboard$Action$Compani
 
 public final class love/forte/simbot/qguild/model/MessageKeyboard$ActionPermission {
 	public static final field Companion Llove/forte/simbot/qguild/model/MessageKeyboard$ActionPermission$Companion;
-	public synthetic fun <init> (IILjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (ILjava/util/List;Ljava/util/List;)V
 	public synthetic fun <init> (ILjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
@@ -6799,9 +6788,6 @@ public final class love/forte/simbot/qguild/model/MessageKeyboard$Companion {
 
 public final class love/forte/simbot/qguild/model/MessageKeyboard$RenderData {
 	public static final field Companion Llove/forte/simbot/qguild/model/MessageKeyboard$RenderData$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/BoxingConstructorMarker;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (ILjava/lang/String;Ljava/lang/String;Llove/forte/simbot/qguild/model/MessageKeyboardStyle;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()I
@@ -7481,9 +7467,7 @@ public final class love/forte/simbot/qguild/model/Role$Companion {
 
 public final class love/forte/simbot/qguild/model/Schedule {
 	public static final field Companion Llove/forte/simbot/qguild/model/Schedule$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;JJLlove/forte/simbot/qguild/model/SimpleMember;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/BoxingConstructorMarker;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;JJLlove/forte/simbot/qguild/model/SimpleMember;Ljava/lang/String;Llove/forte/simbot/qguild/model/ScheduleRemindType;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JJLlove/forte/simbot/qguild/model/SimpleMember;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JJLlove/forte/simbot/qguild/model/SimpleMember;Ljava/lang/String;Llove/forte/simbot/qguild/model/ScheduleRemindType;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
@@ -7916,7 +7900,6 @@ public final class love/forte/simbot/qguild/model/forum/AtGuildInfo$Companion {
 
 public final class love/forte/simbot/qguild/model/forum/AtInfo {
 	public static final field Companion Llove/forte/simbot/qguild/model/forum/AtInfo$Companion;
-	public fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun <init> (Llove/forte/simbot/qguild/model/forum/AtType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/lang/String;
@@ -8063,8 +8046,6 @@ public final class love/forte/simbot/qguild/model/forum/AtUserInfo$Companion {
 
 public final class love/forte/simbot/qguild/model/forum/AuditResult : love/forte/simbot/qguild/model/forum/ForumSourceInfo {
 	public static final field Companion Llove/forte/simbot/qguild/model/forum/AuditResult$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
@@ -8190,7 +8171,6 @@ public final class love/forte/simbot/qguild/model/forum/ChannelInfo$Companion {
 
 public final class love/forte/simbot/qguild/model/forum/Elem {
 	public static final field Companion Llove/forte/simbot/qguild/model/forum/Elem$Companion;
-	public fun <init> (Llove/forte/simbot/qguild/model/forum/TextElem;Llove/forte/simbot/qguild/model/forum/ImageElem;Llove/forte/simbot/qguild/model/forum/VideoElem;Llove/forte/simbot/qguild/model/forum/URLElem;I)V
 	public fun <init> (Llove/forte/simbot/qguild/model/forum/TextElem;Llove/forte/simbot/qguild/model/forum/ImageElem;Llove/forte/simbot/qguild/model/forum/VideoElem;Llove/forte/simbot/qguild/model/forum/URLElem;Llove/forte/simbot/qguild/model/forum/ElemType;)V
 	public final fun component1 ()Llove/forte/simbot/qguild/model/forum/TextElem;
 	public final fun component2 ()Llove/forte/simbot/qguild/model/forum/ImageElem;
@@ -8381,7 +8361,6 @@ public final class love/forte/simbot/qguild/model/forum/Paragraph$Companion {
 
 public final class love/forte/simbot/qguild/model/forum/ParagraphProps {
 	public static final field Companion Llove/forte/simbot/qguild/model/forum/ParagraphProps$Companion;
-	public fun <init> (I)V
 	public fun <init> (Llove/forte/simbot/qguild/model/forum/Alignment;)V
 	public final fun component1 ()I
 	public final fun copy (I)Llove/forte/simbot/qguild/model/forum/ParagraphProps;
@@ -8608,8 +8587,6 @@ public final class love/forte/simbot/qguild/model/forum/ReplyInfo$Companion {
 
 public final class love/forte/simbot/qguild/model/forum/RichObject {
 	public static final field Companion Llove/forte/simbot/qguild/model/forum/RichObject$Companion;
-	public synthetic fun <init> (IILlove/forte/simbot/qguild/model/forum/TextInfo;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (ILlove/forte/simbot/qguild/model/forum/TextInfo;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()I
 	public final fun component2 ()Llove/forte/simbot/qguild/model/forum/TextInfo;
 	public final fun component3 ()Ljava/lang/String;

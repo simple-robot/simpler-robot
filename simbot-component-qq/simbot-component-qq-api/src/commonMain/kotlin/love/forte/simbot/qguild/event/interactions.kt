@@ -618,21 +618,12 @@ public class InteractionCreateEventData internal constructor(
  * @since 4.4.0
  */
 @Serializable
-public class InteractionCreateData @JvmExposeBoxed internal constructor(
+public class InteractionCreateData internal constructor(
     @SerialName("type")
     @get:JvmExposeBoxed
     public val interactionType: InteractionType,
     public val resolved: InteractionCreateResolvedData,
 ) {
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR
-    )
-    @EventModelConstructor
-    public constructor(
-        type: Int,
-        resolved: InteractionCreateResolvedData,
-    ) : this(InteractionType.of(type), resolved)
 
     @Deprecated("Use interactionType instead.", ReplaceWith("interactionType.value"))
     public val type: Int
@@ -670,7 +661,10 @@ public class InteractionCreateData @JvmExposeBoxed internal constructor(
     public fun copy(
         type: Int = this.interactionType.value,
         resolved: InteractionCreateResolvedData = this.resolved,
-    ): InteractionCreateData = InteractionCreateData(InteractionType.of(type), resolved)
+    ): InteractionCreateData = InteractionCreateData(
+        interactionType = InteractionType.of(type),
+        resolved = resolved
+    )
     //endregion
 }
 

@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.4.20"
+kotlin = "2.4.0"
 dokka = "2.1.0"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
@@ -23,7 +23,7 @@ kotlinPoet = "2.1.0"
 reactor = "3.8.6"
 # simbots
 # https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin
-suspendTransform = "2.4.20-0.15.0"
+suspendTransform = "2.4.0-0.14.0"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.14.7"

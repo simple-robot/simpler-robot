@@ -48,7 +48,6 @@ import kotlin.jvm.JvmExposeBoxed
 @ApiModel
 @Serializable
 public class RichObject @ApiModelConstructor internal constructor(
-    private val m: Int = 0,
     @SerialName("type")
     @get:JvmExposeBoxed
     public val richType: RichType,
@@ -63,30 +62,6 @@ public class RichObject @ApiModelConstructor internal constructor(
     @SerialName("channel_info")
     public val channelInfo: String,
 ) {
-    /**
-     * 兼容旧版 `Int` 类型的构造函数。
-     */
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR,
-    )
-    @ApiModelConstructor
-    public constructor(
-        type: Int,
-        textInfo: TextInfo,
-        atInfo: String,
-        urlInfo: String,
-        emojiInfo: String,
-        channelInfo: String,
-    ) : this(
-        m = 0,
-        richType = RichType.of(type),
-        textInfo = textInfo,
-        atInfo = atInfo,
-        urlInfo = urlInfo,
-        emojiInfo = emojiInfo,
-        channelInfo = channelInfo,
-    )
 
     @Deprecated("Use richType instead.", ReplaceWith("richType.value"))
     public val type: Int
@@ -278,26 +253,6 @@ internal constructor(
     @SerialName("guild_info")
     public val guildInfo: String,
 ) {
-    /**
-     * 兼容旧版 `Int` 类型的构造函数。
-     */
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR,
-    )
-    @ApiModelConstructor
-    public constructor(
-        type: Int,
-        userInfo: String,
-        roleInfo: String,
-        guildInfo: String,
-    ) : this(
-        atType = AtType.of(type),
-        userInfo = userInfo,
-        roleInfo = roleInfo,
-        guildInfo = guildInfo,
-    )
-
     @Deprecated("Use atType instead.", ReplaceWith("atType.value"))
     public val type: Int
         get() = atType.value
@@ -816,28 +771,6 @@ internal constructor(
     @get:JvmExposeBoxed
     public val elemType: ElemType,
 ) {
-    /**
-     * 兼容旧版 `Int` 类型的构造函数。
-     */
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR,
-    )
-    @ApiModelConstructor
-    public constructor(
-        text: TextElem,
-        image: ImageElem,
-        video: VideoElem,
-        url: URLElem,
-        type: Int,
-    ) : this(
-        text = text,
-        image = image,
-        video = video,
-        url = url,
-        elemType = ElemType.of(type),
-    )
-
     @Deprecated("Use elemType instead.", ReplaceWith("elemType.value"))
     public val type: Int
         get() = elemType.value
@@ -1352,16 +1285,6 @@ internal constructor(
     @get:JvmExposeBoxed
     public val paragraphAlignment: Alignment,
 ) {
-    /**
-     * 兼容旧版 `Int` 类型的构造函数。
-     */
-    @Deprecated(
-        DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
-        level = DeprecationLevel.ERROR,
-    )
-    @ApiModelConstructor
-    public constructor(alignment: Int) : this(Alignment.of(alignment))
-
     @Deprecated("Use paragraphAlignment instead.", ReplaceWith("paragraphAlignment.value"))
     public val alignment: Int
         get() = paragraphAlignment.value
