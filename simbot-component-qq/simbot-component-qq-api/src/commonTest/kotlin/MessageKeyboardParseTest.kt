@@ -79,23 +79,23 @@ class MessageKeyboardParseTest {
             MessageKeyboard.RenderData(
                 label = "立即查看",
                 visitedLabel = "已查看",
-                style = MessageKeyboardStyle.Blue
+                buttonStyle = MessageKeyboardStyle.Blue
             ),
             keyboard.renderData
         )
         assertEquals(
             MessageKeyboard.Action(
                 permission = MessageKeyboard.ActionPermission(
-                    type = MessageKeyboardActionPermissionType.SpecifiedUser,
+                    permissionType = MessageKeyboardActionPermissionType.SpecifiedUser,
                     specifyUserIds = listOf("1001", "1002"),
                     specifyRoleIds = listOf("2001")
                 ),
                 data = "payload",
                 reply = true,
                 enter = false,
-                anchor = MessageKeyboardActionAnchor.SelectImage,
+                actionAnchor = MessageKeyboardActionAnchor.SelectImage,
                 unsupportTips = "当前客户端暂不支持",
-                type = MessageKeyboardActionType.Callback
+                actionType = MessageKeyboardActionType.Callback
             ),
             keyboard.action
         )

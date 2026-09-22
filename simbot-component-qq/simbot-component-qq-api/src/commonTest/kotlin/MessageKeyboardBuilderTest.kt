@@ -56,22 +56,22 @@ class MessageKeyboardBuilderTest {
             MessageKeyboard.RenderData(
                 label = "立即查看",
                 visitedLabel = "已查看",
-                style = MessageKeyboardStyle.Blue
+                buttonStyle = MessageKeyboardStyle.Blue
             ),
             keyboard.renderData
         )
         assertEquals(
             MessageKeyboard.Action(
                 permission = MessageKeyboard.ActionPermission(
-                    type = MessageKeyboardActionPermissionType.SpecifiedUser,
+                    permissionType = MessageKeyboardActionPermissionType.SpecifiedUser,
                     specifyUserIds = listOf("1001", "1002", "1003")
                 ),
                 data = "payload",
                 reply = true,
                 enter = false,
-                anchor = MessageKeyboardActionAnchor.SelectImage,
+                actionAnchor = MessageKeyboardActionAnchor.SelectImage,
                 unsupportTips = "当前客户端暂不支持",
-                type = MessageKeyboardActionType.Callback
+                actionType = MessageKeyboardActionType.Callback
             ),
             keyboard.action
         )
@@ -85,7 +85,7 @@ class MessageKeyboardBuilderTest {
                 data = "command",
                 unsupportTips = "unsupport",
                 permission = MessageKeyboard.ActionPermission(
-                    type = MessageKeyboardActionPermissionType.AllAccessible,
+                    permissionType = MessageKeyboardActionPermissionType.AllAccessible,
                 )
             )
             .build()
@@ -109,12 +109,12 @@ class MessageKeyboardBuilderTest {
         assertEquals("template-id", copied.id)
         assertEquals("按钮", copied.renderData?.label)
         assertEquals("已点击", copied.renderData?.visitedLabel)
-        assertEquals(1, copied.renderData?.style?.value)
+        assertEquals(1, copied.renderData?.buttonStyle?.value)
         assertEquals("command", copied.action?.data)
         assertEquals("unsupport", copied.action?.unsupportTips)
-        assertEquals(2, copied.action?.type?.value)
+        assertEquals(2, copied.action?.actionType?.value)
         assertEquals(
-            MessageKeyboard.ActionPermission(type = MessageKeyboardActionPermissionType.AllAccessible),
+            MessageKeyboard.ActionPermission(permissionType = MessageKeyboardActionPermissionType.AllAccessible),
             copied.action?.permission
         )
     }
