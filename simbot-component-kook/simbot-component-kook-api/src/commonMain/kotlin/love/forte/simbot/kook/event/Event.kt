@@ -42,7 +42,7 @@ import kotlin.jvm.JvmSynthetic
  * 代表当前收到的消息是事件(包含用户的聊天消息及系统的通知消息等)。
  *
  */
-@Serializable
+@Serializable(with = EventSerializer::class)
 public data class Event<out E : EventExtra>(
 
     /**

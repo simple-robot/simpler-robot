@@ -759,23 +759,7 @@ final class <#A: out love.forte.simbot.kook.event/EventExtra> love.forte.simbot.
         final fun values(): kotlin/Array<love.forte.simbot.kook.event/Event.Type> // love.forte.simbot.kook.event/Event.Type.values|values#static(){}[0]
     }
 
-    final class <#A1: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.event/Event<#A1>> { // love.forte.simbot.kook.event/Event.$serializer|null[0]
-        constructor <init>(kotlinx.serialization/KSerializer<#A1>) // love.forte.simbot.kook.event/Event.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
-
-        final val descriptor // love.forte.simbot.kook.event/Event.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.kook.event/Event.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
-        final val typeSerial0 // love.forte.simbot.kook.event/Event.$serializer.typeSerial0|{}typeSerial0[0]
-
-        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.kook.event/Event.$serializer.childSerializers|childSerializers(){}[0]
-        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.kook.event/Event<#A1> // love.forte.simbot.kook.event/Event.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
-        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.kook.event/Event<#A1>) // love.forte.simbot.kook.event/Event.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.kook.event.Event<1:0>){}[0]
-        final fun typeParametersSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.kook.event/Event.$serializer.typeParametersSerializers|typeParametersSerializers(){}[0]
-    }
-
     final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.kook.event/Event.Companion|null[0]
-        final val $cachedDescriptor // love.forte.simbot.kook.event/Event.Companion.$cachedDescriptor|{}$cachedDescriptor[0]
-            final fun <get-$cachedDescriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.kook.event/Event.Companion.$cachedDescriptor.<get-$cachedDescriptor>|<get-$cachedDescriptor>(){}[0]
-
         final fun <#A2: kotlin/Any?> serializer(kotlinx.serialization/KSerializer<#A2>): kotlinx.serialization/KSerializer<love.forte.simbot.kook.event/Event<#A2>> // love.forte.simbot.kook.event/Event.Companion.serializer|serializer(kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
         final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.kook.event/Event.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
     }

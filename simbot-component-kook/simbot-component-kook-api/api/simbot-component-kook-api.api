@@ -3610,17 +3610,6 @@ public final class love/forte/simbot/kook/event/Event {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final synthetic class love/forte/simbot/kook/event/Event$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public fun <init> (Lkotlinx/serialization/KSerializer;)V
-	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/kook/event/Event;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/kook/event/Event;)V
-	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
 public final class love/forte/simbot/kook/event/Event$ChannelType : java/lang/Enum {
 	public static final field BROADCAST Llove/forte/simbot/kook/event/Event$ChannelType;
 	public static final field GROUP Llove/forte/simbot/kook/event/Event$ChannelType;
