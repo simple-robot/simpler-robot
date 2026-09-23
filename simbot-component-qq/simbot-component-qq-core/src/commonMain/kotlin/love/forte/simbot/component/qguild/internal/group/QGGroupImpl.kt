@@ -29,8 +29,8 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.group.QGGroup
+import love.forte.simbot.component.qguild.group.QGGroupBotMember
 import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
-import love.forte.simbot.component.qguild.group.QGGroupMember
 import love.forte.simbot.component.qguild.group.QGGroupWithInfo
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
@@ -47,6 +47,7 @@ import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageData
+import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
@@ -71,11 +72,13 @@ internal class QGGroupImpl(
 
     override suspend fun groupInfo(): GroupInfo = bot.queryGroupInfo(id)
 
+    override suspend fun botState(): GroupBotState = bot.queryGroupBotState(id)
+
     override suspend fun includeInfo(): QGGroupWithInfo =
         QGGroupWithInfoImpl(this, groupInfo())
 
-    override suspend fun botAsMember(): QGGroupMember =
-        QGBotMemberImpl(bot)
+    override suspend fun botAsMember(): QGGroupBotMember =
+        QGBotMemberImpl(bot, id, botState())
 
     private fun GroupAndC2CSendBody.initMsgIdAndSeq() {
         if (msgId == null && sourceEvent != null) {

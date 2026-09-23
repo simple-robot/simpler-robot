@@ -84,6 +84,7 @@ import love.forte.simbot.qguild.ifNotFoundThenNull
 import love.forte.simbot.qguild.model.ChannelType
 import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SimpleGuild
+import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.qguild.stdlib.DisposableHandle
 import love.forte.simbot.qguild.stdlib.requestDataBy
@@ -166,6 +167,9 @@ internal class QGBotImpl(
 
         override suspend fun groupInfo(groupId: ID): GroupInfo =
             this@QGBotImpl.queryGroupInfo(groupId)
+
+        override suspend fun groupBotState(groupId: ID): GroupBotState =
+            this@QGBotImpl.queryGroupBotState(groupId)
 
         override fun joinRequests(groupId: ID): Collectable<QGGroupJoinRequest> =
             this@QGBotImpl.groupJoinRequests(groupId)

@@ -36,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class QGGroupMemberImpl(
     bot: QGBotImpl,
+    override val groupId: ID,
     override val id: ID,
 ) : QGGroupMember {
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()

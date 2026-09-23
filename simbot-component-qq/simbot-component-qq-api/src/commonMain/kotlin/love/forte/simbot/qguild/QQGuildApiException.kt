@@ -64,7 +64,12 @@ public open class QQGuildApiException : RuntimeException {
         info: ErrInfo?,
         value: Int,
         description: String,
-    ) : this(value = value, description = description, message = "$value: $description; response info: $info")
+    ) : this(
+        info = info,
+        value = value,
+        description = description,
+        message = "$value: $description; response info: $info"
+    )
 
     public constructor(value: Int, description: String, message: String) : super(message) {
         this.info = null

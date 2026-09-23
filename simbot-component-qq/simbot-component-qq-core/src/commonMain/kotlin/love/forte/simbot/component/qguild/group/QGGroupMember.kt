@@ -24,21 +24,31 @@
 package love.forte.simbot.component.qguild.group
 
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.common.time.Timestamp.Companion.toTimestamp
 import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.qguild.model.group.GroupBotState
 import kotlin.jvm.JvmSynthetic
 
 /**
- * 一个通过群相关事件得到的群成员信息。
- * 只能得到它的 openid。
+ * QQ 群内成员的基础信息。
  */
 public interface QGGroupMember : Member {
     /**
-     * 此成员的openid
+     * 此成员在 [groupId] 所属群中的成员 OpenID。
      */
     override val id: ID
+
+    /**
+     * 此成员所属群的 OpenID。
+     *
+     * @since 5.0
+     */
+    public val groupId: ID
 
     /**
      * 无法得知对方的用户名，始终得到空字符串。
@@ -87,6 +97,48 @@ public interface QGGroupMember : Member {
     override suspend fun send(text: String): MessageReceipt {
         sendToMemberIsUnsupported(id)
     }
+}
+
+/**
+ * 机器人在指定 QQ 群内作为成员的表现，包含一次查询得到的 [botState] 信息。
+ *
+ * @since 5.0
+ */
+public interface QGGroupBotMember : QGGroupMember {
+    /**
+     * 机器人在 [groupId] 所属群内的原始状态。
+     */
+    public val botState: GroupBotState
+
+    /**
+     * 机器人在群内作为的成员 OpenID。
+     */
+    override val id: ID
+        get() = botState.memberOpenid.ID
+
+    /**
+     * 机器人在群内的角色。
+     */
+    public val memberRole: QGGroupRole
+        get() = botState.memberRole.toQGGroupRole()
+
+    /**
+     * 机器人加入此群的时间。
+     */
+    public val joinTime: Timestamp
+        get() = botState.joinedAt.toTimestamp()
+
+    /**
+     * 机器人是否接收主动推送。
+     */
+    public val allowProactiveMsg: Boolean
+        get() = botState.allowProactiveMsg
+
+    /**
+     * 机器人的消息接收设置。
+     */
+    public val recvMsgSetting: String
+        get() = botState.recvMsgSetting
 }
 
 /**

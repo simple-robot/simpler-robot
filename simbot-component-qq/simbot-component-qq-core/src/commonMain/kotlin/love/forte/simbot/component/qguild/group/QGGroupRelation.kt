@@ -29,6 +29,7 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
@@ -73,6 +74,15 @@ public interface QGGroupRelation : GroupRelation {
      */
     @ST
     public suspend fun groupInfo(groupId: ID): GroupInfo
+
+    /**
+     * 每次通过 API 查询机器人在 [groupId] 对应 QQ 群内的原始状态快照。
+     * 查询失败时透传平台或网络异常，不缓存查询结果。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun groupBotState(groupId: ID): GroupBotState
 
     /**
      * 拉取 [groupId] 对应群的入群申请列表的收集器。返回冷集合，收集时按平台游标分页请求并翻页。

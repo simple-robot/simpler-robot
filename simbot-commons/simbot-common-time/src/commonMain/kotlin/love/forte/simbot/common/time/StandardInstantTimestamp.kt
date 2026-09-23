@@ -35,6 +35,13 @@ public class StandardInstantTimestamp(private val instant: Instant) : Timestamp 
     override val milliseconds: Long
         get() = instant.toEpochMilliseconds()
 
+    override fun compareTo(other: Timestamp): Int {
+        if (other is StandardInstantTimestamp) {
+            return instant.compareTo(other.instant)
+        }
+        return super.compareTo(other)
+    }
+
     /**
      * 直接获取当前对象内包装的 [Instant] 对象实例，不会产生额外的对象创建开销。
      *

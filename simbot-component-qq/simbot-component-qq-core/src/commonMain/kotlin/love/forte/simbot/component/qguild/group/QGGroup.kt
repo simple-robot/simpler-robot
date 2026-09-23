@@ -34,6 +34,8 @@ import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Role
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
+import love.forte.simbot.qguild.event.GroupMessageAuthorRole
+import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.suspendrunner.ST
@@ -52,8 +54,14 @@ public interface QGGroup : ChatGroup {
      */
     override val id: ID
 
+    /**
+     * 查询机器人在本群中的状态，并作为成员对象返回。
+     * 成员 [QGGroupMember.id] 使用群成员 OpenID，而不是 Bot 的 AppID。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException 可能在 API 调用过程中产生的异常
+     */
     @STP
-    override suspend fun botAsMember(): QGGroupMember
+    override suspend fun botAsMember(): QGGroupBotMember
 
     /**
      * 群名称。
@@ -101,10 +109,7 @@ public interface QGGroup : ChatGroup {
      * @see QGBot.uploadGroupMedia
      */
     @ST
-    public suspend fun uploadMedia(
-        url: String,
-        type: Int,
-    ): QGMedia
+    public suspend fun uploadMedia(url: String, type: Int): QGMedia
 
     /**
      * 上传一个资源为用于向QQ群发送的 [QGMedia], 可用于后续的发送。
@@ -122,10 +127,7 @@ public interface QGGroup : ChatGroup {
      */
     @ST
     @ExperimentalQGMediaApi
-    public suspend fun uploadMedia(
-        resource: Resource,
-        type: Int,
-    ): QGMedia
+    public suspend fun uploadMedia(resource: Resource, type: Int): QGMedia
 
 
     /**
@@ -136,7 +138,7 @@ public interface QGGroup : ChatGroup {
     public val joinRequests: Collectable<QGGroupJoinRequest>
 
     /**
-     * 每次通过 API 查询当前 QQ 群的基本信息，返回本次查询的快照结果。
+     * 通过 API 查询当前 QQ 群的基本信息，返回本次查询的快照结果。
      *
      * @since 5.0
      */
@@ -144,9 +146,18 @@ public interface QGGroup : ChatGroup {
     public suspend fun groupInfo(): GroupInfo
 
     /**
-     * 每次查询群基本信息并返回带有本次快照的 [QGGroupWithInfo]。
-     * 原对象不变；返回对象保留原对象的发送行为和事件回复上下文。
+     * 通过 API 查询机器人在当前 QQ 群内的原始状态快照。
+     * 查询失败时透传平台或网络异常，不缓存查询结果。
      *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun botState(): GroupBotState
+
+    /**
+     * 通过 API 查询群基本信息并基于此得到存在更详细信息的 [QGGroupWithInfo]。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
      * @throws IllegalStateException 如果响应中的群 OpenID 与当前群 ID 不一致
      *
      * @since 5.0
@@ -155,8 +166,12 @@ public interface QGGroup : ChatGroup {
     public suspend fun includeInfo(): QGGroupWithInfo
 
     /**
-     * 如果当前对象已经是 [QGGroupWithInfo]，返回其中已有的快照；否则调用 [groupInfo] 查询。
-     * 普通群对象不缓存查询结果，多次调用会多次请求。
+     * 如果当前对象已经是 [QGGroupWithInfo]，返回其已有的 [GroupInfo]；
+     * 否则调用 [groupInfo] 查询。
+     *
+     * API 调用本身不会存在缓存，多次调用会多次请求。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
      *
      * @since 5.0
      */
@@ -166,7 +181,10 @@ public interface QGGroup : ChatGroup {
 
     /**
      * 如果当前对象已经是 [QGGroupWithInfo]，返回自身；否则调用 [includeInfo] 查询。
-     * 普通群对象不缓存查询结果，多次调用会多次请求。
+     *
+     * API 调用本身不会存在缓存，多次调用会多次请求。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
      *
      * @since 5.0
      */
@@ -230,4 +248,15 @@ public enum class QGGroupRole(override val isAdmin: Boolean) : Role {
 
     override val id: ID
         get() = name.ID
+}
+
+/**
+ * 将平台的群角色统一映射为 core 的群角色。
+ *
+ * 普通消息作者与机器人群内状态共用这一映射。
+ */
+internal fun GroupMessageAuthorRole.toQGGroupRole(): QGGroupRole = when (this) {
+    GroupMessageAuthorRole.OWNER -> QGGroupRole.OWNER
+    GroupMessageAuthorRole.ADMIN -> QGGroupRole.ADMIN
+    GroupMessageAuthorRole.MEMBER -> QGGroupRole.MEMBER
 }

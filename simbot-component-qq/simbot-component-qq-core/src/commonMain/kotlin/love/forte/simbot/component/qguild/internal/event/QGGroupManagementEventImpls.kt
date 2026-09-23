@@ -41,8 +41,8 @@ private fun QGBotImpl.group(groupOpenid: String): QGGroup =
         isFake = false
     )
 
-private fun QGBotImpl.groupMember(memberOpenid: String): QGGroupMember =
-    QGGroupMemberImpl(this, memberOpenid.ID)
+private fun QGBotImpl.groupMember(groupOpenid: String, memberOpenid: String): QGGroupMember =
+    QGGroupMemberImpl(this, groupOpenid.ID, memberOpenid.ID)
 
 internal class QGGroupAddRobotEventImpl(
     private val idValue: String?,
@@ -58,7 +58,7 @@ internal class QGGroupAddRobotEventImpl(
     }
 
     override suspend fun operator(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.opMemberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.opMemberOpenid)
     }
 }
 
@@ -76,7 +76,7 @@ internal class QGGroupDelRobotEventImpl(
     }
 
     override suspend fun operator(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.opMemberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.opMemberOpenid)
     }
 }
 
@@ -94,7 +94,7 @@ internal class QGGroupMsgRejectEventImpl(
     }
 
     override suspend fun operator(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.opMemberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.opMemberOpenid)
     }
 }
 
@@ -112,7 +112,7 @@ internal class QGGroupMsgReceiveEventImpl(
     }
 
     override suspend fun operator(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.opMemberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.opMemberOpenid)
     }
 }
 
@@ -130,7 +130,7 @@ internal class QGGroupMemberAddEventImpl(
     }
 
     override suspend fun member(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.memberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.memberOpenid)
     }
 }
 
@@ -148,6 +148,6 @@ internal class QGGroupMemberRemoveEventImpl(
     }
 
     override suspend fun member(): QGGroupMember {
-        return bot.groupMember(sourceEventEntity.memberOpenid)
+        return bot.groupMember(sourceEventEntity.groupOpenid, sourceEventEntity.memberOpenid)
     }
 }

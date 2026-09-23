@@ -27,14 +27,15 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.group.QGGroupAuthor
 import love.forte.simbot.component.qguild.group.QGGroupRole
+import love.forte.simbot.component.qguild.group.toQGGroupRole
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.qguild.event.GroupMessageAuthor
-import love.forte.simbot.qguild.event.GroupMessageAuthorRole
 import kotlin.coroutines.CoroutineContext
 
 internal class QGGroupAuthorImpl(
     bot: QGBotImpl,
+    override val groupId: ID,
     private val authorData: GroupMessageAuthor,
 ) : QGGroupAuthor {
     override val id: ID = authorData.memberOpenid.ID
@@ -44,9 +45,5 @@ internal class QGGroupAuthorImpl(
         get() = authorData.bot
 
     override val memberRole: QGGroupRole
-        get() = when (authorData.memberRole) {
-            GroupMessageAuthorRole.OWNER -> QGGroupRole.OWNER
-            GroupMessageAuthorRole.ADMIN -> QGGroupRole.ADMIN
-            GroupMessageAuthorRole.MEMBER -> QGGroupRole.MEMBER
-        }
+        get() = authorData.memberRole.toQGGroupRole()
 }
