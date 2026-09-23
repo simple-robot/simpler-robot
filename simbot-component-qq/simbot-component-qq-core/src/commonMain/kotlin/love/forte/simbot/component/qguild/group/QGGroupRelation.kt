@@ -29,6 +29,7 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 
@@ -65,34 +66,43 @@ public interface QGGroupRelation : GroupRelation {
     override suspend fun group(id: ID): QGGroup?
 
     /**
-     * 拉取 [id] 对应群的入群申请列表的收集器。返回冷集合，收集时按平台游标分页请求并翻页。
-     *
-     * @param id 群ID。平台会校验群和管理员权限。
+     * 每次通过 API 查询 [groupId] 对应的 QQ 群基本信息。
+     * 查询失败时透传平台或网络异常，不将不存在或无权限转换为空值。
      *
      * @since 5.0
      */
-    public fun joinRequests(id: ID): Collectable<QGGroupJoinRequest>
+    @ST
+    public suspend fun groupInfo(groupId: ID): GroupInfo
 
     /**
-     * 通过 [id] 对应群中 [memberId] 的入群申请。
+     * 拉取 [groupId] 对应群的入群申请列表的收集器。返回冷集合，收集时按平台游标分页请求并翻页。
      *
-     * @param id 群 ID。
+     * @param groupId 群ID。平台会校验群和管理员权限。
+     *
+     * @since 5.0
+     */
+    public fun joinRequests(groupId: ID): Collectable<QGGroupJoinRequest>
+
+    /**
+     * 通过 [groupId] 对应群中 [memberId] 的入群申请。
+     *
+     * @param groupId 群 ID。
      * @param joinRequestId 申请 ID。使用申请列表返回的 ID。
      *
      * @since 5.0
      */
     @ST
     public suspend fun approveJoinRequest(
-        id: ID,
+        groupId: ID,
         memberId: ID,
         joinRequestId: ID? = null,
         vararg options: AcceptOption,
     )
 
     /**
-     * 拒绝 [id] 对应群中 [memberId] 的入群申请。
+     * 拒绝 [groupId] 对应群中 [memberId] 的入群申请。
      *
-     * @param id 群 ID。
+     * @param groupId 群 ID。
      * @param joinRequestId 申请 ID。使用申请列表返回的 ID。
      * @param options 拒绝选项。额外支持 [QGGroupJoinRequestRejectOption] 的相关类型。
      *
@@ -100,7 +110,7 @@ public interface QGGroupRelation : GroupRelation {
      */
     @ST
     public suspend fun rejectJoinRequest(
-        id: ID,
+        groupId: ID,
         memberId: ID,
         joinRequestId: ID? = null,
         vararg options: RejectOption,

@@ -23,6 +23,9 @@
 
 package love.forte.simbot.component.qguild.message
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import love.forte.simbot.common.coroutines.IOOrUnconfined
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.message.SendingMessageParser.GroupBuilderType.C2C
 import love.forte.simbot.component.qguild.message.SendingMessageParser.GroupBuilderType.GROUP
@@ -93,7 +96,9 @@ internal actual suspend fun processOfflineImage0(
                     element,
                     resource,
                     runCatching {
-                        resource.data()
+                        withContext(Dispatchers.IOOrUnconfined) {
+                            resource.data()
+                        }
                     }.getOrElse { e ->
                         throw IllegalStateException("Failed to read data from resource $resource", e)
                     },

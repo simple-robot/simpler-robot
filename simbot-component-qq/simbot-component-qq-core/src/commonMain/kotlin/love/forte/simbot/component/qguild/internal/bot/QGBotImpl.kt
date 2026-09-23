@@ -35,6 +35,7 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.collection.computeValueIfAbsent
 import love.forte.simbot.common.collection.concurrentMutableMap
+import love.forte.simbot.common.coroutines.IOOrUnconfined
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
@@ -51,10 +52,7 @@ import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
 import love.forte.simbot.component.qguild.internal.channel.*
 import love.forte.simbot.component.qguild.internal.event.QGBotStartedEventImpl
-import love.forte.simbot.component.qguild.internal.group.approveGroupJoinRequest
-import love.forte.simbot.component.qguild.internal.group.groupJoinRequests
-import love.forte.simbot.component.qguild.internal.group.idGroup
-import love.forte.simbot.component.qguild.internal.group.rejectGroupJoinRequest
+import love.forte.simbot.component.qguild.internal.group.*
 import love.forte.simbot.component.qguild.internal.guild.QGGuildImpl
 import love.forte.simbot.component.qguild.internal.guild.QGGuildImpl.Companion.qgGuild
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
@@ -86,6 +84,7 @@ import love.forte.simbot.qguild.ifNotFoundThenNull
 import love.forte.simbot.qguild.model.ChannelType
 import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SimpleGuild
+import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.qguild.stdlib.DisposableHandle
 import love.forte.simbot.qguild.stdlib.requestDataBy
 import love.forte.simbot.resource.Resource
@@ -165,25 +164,28 @@ internal class QGBotImpl(
         override suspend fun group(id: ID): QGGroup =
             idGroup(this@QGBotImpl, id)
 
-        override fun joinRequests(id: ID): Collectable<QGGroupJoinRequest> =
-            this@QGBotImpl.groupJoinRequests(id)
+        override suspend fun groupInfo(groupId: ID): GroupInfo =
+            this@QGBotImpl.queryGroupInfo(groupId)
+
+        override fun joinRequests(groupId: ID): Collectable<QGGroupJoinRequest> =
+            this@QGBotImpl.groupJoinRequests(groupId)
 
         override suspend fun approveJoinRequest(
-            id: ID,
+            groupId: ID,
             memberId: ID,
             joinRequestId: ID?,
             vararg options: AcceptOption,
         ) {
-            approveGroupJoinRequest(this@QGBotImpl, id, memberId, joinRequestId)
+            approveGroupJoinRequest(this@QGBotImpl, groupId, memberId, joinRequestId)
         }
 
         override suspend fun rejectJoinRequest(
-            id: ID,
+            groupId: ID,
             memberId: ID,
             joinRequestId: ID?,
             vararg options: RejectOption,
         ) {
-            rejectGroupJoinRequest(this@QGBotImpl, id, memberId, joinRequestId, options)
+            rejectGroupJoinRequest(this@QGBotImpl, groupId, memberId, joinRequestId, options)
         }
     }
 
@@ -516,7 +518,11 @@ internal class QGBotImpl(
         val media = UploadGroupFilesApi.create(
             openid = target.literal,
             fileType = type,
-            fileData = kotlin.runCatching { resource.data() }.getOrElse { e ->
+            fileData = kotlin.runCatching {
+                withContext(Dispatchers.IOOrUnconfined) {
+                    resource.data()
+                }
+            }.getOrElse { e ->
                 throw IllegalStateException("Failed to read data from resource $resource", e)
             }
         ).requestDataBy(source)
@@ -534,7 +540,11 @@ internal class QGBotImpl(
         val media = UploadUserFilesApi.create(
             openid = target.literal,
             fileType = type,
-            fileData = kotlin.runCatching { resource.data() }.getOrElse { e ->
+            fileData = kotlin.runCatching {
+                withContext(Dispatchers.IOOrUnconfined) {
+                    resource.data()
+                }
+            }.getOrElse { e ->
                 throw IllegalStateException("Failed to read data from resource $resource", e)
             }
         ).requestDataBy(source)

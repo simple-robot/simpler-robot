@@ -31,6 +31,7 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
 import love.forte.simbot.component.qguild.group.QGGroupMember
+import love.forte.simbot.component.qguild.group.QGGroupWithInfo
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.component.qguild.internal.event.QGGroupSendSupportPreSendEventImpl
@@ -44,7 +45,9 @@ import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
+import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageData
+import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 
@@ -53,6 +56,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
+@OptIn(QGInternalInheritanceApi::class)
 internal class QGGroupImpl(
     private val bot: QGBotImpl,
     override val id: ID,
@@ -64,6 +68,11 @@ internal class QGGroupImpl(
 
     override val joinRequests: Collectable<QGGroupJoinRequest>
         get() = bot.groupJoinRequests(id)
+
+    override suspend fun groupInfo(): GroupInfo = bot.queryGroupInfo(id)
+
+    override suspend fun includeInfo(): QGGroupWithInfo =
+        QGGroupWithInfoImpl(this, groupInfo())
 
     override suspend fun botAsMember(): QGGroupMember =
         QGBotMemberImpl(bot)
@@ -78,29 +87,32 @@ internal class QGGroupImpl(
     }
 
     override suspend fun send(text: String): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(text))
+        return sendWithContent(this, InteractionMessage.valueOf(text))
     }
 
     override suspend fun send(message: Message): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(message))
+        return sendWithContent(this, InteractionMessage.valueOf(message))
     }
 
     override suspend fun send(messageContent: MessageContent): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(messageContent))
+        return sendWithContent(this, InteractionMessage.valueOf(messageContent))
     }
 
-    private suspend fun emitPreSendEventAndSend(message: InteractionMessage): MessageReceipt {
+    /**
+     * 使用当前句柄的消息上下文发送，并将实际发起发送的群对象传给发送事件。
+     */
+    internal suspend fun sendWithContent(content: QGGroup, message: InteractionMessage): MessageReceipt {
         val event = QGGroupSendSupportPreSendEventImpl(
             bot = bot,
-            content = this,
+            content = content,
             message = message
         )
         bot.emitMessagePreSendEvent(event)
         val message = event.useMessage()
-        return sendByInteractionMessage(message)
+        return sendByInteractionMessage(content, message)
     }
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): MessageReceipt {
+    private suspend fun sendByInteractionMessage(content: QGGroup, message: InteractionMessage): MessageReceipt {
         return when (message) {
             is InteractionMessage.Text -> {
                 bot.sendGroupMessage(
@@ -133,7 +145,7 @@ internal class QGGroupImpl(
             else -> {
                 error("Unknown type of InteractionMessage: $message")
             }
-        }.alsoEmitPostSendEvent(bot, this, message)
+        }.alsoEmitPostSendEvent(bot, content, message)
     }
 
     override suspend fun uploadMedia(url: String, type: Int): QGMedia {

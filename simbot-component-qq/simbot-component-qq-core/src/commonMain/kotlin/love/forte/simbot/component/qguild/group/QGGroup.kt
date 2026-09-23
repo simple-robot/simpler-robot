@@ -33,16 +33,19 @@ import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Role
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
+import love.forte.simbot.qguild.common.QGInternalInheritanceApi
+import love.forte.simbot.qguild.model.group.GroupInfo
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 
 
 /**
- * 一个群at消息事件中的群信息对象。
+ * 一个QQ群。
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
 public interface QGGroup : ChatGroup {
     /**
      * 这个群的openid。
@@ -53,8 +56,10 @@ public interface QGGroup : ChatGroup {
     override suspend fun botAsMember(): QGGroupMember
 
     /**
-     * 群消息事件中，只存在群的openid，无法得知群名称，
-     * 将始终得到空字符串。
+     * 群名称。
+     *
+     * 默认只有群 OpenID，无法得知名称，因此返回空字符串。
+     * 可以通过 [includeInfo] 得到带有更多群基础信息的 [QGGroupWithInfo]。
      */
     override val name: String
         get() = ""
@@ -130,7 +135,90 @@ public interface QGGroup : ChatGroup {
      */
     public val joinRequests: Collectable<QGGroupJoinRequest>
 
+    /**
+     * 每次通过 API 查询当前 QQ 群的基本信息，返回本次查询的快照结果。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun groupInfo(): GroupInfo
+
+    /**
+     * 每次查询群基本信息并返回带有本次快照的 [QGGroupWithInfo]。
+     * 原对象不变；返回对象保留原对象的发送行为和事件回复上下文。
+     *
+     * @throws IllegalStateException 如果响应中的群 OpenID 与当前群 ID 不一致
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun includeInfo(): QGGroupWithInfo
+
+    /**
+     * 如果当前对象已经是 [QGGroupWithInfo]，返回其中已有的快照；否则调用 [groupInfo] 查询。
+     * 普通群对象不缓存查询结果，多次调用会多次请求。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun groupInfoOrQuery(): GroupInfo =
+        (this as? QGGroupWithInfo)?.groupInfo ?: groupInfo()
+
+    /**
+     * 如果当前对象已经是 [QGGroupWithInfo]，返回自身；否则调用 [includeInfo] 查询。
+     * 普通群对象不缓存查询结果，多次调用会多次请求。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun includeInfoOrSelf(): QGGroupWithInfo =
+        this as? QGGroupWithInfo ?: includeInfo()
 }
+
+/**
+ * 带有[群基本信息][groupInfo]的 [QGGroup]。
+ *
+ * @since 5.0
+ */
+@OptIn(QGInternalInheritanceApi::class)
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
+public interface QGGroupWithInfo : QGGroup {
+    /**
+     * 群基本信息原始快照。
+     */
+    public val groupInfo: GroupInfo
+
+    /**
+     * 查询时的群名称。
+     */
+    override val name: String
+        get() = groupInfo.groupName
+
+    /**
+     * 群简介。
+     */
+    public val groupFingerMemo: String
+        get() = groupInfo.groupFingerMemo
+
+    /**
+     * 群分类。
+     */
+    public val groupClassText: String
+        get() = groupInfo.groupClassText
+
+    /**
+     * 群标签列表。
+     */
+    public val groupTags: List<String>
+        get() = groupInfo.groupTags
+
+    /**
+     * 群成员人数。
+     */
+    public val groupMemberNum: Int
+        get() = groupInfo.groupMemberNum
+}
+
 
 /**
  * 一个QQ群的角色，老生常谈的那三个。
