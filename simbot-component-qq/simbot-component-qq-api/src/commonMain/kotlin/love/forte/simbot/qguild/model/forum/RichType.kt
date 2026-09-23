@@ -43,6 +43,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class RichType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 普通文本的原始值。
@@ -83,56 +84,48 @@ public value class RichType private constructor(public val value: Int) {
          * 普通文本类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Text: RichType = RichType(TEXT_VALUE)
 
         /**
          * `@` 信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val At: RichType = RichType(AT_VALUE)
 
         /**
          * URL 信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Url: RichType = RichType(URL_VALUE)
 
         /**
          * 表情信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Emoji: RichType = RichType(EMOJI_VALUE)
 
         /**
          * 子频道信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Channel: RichType = RichType(CHANNEL_VALUE)
 
         /**
          * 视频信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Video: RichType = RichType(VIDEO_VALUE)
 
         /**
          * 图片信息类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Image: RichType = RichType(IMAGE_VALUE)
 
         /**
          * 根据任意值构建 [RichType]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): RichType = RichType(value)
     }
 }

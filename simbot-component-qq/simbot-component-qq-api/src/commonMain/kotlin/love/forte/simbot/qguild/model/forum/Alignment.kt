@@ -43,6 +43,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class Alignment private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 左对齐的原始值。
@@ -63,28 +64,24 @@ public value class Alignment private constructor(public val value: Int) {
          * 左对齐。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Left: Alignment = Alignment(LEFT_VALUE)
 
         /**
          * 居中对齐。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Middle: Alignment = Alignment(MIDDLE_VALUE)
 
         /**
          * 右对齐。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Right: Alignment = Alignment(RIGHT_VALUE)
 
         /**
          * 根据任意值构建 [Alignment]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): Alignment = Alignment(value)
     }
 }

@@ -40,6 +40,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class GroupJoinApplySource private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 主动申请的原始值。
@@ -55,21 +56,18 @@ public value class GroupJoinApplySource private constructor(public val value: St
          * 用户主动申请入群。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SelfApply: GroupJoinApplySource = GroupJoinApplySource(SELF_APPLY_VALUE)
 
         /**
          * 用户受邀入群。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Invited: GroupJoinApplySource = GroupJoinApplySource(INVITED_VALUE)
 
         /**
          * 根据平台原始值构造申请来源，保留未知值。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): GroupJoinApplySource = GroupJoinApplySource(value)
     }
 }

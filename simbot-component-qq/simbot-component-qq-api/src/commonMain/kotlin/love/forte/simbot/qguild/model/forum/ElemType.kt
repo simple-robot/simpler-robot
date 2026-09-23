@@ -43,6 +43,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class ElemType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 文本元素的原始值。
@@ -68,35 +69,30 @@ public value class ElemType private constructor(public val value: Int) {
          * 文本元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Text: ElemType = ElemType(TEXT_VALUE)
 
         /**
          * 图片元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Image: ElemType = ElemType(IMAGE_VALUE)
 
         /**
          * 视频元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Video: ElemType = ElemType(VIDEO_VALUE)
 
         /**
          * URL 元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Url: ElemType = ElemType(URL_VALUE)
 
         /**
          * 根据任意值构建 [ElemType]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): ElemType = ElemType(value)
     }
 }

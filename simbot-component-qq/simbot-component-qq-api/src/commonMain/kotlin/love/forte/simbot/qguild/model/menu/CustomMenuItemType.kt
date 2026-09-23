@@ -42,6 +42,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class CustomMenuItemType private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 开关菜单项类型的原始值。
@@ -67,35 +68,30 @@ public value class CustomMenuItemType private constructor(public val value: Stri
          * 开关菜单项类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Switch: CustomMenuItemType = CustomMenuItemType(SWITCH_VALUE)
 
         /**
          * 发送消息菜单项类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SendMessage: CustomMenuItemType = CustomMenuItemType(SEND_MESSAGE_VALUE)
 
         /**
          * 链接菜单项类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Link: CustomMenuItemType = CustomMenuItemType(LINK_VALUE)
 
         /**
          * 包含二级菜单的菜单项类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Menu: CustomMenuItemType = CustomMenuItemType(MENU_VALUE)
 
         /**
          * 构建一个自定义值的 [CustomMenuItemType]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): CustomMenuItemType = CustomMenuItemType(value)
     }
 }

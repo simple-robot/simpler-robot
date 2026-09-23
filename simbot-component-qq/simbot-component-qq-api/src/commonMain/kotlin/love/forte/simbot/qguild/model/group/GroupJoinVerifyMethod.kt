@@ -40,6 +40,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class GroupJoinVerifyMethod private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 验证消息的原始值。
@@ -55,21 +56,18 @@ public value class GroupJoinVerifyMethod private constructor(public val value: S
          * 验证消息。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val VerifyMessage: GroupJoinVerifyMethod = GroupJoinVerifyMethod(VERIFY_MESSAGE_VALUE)
 
         /**
          * 管理员审核问答。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val AdminReviewQa: GroupJoinVerifyMethod = GroupJoinVerifyMethod(ADMIN_REVIEW_QA_VALUE)
 
         /**
          * 根据平台原始值构造验证方式，保留未知值。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): GroupJoinVerifyMethod = GroupJoinVerifyMethod(value)
     }
 }

@@ -48,6 +48,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class C2CMessageType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /** 普通文本消息的原始值。 */
         public const val TEXT_VALUE: Int = 0
@@ -66,27 +67,22 @@ public value class C2CMessageType private constructor(public val value: Int) {
 
         /** 普通文本消息。 */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Text: C2CMessageType = C2CMessageType(TEXT_VALUE)
 
         /** 结构化卡片消息。 */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Ark: C2CMessageType = C2CMessageType(ARK_VALUE)
 
         /** 并行消息。 */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val ParallelMessage: C2CMessageType = C2CMessageType(PARALLEL_MESSAGE_VALUE)
 
         /** 聊天记录消息。 */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val ChatRecord: C2CMessageType = C2CMessageType(CHAT_RECORD_VALUE)
 
         /** 引用消息。 */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val ReferenceMessage: C2CMessageType = C2CMessageType(REFERENCE_MESSAGE_VALUE)
 
         /**
@@ -95,7 +91,6 @@ public value class C2CMessageType private constructor(public val value: Int) {
          * @throws IllegalArgumentException [value] 不是已知的消息类型值时抛出
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): C2CMessageType = when (value) {
             TEXT_VALUE -> Text
             ARK_VALUE -> Ark

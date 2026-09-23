@@ -45,6 +45,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class InteractionChatType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 频道值常量
@@ -65,28 +66,24 @@ public value class InteractionChatType private constructor(public val value: Int
          * 频道
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Channel: InteractionChatType = InteractionChatType(CHANNEL_VALUE)
 
         /**
          * 群聊
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Group: InteractionChatType = InteractionChatType(GROUP_VALUE)
 
         /**
          * 单聊
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Private: InteractionChatType = InteractionChatType(PRIVATE_VALUE)
 
         /**
          * 构建任意数值的 [InteractionChatType]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): InteractionChatType = InteractionChatType(value)
     }
 }
@@ -111,6 +108,7 @@ public value class InteractionChatType private constructor(public val value: Int
 @JvmExposeBoxed
 @Serializable
 public value class InteractionType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 消息按钮回调（INLINE_KEYBOARD）值常量
@@ -161,70 +159,60 @@ public value class InteractionType private constructor(public val value: Int) {
          * 消息按钮回调（INLINE_KEYBOARD）：用户点击消息中的内联键盘按钮
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val InlineKeyboard: InteractionType = InteractionType(INLINE_KEYBOARD_VALUE)
 
         /**
          * 单聊快捷菜单回调（CALLBACK_COMMAND）：用户点击单聊场景下的自定义菜单
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val CallbackCommand: InteractionType = InteractionType(CALLBACK_COMMAND_VALUE)
 
         /**
          * 消息反馈（MESSAGE_FEEDBACK）：用户对智能体消息进行点赞/点踩反馈
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val MessageFeedback: InteractionType = InteractionType(MESSAGE_FEEDBACK_VALUE)
 
         /**
          * 清空会话（CLEAR_SESSION）：用户清空智能体会话历史
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val ClearSession: InteractionType = InteractionType(CLEAR_SESSION_VALUE)
 
         /**
          * 进出故事集（IN_OUT_STORY）：用户进入或退出故事集
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val InOutStory: InteractionType = InteractionType(IN_OUT_STORY_VALUE)
 
         /**
          * 切换模型（SWITCH_MODEL）：用户切换智能体模型
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SwitchModel: InteractionType = InteractionType(SWITCH_MODEL_VALUE)
 
         /**
          * 用户授权（USER_AUTHORIZE）：用户授权事件
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val UserAuthorize: InteractionType = InteractionType(USER_AUTHORIZE_VALUE)
 
         /**
          * 群授权（GROUP_AUTHORIZE）：群授权事件
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val GroupAuthorize: InteractionType = InteractionType(GROUP_AUTHORIZE_VALUE)
 
         /**
          * 群授权状态变更（GROUP_AUTHORIZE_STATUS）
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val GroupAuthorizeStatus: InteractionType = InteractionType(GROUP_AUTHORIZE_STATUS_VALUE)
 
         /**
          * 构建任意数值的 [InteractionType]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): InteractionType = InteractionType(value)
     }
 }
@@ -242,6 +230,7 @@ public value class InteractionType private constructor(public val value: Int) {
 @JvmExposeBoxed
 @Serializable
 public value class InteractionScene private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 单聊值常量
@@ -262,28 +251,24 @@ public value class InteractionScene private constructor(public val value: String
          * 单聊
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val C2C: InteractionScene = InteractionScene(C2C_VALUE)
 
         /**
          * 群聊
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Group: InteractionScene = InteractionScene(GROUP_VALUE)
 
         /**
          * 频道
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Guild: InteractionScene = InteractionScene(GUILD_VALUE)
 
         /**
          * 构建任意字符串的 [InteractionScene]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): InteractionScene = InteractionScene(value)
     }
 }
@@ -681,6 +666,7 @@ public class InteractionCreateData internal constructor(
 @JvmExposeBoxed
 @Serializable
 public value class InteractionResolvedFeedbackOpt private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 点赞值常量
@@ -696,21 +682,18 @@ public value class InteractionResolvedFeedbackOpt private constructor(public val
          * 点赞
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Like: InteractionResolvedFeedbackOpt = InteractionResolvedFeedbackOpt(LIKE_VALUE)
 
         /**
          * 点踩
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Unlike: InteractionResolvedFeedbackOpt = InteractionResolvedFeedbackOpt(UNLIKE_VALUE)
 
         /**
          * 构建任意字符串的 [InteractionResolvedFeedbackOpt]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): InteractionResolvedFeedbackOpt = InteractionResolvedFeedbackOpt(value)
     }
 }
@@ -728,6 +711,7 @@ public value class InteractionResolvedFeedbackOpt private constructor(public val
 @JvmExposeBoxed
 @Serializable
 public value class InteractionResolvedAction private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 进入故事集值常量
@@ -743,21 +727,18 @@ public value class InteractionResolvedAction private constructor(public val valu
          * 进入故事集
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val EnterStory: InteractionResolvedAction = InteractionResolvedAction(ENTER_STORY_VALUE)
 
         /**
          * 退出故事集
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val QuitStory: InteractionResolvedAction = InteractionResolvedAction(QUIT_STORY_VALUE)
 
         /**
          * 构建任意字符串的 [InteractionResolvedAction]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): InteractionResolvedAction = InteractionResolvedAction(value)
     }
 }
@@ -773,6 +754,7 @@ public value class InteractionResolvedAction private constructor(public val valu
 @JvmExposeBoxed
 @Serializable
 public value class AuthorizeDataOptScene private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 资料页设置值常量
@@ -788,21 +770,18 @@ public value class AuthorizeDataOptScene private constructor(public val value: S
          * 资料页设置
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Setting: AuthorizeDataOptScene = AuthorizeDataOptScene(SETTING_VALUE)
 
         /**
          * 弹窗授权
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Dialog: AuthorizeDataOptScene = AuthorizeDataOptScene(DIALOG_VALUE)
 
         /**
          * 构建任意字符串的 [AuthorizeDataOptScene]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): AuthorizeDataOptScene = AuthorizeDataOptScene(value)
     }
 }
@@ -818,6 +797,7 @@ public value class AuthorizeDataOptScene private constructor(public val value: S
 @JvmExposeBoxed
 @Serializable
 public value class AuthorizeDataScope private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * C2C 主动消息推送值常量
@@ -833,21 +813,18 @@ public value class AuthorizeDataScope private constructor(public val value: Stri
          * C2C 主动消息推送
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val C2CPush: AuthorizeDataScope = AuthorizeDataScope(C2C_PUSH_VALUE)
 
         /**
          * 群主动消息推送
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val GroupPush: AuthorizeDataScope = AuthorizeDataScope(GROUP_PUSH_VALUE)
 
         /**
          * 构建任意字符串的 [AuthorizeDataScope]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): AuthorizeDataScope = AuthorizeDataScope(value)
     }
 }

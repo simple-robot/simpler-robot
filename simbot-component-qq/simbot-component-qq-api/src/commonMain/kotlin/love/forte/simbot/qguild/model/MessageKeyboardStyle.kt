@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class MessageKeyboardStyle private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 灰色线框样式的原始值。
@@ -56,21 +57,18 @@ public value class MessageKeyboardStyle private constructor(public val value: In
          * 灰色线框样式。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Gray: MessageKeyboardStyle = MessageKeyboardStyle(GRAY_VALUE)
 
         /**
          * 蓝色线框样式。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Blue: MessageKeyboardStyle = MessageKeyboardStyle(BLUE_VALUE)
 
         /**
          * 构建一个自定义的消息按钮显示样式。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): MessageKeyboardStyle = MessageKeyboardStyle(value)
     }
 }

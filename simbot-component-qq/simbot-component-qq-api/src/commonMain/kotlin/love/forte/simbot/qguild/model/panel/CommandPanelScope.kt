@@ -39,6 +39,7 @@ import kotlin.jvm.JvmStatic
 @OptIn(ExperimentalStdlibApi::class)
 @Serializable
 public value class CommandPanelScope private constructor(public val scope: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * C2C 单聊场景的原始值。
@@ -64,35 +65,30 @@ public value class CommandPanelScope private constructor(public val scope: Strin
          * C2C 单聊场景。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val C2C: CommandPanelScope = CommandPanelScope(C2C_VALUE)
 
         /**
          * 群聊场景。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Group: CommandPanelScope = CommandPanelScope(GROUP_VALUE)
 
         /**
          * 文字子频道场景。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Channel: CommandPanelScope = CommandPanelScope(CHANNEL_VALUE)
 
         /**
          * 频道私信场景。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val DM: CommandPanelScope = CommandPanelScope(DM_VALUE)
 
         /**
          * 构建一个自定义值的 [CommandPanelScope]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(scope: String): CommandPanelScope {
             // 内联类内部使用 when (scope) { ... , else } 似乎是无意义的，
             // 针对 JVM 的 box 行为都是在内联之后，因此 val C2C 之类的‘对象’

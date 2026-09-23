@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class CommandPanelTargetUpdateOp private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 添加关联对象操作的原始值。
@@ -56,21 +57,18 @@ public value class CommandPanelTargetUpdateOp private constructor(public val val
          * 添加关联对象的操作类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Add: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(ADD_VALUE)
 
         /**
          * 删除关联对象的操作类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Del: CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(DEL_VALUE)
 
         /**
          * 构建一个自定义值的 [CommandPanelTargetUpdateOp]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): CommandPanelTargetUpdateOp = CommandPanelTargetUpdateOp(value)
     }
 }

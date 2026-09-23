@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class ScheduleRemindType private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 不提醒的原始值。
@@ -76,21 +77,18 @@ public value class ScheduleRemindType private constructor(public val value: Stri
          * 不提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val NoRemind: ScheduleRemindType = ScheduleRemindType(NO_REMIND_VALUE)
 
         /**
          * 开始时提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val AtStart: ScheduleRemindType = ScheduleRemindType(AT_START_VALUE)
 
         /**
          * 开始前 5 分钟提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val At5MinutesBeforeStart: ScheduleRemindType =
             ScheduleRemindType(AT_5_MINUTES_BEFORE_START_VALUE)
 
@@ -98,7 +96,6 @@ public value class ScheduleRemindType private constructor(public val value: Stri
          * 开始前 15 分钟提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val At15MinutesBeforeStart: ScheduleRemindType =
             ScheduleRemindType(AT_15_MINUTES_BEFORE_START_VALUE)
 
@@ -106,7 +103,6 @@ public value class ScheduleRemindType private constructor(public val value: Stri
          * 开始前 30 分钟提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val At30MinutesBeforeStart: ScheduleRemindType =
             ScheduleRemindType(AT_30_MINUTES_BEFORE_START_VALUE)
 
@@ -114,7 +110,6 @@ public value class ScheduleRemindType private constructor(public val value: Stri
          * 开始前 60 分钟提醒。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val At60MinutesBeforeStart: ScheduleRemindType =
             ScheduleRemindType(AT_60_MINUTES_BEFORE_START_VALUE)
 
@@ -122,7 +117,6 @@ public value class ScheduleRemindType private constructor(public val value: Stri
          * 构建一个自定义的日程提醒类型。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): ScheduleRemindType = ScheduleRemindType(value)
     }
 }

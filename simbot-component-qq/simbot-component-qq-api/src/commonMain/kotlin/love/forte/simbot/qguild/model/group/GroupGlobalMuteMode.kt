@@ -40,6 +40,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class GroupGlobalMuteMode private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 未开启全员禁言的原始值。
@@ -60,28 +61,24 @@ public value class GroupGlobalMuteMode private constructor(public val value: Str
          * 未开启全员禁言。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val None: GroupGlobalMuteMode = GroupGlobalMuteMode(NONE_VALUE)
 
         /**
          * 始终全员禁言。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Always: GroupGlobalMuteMode = GroupGlobalMuteMode(ALWAYS_VALUE)
 
         /**
          * 按时间规则禁言。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Schedule: GroupGlobalMuteMode = GroupGlobalMuteMode(SCHEDULE_VALUE)
 
         /**
          * 根据平台原始值构造禁言模式，保留未知值。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: String): GroupGlobalMuteMode = GroupGlobalMuteMode(value)
     }
 }

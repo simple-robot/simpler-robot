@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class MessageKeyboardActionType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 跳转按钮的原始值。
@@ -61,28 +62,24 @@ public value class MessageKeyboardActionType private constructor(public val valu
          * 跳转按钮。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Link: MessageKeyboardActionType = MessageKeyboardActionType(LINK_VALUE)
 
         /**
          * 回调按钮。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Callback: MessageKeyboardActionType = MessageKeyboardActionType(CALLBACK_VALUE)
 
         /**
          * 指令按钮。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Command: MessageKeyboardActionType = MessageKeyboardActionType(COMMAND_VALUE)
 
         /**
          * 构建一个自定义的消息按钮操作类型。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): MessageKeyboardActionType = MessageKeyboardActionType(value)
     }
 }
