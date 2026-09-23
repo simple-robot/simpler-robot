@@ -30,6 +30,7 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.group.QGGroupRole
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.qguild.QQGuildApiException
+import love.forte.simbot.qguild.model.group.GroupBotReceiveMessageSetting
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -63,7 +64,7 @@ class QGGroupBotMemberCoreTests : AbstractInteractionTests() {
             assertEquals(QGGroupRole.ADMIN, member.memberRole)
             assertEquals(member.botState.joinedAt.toEpochMilliseconds(), member.joinTime.milliseconds)
             assertEquals(false, member.allowProactiveMsg)
-            assertEquals("only_mention", member.recvMsgSetting)
+            assertEquals(GroupBotReceiveMessageSetting.OnlyMention, member.recvMsgSetting)
             assertEquals(listOf("/v2/groups/group/bot_state"), paths)
 
             val state = group.botState()

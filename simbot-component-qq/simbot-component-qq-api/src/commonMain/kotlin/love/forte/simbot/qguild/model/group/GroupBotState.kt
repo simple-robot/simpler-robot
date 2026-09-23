@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.qguild.common.ApiModel
 import love.forte.simbot.qguild.common.ApiModelConstructor
 import love.forte.simbot.qguild.event.GroupMessageAuthorRole
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.time.Instant
 
 /**
@@ -36,18 +37,21 @@ import kotlin.time.Instant
  * @property memberOpenid 机器人的群成员 OpenID。
  * @property joinedAt 入群时间，RFC3339 格式。
  * @property allowProactiveMsg 是否接收主动推送。
- * @property recvMsgSetting 接收消息设置：all、only_mention 或 mention_and_context。
+ * @property recvMsgSetting 接收消息设置。
  * @property memberRole 群内角色：member、owner 或 admin。
  *
  * @since 5.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @ApiModel
 @Serializable
 public class GroupBotState @ApiModelConstructor internal constructor(
     @SerialName("member_openid") public val memberOpenid: String,
     @SerialName("joined_at") public val joinedAt: Instant,
     @SerialName("allow_proactive_msg") public val allowProactiveMsg: Boolean,
-    @SerialName("recv_msg_setting") public val recvMsgSetting: String,
+    @SerialName("recv_msg_setting")
+    @get:JvmExposeBoxed
+    public val recvMsgSetting: GroupBotReceiveMessageSetting,
     @SerialName("member_role") public val memberRole: GroupMessageAuthorRole,
 ) {
     override fun toString(): String {
@@ -55,7 +59,7 @@ public class GroupBotState @ApiModelConstructor internal constructor(
             "memberOpenid='$memberOpenid', " +
             "joinedAt=$joinedAt, " +
             "allowProactiveMsg=$allowProactiveMsg, " +
-            "recvMsgSetting='$recvMsgSetting', " +
+            "recvMsgSetting='${recvMsgSetting.value}', " +
             "memberRole=$memberRole)"
     }
 }

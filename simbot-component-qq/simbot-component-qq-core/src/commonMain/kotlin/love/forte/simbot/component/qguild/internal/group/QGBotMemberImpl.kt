@@ -39,7 +39,7 @@ internal class QGBotMemberImpl(
     bot: QGBotImpl,
     override val groupId: ID,
     override val botState: GroupBotState,
-) : QGGroupBotMember {
+) : QGGroupBotMember() {
     override val coroutineContext: CoroutineContext =
         bot.newSupervisorCoroutineContext()
 }

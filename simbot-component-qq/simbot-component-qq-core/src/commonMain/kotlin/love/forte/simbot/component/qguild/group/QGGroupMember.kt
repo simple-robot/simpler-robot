@@ -31,12 +31,16 @@ import love.forte.simbot.definition.Member
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.qguild.common.QGInternalInheritanceApi
+import love.forte.simbot.qguild.model.group.GroupBotReceiveMessageSetting
 import love.forte.simbot.qguild.model.group.GroupBotState
+import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmSynthetic
 
 /**
  * QQ 群内成员的基础信息。
  */
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
 public interface QGGroupMember : Member {
     /**
      * 此成员在 [groupId] 所属群中的成员 OpenID。
@@ -104,11 +108,13 @@ public interface QGGroupMember : Member {
  *
  * @since 5.0
  */
-public interface QGGroupBotMember : QGGroupMember {
+@OptIn(ExperimentalStdlibApi::class)
+@JvmExposeBoxed
+public abstract class QGGroupBotMember internal constructor() : QGGroupMember {
     /**
      * 机器人在 [groupId] 所属群内的原始状态。
      */
-    public val botState: GroupBotState
+    public abstract val botState: GroupBotState
 
     /**
      * 机器人在群内作为的成员 OpenID。
@@ -137,7 +143,7 @@ public interface QGGroupBotMember : QGGroupMember {
     /**
      * 机器人的消息接收设置。
      */
-    public val recvMsgSetting: String
+    public val recvMsgSetting: GroupBotReceiveMessageSetting
         get() = botState.recvMsgSetting
 }
 
@@ -146,6 +152,7 @@ public interface QGGroupBotMember : QGGroupMember {
  *
  * @since 4.4.0
  */
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
 public interface QGGroupAuthor : QGGroupMember {
     /**
      * 消息发送者在群内的身份

@@ -106,7 +106,7 @@ class GroupManagementApiTests {
             GroupBotState.serializer(),
             """{"member_openid":"bot","joined_at":"2025-06-15T14:30:00+08:00","allow_proactive_msg":false,"recv_msg_setting":"only_mention","member_role":"member"}"""
         )
-        assertEquals("only_mention", state.recvMsgSetting)
+        assertEquals(GroupBotReceiveMessageSetting.OnlyMention, state.recvMsgSetting)
         assertEquals(Instant.parse("2025-06-15T06:30:00Z"), state.joinedAt)
 
         val page = json.decodeFromString(
@@ -136,12 +136,16 @@ class GroupManagementApiTests {
         val method = json.decodeFromString(GroupJoinVerifyMethod.serializer(), "\"future_method\"")
         val mode = json.decodeFromString(GroupGlobalMuteMode.serializer(), "\"future_mode\"")
         val source = json.decodeFromString(GroupJoinApplySource.serializer(), "\"future_source\"")
+        val receiveSetting = json.decodeFromString(GroupBotReceiveMessageSetting.serializer(), "\"future_setting\"")
         assertEquals("future_method", method.value)
         assertEquals("future_mode", mode.value)
         assertEquals("future_source", source.value)
+        assertEquals("future_setting", receiveSetting.value)
+        assertEquals(GroupBotReceiveMessageSetting.of("future_setting"), receiveSetting)
         assertEquals(JsonPrimitive("future_method"), json.parseToJsonElement(json.encodeToString(method)))
         assertEquals(JsonPrimitive("future_mode"), json.parseToJsonElement(json.encodeToString(mode)))
         assertEquals(JsonPrimitive("future_source"), json.parseToJsonElement(json.encodeToString(source)))
+        assertEquals(JsonPrimitive("future_setting"), json.parseToJsonElement(json.encodeToString(receiveSetting)))
     }
 
     @Test

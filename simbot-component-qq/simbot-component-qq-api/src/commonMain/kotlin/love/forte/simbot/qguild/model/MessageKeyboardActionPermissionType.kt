@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class MessageKeyboardActionPermissionType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 指定用户可操作的原始值。
@@ -66,7 +67,6 @@ public value class MessageKeyboardActionPermissionType private constructor(publi
          * 指定用户可操作。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SpecifiedUser: MessageKeyboardActionPermissionType =
             MessageKeyboardActionPermissionType(SPECIFIED_USER_VALUE)
 
@@ -74,7 +74,6 @@ public value class MessageKeyboardActionPermissionType private constructor(publi
          * 仅管理者可操作。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val AdminOnly: MessageKeyboardActionPermissionType =
             MessageKeyboardActionPermissionType(ADMIN_ONLY_VALUE)
 
@@ -82,7 +81,6 @@ public value class MessageKeyboardActionPermissionType private constructor(publi
          * 所有人可操作。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val AllAccessible: MessageKeyboardActionPermissionType =
             MessageKeyboardActionPermissionType(ALL_ACCESSIBLE_VALUE)
 
@@ -90,7 +88,6 @@ public value class MessageKeyboardActionPermissionType private constructor(publi
          * 指定身份组可操作。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SpecifiedRole: MessageKeyboardActionPermissionType =
             MessageKeyboardActionPermissionType(SPECIFIED_ROLE_VALUE)
 
@@ -98,7 +95,6 @@ public value class MessageKeyboardActionPermissionType private constructor(publi
          * 构建一个自定义的消息按钮操作权限类型。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): MessageKeyboardActionPermissionType =
             MessageKeyboardActionPermissionType(value)
     }
