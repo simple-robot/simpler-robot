@@ -121,6 +121,15 @@ public interface QGGroup : ChatGroup {
         resource: Resource,
         type: Int,
     ): QGMedia
+
+
+    /**
+     * 得到当前群的入群申请列表的[收集器][Collectable]。收集时才请求，并按平台游标自动翻页。
+     *
+     * @since 5.0
+     */
+    public val joinRequests: Collectable<QGGroupJoinRequest>
+
 }
 
 /**

@@ -27,6 +27,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import love.forte.simbot.ability.AcceptOption
+import love.forte.simbot.ability.RejectOption
 import love.forte.simbot.bot.InheritanceBotApi
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.collectable.Collectable
@@ -43,12 +45,16 @@ import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.channel.*
 import love.forte.simbot.component.qguild.event.QGInternalInterceptionException
 import love.forte.simbot.component.qguild.group.QGGroup
+import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
 import love.forte.simbot.component.qguild.group.QGGroupRelation
 import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
 import love.forte.simbot.component.qguild.internal.channel.*
 import love.forte.simbot.component.qguild.internal.event.QGBotStartedEventImpl
+import love.forte.simbot.component.qguild.internal.group.approveGroupJoinRequest
+import love.forte.simbot.component.qguild.internal.group.groupJoinRequests
 import love.forte.simbot.component.qguild.internal.group.idGroup
+import love.forte.simbot.component.qguild.internal.group.rejectGroupJoinRequest
 import love.forte.simbot.component.qguild.internal.guild.QGGuildImpl
 import love.forte.simbot.component.qguild.internal.guild.QGGuildImpl.Companion.qgGuild
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
@@ -158,6 +164,27 @@ internal class QGBotImpl(
     private inner class GroupRelationImpl : QGGroupRelation {
         override suspend fun group(id: ID): QGGroup =
             idGroup(this@QGBotImpl, id)
+
+        override fun joinRequests(id: ID): Collectable<QGGroupJoinRequest> =
+            this@QGBotImpl.groupJoinRequests(id)
+
+        override suspend fun approveJoinRequest(
+            id: ID,
+            memberId: ID,
+            joinRequestId: ID?,
+            vararg options: AcceptOption,
+        ) {
+            approveGroupJoinRequest(this@QGBotImpl, id, memberId, joinRequestId)
+        }
+
+        override suspend fun rejectJoinRequest(
+            id: ID,
+            memberId: ID,
+            joinRequestId: ID?,
+            vararg options: RejectOption,
+        ) {
+            rejectGroupJoinRequest(this@QGBotImpl, id, memberId, joinRequestId, options)
+        }
     }
 
     override val guildRelation: QGGuildRelation = GuildRelationImpl()

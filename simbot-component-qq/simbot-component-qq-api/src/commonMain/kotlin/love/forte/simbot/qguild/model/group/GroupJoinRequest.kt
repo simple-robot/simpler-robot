@@ -57,7 +57,7 @@ public class GroupJoinRequestPage @ApiModelConstructor internal constructor(
  * @property memberOpenid 申请人的群成员 OpenID。
  * @property username 申请人昵称。
  * @property applyAt 申请时间点。
- * @property applySource 来源：self_apply 或 invited。
+ * @property applySource 入群申请来源。
  * @property bot 是否为机器人账号。
  * @property riskTips 安全提示语。
  * @property unionOpenid 应用或开放平台统一标识，如有。
@@ -66,6 +66,7 @@ public class GroupJoinRequestPage @ApiModelConstructor internal constructor(
  *
  * @since 5.0
  */
+@OptIn(ExperimentalStdlibApi::class)
 @ApiModel
 @Serializable
 public class GroupJoinRequest @ApiModelConstructor internal constructor(
@@ -77,7 +78,8 @@ public class GroupJoinRequest @ApiModelConstructor internal constructor(
     @SerialName("apply_at")
     public val applyAt: Instant,
     @SerialName("apply_source")
-    public val applySource: String,
+    @get:JvmExposeBoxed
+    public val applySource: GroupJoinApplySource,
     public val bot: Boolean,
     @SerialName("risk_tips")
     public val riskTips: String? = null,
@@ -93,7 +95,7 @@ public class GroupJoinRequest @ApiModelConstructor internal constructor(
             "unionOpenid=$unionOpenid, " +
             "riskTips=$riskTips, " +
             "bot=$bot, " +
-            "applySource='$applySource', " +
+            "applySource=$applySource, " +
             "applyAt=$applyAt, " +
             "username='$username', " +
             "memberOpenid='$memberOpenid', " +

@@ -24,10 +24,12 @@
 package love.forte.simbot.component.qguild.internal.group
 
 import love.forte.simbot.common.atomic.AtomicInt
+import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.group.QGGroup
+import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
 import love.forte.simbot.component.qguild.group.QGGroupMember
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
@@ -59,6 +61,9 @@ internal class QGGroupImpl(
     private val isFake: Boolean,
 ) : QGGroup {
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
+
+    override val joinRequests: Collectable<QGGroupJoinRequest>
+        get() = bot.groupJoinRequests(id)
 
     override suspend fun botAsMember(): QGGroupMember =
         QGBotMemberImpl(bot)

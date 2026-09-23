@@ -114,6 +114,7 @@ class GroupManagementApiTests {
             """{"list":[{"join_request_id":"request","member_openid":"member","username":"申请人","apply_at":"2026-08-05T14:19:09+08:00","apply_source":"self_apply","bot":false,"verify_info":{"method":"admin_review_qa","review_qa_list":[{"question":"问题","answer":"答案"}]}}],"next_cursor":"next"}"""
         )
         assertEquals("next", page.nextCursor)
+        assertEquals(GroupJoinApplySource.SelfApply, page.list.single().applySource)
         assertEquals(GroupJoinVerifyMethod.AdminReviewQa, page.list.single().verifyInfo?.method)
         assertEquals(Instant.parse("2026-08-05T06:19:09Z"), page.list.single().applyAt)
         assertEquals("答案", page.list.single().verifyInfo?.reviewQaList?.single()?.answer)
@@ -134,10 +135,13 @@ class GroupManagementApiTests {
         val json = QQ.DefaultJson
         val method = json.decodeFromString(GroupJoinVerifyMethod.serializer(), "\"future_method\"")
         val mode = json.decodeFromString(GroupGlobalMuteMode.serializer(), "\"future_mode\"")
+        val source = json.decodeFromString(GroupJoinApplySource.serializer(), "\"future_source\"")
         assertEquals("future_method", method.value)
         assertEquals("future_mode", mode.value)
+        assertEquals("future_source", source.value)
         assertEquals(JsonPrimitive("future_method"), json.parseToJsonElement(json.encodeToString(method)))
         assertEquals(JsonPrimitive("future_mode"), json.parseToJsonElement(json.encodeToString(mode)))
+        assertEquals(JsonPrimitive("future_source"), json.parseToJsonElement(json.encodeToString(source)))
     }
 
     @Test
@@ -176,4 +180,3 @@ private fun encodeBody(body: Any) =
     QQ.DefaultJson.parseToJsonElement(
         QQ.DefaultJson.encodeToString(guessSerializer(body, QQ.DefaultJson.serializersModule), body)
     ).jsonObject
-

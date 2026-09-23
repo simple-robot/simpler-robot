@@ -23,6 +23,8 @@
 
 package love.forte.simbot.component.qguild.group
 
+import love.forte.simbot.ability.AcceptOption
+import love.forte.simbot.ability.RejectOption
 import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.emptyCollectable
@@ -33,8 +35,8 @@ import kotlin.jvm.JvmSynthetic
 
 /**
  * QQ组件中与QQ群相关的操作。
- * QQ群实际上没有开放任何相关能力的API，因此：
- * - 列表获取将永远得到空结果。
+ * QQ平台尚不提供机器人已加入群的完整列表，因此：
+ * - [groups] 始终为空。
  * - ID查询将是一种“伪”操作，会直接将提供的 `id` 包装为一个 [QGGroup] 返回。
  * 如果此ID不是真实存在的，则进行某些操作时（比如主动发送消息）将会抛出异常。
  *
@@ -61,6 +63,48 @@ public interface QGGroupRelation : GroupRelation {
         reserveBaseName = "getGroup"
     )
     override suspend fun group(id: ID): QGGroup?
+
+    /**
+     * 拉取 [id] 对应群的入群申请列表的收集器。返回冷集合，收集时按平台游标分页请求并翻页。
+     *
+     * @param id 群ID。平台会校验群和管理员权限。
+     *
+     * @since 5.0
+     */
+    public fun joinRequests(id: ID): Collectable<QGGroupJoinRequest>
+
+    /**
+     * 通过 [id] 对应群中 [memberId] 的入群申请。
+     *
+     * @param id 群 ID。
+     * @param joinRequestId 申请 ID。使用申请列表返回的 ID。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun approveJoinRequest(
+        id: ID,
+        memberId: ID,
+        joinRequestId: ID? = null,
+        vararg options: AcceptOption,
+    )
+
+    /**
+     * 拒绝 [id] 对应群中 [memberId] 的入群申请。
+     *
+     * @param id 群 ID。
+     * @param joinRequestId 申请 ID。使用申请列表返回的 ID。
+     * @param options 拒绝选项。额外支持 [QGGroupJoinRequestRejectOption] 的相关类型。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun rejectJoinRequest(
+        id: ID,
+        memberId: ID,
+        joinRequestId: ID? = null,
+        vararg options: RejectOption,
+    )
 
     /**
      * 无法得知已加入的群的总数，始终得到 `-1`。

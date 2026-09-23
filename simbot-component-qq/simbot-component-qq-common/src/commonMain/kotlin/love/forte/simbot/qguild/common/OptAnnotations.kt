@@ -82,3 +82,13 @@ public annotation class Generated
     "一个实验性的与媒体资源相关的API，可能在未来发生变更或被移除。",
 )
 public annotation class ExperimentalQGMediaApi
+
+/**
+ * 标记一个仅供QQ组件内部实现的接口或抽象类，对外部实现不保证任何兼容性或稳定性
+ *
+ * @since 5.0
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn("仅供QQ组件内部实现的接口或抽象类，对外部实现不保证任何兼容性或稳定性")
+@MustBeDocumented
+public annotation class QGInternalInheritanceApi
