@@ -24,18 +24,13 @@
 package love.forte.simbot.qguild.model
 
 import kotlinx.serialization.*
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.qguild.common.ApiModel
-import love.forte.simbot.qguild.common.ApiModelConstructor
-import love.forte.simbot.qguild.common.DataClassCompatibilities
-import love.forte.simbot.qguild.common.QQ
+import love.forte.simbot.qguild.common.*
 import love.forte.simbot.qguild.message.EmbedBuilder
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -380,59 +375,113 @@ public class Message @ApiModelConstructor constructor(
 
 
     /**
-     * [MessageAttachment](https://bot.q.qq.com/wiki/develop/api/openapi/message/model.html#messageattachment)
+     * [MessageAttachment](https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_message_create.html#schema-messageattachment)
      *
-     * 在接收的时候似乎会针对不同类型存在额外的 [properties]，
-     * 例如对于图片文件接收到的信息实际为：
-     *
-     * ```json
-     * {
-     *    "content_type": "image/gif",
-     *    "filename": "{59CA8472-3FBB-98E9-9284-FB9D3D3148BC}.jpg",
-     *    "height": 240,
-     *    "id": "2249362854",
-     *    "size": 499562,
-     *    "url": "gchat.qpic.cn/qmeetpic/47750961638939775/1701030-2249362854-59CA84723FBB98E99284FB9D3D3148BC/0",
-     *    "width": 240
-     * }
-     * ```
-     * 因此 [Attachment] 的实际序列化借助 k/v 均为 [String] 的 [Map] 进行，并尝试从其中提取 `url` 属性赋于 [url] 中。
-     *
-     *
-     * @property url 下载地址。
-     * @property properties 此 attachment 中接收到的所有属性。
+     * @property url 附件下载地址。
+     * @property filename 文件名。
+     * @property width 图片宽度，单位为像素；非图片附件可能没有此字段。
+     * @property height 图片高度，单位为像素；非图片附件可能没有此字段。
+     * @property size 文件大小，单位为字节。
+     * @property contentType 附件内容类型。
+     * @property voiceWavUrl 语音转换后的 WAV 文件地址。
+     * @property asrReferText 语音识别参考结果。
+     * @property id 附件 ID，官方文档未列出此字段，因此此字段并不稳定。
      */
-    @Serializable(MessageAttachmentSerializer::class)
-    public class Attachment(
+    @Serializable
+    @OptIn(QGUnstableProperty::class)
+    public class Attachment internal constructor(
         public val url: String,
-        public val properties: Map<String, String> = emptyMap()
+        public val filename: String? = null,
+        public val width: Int? = null,
+        public val height: Int? = null,
+        public val size: Long? = null,
+        @SerialName("content_type") public val contentType: String? = null,
+        @SerialName("voice_wav_url") public val voiceWavUrl: String? = null,
+        @SerialName("asr_refer_text") public val asrReferText: String? = null,
+        @property:QGUnstableProperty
+        public val id: String? = null,
     ) {
+        @Transient
+        private var legacyProperties: Map<String, String> = emptyMap()
+
+        /**
+         * 兼容旧版使用字符串属性表创建附件的方式。
+         */
+        @Deprecated("Use the typed attachment properties")
+        public constructor(url: String, properties: Map<String, String> = emptyMap()) : this(
+            url = url,
+            filename = properties["filename"],
+            width = properties["width"]?.toIntOrNull(),
+            height = properties["height"]?.toIntOrNull(),
+            size = properties["size"]?.toLongOrNull(),
+            contentType = properties["content_type"],
+            voiceWavUrl = properties["voice_wav_url"],
+            asrReferText = properties["asr_refer_text"],
+            id = properties["id"],
+        ) {
+            legacyProperties = properties
+        }
+
+        /**
+         * 附件属性的旧版字符串视图。新代码应使用类型化属性。
+         */
+        @Deprecated("Use the typed attachment properties")
+        public val properties: Map<String, String>
+            get() = buildMap {
+                putAll(legacyProperties)
+                put("url", url)
+                filename?.let { put("filename", it) }
+                width?.let { put("width", it.toString()) }
+                height?.let { put("height", it.toString()) }
+                this@Attachment.size?.let { put("size", it.toString()) }
+                contentType?.let { put("content_type", it) }
+                voiceWavUrl?.let { put("voice_wav_url", it) }
+                asrReferText?.let { put("asr_refer_text", it) }
+                id?.let { put("id", it) }
+            }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Attachment) return false
 
             if (url != other.url) return false
-            if (properties != other.properties) return false
+            if (filename != other.filename) return false
+            if (width != other.width) return false
+            if (height != other.height) return false
+            if (size != other.size) return false
+            if (contentType != other.contentType) return false
+            if (voiceWavUrl != other.voiceWavUrl) return false
+            if (asrReferText != other.asrReferText) return false
+            if (id != other.id) return false
 
             return true
         }
 
         override fun hashCode(): Int {
             var result = url.hashCode()
-            result = 31 * result + properties.hashCode()
+            result = 31 * result + filename.hashCode()
+            result = 31 * result + width.hashCode()
+            result = 31 * result + height.hashCode()
+            result = 31 * result + size.hashCode()
+            result = 31 * result + contentType.hashCode()
+            result = 31 * result + voiceWavUrl.hashCode()
+            result = 31 * result + asrReferText.hashCode()
+            result = 31 * result + id.hashCode()
             return result
         }
 
-        override fun toString(): String = "Attachment(url='$url', properties=$properties)"
+        override fun toString(): String = "Attachment(url='$url', filename=$filename, width=$width, height=$height, " +
+            "size=$size, contentType=$contentType, voiceWavUrl=$voiceWavUrl, asrReferText=$asrReferText, id=$id)"
 
         //region data-class 兼容
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("url"))
         public operator fun component1(): String = url
 
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("properties"))
+        @Suppress("DEPRECATION")
         public operator fun component2(): Map<String, String> = properties
 
-        @Suppress("DeprecatedCallableAddReplaceWith")
+        @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE)
         public fun copy(
             url: String = this.url,
@@ -995,30 +1044,5 @@ internal object MessageEmbedFieldSerializer : KSerializer<Message.Embed.Field> {
         val output = encoder.beginStructure(descriptor)
         output.encodeStringElement(descriptor, 0, value.name)
         output.endStructure(descriptor)
-    }
-}
-
-internal object MessageAttachmentSerializer : KSerializer<Message.Attachment> {
-    private val serializer = MapSerializer(String.serializer(), String.serializer())
-
-    @ExperimentalSerializationApi
-    override fun deserialize(decoder: Decoder): Message.Attachment {
-        val properties = serializer.deserialize(decoder)
-        val url = properties["url"] ?: throw MissingFieldException("url", "Message.Attachment")
-        return Message.Attachment(url, properties)
-    }
-
-    override val descriptor: SerialDescriptor = serializer.descriptor
-
-    override fun serialize(encoder: Encoder, value: Message.Attachment) {
-        var map = value.properties
-        if ("url" !in map) {
-            map = buildMap(map.size) {
-                putAll(map)
-                put("url", value.url)
-            }
-        }
-
-        serializer.serialize(encoder, map)
     }
 }

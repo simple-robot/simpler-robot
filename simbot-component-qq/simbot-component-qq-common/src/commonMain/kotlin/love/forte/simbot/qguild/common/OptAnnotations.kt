@@ -92,3 +92,25 @@ public annotation class ExperimentalQGMediaApi
 @RequiresOptIn("仅供QQ组件内部实现的接口或抽象类，对外部实现不保证任何兼容性或稳定性")
 @MustBeDocumented
 public annotation class QGInternalInheritanceApi
+
+/**
+ * 标记一个不稳定的 QQ 组件第三方 API 属性，用于表示某些可能是来自猜测、实际 API 调用后人工核查而来，
+ * 并且并未出现在官方文档中，因此而不稳定的属性。
+ *
+ * @since 5.0
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    "标记一个不稳定的 QQ 组件第三方 API 属性，用于表示某些可能是来自猜测、实际 API 调用后人工核查而来，" +
+        "并且并未出现在官方文档中，因此而不稳定的属性。",
+)
+@MustBeDocumented
+@Target(
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.VALUE_PARAMETER
+)
+public annotation class QGUnstableProperty
+
+
