@@ -42,4 +42,6 @@ internal class QGBotMemberImpl(
 ) : QGGroupBotMember() {
     override val coroutineContext: CoroutineContext =
         bot.newSupervisorCoroutineContext()
+
+    override val name: String = bot.name
 }

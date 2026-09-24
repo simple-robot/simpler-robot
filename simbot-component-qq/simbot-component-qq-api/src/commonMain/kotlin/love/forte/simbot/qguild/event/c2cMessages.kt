@@ -243,7 +243,7 @@ public data class C2CMessageCreate @EventModelConstructor constructor(
      *
      * [ext] 中的元素是 `key=value` 形式的扩展信息。自定义菜单的开关操作会在此处携带开关设置结果。
      *
-     * @property source 消息来源。
+     * @property source 消息来源。`default`=默认聊天窗口
      * @property ext 场景扩展信息。
      *
      * @since 5.0
@@ -369,6 +369,29 @@ public sealed interface GroupMessageAuthor {
      */
     public val bot: Boolean
 
+    /**
+     * 用户唯一标识（OpenID 格式）
+     * @since 5.0
+     */
+    public val id: String
+
+    /**
+     * 用户昵称
+     * @since 5.0
+     */
+    public val username: String
+
+    /**
+     * 跨应用统一用户 OpenID（可能为空）
+     * @since 5.0
+     */
+    public val unionOpenid: String?
+
+    /**
+     * 跨应用统一用户账号（可能为空）
+     * @since 5.0
+     */
+    public val unionUserAccount: String?
 }
 
 /**
@@ -474,16 +497,58 @@ public data class GroupAtMessageCreate(
     }
 
     /**
-     * The [Data.author]
+     * The [Data.author], [群@机器人消息](https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_at_message_create.html#schema-user)
+     * 的作者（发信人）信息。
+     *
+     * @property bot 是否为机器人
+     * @property memberOpenid 群成员 OpenID（群聊场景使用）
+     * @property memberRole 群成员角色
      */
     @Serializable
-    public class Author @EventModelConstructor constructor(
+    public class Author internal constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")
         override val memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
         override val bot: Boolean = false,
+        /**
+         * 用户唯一标识（OpenID 格式）
+         * @since 5.0
+         */
+        override val id: String = "",
+        /**
+         * 用户昵称
+         * @since 5.0
+         */
+        override val username: String = "",
+        /**
+         * 跨应用统一用户 OpenID（可能为空）
+         * @since 5.0
+         */
+        override val unionOpenid: String? = null,
+        /**
+         * 跨应用统一用户账号（可能为空）
+         * @since 5.0
+         */
+        override val unionUserAccount: String? = null
     ) : GroupMessageAuthor {
+
+        @EventModelConstructor
+        @Deprecated(
+            message = DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
+            level = DeprecationLevel.ERROR
+        )
+        public constructor(
+            memberOpenid: String,
+            memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
+            bot: Boolean = false,
+        ) : this(
+            memberOpenid = memberOpenid,
+            memberRole = memberRole,
+            bot = bot,
+            id = ""
+        )
+
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberOpenid"))
         public operator fun component1(): String = memberOpenid
 
@@ -499,29 +564,53 @@ public data class GroupAtMessageCreate(
             memberOpenid: String = this.memberOpenid,
             memberRole: GroupMessageAuthorRole = this.memberRole,
             bot: Boolean = this.bot,
-        ): Author = Author(memberOpenid, memberRole, bot)
+        ): Author = Author(
+            memberOpenid = memberOpenid,
+            memberRole = memberRole,
+            bot = bot,
+            id = id,
+            username = username,
+            unionOpenid = unionOpenid,
+            unionUserAccount = unionUserAccount,
+        )
+
+        override fun toString(): String {
+            return "Author(id='$id', " +
+                "unionOpenid=$unionOpenid, " +
+                "memberOpenid='$memberOpenid', " +
+                "memberRole=$memberRole, " +
+                "bot=$bot, " +
+                "username='$username', " +
+                "unionUserAccount=$unionUserAccount" +
+                ")"
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Author) return false
 
+            if (bot != other.bot) return false
             if (memberOpenid != other.memberOpenid) return false
             if (memberRole != other.memberRole) return false
-            if (bot != other.bot) return false
+            if (id != other.id) return false
+            if (username != other.username) return false
+            if (unionOpenid != other.unionOpenid) return false
+            if (unionUserAccount != other.unionUserAccount) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            var result = memberOpenid.hashCode()
+            var result = bot.hashCode()
+            result = 31 * result + memberOpenid.hashCode()
             result = 31 * result + memberRole.hashCode()
-            result = 31 * result + bot.hashCode()
+            result = 31 * result + id.hashCode()
+            result = 31 * result + username.hashCode()
+            result = 31 * result + unionOpenid.hashCode()
+            result = 31 * result + unionUserAccount.hashCode()
             return result
         }
 
-        override fun toString(): String {
-            return "Author(memberOpenid=$memberOpenid, memberRole=$memberRole, bot=$bot)"
-        }
     }
 }
 
@@ -629,16 +718,58 @@ public data class GroupMessageCreate(
     }
 
     /**
-     * The [Data.author]
+     * The [Data.author], [群消息（全量模式）](https://bot.q.qq.com/wiki/develop/api-v2/autogen/event/group_message_create.html#schema-user)
+     * 的作者（发信人）信息。
+     *
+     * @property bot 是否为机器人
+     * @property memberOpenid 群成员 OpenID（群聊场景使用）
+     * @property memberRole 群成员角色
      */
     @Serializable
-    public class Author @EventModelConstructor constructor(
+    public class Author internal constructor(
         @SerialName("member_openid")
         override val memberOpenid: String,
         @SerialName("member_role")
         override val memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
         override val bot: Boolean = false,
+        /**
+         * 用户唯一标识（OpenID 格式）
+         * @since 5.0
+         */
+        override val id: String = "",
+        /**
+         * 用户昵称
+         * @since 5.0
+         */
+        override val username: String = "",
+        /**
+         * 跨应用统一用户 OpenID（可能为空）
+         * @since 5.0
+         */
+        override val unionOpenid: String? = null,
+        /**
+         * 跨应用统一用户账号（可能为空）
+         * @since 5.0
+         */
+        override val unionUserAccount: String? = null
     ) : GroupMessageAuthor {
+
+        @EventModelConstructor
+        @Deprecated(
+            message = DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE,
+            level = DeprecationLevel.ERROR
+        )
+        public constructor(
+            memberOpenid: String,
+            memberRole: GroupMessageAuthorRole = GroupMessageAuthorRole.MEMBER,
+            bot: Boolean = false,
+        ) : this(
+            memberOpenid = memberOpenid,
+            memberRole = memberRole,
+            bot = bot,
+            id = ""
+        )
+
         @Deprecated(DataClassCompatibilities.DEPRECATED_MESSAGE, ReplaceWith("memberOpenid"))
         public operator fun component1(): String = memberOpenid
 
@@ -654,28 +785,52 @@ public data class GroupMessageCreate(
             memberOpenid: String = this.memberOpenid,
             memberRole: GroupMessageAuthorRole = this.memberRole,
             bot: Boolean = this.bot,
-        ): Author = Author(memberOpenid, memberRole, bot)
+        ): Author = Author(
+            memberOpenid = memberOpenid,
+            memberRole = memberRole,
+            bot = bot,
+            id = id,
+            username = username,
+            unionOpenid = unionOpenid,
+            unionUserAccount = unionUserAccount,
+        )
+
+        override fun toString(): String {
+            return "Author(" +
+                "id='$id', " +
+                "unionOpenid=$unionOpenid, " +
+                "memberOpenid='$memberOpenid', " +
+                "username='$username', " +
+                "memberRole=$memberRole, " +
+                "bot=$bot, " +
+                "unionUserAccount=$unionUserAccount)"
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Author) return false
 
+            if (bot != other.bot) return false
             if (memberOpenid != other.memberOpenid) return false
             if (memberRole != other.memberRole) return false
-            if (bot != other.bot) return false
+            if (id != other.id) return false
+            if (username != other.username) return false
+            if (unionOpenid != other.unionOpenid) return false
+            if (unionUserAccount != other.unionUserAccount) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            var result = memberOpenid.hashCode()
+            var result = bot.hashCode()
+            result = 31 * result + memberOpenid.hashCode()
             result = 31 * result + memberRole.hashCode()
-            result = 31 * result + bot.hashCode()
+            result = 31 * result + id.hashCode()
+            result = 31 * result + username.hashCode()
+            result = 31 * result + unionOpenid.hashCode()
+            result = 31 * result + unionUserAccount.hashCode()
             return result
         }
 
-        override fun toString(): String {
-            return "Author(memberOpenid=$memberOpenid, memberRole=$memberRole, bot=$bot)"
-        }
     }
 }

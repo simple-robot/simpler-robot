@@ -55,13 +55,12 @@ public interface QGGroupMember : Member {
     public val groupId: ID
 
     /**
-     * 无法得知对方的用户名，始终得到空字符串。
+     * 群成员的用户昵称。
      */
     override val name: String
-        get() = ""
 
     /**
-     * 无法得知昵称，始终得到 `null`。
+     * QQ 中无法区分群成员的 QQ 名称与群昵称。因此只有 [name]，[nick] 始终为 `null`。
      */
     override val nick: String?
         get() = null

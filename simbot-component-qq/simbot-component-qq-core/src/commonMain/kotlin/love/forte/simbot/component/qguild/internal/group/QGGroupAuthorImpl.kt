@@ -46,4 +46,7 @@ internal class QGGroupAuthorImpl(
 
     override val memberRole: QGGroupRole
         get() = authorData.memberRole.toQGGroupRole()
+
+    override val name: String
+        get() = authorData.username
 }
