@@ -36,8 +36,8 @@ public sealed class QGGroupJoinRequestRejectOption : RejectOption {
     /**
      * 拒绝理由。会在 API 中作为 `reject_reason` 参数。
      *
-     * 如果作为 options 参数时出现多个 [Reason]，理由会以换行符连接。
-     * 例如 `Reason(reason="拒绝，")` 和 `Reason(rason="没有理由。")`
+     * 如果作为 options 参数时出现多个 [Reason]，理由会按顺序直接拼接，不插入分隔符。
+     * 例如 `Reason(reason="拒绝，")` 和 `Reason(reason="没有理由。")`
      * 最终会被合并为 `"拒绝，没有理由。"`。
      *
      * @property reason 拒绝理由。

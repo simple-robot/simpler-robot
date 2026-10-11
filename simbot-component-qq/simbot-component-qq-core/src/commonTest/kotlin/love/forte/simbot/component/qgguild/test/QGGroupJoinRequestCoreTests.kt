@@ -112,7 +112,7 @@ class QGGroupJoinRequestCoreTests : AbstractInteractionTests() {
                 approvalBodies.map { it.getValue("op").jsonPrimitive.content })
             assertEquals(List(4) { "request" },
                 approvalBodies.map { it.getValue("join_request_id").jsonPrimitive.content })
-            assertEquals("first\nsecond",
+            assertEquals("firstsecond",
                 approvalBodies[1].getValue("reject_reason").jsonPrimitive.content)
             assertEquals("true",
                 approvalBodies[1].getValue("add_to_member_blacklist").jsonPrimitive.content)

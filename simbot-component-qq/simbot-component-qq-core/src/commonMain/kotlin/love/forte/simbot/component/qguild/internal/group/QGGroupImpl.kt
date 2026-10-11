@@ -77,7 +77,7 @@ internal class QGGroupImpl(
     override suspend fun includeInfo(): QGGroupWithInfo =
         QGGroupWithInfoImpl(this, groupInfo())
 
-    override suspend fun botAsMember(): QGGroupBotMember =
+    override suspend fun botAsMemberWithState(): QGGroupBotMember =
         QGBotMemberImpl(bot, id, botState())
 
     private fun GroupAndC2CSendBody.initMsgIdAndSeq() {

@@ -27,14 +27,12 @@ import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.qguild.group.QGGroupBotMember
 import love.forte.simbot.component.qguild.group.QGGroupRole
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.qguild.QQGuildApiException
 import love.forte.simbot.qguild.model.group.GroupBotReceiveMessageSetting
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotEquals
+import kotlin.test.*
 
 /**
  * 验证机器人群内成员快照的查询路径与身份语义。
@@ -57,7 +55,7 @@ class QGGroupBotMemberCoreTests : AbstractInteractionTests() {
             val group = bot.groupRelation.group("group".ID)!!
             assertEquals(emptyList(), paths)
 
-            val member = group.botAsMember()
+            val member = group.botAsMemberWithState()
             assertEquals("group".ID, member.groupId)
             assertEquals("group-bot-member".ID, member.id)
             assertNotEquals(bot.id, member.id)
@@ -67,10 +65,16 @@ class QGGroupBotMemberCoreTests : AbstractInteractionTests() {
             assertEquals(GroupBotReceiveMessageSetting.OnlyMention, member.recvMsgSetting)
             assertEquals(listOf("/v2/groups/group/bot_state"), paths)
 
+            val baseMember = group.botAsMember()
+            assertIs<QGGroupBotMember>(baseMember)
+            assertEquals(member.id, baseMember.id)
+            assertEquals(member.groupId, baseMember.groupId)
+            assertEquals(List(2) { "/v2/groups/group/bot_state" }, paths)
+
             val state = group.botState()
             assertEquals("group-bot-member", state.memberOpenid)
             assertEquals("group-bot-member", bot.groupRelation.groupBotState("group".ID).memberOpenid)
-            assertEquals(List(3) { "/v2/groups/group/bot_state" }, paths)
+            assertEquals(List(4) { "/v2/groups/group/bot_state" }, paths)
         } finally {
             app.cancel()
             bot.cancel()
@@ -89,6 +93,8 @@ class QGGroupBotMemberCoreTests : AbstractInteractionTests() {
             val group = bot.groupRelation.group("group".ID)!!
             val failure = assertFailsWith<QQGuildApiException> { group.botAsMember() }
             assertEquals(11253, failure.info?.code)
+            val stateFailure = assertFailsWith<QQGuildApiException> { group.botAsMemberWithState() }
+            assertEquals(11253, stateFailure.info?.code)
         } finally {
             app.cancel()
             bot.cancel()

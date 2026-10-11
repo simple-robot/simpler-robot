@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.message
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -66,18 +67,21 @@ import love.forte.simbot.message.Message as SimbotMessage
 @Serializable
 public class QGAttachmentMessage internal constructor(
     public val url: String,
-    public val filename: String? = null,
-    public val width: Int? = null,
-    public val height: Int? = null,
-    public val size: Long? = null,
-    @SerialName("content_type") public val contentType: String? = null,
-    @SerialName("voice_wav_url") public val voiceWavUrl: String? = null,
-    @SerialName("asr_refer_text") public val asrReferText: String? = null,
-    @SerialName("id") @property:QGUnstableProperty public val attachmentId: String? = null,
+    /**
+     * 保留历史序列化属性表，并为缺失的类型化字段提供默认值。
+     */
+    @SerialName("properties")
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    private val legacyProperties: Map<String, String> = emptyMap(),
+    public val filename: String? = legacyProperties["filename"],
+    public val width: Int? = legacyProperties["width"]?.toIntOrNull(),
+    public val height: Int? = legacyProperties["height"]?.toIntOrNull(),
+    public val size: Long? = legacyProperties["size"]?.toLongOrNull(),
+    @SerialName("content_type") public val contentType: String? = legacyProperties["content_type"],
+    @SerialName("voice_wav_url") public val voiceWavUrl: String? = legacyProperties["voice_wav_url"],
+    @SerialName("asr_refer_text") public val asrReferText: String? = legacyProperties["asr_refer_text"],
+    @SerialName("id") @property:QGUnstableProperty public val attachmentId: String? = legacyProperties["id"],
 ) : QGMessageElement, BinaryDataAwareMessage {
-
-    @Transient
-    private var legacyProperties: Map<String, String> = emptyMap()
 
     /**
      * 兼容旧版使用字符串属性表创建附件消息的方式。
@@ -86,17 +90,8 @@ public class QGAttachmentMessage internal constructor(
     @Deprecated("Use received attachment messages and their typed properties")
     public constructor(url: String, properties: Map<String, String> = emptyMap()) : this(
         url = url,
-        filename = properties["filename"],
-        width = properties["width"]?.toIntOrNull(),
-        height = properties["height"]?.toIntOrNull(),
-        size = properties["size"]?.toLongOrNull(),
-        contentType = properties["content_type"],
-        voiceWavUrl = properties["voice_wav_url"],
-        asrReferText = properties["asr_refer_text"],
-        attachmentId = properties["id"],
-    ) {
-        legacyProperties = properties
-    }
+        legacyProperties = properties,
+    )
 
     /**
      * 附件属性的旧版字符串视图。新代码应使用类型化属性。

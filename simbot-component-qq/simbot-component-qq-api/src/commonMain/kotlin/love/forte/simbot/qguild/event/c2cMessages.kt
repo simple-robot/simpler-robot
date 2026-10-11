@@ -525,11 +525,13 @@ public data class GroupAtMessageCreate(
          * 跨应用统一用户 OpenID（可能为空）
          * @since 5.0
          */
+        @SerialName("union_openid")
         override val unionOpenid: String? = null,
         /**
          * 跨应用统一用户账号（可能为空）
          * @since 5.0
          */
+        @SerialName("union_user_account")
         override val unionUserAccount: String? = null
     ) : GroupMessageAuthor {
 
@@ -746,11 +748,13 @@ public data class GroupMessageCreate(
          * 跨应用统一用户 OpenID（可能为空）
          * @since 5.0
          */
+        @SerialName("union_openid")
         override val unionOpenid: String? = null,
         /**
          * 跨应用统一用户账号（可能为空）
          * @since 5.0
          */
+        @SerialName("union_user_account")
         override val unionUserAccount: String? = null
     ) : GroupMessageAuthor {
 

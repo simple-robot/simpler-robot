@@ -57,7 +57,10 @@ class QGGroupMessageCreateInteractionTests : AbstractInteractionTests() {
             s = 1,
             data = GroupMessageCreate.Data(
                 id = "message-id",
-                author = GroupMessageCreate.Author("member-openid"),
+                author = Json.decodeFromString(
+                    GroupMessageCreate.Author.serializer(),
+                    """{"member_openid":"member-openid"}"""
+                ),
                 content = "source",
                 timestamp = "2023-11-06T13:37:18+08:00",
                 groupOpenid = "group-openid"

@@ -106,7 +106,8 @@ internal suspend fun rejectGroupJoinRequest(
         if (option is QGGroupJoinRequestRejectOption) {
             when (option) {
                 is QGGroupJoinRequestRejectOption.Reason -> {
-                    reason = (reason ?: StringBuilder(option.reason.length)).append(option.reason)
+                    val builder = reason ?: StringBuilder(option.reason.length)
+                    reason = builder.append(option.reason)
                 }
 
                 QGGroupJoinRequestRejectOption.AddToBlacklist -> {

@@ -27,6 +27,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
+import love.forte.simbot.qguild.common.QGUnstableProperty
 import love.forte.simbot.qguild.model.Message
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,6 +36,7 @@ import kotlin.test.assertNull
 /**
  * 验证 QQ 附件字段的序列化及旧版属性表兼容性。
  */
+@OptIn(QGUnstableProperty::class)
 class MessageAttachmentTest {
     private val json = Json
 
@@ -71,6 +73,23 @@ class MessageAttachmentTest {
         assertEquals("voice", attachment.contentType)
         assertEquals("https://example.com/voice.wav", attachment.voiceWavUrl)
         assertEquals("你好", attachment.asrReferText)
+    }
+
+    /**
+     * 旧底层序列化器写出的平铺数字字符串仍可读取为类型化数值。
+     */
+    @Test
+    fun historicalFlatNumericStringsRemainReadable() {
+        val attachment = json.decodeFromString(
+            Message.Attachment.serializer(),
+            """{"url":"u","filename":"a.png","width":"236","height":"187","size":"44182","id":"attachment"}"""
+        )
+        assertEquals(236, attachment.width)
+        assertEquals(187, attachment.height)
+        assertEquals(44182L, attachment.size)
+        assertEquals("attachment", attachment.id)
+        val encoded = json.encodeToString(Message.Attachment.serializer(), attachment)
+        assertEquals(236L, json.parseToJsonElement(encoded).jsonObject.getValue("width").jsonPrimitive.long)
     }
 
     @Suppress("DEPRECATION")

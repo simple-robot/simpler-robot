@@ -29,6 +29,10 @@ import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.group.QGGroupWithInfo
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.api.group.GetGroupInfoApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.model.group.GroupInfo
@@ -64,6 +68,15 @@ internal class QGGroupWithInfoImpl(
     override suspend fun groupInfoOrQuery(): GroupInfo = groupInfo
 
     override suspend fun includeInfoOrSelf(): QGGroupWithInfo = this
+
+    override suspend fun send(text: String): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(text))
+
+    override suspend fun send(message: Message): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(message))
+
+    override suspend fun send(messageContent: MessageContent): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(messageContent))
 
     override fun toString(): String = "QGGroupWithInfo(id=$id, name=$name)"
 }

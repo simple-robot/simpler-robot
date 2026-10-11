@@ -57,11 +57,23 @@ public interface QGGroup : ChatGroup {
     /**
      * 查询机器人在本群中的状态，并作为成员对象返回。
      * 成员 [QGGroupMember.id] 使用群成员 OpenID，而不是 Bot 的 AppID。
+     * 需要读取原始状态和角色等属性时，使用 [botAsMemberWithState]。
      *
      * @throws love.forte.simbot.qguild.QQGuildApiException 可能在 API 调用过程中产生的异常
+     * @see botAsMemberWithState
      */
     @STP
-    override suspend fun botAsMember(): QGGroupBotMember
+    override suspend fun botAsMember(): QGGroupMember = botAsMemberWithState()
+
+    /**
+     * 查询机器人在本群中的成员身份及原始状态快照。
+     * 每次调用都请求平台，成员 ID 使用群成员 OpenID。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @STP
+    public suspend fun botAsMemberWithState(): QGGroupBotMember
 
     /**
      * 群名称。
