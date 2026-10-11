@@ -34,10 +34,10 @@ import love.forte.simbot.qguild.event.GroupMessageAuthor
 import kotlin.coroutines.CoroutineContext
 
 internal class QGGroupAuthorImpl(
-    bot: QGBotImpl,
+    override val bot: QGBotImpl,
     override val groupId: ID,
     private val authorData: GroupMessageAuthor,
-) : QGGroupAuthor {
+) : QGGroupAuthor, QGGroupMemberMuteSupport {
     override val id: ID = authorData.memberOpenid.ID
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 

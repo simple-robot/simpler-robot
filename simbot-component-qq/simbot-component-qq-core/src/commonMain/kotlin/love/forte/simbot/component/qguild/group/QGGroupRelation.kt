@@ -31,8 +31,10 @@ import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
+import love.forte.simbot.qguild.model.group.GroupMuteSetting
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
+import kotlin.time.Instant
 
 
 /**
@@ -131,4 +133,74 @@ public interface QGGroupRelation : GroupRelation {
      */
     @JvmSynthetic
     override suspend fun groupCount(): Int = -1
+
+    /**
+     * 查询 [groupId] 对应群的禁言状态信息。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun muteSetting(groupId: ID): GroupMuteSetting
+
+    /**
+     * 提交成员禁言变更请求。一次提交的数量应当在 1～20 项之内。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @throws IllegalArgumentException 空白群/成员 ID或其他非法入参的情况
+     * @since 5.0
+     */
+    @ST
+    public suspend fun setMemberMutes(groupId: ID, changes: List<QGGroupMemberMuteChange>)
+
+    /**
+     * 增加指定成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMemberMute(groupId: ID, memberId: ID, expireAt: Instant): Unit =
+        setMemberMutes(groupId, listOf(QGGroupMemberMuteChange.add(memberId, expireAt)))
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数增加指定成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMemberMuteAtMilliseconds(groupId: ID, memberId: ID, expireAtMilliseconds: Long): Unit =
+        addMemberMute(groupId, memberId, Instant.fromEpochMilliseconds(expireAtMilliseconds))
+
+    /**
+     * 更新指定成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMemberMute(groupId: ID, memberId: ID, expireAt: Instant): Unit =
+        setMemberMutes(groupId, listOf(QGGroupMemberMuteChange.update(memberId, expireAt)))
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数更新指定成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMemberMuteAtMilliseconds(groupId: ID, memberId: ID, expireAtMilliseconds: Long): Unit =
+        updateMemberMute(groupId, memberId, Instant.fromEpochMilliseconds(expireAtMilliseconds))
+
+    /**
+     * 解除指定成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun unmuteMember(groupId: ID, memberId: ID): Unit =
+        setMemberMutes(groupId, listOf(QGGroupMemberMuteChange.remove(memberId)))
+
 }

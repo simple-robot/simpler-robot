@@ -52,7 +52,7 @@ public class SetGroupMuteSettingApi private constructor(
          */
         @JvmStatic
         public fun create(groupOpenid: String, members: Iterable<SetMemberMuteState>): SetGroupMuteSettingApi =
-            SetGroupMuteSettingApi(groupOpenid, Body(members.toList()))
+            SetGroupMuteSettingApi(groupOpenid, Body(members.map(::MemberBody)))
 
         /**
          * 构建群成员禁言请求。
@@ -62,7 +62,7 @@ public class SetGroupMuteSettingApi private constructor(
          */
         @JvmStatic
         public fun create(groupOpenid: String, vararg members: SetMemberMuteState): SetGroupMuteSettingApi =
-            SetGroupMuteSettingApi(groupOpenid, Body(members.toList()))
+            SetGroupMuteSettingApi(groupOpenid, Body(members.map(::MemberBody)))
     }
 
     override val path: Array<String> = arrayOf("v2", "groups", groupOpenid, "restrict_chat_setting")
@@ -79,11 +79,28 @@ public class SetGroupMuteSettingApi private constructor(
         /**
          * 用户禁言操作列表，可省略；单次最多 20 项。
          */
-        public val members: List<SetMemberMuteState>? = null,
+        val members: List<MemberBody>? = null,
     ) {
         override fun toString(): String {
             return "Body(members=$members)"
         }
+    }
+
+    /**
+     * 请求中的时间字符串；解除时明确发送空串。
+     */
+    @Serializable
+    private class MemberBody(
+        val op: SetGroupMuteSettingOp,
+        @SerialName("member_openid") val memberOpenid: String,
+        @SerialName("mute_expire_at") val muteExpireAt: String? = null,
+    ) {
+        constructor(source: SetMemberMuteState) : this(
+            source.op,
+            source.memberOpenid,
+            source.muteExpireAt?.toString()
+                ?: if (source.op == SetGroupMuteSettingOp.DEL) "" else null,
+        )
     }
 
 }
@@ -118,7 +135,7 @@ public enum class SetGroupMuteSettingOp {
  *
  * @property op 操作：add、update 或 del。
  * @property memberOpenid 成员 OpenID。
- * @property muteExpireAt 到期时间，RFC3339 格式；del 时可传空串。
+ * @property muteExpireAt 绝对到期时间；del 时传 null。
  *
  * @since 5.0
  */
@@ -143,7 +160,7 @@ public class SetMemberMuteState private constructor(
         /**
          * 构造一个 [SetMemberMuteState] 实例。
          *
-         * @param muteExpireAtMilliseconds 到期时间，毫秒数；del 时可传空串。
+         * @param muteExpireAtMilliseconds 自 Unix epoch 起的毫秒数；del 时传 null。
          */
         @JvmStatic
         public fun of(

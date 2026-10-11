@@ -24,7 +24,6 @@
 package love.forte.simbot.component.qguild.internal.group
 
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.component.qguild.group.QGGroupMember
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import kotlin.coroutines.CoroutineContext
@@ -35,10 +34,10 @@ import kotlin.coroutines.CoroutineContext
  * @author ForteScarlet
  */
 internal class QGGroupMemberImpl(
-    bot: QGBotImpl,
+    override val bot: QGBotImpl,
     override val groupId: ID,
     override val id: ID,
     override val name: String = ""
-) : QGGroupMember {
+) : QGGroupMemberMuteSupport {
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 }

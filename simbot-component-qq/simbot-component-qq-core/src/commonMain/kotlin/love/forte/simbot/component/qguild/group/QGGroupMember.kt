@@ -34,8 +34,11 @@ import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.model.group.GroupBotReceiveMessageSetting
 import love.forte.simbot.qguild.model.group.GroupBotState
+import love.forte.simbot.qguild.model.group.GroupMemberMuteState
+import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmExposeBoxed
 import kotlin.jvm.JvmSynthetic
+import kotlin.time.Instant
 
 /**
  * QQ 群内成员的基础信息。
@@ -101,6 +104,76 @@ public interface QGGroupMember : Member {
     override suspend fun send(text: String): MessageReceipt {
         sendToMemberIsUnsupported(id)
     }
+
+    //region mute operations
+
+    /**
+     * 查询当前成员在所属群的禁言情况。
+     * null 仅表示记录缺失，这可能表示未被直接禁言，但是不保证是否处于全员禁言之类的非针对性状态。
+     *
+     * 如有需要，可使用 [QGGroup.muteSetting] 查询以群为单位的禁言情况信息。
+     * 注意：当前操作调用的 API 与群的禁言信息的 API 本质上相同，也因此它们可能会共享服务端的速率限制。
+     *
+     * @see QGGroup.muteSetting
+     *
+     * @since 5.0
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     */
+    @ST
+    public suspend fun muteState(): GroupMemberMuteState?
+
+    /**
+     * 增加/设置此成员的单独禁言。
+     *
+     * @param expireAt 禁言的绝对到期时间
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMute(expireAt: Instant)
+
+    /**
+     * 更新此成员已有禁言的到期时间。
+     *
+     * @param expireAt 禁言的绝对到期时间
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMute(expireAt: Instant)
+
+    /**
+     * 解除此成员的单独禁言。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun unmute()
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数增加此成员的单独禁言。
+     *
+     * @see addMute
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMuteAtMilliseconds(expireAtMilliseconds: Long): Unit =
+        addMute(Instant.fromEpochMilliseconds(expireAtMilliseconds))
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数更新此成员已有禁言的到期时间。
+     *
+     * @see updateMute
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMuteAtMilliseconds(expireAtMilliseconds: Long): Unit =
+        updateMute(Instant.fromEpochMilliseconds(expireAtMilliseconds))
+    //endregion
+
 }
 
 /**

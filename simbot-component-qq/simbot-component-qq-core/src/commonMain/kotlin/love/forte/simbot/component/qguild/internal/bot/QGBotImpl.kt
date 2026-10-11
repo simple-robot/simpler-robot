@@ -47,6 +47,7 @@ import love.forte.simbot.component.qguild.channel.*
 import love.forte.simbot.component.qguild.event.QGInternalInterceptionException
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
+import love.forte.simbot.component.qguild.group.QGGroupMemberMuteChange
 import love.forte.simbot.component.qguild.group.QGGroupRelation
 import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
@@ -86,6 +87,7 @@ import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SimpleGuild
 import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
+import love.forte.simbot.qguild.model.group.GroupMuteSetting
 import love.forte.simbot.qguild.stdlib.DisposableHandle
 import love.forte.simbot.qguild.stdlib.requestDataBy
 import love.forte.simbot.resource.Resource
@@ -170,6 +172,12 @@ internal class QGBotImpl(
 
         override suspend fun groupBotState(groupId: ID): GroupBotState =
             this@QGBotImpl.queryGroupBotState(groupId)
+
+        override suspend fun muteSetting(groupId: ID): GroupMuteSetting =
+            this@QGBotImpl.queryGroupMuteSetting(groupId)
+
+        override suspend fun setMemberMutes(groupId: ID, changes: List<QGGroupMemberMuteChange>) =
+            this@QGBotImpl.submitGroupMemberMutes(groupId, changes)
 
         override fun joinRequests(groupId: ID): Collectable<QGGroupJoinRequest> =
             this@QGBotImpl.groupJoinRequests(groupId)

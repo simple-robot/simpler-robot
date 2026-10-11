@@ -28,10 +28,7 @@ import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
-import love.forte.simbot.component.qguild.group.QGGroup
-import love.forte.simbot.component.qguild.group.QGGroupBotMember
-import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
-import love.forte.simbot.component.qguild.group.QGGroupWithInfo
+import love.forte.simbot.component.qguild.group.*
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.component.qguild.internal.event.QGGroupSendSupportPreSendEventImpl
@@ -49,6 +46,7 @@ import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageData
 import love.forte.simbot.qguild.model.group.GroupBotState
 import love.forte.simbot.qguild.model.group.GroupInfo
+import love.forte.simbot.qguild.model.group.GroupMuteSetting
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 
@@ -73,6 +71,11 @@ internal class QGGroupImpl(
     override suspend fun groupInfo(): GroupInfo = bot.queryGroupInfo(id)
 
     override suspend fun botState(): GroupBotState = bot.queryGroupBotState(id)
+
+    override suspend fun muteSetting(): GroupMuteSetting = bot.queryGroupMuteSetting(id)
+
+    override suspend fun setMemberMutes(changes: List<QGGroupMemberMuteChange>) =
+        bot.submitGroupMemberMutes(id, changes)
 
     override suspend fun includeInfo(): QGGroupWithInfo =
         QGGroupWithInfoImpl(this, groupInfo())

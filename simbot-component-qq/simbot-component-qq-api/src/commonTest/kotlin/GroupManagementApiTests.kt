@@ -24,6 +24,7 @@
 import io.ktor.http.*
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -38,6 +39,35 @@ import kotlin.test.assertNull
 import kotlin.time.Instant
 
 class GroupManagementApiTests {
+    /**
+     * 请求 DTO 在各种 null/默认值配置下保持解除空串，并保留增加/更新的 Instant 精度。
+     */
+    @Test
+    fun muteRequestTimeShapeDoesNotDependOnJsonConfiguration() {
+        val expireAt = Instant.parse("2026-10-11T01:00:00.123456789Z")
+        val states = listOf(
+            SetMemberMuteState.of(SetGroupMuteSettingOp.ADD, "a", expireAt),
+            SetMemberMuteState.of(SetGroupMuteSettingOp.UPDATE, "b", expireAt),
+            SetMemberMuteState.of(SetGroupMuteSettingOp.DEL, "c"),
+        )
+        for (encodeDefaults in listOf(false, true)) {
+            for (explicitNulls in listOf(false, true)) {
+                val json = Json(QQ.DefaultJson) {
+                    this.encodeDefaults = encodeDefaults
+                    this.explicitNulls = explicitNulls
+                }
+                val api = SetGroupMuteSettingApi.create("group", states)
+                val body = json.parseToJsonElement(
+                    json.encodeToString(guessSerializer(api.body, json.serializersModule), api.body)
+                ).jsonObject
+                val members = body.getValue("members").jsonArray
+                assertEquals(JsonPrimitive(expireAt.toString()), members[0].jsonObject["mute_expire_at"])
+                assertEquals(JsonPrimitive(expireAt.toString()), members[1].jsonObject["mute_expire_at"])
+                assertEquals(JsonPrimitive(""), members[2].jsonObject["mute_expire_at"])
+            }
+        }
+    }
+
     @Test
     fun routesAndPagination() {
         val group = "group-openid"
@@ -89,7 +119,7 @@ class GroupManagementApiTests {
         val item = encodeBody(mute.body).getValue("members").jsonArray.single().jsonObject
         assertEquals(JsonPrimitive("del"), item["op"])
         assertEquals(JsonPrimitive("member"), item["member_openid"])
-        assertNull(item["mute_expire_at"])
+        assertEquals(JsonPrimitive(""), item["mute_expire_at"])
     }
 
     @Test
