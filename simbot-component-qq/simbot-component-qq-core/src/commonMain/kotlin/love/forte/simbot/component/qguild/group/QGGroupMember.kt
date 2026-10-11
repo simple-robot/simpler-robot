@@ -56,6 +56,7 @@ public interface QGGroupMember : Member {
 
     /**
      * 群成员的用户昵称。
+     * 在一些无法得知对方的用户名的场景下（例如某些群操作事件）会始终得到空字符串。
      */
     override val name: String
 

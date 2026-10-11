@@ -41,8 +41,8 @@ private fun QGBotImpl.group(groupOpenid: String): QGGroup =
         isFake = false
     )
 
-private fun QGBotImpl.groupMember(groupOpenid: String, memberOpenid: String): QGGroupMember =
-    QGGroupMemberImpl(this, groupOpenid.ID, memberOpenid.ID)
+private fun QGBotImpl.groupMember(groupOpenid: String, memberOpenid: String, name: String = ""): QGGroupMember =
+    QGGroupMemberImpl(bot = this, groupId = groupOpenid.ID, id = memberOpenid.ID, name = name)
 
 internal class QGGroupAddRobotEventImpl(
     private val idValue: String?,
