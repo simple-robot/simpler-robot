@@ -26,6 +26,7 @@ package test
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
+import love.forte.simbot.qguild.event.GroupAtMessageCreate
 import love.forte.simbot.qguild.event.GroupMessageAuthorRole
 import love.forte.simbot.qguild.event.GroupMessageCreate
 import love.forte.simbot.qguild.event.resolveDispatchSerializer
@@ -38,6 +39,33 @@ import kotlin.test.*
 class GroupMessageCreateTests {
     private val json = Json {
         ignoreUnknownKeys = true
+    }
+
+    /**
+     * 两种群消息作者均按平台的字段名保留跨应用统一标识。
+     */
+    @Test
+    fun groupAuthorsRetainUnionIdentifiers() {
+        val raw = """{"member_openid":"member","id":"user","username":"昵称","union_openid":"union","union_user_account":"account"}"""
+        val atAuthor = json.decodeFromString(GroupAtMessageCreate.Author.serializer(), raw)
+        val author = json.decodeFromString(GroupMessageCreate.Author.serializer(), raw)
+        for (value in listOf(atAuthor, author)) {
+            assertEquals("user", value.id)
+            assertEquals("昵称", value.username)
+            assertEquals("union", value.unionOpenid)
+            assertEquals("account", value.unionUserAccount)
+        }
+        val encoded = listOf(
+            json.encodeToString(GroupAtMessageCreate.Author.serializer(), atAuthor),
+            json.encodeToString(GroupMessageCreate.Author.serializer(), author),
+        )
+        for (value in encoded) {
+            val fields = json.parseToJsonElement(value).jsonObject
+            assertEquals("\"union\"", fields["union_openid"].toString())
+            assertEquals("\"account\"", fields["union_user_account"].toString())
+            assertFalse("unionOpenid" in fields)
+            assertFalse("unionUserAccount" in fields)
+        }
     }
 
     @Test

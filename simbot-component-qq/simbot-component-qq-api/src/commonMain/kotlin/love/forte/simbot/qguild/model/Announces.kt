@@ -42,6 +42,7 @@ import kotlin.jvm.JvmStatic
 @Serializable
 @JvmExposeBoxed
 public value class AnnouncesType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 成员公告值常量
@@ -57,21 +58,18 @@ public value class AnnouncesType private constructor(public val value: Int) {
          * 成员公告
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Member: AnnouncesType = AnnouncesType(MEMBER_VALUE)
 
         /**
          * 欢迎公告
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Welcome: AnnouncesType = AnnouncesType(WELCOME_VALUE)
 
         /**
          * 构建任意 [AnnouncesType] 值。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): AnnouncesType = AnnouncesType(value)
     }
 }

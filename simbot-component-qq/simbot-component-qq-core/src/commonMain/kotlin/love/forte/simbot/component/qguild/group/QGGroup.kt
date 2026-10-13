@@ -33,28 +33,55 @@ import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Role
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
+import love.forte.simbot.qguild.common.QGInternalInheritanceApi
+import love.forte.simbot.qguild.event.GroupMessageAuthorRole
+import love.forte.simbot.qguild.model.group.GroupBotState
+import love.forte.simbot.qguild.model.group.GroupInfo
+import love.forte.simbot.qguild.model.group.GroupMuteSetting
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
+import kotlin.time.Instant
 
 
 /**
- * 一个群at消息事件中的群信息对象。
+ * 一个QQ群。
  *
  * @author ForteScarlet
  */
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
 public interface QGGroup : ChatGroup {
     /**
      * 这个群的openid。
      */
     override val id: ID
 
+    /**
+     * 查询机器人在本群中的状态，并作为成员对象返回。
+     * 成员 [QGGroupMember.id] 使用群成员 OpenID，而不是 Bot 的 AppID。
+     * 需要读取原始状态和角色等属性时，使用 [botAsMemberWithState]。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException 可能在 API 调用过程中产生的异常
+     * @see botAsMemberWithState
+     */
     @STP
-    override suspend fun botAsMember(): QGGroupMember
+    override suspend fun botAsMember(): QGGroupMember = botAsMemberWithState()
 
     /**
-     * 群消息事件中，只存在群的openid，无法得知群名称，
-     * 将始终得到空字符串。
+     * 查询机器人在本群中的成员身份及原始状态快照。
+     * 每次调用都请求平台，成员 ID 使用群成员 OpenID。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @STP
+    public suspend fun botAsMemberWithState(): QGGroupBotMember
+
+    /**
+     * 群名称。
+     *
+     * 默认只有群 OpenID，无法得知名称，因此返回空字符串。
+     * 可以通过 [includeInfo] 得到带有更多群基础信息的 [QGGroupWithInfo]。
      */
     override val name: String
         get() = ""
@@ -96,10 +123,7 @@ public interface QGGroup : ChatGroup {
      * @see QGBot.uploadGroupMedia
      */
     @ST
-    public suspend fun uploadMedia(
-        url: String,
-        type: Int,
-    ): QGMedia
+    public suspend fun uploadMedia(url: String, type: Int): QGMedia
 
     /**
      * 上传一个资源为用于向QQ群发送的 [QGMedia], 可用于后续的发送。
@@ -117,11 +141,185 @@ public interface QGGroup : ChatGroup {
      */
     @ST
     @ExperimentalQGMediaApi
-    public suspend fun uploadMedia(
-        resource: Resource,
-        type: Int,
-    ): QGMedia
+    public suspend fun uploadMedia(resource: Resource, type: Int): QGMedia
+
+
+    /**
+     * 得到当前群的入群申请列表的[收集器][Collectable]。收集时才请求，并按平台游标自动翻页。
+     *
+     * @since 5.0
+     */
+    public val joinRequests: Collectable<QGGroupJoinRequest>
+
+    /**
+     * 通过 API 查询当前 QQ 群的基本信息，返回本次查询的快照结果。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun groupInfo(): GroupInfo
+
+    /**
+     * 通过 API 查询机器人在当前 QQ 群内的原始状态快照。
+     * 查询失败时透传平台或网络异常，不缓存查询结果。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun botState(): GroupBotState
+
+    /**
+     * 通过 API 查询群基本信息并基于此得到存在更详细信息的 [QGGroupWithInfo]。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @throws IllegalStateException 如果响应中的群 OpenID 与当前群 ID 不一致
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun includeInfo(): QGGroupWithInfo
+
+    /**
+     * 如果当前对象已经是 [QGGroupWithInfo]，返回其已有的 [GroupInfo]；
+     * 否则调用 [groupInfo] 查询。
+     *
+     * API 调用本身不会存在缓存，多次调用会多次请求。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun groupInfoOrQuery(): GroupInfo =
+        (this as? QGGroupWithInfo)?.groupInfo ?: groupInfo()
+
+    /**
+     * 如果当前对象已经是 [QGGroupWithInfo]，返回自身；否则调用 [includeInfo] 查询。
+     *
+     * API 调用本身不会存在缓存，多次调用会多次请求。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun includeInfoOrSelf(): QGGroupWithInfo =
+        this as? QGGroupWithInfo ?: includeInfo()
+
+    //region mute operations
+
+    /**
+     * 查询当前群的完整禁言信息。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun muteSetting(): GroupMuteSetting
+
+    /**
+     * 提交成员禁言变更请求。一次提交的数量应当在 1～20 项之内。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @throws IllegalArgumentException 空白群/成员 ID或其他非法入参的情况
+     * @since 5.0
+     */
+    @ST
+    public suspend fun setMemberMutes(changes: List<QGGroupMemberMuteChange>)
+
+    /**
+     * 明确增加指定成员的单独禁言，委托 [setMemberMutes] 提交单元素批次。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMemberMute(memberId: ID, expireAt: Instant): Unit =
+        setMemberMutes(listOf(QGGroupMemberMuteChange.add(memberId, expireAt)))
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数增加指定成员的单独禁言。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addMemberMuteAtMilliseconds(memberId: ID, expireAtMilliseconds: Long): Unit =
+        addMemberMute(memberId, Instant.fromEpochMilliseconds(expireAtMilliseconds))
+
+    /**
+     * 明确更新指定成员的单独禁言，委托 [setMemberMutes] 提交单元素批次。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMemberMute(memberId: ID, expireAt: Instant): Unit =
+        setMemberMutes(listOf(QGGroupMemberMuteChange.update(memberId, expireAt)))
+
+    /**
+     * 使用自 Unix epoch 起的毫秒数更新指定成员的单独禁言。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun updateMemberMuteAtMilliseconds(memberId: ID, expireAtMilliseconds: Long): Unit =
+        updateMemberMute(memberId, Instant.fromEpochMilliseconds(expireAtMilliseconds))
+
+    /**
+     * 解除指定成员的单独禁言，不修改全员禁言规则。
+     * 委托 [setMemberMutes] 提交单元素批次，失败时透传异常。
+     *
+     * @since 5.0
+     */
+    @ST
+    public suspend fun unmuteMember(memberId: ID): Unit =
+        setMemberMutes(listOf(QGGroupMemberMuteChange.remove(memberId)))
+    //endregion
+
 }
+
+/**
+ * 带有[群基本信息][groupInfo]的 [QGGroup]。
+ *
+ * @since 5.0
+ */
+@OptIn(QGInternalInheritanceApi::class)
+@SubclassOptInRequired(QGInternalInheritanceApi::class)
+public interface QGGroupWithInfo : QGGroup {
+    /**
+     * 群基本信息原始快照。
+     */
+    public val groupInfo: GroupInfo
+
+    /**
+     * 查询时的群名称。
+     */
+    override val name: String
+        get() = groupInfo.groupName
+
+    /**
+     * 群简介。
+     */
+    public val groupFingerMemo: String
+        get() = groupInfo.groupFingerMemo
+
+    /**
+     * 群分类。
+     */
+    public val groupClassText: String
+        get() = groupInfo.groupClassText
+
+    /**
+     * 群标签列表。
+     */
+    public val groupTags: List<String>
+        get() = groupInfo.groupTags
+
+    /**
+     * 群成员人数。
+     */
+    public val groupMemberNum: Int
+        get() = groupInfo.groupMemberNum
+}
+
 
 /**
  * 一个QQ群的角色，老生常谈的那三个。
@@ -133,4 +331,15 @@ public enum class QGGroupRole(override val isAdmin: Boolean) : Role {
 
     override val id: ID
         get() = name.ID
+}
+
+/**
+ * 将平台的群角色统一映射为 core 的群角色。
+ *
+ * 普通消息作者与机器人群内状态共用这一映射。
+ */
+internal fun GroupMessageAuthorRole.toQGGroupRole(): QGGroupRole = when (this) {
+    GroupMessageAuthorRole.OWNER -> QGGroupRole.OWNER
+    GroupMessageAuthorRole.ADMIN -> QGGroupRole.ADMIN
+    GroupMessageAuthorRole.MEMBER -> QGGroupRole.MEMBER
 }

@@ -130,7 +130,7 @@ final class <#A: kotlin/Any> love.forte.simbot.common.attribute/Attribute { // l
     final fun hashCode(): kotlin/Int // love.forte.simbot.common.attribute/Attribute.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.common.attribute/Attribute.toString|toString(){}[0]
 
-    final class <#A1: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.common.attribute/Attribute<#A1>> { // love.forte.simbot.common.attribute/Attribute.$serializer|null[0]
+    final class <#A1: kotlin/Any> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.common.attribute/Attribute<#A1>> { // love.forte.simbot.common.attribute/Attribute.$serializer|null[0]
         constructor <init>(kotlinx.serialization/KSerializer<#A1>) // love.forte.simbot.common.attribute/Attribute.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
 
         final val descriptor // love.forte.simbot.common.attribute/Attribute.$serializer.descriptor|{}descriptor[0]
@@ -503,6 +503,8 @@ final val love.forte.simbot.common.async/onJoin // love.forte.simbot.common.asyn
     final fun (love.forte.simbot.common.async/Async<*>).<get-onJoin>(): kotlinx.coroutines.selects/SelectClause0 // love.forte.simbot.common.async/onJoin.<get-onJoin>|<get-onJoin>@love.forte.simbot.common.async.Async<*>(){}[0]
 final val love.forte.simbot.common.coroutines/IOOrDefault // love.forte.simbot.common.coroutines/IOOrDefault|@kotlinx.coroutines.Dispatchers{}IOOrDefault[0]
     final inline fun (kotlinx.coroutines/Dispatchers).<get-IOOrDefault>(): kotlinx.coroutines/CoroutineDispatcher // love.forte.simbot.common.coroutines/IOOrDefault.<get-IOOrDefault>|<get-IOOrDefault>@kotlinx.coroutines.Dispatchers(){}[0]
+final val love.forte.simbot.common.coroutines/IOOrUnconfined // love.forte.simbot.common.coroutines/IOOrUnconfined|@kotlinx.coroutines.Dispatchers{}IOOrUnconfined[0]
+    final fun (kotlinx.coroutines/Dispatchers).<get-IOOrUnconfined>(): kotlinx.coroutines/CoroutineDispatcher // love.forte.simbot.common.coroutines/IOOrUnconfined.<get-IOOrUnconfined>|<get-IOOrUnconfined>@kotlinx.coroutines.Dispatchers(){}[0]
 final val love.forte.simbot.common.id/ID // love.forte.simbot.common.id/ID|@kotlin.uuid.Uuid{}ID[0]
     final fun (kotlin.uuid/Uuid).<get-ID>(): love.forte.simbot.common.id/UUID // love.forte.simbot.common.id/ID.<get-ID>|<get-ID>@kotlin.uuid.Uuid(){}[0]
 final val love.forte.simbot.common.id/literal // love.forte.simbot.common.id/literal|@love.forte.simbot.common.id.ID{}literal[0]

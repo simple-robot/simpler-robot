@@ -42,6 +42,14 @@ open annotation class love.forte.simbot.qguild.common/QGInternalApi : kotlin/Ann
     constructor <init>() // love.forte.simbot.qguild.common/QGInternalApi.<init>|<init>(){}[0]
 }
 
+open annotation class love.forte.simbot.qguild.common/QGInternalInheritanceApi : kotlin/Annotation { // love.forte.simbot.qguild.common/QGInternalInheritanceApi|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/QGInternalInheritanceApi.<init>|<init>(){}[0]
+}
+
+open annotation class love.forte.simbot.qguild.common/QGUnstableProperty : kotlin/Annotation { // love.forte.simbot.qguild.common/QGUnstableProperty|null[0]
+    constructor <init>() // love.forte.simbot.qguild.common/QGUnstableProperty.<init>|<init>(){}[0]
+}
+
 final object love.forte.simbot.qguild.common/DataClassCompatibilities { // love.forte.simbot.qguild.common/DataClassCompatibilities|null[0]
     final const val DEPRECATED_CONSTRUCTOR_MESSAGE // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE|{}DEPRECATED_CONSTRUCTOR_MESSAGE[0]
         final fun <get-DEPRECATED_CONSTRUCTOR_MESSAGE>(): kotlin/String // love.forte.simbot.qguild.common/DataClassCompatibilities.DEPRECATED_CONSTRUCTOR_MESSAGE.<get-DEPRECATED_CONSTRUCTOR_MESSAGE>|<get-DEPRECATED_CONSTRUCTOR_MESSAGE>(){}[0]

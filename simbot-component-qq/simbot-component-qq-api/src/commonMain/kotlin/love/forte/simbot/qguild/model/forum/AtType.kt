@@ -43,6 +43,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class AtType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 指定用户的原始值。
@@ -63,28 +64,24 @@ public value class AtType private constructor(public val value: Int) {
          * 指定用户类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val ExplicitUser: AtType = AtType(EXPLICIT_USER_VALUE)
 
         /**
          * 角色组所有人类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val RoleGroup: AtType = AtType(ROLE_GROUP_VALUE)
 
         /**
          * 频道所有人类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Guild: AtType = AtType(GUILD_VALUE)
 
         /**
          * 根据任意值构建 [AtType]。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): AtType = AtType(value)
     }
 }

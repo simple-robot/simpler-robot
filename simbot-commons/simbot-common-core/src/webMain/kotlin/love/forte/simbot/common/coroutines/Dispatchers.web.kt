@@ -28,8 +28,14 @@ import kotlinx.coroutines.Dispatchers
 
 /**
  * 得到 [Dispatchers.Default]。
- *
- * @see Dispatchers.Default
  */
 public actual inline val Dispatchers.IOOrDefault: CoroutineDispatcher
     get() = Default
+
+/**
+ * 得到 [Dispatchers.Unconfined]。
+ *
+ * @since 5.0
+ */
+public actual val Dispatchers.IOOrUnconfined: CoroutineDispatcher
+    get() = Unconfined

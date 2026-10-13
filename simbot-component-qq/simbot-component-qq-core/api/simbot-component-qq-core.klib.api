@@ -556,6 +556,8 @@ abstract interface love.forte.simbot.component.qguild.friend/QGFriend : love.for
 abstract interface love.forte.simbot.component.qguild.group/QGGroup : love.forte.simbot.definition/ChatGroup { // love.forte.simbot.component.qguild.group/QGGroup|null[0]
     abstract val id // love.forte.simbot.component.qguild.group/QGGroup.id|{}id[0]
         abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroup.id.<get-id>|<get-id>(){}[0]
+    abstract val joinRequests // love.forte.simbot.component.qguild.group/QGGroup.joinRequests|{}joinRequests[0]
+        abstract fun <get-joinRequests>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.group/QGGroupJoinRequest> // love.forte.simbot.component.qguild.group/QGGroup.joinRequests.<get-joinRequests>|<get-joinRequests>(){}[0]
     open val members // love.forte.simbot.component.qguild.group/QGGroup.members|{}members[0]
         open fun <get-members>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.group/QGGroupMember> // love.forte.simbot.component.qguild.group/QGGroup.members.<get-members>|<get-members>(){}[0]
     open val name // love.forte.simbot.component.qguild.group/QGGroup.name|{}name[0]
@@ -565,9 +567,22 @@ abstract interface love.forte.simbot.component.qguild.group/QGGroup : love.forte
     open val roles // love.forte.simbot.component.qguild.group/QGGroup.roles|{}roles[0]
         open fun <get-roles>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.group/QGGroupRole> // love.forte.simbot.component.qguild.group/QGGroup.roles.<get-roles>|<get-roles>(){}[0]
 
-    abstract suspend fun botAsMember(): love.forte.simbot.component.qguild.group/QGGroupMember // love.forte.simbot.component.qguild.group/QGGroup.botAsMember|botAsMember(){}[0]
+    abstract suspend fun botAsMemberWithState(): love.forte.simbot.component.qguild.group/QGGroupBotMember // love.forte.simbot.component.qguild.group/QGGroup.botAsMemberWithState|botAsMemberWithState(){}[0]
+    abstract suspend fun botState(): love.forte.simbot.qguild.model.group/GroupBotState // love.forte.simbot.component.qguild.group/QGGroup.botState|botState(){}[0]
+    abstract suspend fun groupInfo(): love.forte.simbot.qguild.model.group/GroupInfo // love.forte.simbot.component.qguild.group/QGGroup.groupInfo|groupInfo(){}[0]
+    abstract suspend fun includeInfo(): love.forte.simbot.component.qguild.group/QGGroupWithInfo // love.forte.simbot.component.qguild.group/QGGroup.includeInfo|includeInfo(){}[0]
+    abstract suspend fun muteSetting(): love.forte.simbot.qguild.model.group/GroupMuteSetting // love.forte.simbot.component.qguild.group/QGGroup.muteSetting|muteSetting(){}[0]
+    abstract suspend fun setMemberMutes(kotlin.collections/List<love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange>) // love.forte.simbot.component.qguild.group/QGGroup.setMemberMutes|setMemberMutes(kotlin.collections.List<love.forte.simbot.component.qguild.group.QGGroupMemberMuteChange>){}[0]
     abstract suspend fun uploadMedia(kotlin/String, kotlin/Int): love.forte.simbot.component.qguild.message/QGMedia // love.forte.simbot.component.qguild.group/QGGroup.uploadMedia|uploadMedia(kotlin.String;kotlin.Int){}[0]
+    open suspend fun addMemberMute(love.forte.simbot.common.id/ID, kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroup.addMemberMute|addMemberMute(love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+    open suspend fun addMemberMuteAtMilliseconds(love.forte.simbot.common.id/ID, kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroup.addMemberMuteAtMilliseconds|addMemberMuteAtMilliseconds(love.forte.simbot.common.id.ID;kotlin.Long){}[0]
+    open suspend fun botAsMember(): love.forte.simbot.component.qguild.group/QGGroupMember // love.forte.simbot.component.qguild.group/QGGroup.botAsMember|botAsMember(){}[0]
+    open suspend fun groupInfoOrQuery(): love.forte.simbot.qguild.model.group/GroupInfo // love.forte.simbot.component.qguild.group/QGGroup.groupInfoOrQuery|groupInfoOrQuery(){}[0]
+    open suspend fun includeInfoOrSelf(): love.forte.simbot.component.qguild.group/QGGroupWithInfo // love.forte.simbot.component.qguild.group/QGGroup.includeInfoOrSelf|includeInfoOrSelf(){}[0]
     open suspend fun member(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.group/QGGroupMember? // love.forte.simbot.component.qguild.group/QGGroup.member|member(love.forte.simbot.common.id.ID){}[0]
+    open suspend fun unmuteMember(love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.group/QGGroup.unmuteMember|unmuteMember(love.forte.simbot.common.id.ID){}[0]
+    open suspend fun updateMemberMute(love.forte.simbot.common.id/ID, kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroup.updateMemberMute|updateMemberMute(love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+    open suspend fun updateMemberMuteAtMilliseconds(love.forte.simbot.common.id/ID, kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroup.updateMemberMuteAtMilliseconds|updateMemberMuteAtMilliseconds(love.forte.simbot.common.id.ID;kotlin.Long){}[0]
 }
 
 abstract interface love.forte.simbot.component.qguild.group/QGGroupAuthor : love.forte.simbot.component.qguild.group/QGGroupMember { // love.forte.simbot.component.qguild.group/QGGroupAuthor|null[0]
@@ -578,26 +593,61 @@ abstract interface love.forte.simbot.component.qguild.group/QGGroupAuthor : love
 }
 
 abstract interface love.forte.simbot.component.qguild.group/QGGroupMember : love.forte.simbot.definition/Member { // love.forte.simbot.component.qguild.group/QGGroupMember|null[0]
+    abstract val groupId // love.forte.simbot.component.qguild.group/QGGroupMember.groupId|{}groupId[0]
+        abstract fun <get-groupId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMember.groupId.<get-groupId>|<get-groupId>(){}[0]
     abstract val id // love.forte.simbot.component.qguild.group/QGGroupMember.id|{}id[0]
         abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMember.id.<get-id>|<get-id>(){}[0]
+    abstract val name // love.forte.simbot.component.qguild.group/QGGroupMember.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupMember.name.<get-name>|<get-name>(){}[0]
     open val avatar // love.forte.simbot.component.qguild.group/QGGroupMember.avatar|{}avatar[0]
         open fun <get-avatar>(): kotlin/String? // love.forte.simbot.component.qguild.group/QGGroupMember.avatar.<get-avatar>|<get-avatar>(){}[0]
-    open val name // love.forte.simbot.component.qguild.group/QGGroupMember.name|{}name[0]
-        open fun <get-name>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupMember.name.<get-name>|<get-name>(){}[0]
     open val nick // love.forte.simbot.component.qguild.group/QGGroupMember.nick|{}nick[0]
         open fun <get-nick>(): kotlin/String? // love.forte.simbot.component.qguild.group/QGGroupMember.nick.<get-nick>|<get-nick>(){}[0]
 
+    abstract suspend fun addMute(kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroupMember.addMute|addMute(kotlin.time.Instant){}[0]
+    abstract suspend fun muteState(): love.forte.simbot.qguild.model.group/GroupMemberMuteState? // love.forte.simbot.component.qguild.group/QGGroupMember.muteState|muteState(){}[0]
+    abstract suspend fun unmute() // love.forte.simbot.component.qguild.group/QGGroupMember.unmute|unmute(){}[0]
+    abstract suspend fun updateMute(kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroupMember.updateMute|updateMute(kotlin.time.Instant){}[0]
+    open suspend fun addMuteAtMilliseconds(kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroupMember.addMuteAtMilliseconds|addMuteAtMilliseconds(kotlin.Long){}[0]
     open suspend fun send(kotlin/String): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.group/QGGroupMember.send|send(kotlin.String){}[0]
     open suspend fun send(love.forte.simbot.message/Message): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.group/QGGroupMember.send|send(love.forte.simbot.message.Message){}[0]
     open suspend fun send(love.forte.simbot.message/MessageContent): love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.qguild.group/QGGroupMember.send|send(love.forte.simbot.message.MessageContent){}[0]
+    open suspend fun updateMuteAtMilliseconds(kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroupMember.updateMuteAtMilliseconds|updateMuteAtMilliseconds(kotlin.Long){}[0]
 }
 
 abstract interface love.forte.simbot.component.qguild.group/QGGroupRelation : love.forte.simbot.bot/GroupRelation { // love.forte.simbot.component.qguild.group/QGGroupRelation|null[0]
     open val groups // love.forte.simbot.component.qguild.group/QGGroupRelation.groups|{}groups[0]
         open fun <get-groups>(): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.group/QGGroup> // love.forte.simbot.component.qguild.group/QGGroupRelation.groups.<get-groups>|<get-groups>(){}[0]
 
+    abstract fun joinRequests(love.forte.simbot.common.id/ID): love.forte.simbot.common.collectable/Collectable<love.forte.simbot.component.qguild.group/QGGroupJoinRequest> // love.forte.simbot.component.qguild.group/QGGroupRelation.joinRequests|joinRequests(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun approveJoinRequest(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID? = ..., kotlin/Array<out love.forte.simbot.ability/AcceptOption>...) // love.forte.simbot.component.qguild.group/QGGroupRelation.approveJoinRequest|approveJoinRequest(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID?;kotlin.Array<out|love.forte.simbot.ability.AcceptOption>...){}[0]
     abstract suspend fun group(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.group/QGGroup? // love.forte.simbot.component.qguild.group/QGGroupRelation.group|group(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun groupBotState(love.forte.simbot.common.id/ID): love.forte.simbot.qguild.model.group/GroupBotState // love.forte.simbot.component.qguild.group/QGGroupRelation.groupBotState|groupBotState(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun groupInfo(love.forte.simbot.common.id/ID): love.forte.simbot.qguild.model.group/GroupInfo // love.forte.simbot.component.qguild.group/QGGroupRelation.groupInfo|groupInfo(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun muteSetting(love.forte.simbot.common.id/ID): love.forte.simbot.qguild.model.group/GroupMuteSetting // love.forte.simbot.component.qguild.group/QGGroupRelation.muteSetting|muteSetting(love.forte.simbot.common.id.ID){}[0]
+    abstract suspend fun rejectJoinRequest(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID? = ..., kotlin/Array<out love.forte.simbot.ability/RejectOption>...) // love.forte.simbot.component.qguild.group/QGGroupRelation.rejectJoinRequest|rejectJoinRequest(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID?;kotlin.Array<out|love.forte.simbot.ability.RejectOption>...){}[0]
+    abstract suspend fun setMemberMutes(love.forte.simbot.common.id/ID, kotlin.collections/List<love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange>) // love.forte.simbot.component.qguild.group/QGGroupRelation.setMemberMutes|setMemberMutes(love.forte.simbot.common.id.ID;kotlin.collections.List<love.forte.simbot.component.qguild.group.QGGroupMemberMuteChange>){}[0]
+    open suspend fun addMemberMute(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroupRelation.addMemberMute|addMemberMute(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+    open suspend fun addMemberMuteAtMilliseconds(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroupRelation.addMemberMuteAtMilliseconds|addMemberMuteAtMilliseconds(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.Long){}[0]
     open suspend fun groupCount(): kotlin/Int // love.forte.simbot.component.qguild.group/QGGroupRelation.groupCount|groupCount(){}[0]
+    open suspend fun unmuteMember(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.group/QGGroupRelation.unmuteMember|unmuteMember(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID){}[0]
+    open suspend fun updateMemberMute(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin.time/Instant) // love.forte.simbot.component.qguild.group/QGGroupRelation.updateMemberMute|updateMemberMute(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+    open suspend fun updateMemberMuteAtMilliseconds(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin/Long) // love.forte.simbot.component.qguild.group/QGGroupRelation.updateMemberMuteAtMilliseconds|updateMemberMuteAtMilliseconds(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.Long){}[0]
+}
+
+abstract interface love.forte.simbot.component.qguild.group/QGGroupWithInfo : love.forte.simbot.component.qguild.group/QGGroup { // love.forte.simbot.component.qguild.group/QGGroupWithInfo|null[0]
+    abstract val groupInfo // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupInfo|{}groupInfo[0]
+        abstract fun <get-groupInfo>(): love.forte.simbot.qguild.model.group/GroupInfo // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupInfo.<get-groupInfo>|<get-groupInfo>(){}[0]
+    open val groupClassText // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupClassText|{}groupClassText[0]
+        open fun <get-groupClassText>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupClassText.<get-groupClassText>|<get-groupClassText>(){}[0]
+    open val groupFingerMemo // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupFingerMemo|{}groupFingerMemo[0]
+        open fun <get-groupFingerMemo>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupFingerMemo.<get-groupFingerMemo>|<get-groupFingerMemo>(){}[0]
+    open val groupMemberNum // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupMemberNum|{}groupMemberNum[0]
+        open fun <get-groupMemberNum>(): kotlin/Int // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupMemberNum.<get-groupMemberNum>|<get-groupMemberNum>(){}[0]
+    open val groupTags // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupTags|{}groupTags[0]
+        open fun <get-groupTags>(): kotlin.collections/List<kotlin/String> // love.forte.simbot.component.qguild.group/QGGroupWithInfo.groupTags.<get-groupTags>|<get-groupTags>(){}[0]
+    open val name // love.forte.simbot.component.qguild.group/QGGroupWithInfo.name|{}name[0]
+        open fun <get-name>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupWithInfo.name.<get-name>|<get-name>(){}[0]
 }
 
 abstract interface love.forte.simbot.component.qguild.guild/QGGuild : kotlinx.coroutines/CoroutineScope, love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model/Guild>, love.forte.simbot.definition/Guild { // love.forte.simbot.component.qguild.guild/QGGuild|null[0]
@@ -1301,6 +1351,51 @@ abstract class love.forte.simbot.component.qguild.event/QGUnsupportedEvent : lov
         open fun <get-time>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.qguild.event/QGUnsupportedEvent.time.<get-time>|<get-time>(){}[0]
 }
 
+abstract class love.forte.simbot.component.qguild.group/QGGroupBotMember : love.forte.simbot.component.qguild.group/QGGroupMember { // love.forte.simbot.component.qguild.group/QGGroupBotMember|null[0]
+    abstract val botState // love.forte.simbot.component.qguild.group/QGGroupBotMember.botState|{}botState[0]
+        abstract fun <get-botState>(): love.forte.simbot.qguild.model.group/GroupBotState // love.forte.simbot.component.qguild.group/QGGroupBotMember.botState.<get-botState>|<get-botState>(){}[0]
+    final val allowProactiveMsg // love.forte.simbot.component.qguild.group/QGGroupBotMember.allowProactiveMsg|{}allowProactiveMsg[0]
+        final fun <get-allowProactiveMsg>(): kotlin/Boolean // love.forte.simbot.component.qguild.group/QGGroupBotMember.allowProactiveMsg.<get-allowProactiveMsg>|<get-allowProactiveMsg>(){}[0]
+    final val joinTime // love.forte.simbot.component.qguild.group/QGGroupBotMember.joinTime|{}joinTime[0]
+        final fun <get-joinTime>(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.component.qguild.group/QGGroupBotMember.joinTime.<get-joinTime>|<get-joinTime>(){}[0]
+    final val memberRole // love.forte.simbot.component.qguild.group/QGGroupBotMember.memberRole|{}memberRole[0]
+        final fun <get-memberRole>(): love.forte.simbot.component.qguild.group/QGGroupRole // love.forte.simbot.component.qguild.group/QGGroupBotMember.memberRole.<get-memberRole>|<get-memberRole>(){}[0]
+    final val recvMsgSetting // love.forte.simbot.component.qguild.group/QGGroupBotMember.recvMsgSetting|{}recvMsgSetting[0]
+        final fun <get-recvMsgSetting>(): love.forte.simbot.qguild.model.group/GroupBotReceiveMessageSetting // love.forte.simbot.component.qguild.group/QGGroupBotMember.recvMsgSetting.<get-recvMsgSetting>|<get-recvMsgSetting>(){}[0]
+    open val id // love.forte.simbot.component.qguild.group/QGGroupBotMember.id|{}id[0]
+        open fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupBotMember.id.<get-id>|<get-id>(){}[0]
+}
+
+abstract class love.forte.simbot.component.qguild.group/QGGroupJoinRequest : love.forte.simbot.ability/AcceptSupport, love.forte.simbot.ability/RejectSupport, love.forte.simbot.component.qguild/QGObjectiveContainer<love.forte.simbot.qguild.model.group/GroupJoinRequest> { // love.forte.simbot.component.qguild.group/QGGroupJoinRequest|null[0]
+    constructor <init>() // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.<init>|<init>(){}[0]
+
+    final val applyAt // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.applyAt|{}applyAt[0]
+        final fun <get-applyAt>(): kotlin.time/Instant // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.applyAt.<get-applyAt>|<get-applyAt>(){}[0]
+    final val applySource // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.applySource|{}applySource[0]
+        final fun <get-applySource>(): love.forte.simbot.qguild.model.group/GroupJoinApplySource // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.applySource.<get-applySource>|<get-applySource>(){}[0]
+    final val bot // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.bot|{}bot[0]
+        final fun <get-bot>(): kotlin/Boolean // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.bot.<get-bot>|<get-bot>(){}[0]
+    final val invitedBy // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.invitedBy|{}invitedBy[0]
+        final fun <get-invitedBy>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.invitedBy.<get-invitedBy>|<get-invitedBy>(){}[0]
+    final val joinRequestId // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.joinRequestId|{}joinRequestId[0]
+        final fun <get-joinRequestId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.joinRequestId.<get-joinRequestId>|<get-joinRequestId>(){}[0]
+    final val memberOpenid // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.memberOpenid|{}memberOpenid[0]
+        final fun <get-memberOpenid>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.memberOpenid.<get-memberOpenid>|<get-memberOpenid>(){}[0]
+    final val riskTips // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.riskTips|{}riskTips[0]
+        final fun <get-riskTips>(): kotlin/String? // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.riskTips.<get-riskTips>|<get-riskTips>(){}[0]
+    final val unionOpenid // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.unionOpenid|{}unionOpenid[0]
+        final fun <get-unionOpenid>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.unionOpenid.<get-unionOpenid>|<get-unionOpenid>(){}[0]
+    final val username // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.username|{}username[0]
+        final fun <get-username>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.username.<get-username>|<get-username>(){}[0]
+    final val verifyInfo // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.verifyInfo|{}verifyInfo[0]
+        final fun <get-verifyInfo>(): love.forte.simbot.qguild.model.group/GroupJoinVerifyInfo? // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.verifyInfo.<get-verifyInfo>|<get-verifyInfo>(){}[0]
+
+    abstract suspend fun accept() // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.accept|accept(){}[0]
+    abstract suspend fun accept(kotlin/Array<out love.forte.simbot.ability/AcceptOption>...) // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.accept|accept(kotlin.Array<out|love.forte.simbot.ability.AcceptOption>...){}[0]
+    abstract suspend fun reject() // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.reject|reject(){}[0]
+    abstract suspend fun reject(kotlin/Array<out love.forte.simbot.ability/RejectOption>...) // love.forte.simbot.component.qguild.group/QGGroupJoinRequest.reject|reject(kotlin.Array<out|love.forte.simbot.ability.RejectOption>...){}[0]
+}
+
 abstract class love.forte.simbot.component.qguild.message/QGAggregatedIdMessageReceipt : love.forte.simbot.component.qguild.message/QGMessageReceipt, love.forte.simbot.message/AggregatedMessageReceipt { // love.forte.simbot.component.qguild.message/QGAggregatedIdMessageReceipt|null[0]
     constructor <init>() // love.forte.simbot.component.qguild.message/QGAggregatedIdMessageReceipt.<init>|<init>(){}[0]
 
@@ -1781,14 +1876,30 @@ final class love.forte.simbot.component.qguild.message/QGAtChannel : love.forte.
 final class love.forte.simbot.component.qguild.message/QGAttachmentMessage : love.forte.simbot.component.qguild.message/QGMessageElement, love.forte.simbot.message/BinaryDataAwareMessage { // love.forte.simbot.component.qguild.message/QGAttachmentMessage|null[0]
     constructor <init>(kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/String> = ...) // love.forte.simbot.component.qguild.message/QGAttachmentMessage.<init>|<init>(kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
 
+    final val asrReferText // love.forte.simbot.component.qguild.message/QGAttachmentMessage.asrReferText|{}asrReferText[0]
+        final fun <get-asrReferText>(): kotlin/String? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.asrReferText.<get-asrReferText>|<get-asrReferText>(){}[0]
+    final val attachmentId // love.forte.simbot.component.qguild.message/QGAttachmentMessage.attachmentId|{}attachmentId[0]
+        final fun <get-attachmentId>(): kotlin/String? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.attachmentId.<get-attachmentId>|<get-attachmentId>(){}[0]
+    final val contentType // love.forte.simbot.component.qguild.message/QGAttachmentMessage.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val filename // love.forte.simbot.component.qguild.message/QGAttachmentMessage.filename|{}filename[0]
+        final fun <get-filename>(): kotlin/String? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.filename.<get-filename>|<get-filename>(){}[0]
+    final val height // love.forte.simbot.component.qguild.message/QGAttachmentMessage.height|{}height[0]
+        final fun <get-height>(): kotlin/Int? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.height.<get-height>|<get-height>(){}[0]
     final val id // love.forte.simbot.component.qguild.message/QGAttachmentMessage.id|{}id[0]
         final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGAttachmentMessage.id.<get-id>|<get-id>(){}[0]
     final val properties // love.forte.simbot.component.qguild.message/QGAttachmentMessage.properties|{}properties[0]
         final fun <get-properties>(): kotlin.collections/Map<kotlin/String, kotlin/String> // love.forte.simbot.component.qguild.message/QGAttachmentMessage.properties.<get-properties>|<get-properties>(){}[0]
+    final val size // love.forte.simbot.component.qguild.message/QGAttachmentMessage.size|{}size[0]
+        final fun <get-size>(): kotlin/Long? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.size.<get-size>|<get-size>(){}[0]
     final val source // love.forte.simbot.component.qguild.message/QGAttachmentMessage.source|{}source[0]
         final fun <get-source>(): love.forte.simbot.qguild.model/Message.Attachment // love.forte.simbot.component.qguild.message/QGAttachmentMessage.source.<get-source>|<get-source>(){}[0]
     final val url // love.forte.simbot.component.qguild.message/QGAttachmentMessage.url|{}url[0]
         final fun <get-url>(): kotlin/String // love.forte.simbot.component.qguild.message/QGAttachmentMessage.url.<get-url>|<get-url>(){}[0]
+    final val voiceWavUrl // love.forte.simbot.component.qguild.message/QGAttachmentMessage.voiceWavUrl|{}voiceWavUrl[0]
+        final fun <get-voiceWavUrl>(): kotlin/String? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.voiceWavUrl.<get-voiceWavUrl>|<get-voiceWavUrl>(){}[0]
+    final val width // love.forte.simbot.component.qguild.message/QGAttachmentMessage.width|{}width[0]
+        final fun <get-width>(): kotlin/Int? // love.forte.simbot.component.qguild.message/QGAttachmentMessage.width.<get-width>|<get-width>(){}[0]
 
     final fun component1(): kotlin/String // love.forte.simbot.component.qguild.message/QGAttachmentMessage.component1|component1(){}[0]
     final fun component2(): kotlin.collections/Map<kotlin/String, kotlin/String> // love.forte.simbot.component.qguild.message/QGAttachmentMessage.component2|component2(){}[0]
@@ -2391,6 +2502,60 @@ sealed class love.forte.simbot.component.qguild.event/QGMessageEvent : love.fort
     abstract suspend fun reply(love.forte.simbot.message/MessageContent): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.event/QGMessageEvent.reply|reply(love.forte.simbot.message.MessageContent){}[0]
 }
 
+sealed class love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption : love.forte.simbot.ability/RejectOption { // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption|null[0]
+    final class Reason : love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption { // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason|null[0]
+        final val reason // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason.toString|toString(){}[0]
+    }
+
+    final object AddToBlacklist : love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption { // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.AddToBlacklist|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.AddToBlacklist.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.AddToBlacklist.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.AddToBlacklist.toString|toString(){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Companion|null[0]
+        final fun addToBlacklist(): love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.AddToBlacklist // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Companion.addToBlacklist|addToBlacklist(){}[0]
+        final fun reason(kotlin/String): love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Reason // love.forte.simbot.component.qguild.group/QGGroupJoinRequestRejectOption.Companion.reason|reason(kotlin.String){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange { // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange|null[0]
+    abstract val memberId // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.memberId|{}memberId[0]
+        abstract fun <get-memberId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.memberId.<get-memberId>|<get-memberId>(){}[0]
+
+    final class Add : love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange { // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add|null[0]
+        final val memberId // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add.memberId|{}memberId[0]
+            final fun <get-memberId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add.memberId.<get-memberId>|<get-memberId>(){}[0]
+        final val muteExpireAt // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add.muteExpireAt|{}muteExpireAt[0]
+            final fun <get-muteExpireAt>(): kotlin.time/Instant // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add.muteExpireAt.<get-muteExpireAt>|<get-muteExpireAt>(){}[0]
+    }
+
+    final class Delete : love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange { // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Delete|null[0]
+        final val memberId // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Delete.memberId|{}memberId[0]
+            final fun <get-memberId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Delete.memberId.<get-memberId>|<get-memberId>(){}[0]
+    }
+
+    final class Update : love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange { // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update|null[0]
+        final val memberId // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update.memberId|{}memberId[0]
+            final fun <get-memberId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update.memberId.<get-memberId>|<get-memberId>(){}[0]
+        final val muteExpireAt // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update.muteExpireAt|{}muteExpireAt[0]
+            final fun <get-muteExpireAt>(): kotlin.time/Instant // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update.muteExpireAt.<get-muteExpireAt>|<get-muteExpireAt>(){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion|null[0]
+        final fun add(love.forte.simbot.common.id/ID, kotlin.time/Instant): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.add|add(love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+        final fun addAtMilliseconds(love.forte.simbot.common.id/ID, kotlin/Long): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Add // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.addAtMilliseconds|addAtMilliseconds(love.forte.simbot.common.id.ID;kotlin.Long){}[0]
+        final fun remove(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Delete // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.remove|remove(love.forte.simbot.common.id.ID){}[0]
+        final fun update(love.forte.simbot.common.id/ID, kotlin.time/Instant): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.update|update(love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
+        final fun updateAtMilliseconds(love.forte.simbot.common.id/ID, kotlin/Long): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.updateAtMilliseconds|updateAtMilliseconds(love.forte.simbot.common.id.ID;kotlin.Long){}[0]
+    }
+}
+
 final object love.forte.simbot.component.qguild.message/ImageParser : love.forte.simbot.component.qguild.message/SendingMessageParser { // love.forte.simbot.component.qguild.message/ImageParser|null[0]
     final fun disableBase64UploadWarn() // love.forte.simbot.component.qguild.message/ImageParser.disableBase64UploadWarn|disableBase64UploadWarn(){}[0]
     final suspend fun invoke(kotlin/Int, love.forte.simbot.message/Message.Element, love.forte.simbot.message/Messages?, love.forte.simbot.component.qguild.message/SendingMessageParser.BuilderContext) // love.forte.simbot.component.qguild.message/ImageParser.invoke|invoke(kotlin.Int;love.forte.simbot.message.Message.Element;love.forte.simbot.message.Messages?;love.forte.simbot.component.qguild.message.SendingMessageParser.BuilderContext){}[0]
@@ -2426,6 +2591,12 @@ final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simb
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, kotlin.collections/List<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody>): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.collections.List<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody>){}[0]
 final suspend fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendUserMessage(kotlin/String, love.forte.simbot.qguild.api.message/GroupAndC2CSendBody): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendUserMessage|sendUserMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.qguild.api.message.GroupAndC2CSendBody){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroup).love.forte.simbot.component.qguild.group/addMemberMuteFor(love.forte.simbot.common.id/ID, kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/addMemberMuteFor|addMemberMuteFor@love.forte.simbot.component.qguild.group.QGGroup(love.forte.simbot.common.id.ID;kotlin.time.Duration;kotlin.time.Instant){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroup).love.forte.simbot.component.qguild.group/updateMemberMuteFor(love.forte.simbot.common.id/ID, kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/updateMemberMuteFor|updateMemberMuteFor@love.forte.simbot.component.qguild.group.QGGroup(love.forte.simbot.common.id.ID;kotlin.time.Duration;kotlin.time.Instant){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroupMember).love.forte.simbot.component.qguild.group/addMuteFor(kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/addMuteFor|addMuteFor@love.forte.simbot.component.qguild.group.QGGroupMember(kotlin.time.Duration;kotlin.time.Instant){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroupMember).love.forte.simbot.component.qguild.group/updateMuteFor(kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/updateMuteFor|updateMuteFor@love.forte.simbot.component.qguild.group.QGGroupMember(kotlin.time.Duration;kotlin.time.Instant){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroupRelation).love.forte.simbot.component.qguild.group/addMemberMuteFor(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/addMemberMuteFor|addMemberMuteFor@love.forte.simbot.component.qguild.group.QGGroupRelation(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.time.Duration;kotlin.time.Instant){}[0]
+final suspend fun (love.forte.simbot.component.qguild.group/QGGroupRelation).love.forte.simbot.component.qguild.group/updateMemberMuteFor(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID, kotlin.time/Duration, kotlin.time/Instant = ...) // love.forte.simbot.component.qguild.group/updateMemberMuteFor|updateMemberMuteFor@love.forte.simbot.component.qguild.group.QGGroupRelation(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID;kotlin.time.Duration;kotlin.time.Instant){}[0]
 final suspend fun (love.forte.simbot.component.qguild.panel/QGCommandPanelManager).love.forte.simbot.component.qguild.panel/create(love.forte.simbot.qguild.model.panel/CommandPanelScope? = ..., love.forte.simbot.qguild.model.panel/CommandPanelTargetType? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., kotlin.collections/Collection<love.forte.simbot.common.id/ID>? = ..., love.forte.simbot.qguild.model.panel/CommandPanel? = ...): love.forte.simbot.component.qguild.panel/QGCommandPanelHandle // love.forte.simbot.component.qguild.panel/create|create@love.forte.simbot.component.qguild.panel.QGCommandPanelManager(love.forte.simbot.qguild.model.panel.CommandPanelScope?;love.forte.simbot.qguild.model.panel.CommandPanelTargetType?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;kotlin.collections.Collection<love.forte.simbot.common.id.ID>?;love.forte.simbot.qguild.model.panel.CommandPanel?){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.bot/emitEvent(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.stdlib/EmitEventOptions, kotlin/Unit>): love.forte.simbot.qguild.stdlib/EmitResult // love.forte.simbot.component.qguild.bot/emitEvent|emitEvent@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.stdlib.EmitEventOptions,kotlin.Unit>){}[0]
 final suspend inline fun (love.forte.simbot.component.qguild.bot/QGBot).love.forte.simbot.component.qguild.message/sendGroupMessage(kotlin/String, love.forte.simbot.message/Message, crossinline kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ..., kotlin/Function1<love.forte.simbot.qguild.api.message/GroupAndC2CSendBody, kotlin/Unit> = ...): love.forte.simbot.component.qguild.message/QGMessageReceipt // love.forte.simbot.component.qguild.message/sendGroupMessage|sendGroupMessage@love.forte.simbot.component.qguild.bot.QGBot(kotlin.String;love.forte.simbot.message.Message;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>;kotlin.Function1<love.forte.simbot.qguild.api.message.GroupAndC2CSendBody,kotlin.Unit>){}[0]

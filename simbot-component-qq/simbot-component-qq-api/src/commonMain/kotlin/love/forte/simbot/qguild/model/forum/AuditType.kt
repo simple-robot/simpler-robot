@@ -46,6 +46,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class AuditType private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 帖子类型常量值
@@ -66,28 +67,24 @@ public value class AuditType private constructor(public val value: Int) {
          * 帖子类型
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val PublishThread: AuditType = AuditType(PUBLISH_THREAD_VALUE)
 
         /**
          * 评论类型
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val PublishPost: AuditType = AuditType(PUBLISH_POST_VALUE)
 
         /**
          * 回复类型
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val PublishReply: AuditType = AuditType(PUBLISH_REPLY_VALUE)
 
         /**
          * 根据任意值构建 [AuditType]
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): AuditType = AuditType(value)
     }
 }

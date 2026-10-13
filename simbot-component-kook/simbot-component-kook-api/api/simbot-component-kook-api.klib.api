@@ -759,7 +759,7 @@ final class <#A: out love.forte.simbot.kook.event/EventExtra> love.forte.simbot.
         final fun values(): kotlin/Array<love.forte.simbot.kook.event/Event.Type> // love.forte.simbot.kook.event/Event.Type.values|values#static(){}[0]
     }
 
-    final class <#A1: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.event/Event<#A1>> { // love.forte.simbot.kook.event/Event.$serializer|null[0]
+    final class <#A1: love.forte.simbot.kook.event/EventExtra> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.event/Event<#A1>> { // love.forte.simbot.kook.event/Event.$serializer|null[0]
         constructor <init>(kotlinx.serialization/KSerializer<#A1>) // love.forte.simbot.kook.event/Event.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
 
         final val descriptor // love.forte.simbot.kook.event/Event.$serializer.descriptor|{}descriptor[0]
@@ -6299,7 +6299,7 @@ sealed class love.forte.simbot.kook.event/Signal { // love.forte.simbot.kook.eve
         final fun hashCode(): kotlin/Int // love.forte.simbot.kook.event/Signal.Event.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.kook.event/Signal.Event.toString|toString(){}[0]
 
-        final class <#A2: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.event/Signal.Event<#A2>> { // love.forte.simbot.kook.event/Signal.Event.$serializer|null[0]
+        final class <#A2: love.forte.simbot.kook.event/EventExtra> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.kook.event/Signal.Event<#A2>> { // love.forte.simbot.kook.event/Signal.Event.$serializer|null[0]
             constructor <init>(kotlinx.serialization/KSerializer<#A2>) // love.forte.simbot.kook.event/Signal.Event.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
 
             final val descriptor // love.forte.simbot.kook.event/Signal.Event.$serializer.descriptor|{}descriptor[0]

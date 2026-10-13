@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class MessageKeyboardActionAnchor private constructor(public val value: Int) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 唤起手机 QQ 选图器的原始值。
@@ -51,7 +52,6 @@ public value class MessageKeyboardActionAnchor private constructor(public val va
          * 唤起手机 QQ 选图器。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val SelectImage: MessageKeyboardActionAnchor =
             MessageKeyboardActionAnchor(SELECT_IMAGE_VALUE)
 
@@ -59,7 +59,6 @@ public value class MessageKeyboardActionAnchor private constructor(public val va
          * 构建一个自定义的指令按钮锚点操作类型。
          */
         @JvmStatic
-        @JvmExposeBoxed
         public fun of(value: Int): MessageKeyboardActionAnchor = MessageKeyboardActionAnchor(value)
     }
 }

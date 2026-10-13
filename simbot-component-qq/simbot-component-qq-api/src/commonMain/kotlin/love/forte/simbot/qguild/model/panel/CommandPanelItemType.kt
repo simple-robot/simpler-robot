@@ -41,6 +41,7 @@ import kotlin.jvm.JvmStatic
 @JvmExposeBoxed
 @Serializable
 public value class CommandPanelItemType private constructor(public val value: String) {
+    @JvmExposeBoxed
     public companion object {
         /**
          * 指令元素类型的原始值。
@@ -56,14 +57,12 @@ public value class CommandPanelItemType private constructor(public val value: St
          * 指令元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Command: CommandPanelItemType = CommandPanelItemType(COMMAND_VALUE)
 
         /**
          * 链接元素类型。
          */
         @JvmStatic
-        @get:JvmExposeBoxed
         public val Link: CommandPanelItemType = CommandPanelItemType(LINK_VALUE)
 
         /**

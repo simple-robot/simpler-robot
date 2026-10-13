@@ -23,7 +23,7 @@
 
 package love.forte.simbot.common.time
 
-import love.forte.simbot.common.time.Timestamp.Companion.now
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -132,6 +132,17 @@ public interface Timestamp : Comparable<Timestamp> {
          */
         @JvmStatic
         public fun now(clock: Clock): Timestamp = StandardInstantTimestamp(clock.now())
+
+        /**
+         * 通过 [Instant] 得到一个 [Timestamp]。
+         *
+         * @since 5.0
+         *
+         * @see StandardInstantTimestamp
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun Instant.toTimestamp(): Timestamp = StandardInstantTimestamp(this)
     }
 }
 

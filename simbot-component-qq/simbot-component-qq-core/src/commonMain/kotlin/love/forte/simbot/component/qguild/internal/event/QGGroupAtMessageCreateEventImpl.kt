@@ -64,6 +64,7 @@ internal class QGGroupAtMessageCreateEventImpl(
     override suspend fun author(): QGGroupAuthor {
         return QGGroupAuthorImpl(
             bot,
+            sourceEventEntity.data.groupOpenid.ID,
             sourceEventEntity.data.author,
         )
     }

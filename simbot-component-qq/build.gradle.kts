@@ -22,6 +22,7 @@
  */
 
 import love.forte.gradle.common.core.project.setup
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
@@ -30,4 +31,18 @@ plugins {
 subprojects {
     group = P.GROUP_COMPONENT
     setup(P.SimbotComponent)
+
+    afterEvaluate {
+        if (plugins.hasPlugin(libs.plugins.kotlin.multiplatform.map { it.pluginId }.get())) {
+            extensions.configure<KotlinMultiplatformExtension>("kotlin") {
+                compilerOptions {
+                    optIn.add("love.forte.simbot.qguild.QGInternalApi")
+                    optIn.add("love.forte.simbot.qguild.common.QGInternalApi")
+                    optIn.add("love.forte.simbot.qguild.common.ApiModelConstructor")
+                    optIn.add("love.forte.simbot.qguild.common.EventModelConstructor")
+                    optIn.add("love.forte.simbot.qguild.common.QGInternalInheritanceApi")
+                }
+            }
+        }
+    }
 }

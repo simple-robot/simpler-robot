@@ -25,6 +25,7 @@ module simbot.component.qq.api {
     exports love.forte.simbot.qguild.message;
     exports love.forte.simbot.qguild.model;
     exports love.forte.simbot.qguild.model.forum;
+    exports love.forte.simbot.qguild.model.group;
     exports love.forte.simbot.qguild.model.menu;
     exports love.forte.simbot.qguild.model.panel;
     exports love.forte.simbot.qguild.time;
@@ -40,6 +41,7 @@ module simbot.component.qq.api {
     exports love.forte.simbot.qguild.api.forum;
     exports love.forte.simbot.qguild.api.guild;
     exports love.forte.simbot.qguild.api.guild.mute;
+    exports love.forte.simbot.qguild.api.group;
     exports love.forte.simbot.qguild.api.interaction;
     exports love.forte.simbot.qguild.api.member;
     exports love.forte.simbot.qguild.api.menu;

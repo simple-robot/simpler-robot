@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.message
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -33,6 +34,7 @@ import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
 import love.forte.simbot.message.BinaryDataAwareMessage
 import love.forte.simbot.message.Messages
+import love.forte.simbot.qguild.common.QGUnstableProperty
 import love.forte.simbot.qguild.model.Message
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -48,15 +50,66 @@ import love.forte.simbot.message.Message as SimbotMessage
  *
  * _仅支持在接收的消息中出现，暂不支持发送。_
  *
+ * @property url 附件下载地址，缺少协议前缀时会补充 `https://`。
+ * @property filename 文件名。
+ * @property width 图片宽度，单位为像素。
+ * @property height 图片高度，单位为像素。
+ * @property size 文件大小，单位为字节。
+ * @property contentType 附件内容类型。
+ * @property voiceWavUrl 语音转换后的 WAV 文件地址。
+ * @property asrReferText 语音识别参考结果。
+ * @property attachmentId QQ 附件 ID，与旧版的 [id] 不同。
+ *
  * @author ForteScarlet
  */
+@OptIn(QGUnstableProperty::class)
 @SerialName("qg.attachment")
 @Serializable
-public data class QGAttachmentMessage
-@JvmOverloads constructor(
+public class QGAttachmentMessage internal constructor(
     public val url: String,
-    public val properties: Map<String, String> = emptyMap()
+    /**
+     * 保留历史序列化属性表，并为缺失的类型化字段提供默认值。
+     */
+    @SerialName("properties")
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    private val legacyProperties: Map<String, String> = emptyMap(),
+    public val filename: String? = legacyProperties["filename"],
+    public val width: Int? = legacyProperties["width"]?.toIntOrNull(),
+    public val height: Int? = legacyProperties["height"]?.toIntOrNull(),
+    public val size: Long? = legacyProperties["size"]?.toLongOrNull(),
+    @SerialName("content_type") public val contentType: String? = legacyProperties["content_type"],
+    @SerialName("voice_wav_url") public val voiceWavUrl: String? = legacyProperties["voice_wav_url"],
+    @SerialName("asr_refer_text") public val asrReferText: String? = legacyProperties["asr_refer_text"],
+    @SerialName("id") @property:QGUnstableProperty public val attachmentId: String? = legacyProperties["id"],
 ) : QGMessageElement, BinaryDataAwareMessage {
+
+    /**
+     * 兼容旧版使用字符串属性表创建附件消息的方式。
+     */
+    @JvmOverloads
+    @Deprecated("Use received attachment messages and their typed properties")
+    public constructor(url: String, properties: Map<String, String> = emptyMap()) : this(
+        url = url,
+        legacyProperties = properties,
+    )
+
+    /**
+     * 附件属性的旧版字符串视图。新代码应使用类型化属性。
+     */
+    @Deprecated("Use the typed attachment properties")
+    public val properties: Map<String, String>
+        get() = buildMap {
+            putAll(legacyProperties)
+            put("url", url)
+            filename?.let { put("filename", it) }
+            width?.let { put("width", it.toString()) }
+            height?.let { put("height", it.toString()) }
+            this@QGAttachmentMessage.size?.let { put("size", it.toString()) }
+            contentType?.let { put("content_type", it) }
+            voiceWavUrl?.let { put("voice_wav_url", it) }
+            asrReferText?.let { put("asr_refer_text", it) }
+            attachmentId?.let { put("id", it) }
+        }
 
     internal var bot: QGBot? = null
 
@@ -73,11 +126,73 @@ public data class QGAttachmentMessage
         get() = if (::_source.isInitialized) {
             _source
         } else {
+            @Suppress("DEPRECATION")
             Message.Attachment(url, properties).also { _source = it }
         }
 
+    /**
+     * 旧版使用下载地址表示的消息 ID。
+     */
     @Deprecated("Just get url", ReplaceWith("url.ID", "love.forte.simbot.ID"))
     public val id: ID get() = url.ID
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is QGAttachmentMessage) return false
+
+        if (url != other.url) return false
+        if (filename != other.filename) return false
+        if (width != other.width) return false
+        if (height != other.height) return false
+        if (size != other.size) return false
+        if (contentType != other.contentType) return false
+        if (voiceWavUrl != other.voiceWavUrl) return false
+        if (asrReferText != other.asrReferText) return false
+        if (attachmentId != other.attachmentId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = url.hashCode()
+        result = 31 * result + filename.hashCode()
+        result = 31 * result + width.hashCode()
+        result = 31 * result + height.hashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + contentType.hashCode()
+        result = 31 * result + voiceWavUrl.hashCode()
+        result = 31 * result + asrReferText.hashCode()
+        result = 31 * result + attachmentId.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "QGAttachmentMessage(url='$url', filename=$filename, width=$width, height=$height, " +
+            "size=$size, contentType=$contentType, voiceWavUrl=$voiceWavUrl, " +
+            "asrReferText=$asrReferText, attachmentId=$attachmentId)"
+
+    /**
+     * 兼容旧版解构得到下载地址。
+     */
+    @Deprecated("Use url", ReplaceWith("url"))
+    public operator fun component1(): String = url
+
+    /**
+     * 兼容旧版解构得到字符串属性表。
+     */
+    @Suppress("DEPRECATION")
+    @Deprecated("Use the typed attachment properties")
+    public operator fun component2(): Map<String, String> = properties
+
+    /**
+     * 兼容旧版复制附件消息的方式。
+     */
+    @Suppress("DEPRECATION")
+    @Deprecated("Use received attachment messages and their typed properties")
+    public fun copy(
+        url: String = this.url,
+        properties: Map<String, String> = this.properties,
+    ): QGAttachmentMessage = QGAttachmentMessage(url, properties)
 
     /**
      * 尝试通过 [url] 读取二进制资源。
@@ -99,9 +214,20 @@ public data class QGAttachmentMessage
          */
         @JvmStatic
         @JvmName("of")
+        @OptIn(QGUnstableProperty::class)
         public fun Message.Attachment.toMessage(): QGAttachmentMessage {
             val url0 = if (!url.startsWith("http")) "https://$url" else url
-            return QGAttachmentMessage(url0, properties).also {
+            return QGAttachmentMessage(
+                url = url0,
+                filename = filename,
+                width = width,
+                height = height,
+                size = size,
+                contentType = contentType,
+                voiceWavUrl = voiceWavUrl,
+                asrReferText = asrReferText,
+                attachmentId = id,
+            ).also {
                 it._source = this
             }
         }

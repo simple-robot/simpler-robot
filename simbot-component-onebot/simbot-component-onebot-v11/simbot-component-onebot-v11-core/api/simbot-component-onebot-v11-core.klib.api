@@ -906,7 +906,7 @@ final class <#A: kotlin/Any> love.forte.simbot.component.onebot.v11.core.api/One
     final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.toString|toString(){}[0]
 
-    final class <#A1: kotlin/Any?> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult<#A1>> { // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.$serializer|null[0]
+    final class <#A1: kotlin/Any> $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult<#A1>> { // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.$serializer|null[0]
         constructor <init>(kotlinx.serialization/KSerializer<#A1>) // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.$serializer.<init>|<init>(kotlinx.serialization.KSerializer<1:0>){}[0]
 
         final val descriptor // love.forte.simbot.component.onebot.v11.core.api/OneBotApiResult.$serializer.descriptor|{}descriptor[0]
