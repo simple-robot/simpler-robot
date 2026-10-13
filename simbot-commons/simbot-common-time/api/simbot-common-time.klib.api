@@ -40,6 +40,7 @@ abstract interface love.forte.simbot.common.time/Timestamp : kotlin/Comparable<l
     open fun toInstant(): kotlin.time/Instant // love.forte.simbot.common.time/Timestamp.toInstant|toInstant(){}[0]
 
     final object Companion { // love.forte.simbot.common.time/Timestamp.Companion|null[0]
+        final fun (kotlin.time/Instant).toTimestamp(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.toTimestamp|toTimestamp@kotlin.time.Instant(){}[0]
         final fun now(): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.now|now(){}[0]
         final fun now(kotlin.time/Clock): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.now|now(kotlin.time.Clock){}[0]
         final fun ofMilliseconds(kotlin/Long): love.forte.simbot.common.time/Timestamp // love.forte.simbot.common.time/Timestamp.Companion.ofMilliseconds|ofMilliseconds(kotlin.Long){}[0]

@@ -212,6 +212,7 @@ public final class love/forte/simbot/common/coroutines/CoroutineContexts {
 
 public final class love/forte/simbot/common/coroutines/DispatchersUtil {
 	public static final fun getIOOrDefault (Lkotlinx/coroutines/Dispatchers;)Lkotlinx/coroutines/CoroutineDispatcher;
+	public static final fun getIOOrUnconfined (Lkotlinx/coroutines/Dispatchers;)Lkotlinx/coroutines/CoroutineDispatcher;
 	public static final fun getVirtual (Lkotlinx/coroutines/Dispatchers;)Lkotlinx/coroutines/CoroutineDispatcher;
 	public static final fun getVirtualDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public static final fun getVirtualOrIO (Lkotlinx/coroutines/Dispatchers;)Lkotlinx/coroutines/CoroutineDispatcher;

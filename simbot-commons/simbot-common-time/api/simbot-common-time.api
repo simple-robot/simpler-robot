@@ -45,6 +45,7 @@ public abstract interface class love/forte/simbot/common/time/Timestamp : java/l
 	public abstract fun getMilliseconds ()J
 	public static fun now ()Llove/forte/simbot/common/time/Timestamp;
 	public static fun now (Lkotlin/time/Clock;)Llove/forte/simbot/common/time/Timestamp;
+	public static fun of (Lkotlin/time/Instant;)Llove/forte/simbot/common/time/Timestamp;
 	public static fun ofMilliseconds (J)Llove/forte/simbot/common/time/Timestamp;
 	public fun timeAs (Ljava/util/concurrent/TimeUnit;)J
 	public fun toInstant ()Lkotlin/time/Instant;
@@ -53,6 +54,7 @@ public abstract interface class love/forte/simbot/common/time/Timestamp : java/l
 public final class love/forte/simbot/common/time/Timestamp$Companion {
 	public final fun now ()Llove/forte/simbot/common/time/Timestamp;
 	public final fun now (Lkotlin/time/Clock;)Llove/forte/simbot/common/time/Timestamp;
+	public final fun of (Lkotlin/time/Instant;)Llove/forte/simbot/common/time/Timestamp;
 	public final fun ofMilliseconds (J)Llove/forte/simbot/common/time/Timestamp;
 }
 

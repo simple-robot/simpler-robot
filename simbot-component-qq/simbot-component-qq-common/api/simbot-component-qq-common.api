@@ -31,6 +31,12 @@ public abstract interface annotation class love/forte/simbot/qguild/common/QGApi
 public abstract interface annotation class love/forte/simbot/qguild/common/QGInternalApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class love/forte/simbot/qguild/common/QGInternalInheritanceApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class love/forte/simbot/qguild/common/QGUnstableProperty : java/lang/annotation/Annotation {
+}
+
 public final class love/forte/simbot/qguild/common/QQ {
 	public static final field DefaultJson Lkotlinx/serialization/json/Json;
 	public static final field INSTANCE Llove/forte/simbot/qguild/common/QQ;

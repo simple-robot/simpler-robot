@@ -23,7 +23,7 @@ kotlinPoet = "2.1.0"
 reactor = "3.8.6"
 # simbots
 # https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin
-suspendTransform = "2.4.0-0.14.0"
+suspendTransform = "2.4.20-0.15.0"
 gradleCommon = "0.6.0"
 # tests
 mockk = "1.14.7"
