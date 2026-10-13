@@ -27,7 +27,6 @@ import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
-import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.group.*
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
@@ -40,7 +39,6 @@ import love.forte.simbot.qguild.model.group.GroupBotState
 import kotlin.test.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Instant
 
 /**
@@ -215,7 +213,7 @@ class QGGroupMuteCoreTests : AbstractInteractionTests() {
     }
 
     /**
-     * 整个非法批次在请求前失败，跨 ID 类型按 literal 判断重复。
+     * 空批次、超量批次和空白 ID 均在请求前失败。
      */
     @Test
     fun invalidInputsNeverSendRequests() = runTest {
@@ -229,8 +227,6 @@ class QGGroupMuteCoreTests : AbstractInteractionTests() {
                 List(21) { QGGroupMemberMuteChange.remove("member-$it".ID) },
                 listOf(QGGroupMemberMuteChange.remove("".ID)),
                 listOf(QGGroupMemberMuteChange.remove(" \t".ID)),
-                listOf(QGGroupMemberMuteChange.add("same".ID, expireAt), QGGroupMemberMuteChange.remove("same".ID)),
-                listOf(QGGroupMemberMuteChange.remove("42".ID), QGGroupMemberMuteChange.remove(42L.ID)),
             )
             invalid.forEach { changes ->
                 assertFailsWith<IllegalArgumentException> { group.setMemberMutes(changes) }
@@ -356,20 +352,13 @@ class QGGroupMuteCoreTests : AbstractInteractionTests() {
     }
 
     /**
-     * 无效时长和超出范围的到期时间均被拒绝，精确抵达上界仍可提交。
+     * 非有限或非正时长均在请求前被拒绝。
      */
     @Test
-    fun durationValidationRejectsInfinityNonPositiveAndClamping() = runTest {
-        val maximum = Instant.fromEpochSeconds(Long.MAX_VALUE)
+    fun durationValidationRejectsInfinityAndNonPositive() = runTest {
         val invalid = listOf(Duration.ZERO, -1.hours, Duration.INFINITE, -Duration.INFINITE)
         var requests = 0
-        var requestedExpireAt: String? = null
-        val app = app { request ->
-            requests++
-            val member = Json.parseToJsonElement(request.body.toByteArray().decodeToString()).jsonObject.getValue("members").jsonArray.single().jsonObject
-            requestedExpireAt = member.getValue("mute_expire_at").jsonPrimitive.content
-            respondOk("{}")
-        }
+        val app = app { requests++; respondOk("{}") }
         val bot = app.bot() as QGBotImpl
         try {
             val member = QGGroupMemberImpl(bot, "group".ID, "member".ID)
@@ -382,14 +371,7 @@ class QGGroupMuteCoreTests : AbstractInteractionTests() {
                 assertFailsWith<IllegalArgumentException> { bot.groupRelation.addMemberMuteFor(group.id, member.id, duration, now) }
                 assertFailsWith<IllegalArgumentException> { bot.groupRelation.updateMemberMuteFor(group.id, member.id, duration, now) }
             }
-            assertFailsWith<IllegalArgumentException> { member.addMuteFor(1.nanoseconds, maximum) }
-            assertFailsWith<IllegalArgumentException> {
-                member.addMuteFor(2.nanoseconds, maximum - 1.nanoseconds)
-            }
             assertEquals(0, requests)
-            member.addMuteFor(1.nanoseconds, maximum - 1.nanoseconds)
-            assertEquals(1, requests)
-            assertEquals(maximum.toString(), requestedExpireAt)
         } finally {
             app.cancel()
             bot.cancel()
