@@ -75,6 +75,7 @@ dependencies {
 api模块是多平台的。支持的平台如下：
 - JVM
 - JS
+- Wasm (wasmJs)
 - Native ( 前往 [构建脚本](build.gradle.kts) 查看支持的目标，基本与 [ktor中client支持的平台目标](https://ktor.io/docs/client-supported-platforms.html) 一致。 )
 
 其中，在使用native平台时请注意配置 `BotConfiguration` 中相关的引擎的使用。（可参考 [Ktor文档](https://ktor.io/docs/http-client-engines.html#limitations) ）
