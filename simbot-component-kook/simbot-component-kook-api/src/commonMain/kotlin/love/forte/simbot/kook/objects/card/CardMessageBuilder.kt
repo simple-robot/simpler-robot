@@ -31,17 +31,16 @@ import kotlin.jvm.JvmOverloads
  */
 @DslMarker
 @Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE, AnnotationTarget.FUNCTION)
 public annotation class CardMsgBuildDsl
 
 
 /**
  * 通过 [CardMessageBuilder] 以 DSL 的方式构建一个 [CardMessage].
  */
-@CardMsgBuildDsl
 public inline fun buildCardMessage(action: CardMessageBuilder.() -> Unit): CardMessage {
     return CardMessageBuilder().also(action).build()
 }
-
 
 /**
  * 用于构建 [CardMessage] 的构建器。
@@ -58,7 +57,6 @@ public class CardMessageBuilder @JvmOverloads constructor(
     /**
      * DSL构建一个 [Card].
      */
-    @CardBuildDsl
     public fun card(action: CardBuilder.() -> Unit): CardMessageBuilder {
         val card = CardBuilder().also(action).build()
         return addCard0(card)
@@ -96,13 +94,14 @@ public class CardMessageBuilder @JvmOverloads constructor(
 
 @DslMarker
 @Retention(AnnotationRetention.BINARY)
+@Deprecated("Use CardMsgBuildDsl instead.")
 public annotation class CardBuildDsl
 
 
 /**
  * 针对 [Card] 的构建器。
  */
-@CardBuildDsl
+@CardMsgBuildDsl
 public class CardBuilder @JvmOverloads constructor(
     private val collect: MutableCollection<CardModule> = mutableListOf()
 ) {
@@ -145,7 +144,7 @@ public class CardBuilder @JvmOverloads constructor(
     /**
      * 构建多个modules.
      */
-    @CardModuleBuildDsl
+
     public fun modules(action: CardModulesBuilder.() -> Unit): CardBuilder {
         // only action, no build.
         CardModulesBuilder(collect).action()
@@ -170,12 +169,13 @@ public class CardBuilder @JvmOverloads constructor(
 
 @DslMarker
 @Retention(AnnotationRetention.BINARY)
+@Deprecated("Use CardMsgBuildDsl instead.")
 public annotation class CardModuleBuildDsl
 
 /**
  * 针对 [CardModule] 的集合的构建器。
  */
-@CardModuleBuildDsl
+@CardMsgBuildDsl
 public class CardModulesBuilder @JvmOverloads constructor(
     private val collect: MutableCollection<CardModule> = mutableListOf()
 ) {

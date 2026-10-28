@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -31,7 +31,6 @@ package love.forte.simbot.common.collection
 @RequiresOptIn(
     message = "一个尚在试验阶段的 simbot-common collection API。" +
         "试验阶段的API可能存在漏洞、缺陷，或实现不稳定，且有可能在未来被修改、删除，且没有兼容性保证。",
-    level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented
 public annotation class ExperimentalSimbotCollectionApi

@@ -47,7 +47,7 @@ kotlin {
 configJavaCompileWithModule(jvmVersion = "17")
 
 dependencies {
-    implementation(project(":simbot-component-qq:simbot-component-qq-guild-core"))
+    implementation(project(":simbot-component-qq:simbot-component-qq-core"))
     implementation(project(":simbot-cores:simbot-core-spring-boot-starter"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")

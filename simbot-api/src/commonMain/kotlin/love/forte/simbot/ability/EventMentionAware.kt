@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,8 @@ import love.forte.simbot.message.MessageContent
  */
 public interface EventMentionAware {
     /**
-     * 根据提供的 [event] 判断此事件中是否提及了自身。
+     * 根据提供的 [event] 快速判断此事件中是否提及了自身。
+     * 如果返回 `false`，则继续常规判定。
      */
     public fun isMention(event: Event): Boolean
 }

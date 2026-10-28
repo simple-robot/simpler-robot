@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -79,4 +79,13 @@ public val Dispatchers.VirtualOrIO: CoroutineDispatcher by lazy { Dispatchers.Vi
  * Friendly API for Java.
  */
 @Api4J
-public val VirtualOrIODispatcher: CoroutineDispatcher? get() = Dispatchers.VirtualOrIO
+public val VirtualOrIODispatcher: CoroutineDispatcher
+    get() = Dispatchers.VirtualOrIO
+
+/**
+ * 得到 [Dispatchers.IO]。
+ *
+ * @since 5.0
+ */
+public actual val Dispatchers.IOOrUnconfined: CoroutineDispatcher
+    get() = IO

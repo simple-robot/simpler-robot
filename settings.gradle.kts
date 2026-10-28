@@ -50,12 +50,6 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    id("com.gradle.develocity") version "4.3"
-}
-
-// https://docs.gradle.com/develocity/intellij-plugin/current/#troubleshooting
-develocity {
-    // configuration
 }
 
 dependencyResolutionManagement {
@@ -67,8 +61,7 @@ dependencyResolutionManagement {
     // https://github.com/JetBrains/kotlin-wrappers
     versionCatalogs {
         register("kotlinWrappers") {
-            val wrappersVersion = "2026.1.10"
-            from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
+            from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:2026.1.10")
         }
     }
 }
@@ -137,10 +130,11 @@ include(":simbot-component-kook:simbot-component-kook-stdlib")
 include(":simbot-component-kook:simbot-component-kook-core")
 
 // qq
-include(":simbot-component-qq:simbot-component-qq-guild-api")
-include(":simbot-component-qq:simbot-component-qq-guild-stdlib")
-include(":simbot-component-qq:simbot-component-qq-guild-core")
-include(":simbot-component-qq:simbot-component-qq-guild-internal-ed25519")
+include(":simbot-component-qq:simbot-component-qq-common")
+include(":simbot-component-qq:simbot-component-qq-api")
+include(":simbot-component-qq:simbot-component-qq-stdlib")
+include(":simbot-component-qq:simbot-component-qq-core")
+include(":simbot-component-qq:simbot-component-qq-internal-ed25519")
 
 // samples
 include(":samples:qq-webhook-server-ktor")

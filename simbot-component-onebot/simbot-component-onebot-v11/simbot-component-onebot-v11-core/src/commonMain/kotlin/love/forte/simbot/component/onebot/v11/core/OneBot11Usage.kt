@@ -69,7 +69,7 @@ public fun ApplicationFactoryConfigurer<*, *, *>.useOneBot11(builder: OneBot11Us
 @DslMarker
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
-internal annotation class OneBot11UsageBuilderDsl
+private annotation class OneBot11UsageBuilderDsl
 
 /**
  * 使用在 [useOneBot11] 函数中，用于同时针对 [OneBot11Component] 和 [OneBotBotManager]

@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -37,4 +37,12 @@ import kotlin.jvm.JvmName
  *
  */
 public expect val Dispatchers.IOOrDefault: CoroutineDispatcher
+
+/**
+ * 在 JVM 和 native 平台下，得到 `Dispatchers.IO`;
+ * 在其他没有 `IO` 调度器的平台下得到 [Dispatchers.Unconfined]。
+ *
+ * @since 5.0
+ */
+public expect val Dispatchers.IOOrUnconfined: CoroutineDispatcher
 

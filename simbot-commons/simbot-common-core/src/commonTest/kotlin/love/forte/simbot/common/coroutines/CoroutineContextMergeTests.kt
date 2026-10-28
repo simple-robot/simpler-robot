@@ -1,10 +1,10 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2024-2026. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
  *
- *     This file is part of the Simple Robot Library.
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -23,10 +23,10 @@
 
 package love.forte.simbot.common.coroutines
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.*
 
 
@@ -36,7 +36,6 @@ import kotlin.test.*
  */
 class CoroutineContextMergeTests {
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Test
     fun contextMergeWithoutJobTest() {
         val name1 = CoroutineName("name1")
@@ -48,7 +47,7 @@ class CoroutineContextMergeTests {
 
         with(name1.mergeWith(name2 + Dispatchers.Unconfined)) {
             assertEquals(name1.name, get(CoroutineName)?.name)
-            assertEquals(Dispatchers.Unconfined, get(CoroutineDispatcher))
+            assertEquals(Dispatchers.Unconfined, get(ContinuationInterceptor))
         }
     }
 

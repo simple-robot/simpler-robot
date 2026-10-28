@@ -1,0 +1,175 @@
+/*
+ *     Copyright (c) 2024-2026. ForteScarlet.
+ *
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
+ *
+ *     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+package love.forte.simbot.component.qguild.internal.group
+
+import love.forte.simbot.common.atomic.AtomicInt
+import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.literal
+import love.forte.simbot.component.qguild.group.*
+import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
+import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
+import love.forte.simbot.component.qguild.internal.event.QGGroupSendSupportPreSendEventImpl
+import love.forte.simbot.component.qguild.message.QGMedia
+import love.forte.simbot.component.qguild.message.sendGroupMessage
+import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.qguild.ExperimentalQGMediaApi
+import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
+import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
+import love.forte.simbot.qguild.common.QGInternalInheritanceApi
+import love.forte.simbot.qguild.event.GroupMessageData
+import love.forte.simbot.qguild.model.group.GroupBotState
+import love.forte.simbot.qguild.model.group.GroupInfo
+import love.forte.simbot.qguild.model.group.GroupMuteSetting
+import love.forte.simbot.resource.Resource
+import kotlin.coroutines.CoroutineContext
+
+
+/**
+ *
+ * @author ForteScarlet
+ */
+@OptIn(QGInternalInheritanceApi::class)
+internal class QGGroupImpl(
+    private val bot: QGBotImpl,
+    override val id: ID,
+    private val sourceEvent: GroupMessageData?,
+    private val msgSeq: AtomicInt?,
+    private val isFake: Boolean,
+) : QGGroup {
+    override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
+
+    override val joinRequests: Collectable<QGGroupJoinRequest>
+        get() = bot.groupJoinRequests(id)
+
+    override suspend fun groupInfo(): GroupInfo = bot.queryGroupInfo(id)
+
+    override suspend fun botState(): GroupBotState = bot.queryGroupBotState(id)
+
+    override suspend fun muteSetting(): GroupMuteSetting = bot.queryGroupMuteSetting(id)
+
+    override suspend fun setMemberMutes(changes: List<QGGroupMemberMuteChange>) =
+        bot.submitGroupMemberMutes(id, changes)
+
+    override suspend fun includeInfo(): QGGroupWithInfo =
+        QGGroupWithInfoImpl(this, groupInfo())
+
+    override suspend fun botAsMemberWithState(): QGGroupBotMember =
+        QGBotMemberImpl(bot, id, botState())
+
+    private fun GroupAndC2CSendBody.initMsgIdAndSeq() {
+        if (msgId == null && sourceEvent != null) {
+            msgId = sourceEvent.id
+        }
+        if (msgSeq == null && this@QGGroupImpl.msgSeq != null) {
+            msgSeq = this@QGGroupImpl.msgSeq.getAndIncrement()
+        }
+    }
+
+    override suspend fun send(text: String): MessageReceipt {
+        return sendWithContent(this, InteractionMessage.valueOf(text))
+    }
+
+    override suspend fun send(message: Message): MessageReceipt {
+        return sendWithContent(this, InteractionMessage.valueOf(message))
+    }
+
+    override suspend fun send(messageContent: MessageContent): MessageReceipt {
+        return sendWithContent(this, InteractionMessage.valueOf(messageContent))
+    }
+
+    /**
+     * 使用当前句柄的消息上下文发送，并将实际发起发送的群对象传给发送事件。
+     */
+    internal suspend fun sendWithContent(content: QGGroup, message: InteractionMessage): MessageReceipt {
+        val event = QGGroupSendSupportPreSendEventImpl(
+            bot = bot,
+            content = content,
+            message = message
+        )
+        bot.emitMessagePreSendEvent(event)
+        val message = event.useMessage()
+        return sendByInteractionMessage(content, message)
+    }
+
+    private suspend fun sendByInteractionMessage(content: QGGroup, message: InteractionMessage): MessageReceipt {
+        return when (message) {
+            is InteractionMessage.Text -> {
+                bot.sendGroupMessage(
+                    openid = id.literal,
+                    text = message.text,
+                    msgType = GroupMessageSendApi.MSG_TYPE_TEXT
+                ) {
+                    initMsgIdAndSeq()
+                }
+            }
+
+            is InteractionMessage.Message -> {
+                bot.sendGroupMessage(
+                    openid = id.literal,
+                    message = message.message,
+                ) {
+                    initMsgIdAndSeq()
+                }
+            }
+
+            is InteractionMessage.MessageContent -> {
+                bot.sendGroupMessage(
+                    openid = id.literal,
+                    messageContent = message.messageContent,
+                ) {
+                    initMsgIdAndSeq()
+                }
+            }
+
+            else -> {
+                error("Unknown type of InteractionMessage: $message")
+            }
+        }.alsoEmitPostSendEvent(bot, content, message)
+    }
+
+    override suspend fun uploadMedia(url: String, type: Int): QGMedia {
+        return bot.uploadGroupMedia(id, url, type)
+    }
+
+    @ExperimentalQGMediaApi
+    override suspend fun uploadMedia(resource: Resource, type: Int): QGMedia {
+        return bot.uploadGroupMedia(id, resource, type)
+    }
+
+    override fun toString(): String {
+        return "QGGroup(id=$id, isFake=$isFake)"
+    }
+}
+
+internal fun GroupMessageData.toGroup(bot: QGBotImpl, msgSeq: AtomicInt? = null): QGGroupImpl =
+    QGGroupImpl(bot, groupOpenid.ID, this, msgSeq, false)
+
+internal fun idGroup(bot: QGBotImpl, id: ID, msgSeq: AtomicInt? = null, isFake: Boolean = true): QGGroupImpl =
+    QGGroupImpl(bot, id, null, msgSeq, isFake)

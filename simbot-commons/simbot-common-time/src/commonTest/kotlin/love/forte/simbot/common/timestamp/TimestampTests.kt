@@ -29,11 +29,13 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.time.MillisecondTimestamp
+import love.forte.simbot.common.time.StandardInstantTimestamp
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.common.time.Timestamp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 
 /**
@@ -41,6 +43,25 @@ import kotlin.test.assertTrue
  * @author ForteScarlet
  */
 class TimestampTests {
+
+    /**
+     * 混合时间戳实现时，比较统一使用毫秒精度，保持相等关系的传递性。
+     */
+    @Test
+    fun mixedImplementationsCompareAtMillisecondPrecision() {
+        val first = StandardInstantTimestamp(Instant.fromEpochSeconds(1, 1))
+        val second = StandardInstantTimestamp(Instant.fromEpochSeconds(1, 2))
+        val millis = Timestamp.ofMilliseconds(1000)
+
+        for (left in listOf(first, millis, second)) {
+            for (right in listOf(first, millis, second)) {
+                assertEquals(0, left.compareTo(right))
+            }
+        }
+        assertTrue(first < Timestamp.ofMilliseconds(1001))
+        assertTrue(Timestamp.ofMilliseconds(999) < second)
+        assertEquals(1, first.toInstant().nanosecondsOfSecond)
+    }
 
     @Test
     fun millisTests() {

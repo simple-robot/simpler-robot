@@ -52,7 +52,7 @@ application {
 }
 
 dependencies {
-    implementation(project(":simbot-component-qq:simbot-component-qq-guild-core"))
+    implementation(project(":simbot-component-qq:simbot-component-qq-core"))
     implementation(project(":simbot-cores:simbot-core"))
 
     val ktorVersion = "2.3.12"

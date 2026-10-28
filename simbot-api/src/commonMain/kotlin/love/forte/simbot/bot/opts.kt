@@ -28,7 +28,6 @@ package love.forte.simbot.bot
  */
 @Target(AnnotationTarget.CLASS)
 @RequiresOptIn(
-    level = RequiresOptIn.Level.WARNING,
     message = "Bot 及其相关接口是面向组件库实现的类型。它的兼容性保障会更弱、通常只确保在相同 major 内的二进制兼容，" +
         "且可能随时会添加新的、需要被明确继承/重写的API。因此对 Bot 及其相关接口的实现需要更频繁的关注它的变更，" +
         "这通常由组件库实现，而不应该由用户随意实现。"
