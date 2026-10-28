@@ -48,7 +48,7 @@ fun isSnapshot(): Boolean = _isSnapshot
 sealed class P(override val group: String) : ProjectDetail() {
     companion object {
         const val VERSION = "5.0.0-Alpha1"
-        const val NEXT_VERSION = "5.0.0-Alpha1"
+        const val NEXT_VERSION = "5.0.0-Alpha2"
         const val SNAPSHOT_VERSION = "$VERSION-SNAPSHOT"
         const val NEXT_SNAPSHOT_VERSION = "$NEXT_VERSION-SNAPSHOT"
 
