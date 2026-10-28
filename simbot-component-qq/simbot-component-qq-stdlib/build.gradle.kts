@@ -21,6 +21,8 @@
  *
  */
 
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
@@ -37,6 +39,11 @@ kotlin {
 
     js {
         configJs()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
     }
 
     applyTier1()
@@ -74,6 +81,10 @@ kotlin {
         }
 
         jsMain.dependencies {
+            api(libs.ktor.client.js)
+        }
+
+        wasmJsMain.dependencies {
             api(libs.ktor.client.js)
         }
 

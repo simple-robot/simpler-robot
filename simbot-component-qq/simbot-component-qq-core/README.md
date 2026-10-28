@@ -1,5 +1,7 @@
 # core
 
+支持 JVM、JS、Wasm (wasmJs) 和 Native 平台，具体目标见 [构建脚本](build.gradle.kts)。
+
 ## 使用
 
 <details open><summary><b>Gradle Kotlin DSL</b></summary>

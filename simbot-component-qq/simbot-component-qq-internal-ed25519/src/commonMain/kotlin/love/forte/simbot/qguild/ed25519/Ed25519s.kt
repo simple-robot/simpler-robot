@@ -44,8 +44,9 @@ public interface Ed25519KeyPairGenerator {
 /**
  * 根据当前平台情况和classpath环境选择一个合适的 [Ed25519KeyPairGenerator] 实例。
  *
- * 在非 JVM 平台中，会使用 [libsodium bindings](https://github.com/ionspin/kotlin-multiplatform-libsodium)。
- * 由于 libsodium bindings 初始化可能需要挂起，因此 [ed25519KeyPairGenerator] 在首次执行时也可能是挂起的。
+ * 在 JS 和 Native 平台中，会使用 [libsodium bindings](https://github.com/ionspin/kotlin-multiplatform-libsodium)。
+ * 在 wasmJs 平台中，通过 JS 互操作使用 libsodium-wrappers-sumo。
+ * 由于 libsodium 初始化可能需要挂起，因此 [ed25519KeyPairGenerator] 在首次执行时也可能是挂起的。
  *
  * 在 JVM 中，会优先检测是否存在 [BouncyCastle](https://www.bouncycastle.org/) 依赖中所需使用的类,
  * 例如:

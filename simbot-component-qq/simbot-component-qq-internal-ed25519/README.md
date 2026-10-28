@@ -8,8 +8,8 @@ val generator = ed25519KeyPairGenerator()
 val (privateKey, publicKey) = generator.generate(seed)
 ```
 
-非 JVM 平台中，均使用 [libsodium bindings](https://github.com/ionspin/kotlin-multiplatform-libsodium)
-作为实现。
+JS 和 Native 平台使用 [libsodium bindings](https://github.com/ionspin/kotlin-multiplatform-libsodium)
+作为实现。wasmJs 平台通过 JS 互操作使用 `libsodium-wrappers-sumo`，提供密钥生成、签名和验签。
 
 JVM 中优先尝试检测是否存在以下类：
 

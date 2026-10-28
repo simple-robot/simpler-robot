@@ -21,6 +21,8 @@
  *
  */
 
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     id("simbot.kotlin-multiplatform")
     id("simbot.qq.kotlin-multiplatform-convention")
@@ -37,6 +39,11 @@ kotlin {
         configJs {
             // useEsModules()
         }
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        configWasmJs()
     }
 
     applyTier1()
@@ -66,6 +73,11 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.libsodium.bindings)
+            implementation(npm("libsodium-wrappers-sumo", "0.7.13"))
+        }
+
+        wasmJsMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
             implementation(npm("libsodium-wrappers-sumo", "0.7.13"))
         }
 
