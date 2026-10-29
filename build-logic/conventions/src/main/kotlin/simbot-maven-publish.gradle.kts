@@ -31,7 +31,14 @@ plugins {
 
 val p = project
 
+// Keep published documentation small; the full API documentation is hosted online.
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(rootProject.layout.projectDirectory.dir(".simbot/javadoc"))
+}
+
 mavenPublishing {
+    configureBasedOnAppliedPlugins(javadocJar = false)
     publishToMavenCentral(automaticRelease = true)
     if (!isSimbotLocal()) {
         signAllPublications()
@@ -81,5 +88,12 @@ mavenPublishing {
             system.set("GitHub Issues")
             url.set("https://github.com/simple-robot/simpler-robot/issues")
         }
+    }
+}
+
+publishing.publications.withType<MavenPublication>().configureEach {
+    // Plugin markers and relocation publications only publish a POM.
+    if (!name.endsWith("PluginMarkerMaven")) {
+        artifact(javadocJar)
     }
 }

@@ -1,0 +1,149 @@
+<!--
+  ~     Copyright (c) 2026. ForteScarlet.
+  ~
+  ~     Project    https://github.com/simple-robot/simpler-robot
+  ~     Email      ForteScarlet@163.com
+  ~
+  ~     This file is part of the Simple Robot Library (Alias: simple-robot, simbot, etc.).
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Lesser General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     Lesser GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the Lesser GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="5; url=http://docs.simbot.forte.love/">
+    <title>Simple Robot 在线文档 / Documentation</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            color: #4b214c;
+            background: #fff0f8;
+            --pink-glow: #ff71bc40;
+            --violet-glow: #ae87ff30;
+            --grid: #e84e9e12;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            background:
+                radial-gradient(ellipse at top left, var(--pink-glow), transparent 65%),
+                radial-gradient(ellipse at bottom right, var(--violet-glow), transparent 65%),
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: auto, auto, 32px 32px, 32px 32px;
+        }
+
+        main {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            padding: clamp(24px, 6vw, 48px);
+            border: 1px solid #f5a4d0;
+            border-radius: 24px;
+            background: #fffafd;
+            box-shadow: 0 20px 64px #e9369c18, 0 0 32px #ff71bc18;
+        }
+
+        main::before {
+            position: absolute;
+            inset: 0 24px auto;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            background: linear-gradient(90deg, #ff4eae, #ac6bff 70%, #64e9ed);
+            content: "";
+        }
+
+        .eyebrow {
+            color: #ac246e;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .16em;
+        }
+
+        h1 {
+            margin: 16px 0;
+            color: #b31978;
+            font-size: clamp(28px, 6vw, 40px);
+            letter-spacing: -.04em;
+            text-shadow: 2px 2px 0 #64e9ed38;
+        }
+
+        p { line-height: 1.8; }
+        a { color: #a32278; }
+
+        .button {
+            display: inline-block;
+            margin: 16px 0;
+            padding: 12px 22px;
+            border-radius: 12px;
+            color: #ffffff;
+            background: linear-gradient(110deg, #b51f79, #7933b5);
+            box-shadow: 0 6px 24px #ed3a9b30;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .button:hover { background: linear-gradient(110deg, #9c1668, #62259c); }
+        a:focus-visible { outline: 3px solid #853cbd; outline-offset: 4px; }
+        .note { color: #80516e; font-size: 13px; }
+        .address { overflow-wrap: anywhere; }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color: #ffe7f6;
+                background: #180d22;
+                --pink-glow: #ff3ba630;
+                --violet-glow: #9755ff28;
+                --grid: #ff68b216;
+            }
+
+            main {
+                border-color: #a94c87;
+                background: #28132f;
+                box-shadow: 0 20px 64px #09030f66, 0 0 40px #ff48b020;
+            }
+
+            h1 { color: #ff8bcd; text-shadow: 0 0 24px #ff48b038, 2px 2px 0 #64e9ed30; }
+            .eyebrow, a { color: #ff9bd5; }
+            .note { color: #d7aacb; }
+            .button { color: #28102e; background: linear-gradient(110deg, #ff80c7, #b69aff); }
+            .button:hover { background: linear-gradient(110deg, #ff9bd5, #ceb7ff); }
+            a:focus-visible { outline-color: #64e9ed; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="eyebrow">SIMPLE ROBOT · DOCUMENTATION</div>
+    <h1>前往在线文档</h1>
+    <p>完整的 API 文档和使用指南已托管至<a href="https://docs.simbot.forte.love/">在线文档网站</a>。请在那里查阅所需的 API 文档或其他内容。</p>
+    <p lang="en">Full API documentation and guides are available <a href="https://docs.simbot.forte.love/">online</a>. Please check the required API documentation or other content there.</p>
+    <a class="button" href="https://docs.simbot.forte.love/">打开文档 / Open docs &rarr;</a>
+    <p class="note">页面将在 5 秒后自动跳转。若未跳转，请点击上方按钮。<br>
+        <span lang="en">Redirecting in 5 seconds. If nothing happens, use the link above.</span></p>
+    <p class="note address"><a href="https://docs.simbot.forte.love/">https://docs.simbot.forte.love/</a></p>
+</main>
+</body>
+</html>
