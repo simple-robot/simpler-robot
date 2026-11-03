@@ -46,6 +46,7 @@ import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.channel.*
 import love.forte.simbot.component.qguild.event.QGInternalInterceptionException
 import love.forte.simbot.component.qguild.group.QGGroup
+import love.forte.simbot.component.qguild.group.QGGroupMemberWithInfo
 import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
 import love.forte.simbot.component.qguild.group.QGGroupMemberMuteChange
 import love.forte.simbot.component.qguild.group.QGGroupRelation
@@ -85,9 +86,8 @@ import love.forte.simbot.qguild.ifNotFoundThenNull
 import love.forte.simbot.qguild.model.ChannelType
 import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SimpleGuild
-import love.forte.simbot.qguild.model.group.GroupBotState
-import love.forte.simbot.qguild.model.group.GroupInfo
-import love.forte.simbot.qguild.model.group.GroupMuteSetting
+import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
+import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.qguild.stdlib.DisposableHandle
 import love.forte.simbot.qguild.stdlib.requestDataBy
 import love.forte.simbot.resource.Resource
@@ -166,6 +166,28 @@ internal class QGBotImpl(
     private inner class GroupRelationImpl : QGGroupRelation {
         override suspend fun group(id: ID): QGGroup =
             idGroup(this@QGBotImpl, id)
+
+        override fun members(groupId: ID): Collectable<QGGroupMemberWithInfo> =
+            this@QGBotImpl.groupMembers(groupId)
+
+        override fun blacklist(groupId: ID): Collectable<GroupBlacklistUser> =
+            this@QGBotImpl.groupBlacklist(groupId)
+
+        override suspend fun memberInfo(groupId: ID, memberId: ID): GroupMemberInfo =
+            this@QGBotImpl.queryGroupMemberInfo(groupId, memberId)
+
+        override suspend fun memberWithInfo(groupId: ID, memberId: ID): QGGroupMemberWithInfo =
+            this@QGBotImpl.queryGroupMemberWithInfo(groupId, memberId)
+
+        override suspend fun removeMembers(
+            groupId: ID, memberIds: List<ID>, addToBlacklist: Boolean,
+        ): GroupMembersRemoveResult = this@QGBotImpl.removeGroupMembers(groupId, memberIds, addToBlacklist)
+
+        override suspend fun addToBlacklist(groupId: ID, memberIds: List<ID>): GroupBlacklistModifyResult =
+            this@QGBotImpl.modifyGroupBlacklist(groupId, memberIds, ModifyGroupMemberBlacklistOp.ADD)
+
+        override suspend fun removeFromBlacklist(groupId: ID, memberIds: List<ID>): GroupBlacklistModifyResult =
+            this@QGBotImpl.modifyGroupBlacklist(groupId, memberIds, ModifyGroupMemberBlacklistOp.DEL)
 
         override suspend fun groupInfo(groupId: ID): GroupInfo =
             this@QGBotImpl.queryGroupInfo(groupId)

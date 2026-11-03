@@ -25,7 +25,6 @@ package love.forte.simbot.component.qguild.group
 
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
-import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.bot.QGBot
@@ -35,9 +34,7 @@ import love.forte.simbot.definition.Role
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageAuthorRole
-import love.forte.simbot.qguild.model.group.GroupBotState
-import love.forte.simbot.qguild.model.group.GroupInfo
-import love.forte.simbot.qguild.model.group.GroupMuteSetting
+import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
@@ -87,19 +84,27 @@ public interface QGGroup : ChatGroup {
         get() = ""
 
     /**
-     * 无法查询群成员列表，将始终得到空结果。
+     * 获取群成员列表。收集时请求平台 API 并按游标自动翻页，每页最多 30 条。
+     *
+     * 注意：要注意 API 的接口频率限制。以 [获取群成员列表](https://bot.q.qq.com/wiki/develop/api-v2/autogen/api/v2_groups_group_openid_members.get.html) 为例，
+     * 它的接口频率限制是 60 QPM，那么假如针对一个 500 人的群，你尝试获取全部成员时会调用接口次数 500/30~=17次。
+     *
+     * @since 5.0
      */
     override val members: Collectable<QGGroupMember>
-        get() = emptyCollectable()
 
     /**
-     * 无法查询群成员，将始终得到 `null`。
+     * 查询指定成员，[QGGroupMemberWithInfo]。
+     *
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     *
+     * @see memberWithInfo
      */
     @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
-    override suspend fun member(id: ID): QGGroupMember? = null
+    override suspend fun member(id: ID): QGGroupMember? = memberWithInfo(id)
 
     /**
-     * 无法得知群主ID，始终得到 `null`
+     * 无法**直接**得知群主ID，始终得到 `null`。
      */
     override val ownerId: ID?
         get() = null
@@ -109,6 +114,76 @@ public interface QGGroup : ChatGroup {
      */
     override val roles: Collectable<QGGroupRole>
         get() = QGGroupRole.entries.asCollectable()
+
+
+    /**
+     * 查询当前群中指定成员的信息。每次调用都会请求平台 API。
+     *
+     * @param memberId 群成员 ID。
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @throws IllegalStateException 响应的成员 ID 与请求目标不一致
+     * @since 5.0
+     */
+    @ST
+    public suspend fun memberInfo(memberId: ID): GroupMemberInfo
+
+    /**
+     * 查询当前群中指定成员，并返回带有成员信息的成员对象。
+     *
+     * @param memberId 群成员 ID。
+     * @see memberInfo
+     * @since 5.0
+     */
+    @ST
+    public suspend fun memberWithInfo(memberId: ID): QGGroupMemberWithInfo
+
+    /**
+     * 查询当前群的黑名单列表，收集时按平台游标自动翻页。
+     *
+     * @since 5.0
+     */
+    public val blacklist: Collectable<GroupBlacklistUser>
+
+    /**
+     * 批量移除当前群的成员，可选择同时加入黑名单。单次最多 20 个（数量上限由服务端校验）。
+     *
+     * 返回结果包含移除状态和同时加入黑名单失败的成员 ID。
+     *
+     * @param memberIds 需要移除的群成员 ID 列表。
+     * @param addToBlacklist 是否同时加入群黑名单，默认 false。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun removeMembers(
+        memberIds: List<ID>,
+        addToBlacklist: Boolean = false,
+    ): GroupMembersRemoveResult
+
+    /**
+     * 将指定用户加入当前群的黑名单。只有在目标用户不在群中时才能加入群黑名单。
+     * 单次最多 20 个（数量上限由服务端校验）。返回结果包含操作失败的成员 ID。
+     *
+     * @param memberIds 目标成员 ID 列表。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addToBlacklist(memberIds: List<ID>): GroupBlacklistModifyResult
+
+    /**
+     * 将指定用户移出当前群的黑名单。单次最多 20 个（数量上限由服务端校验）。
+     * 返回结果包含操作失败的成员 ID。
+     *
+     * @param memberIds 目标成员 ID 列表。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun removeFromBlacklist(memberIds: List<ID>): GroupBlacklistModifyResult
 
     /**
      * 上传一个资源为用于向QQ群发送的 [QGMedia], 可用于后续的发送。

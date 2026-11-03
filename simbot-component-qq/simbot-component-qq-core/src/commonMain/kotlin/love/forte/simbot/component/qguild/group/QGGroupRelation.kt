@@ -29,9 +29,7 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.qguild.model.group.GroupBotState
-import love.forte.simbot.qguild.model.group.GroupInfo
-import love.forte.simbot.qguild.model.group.GroupMuteSetting
+import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 import kotlin.time.Instant
@@ -67,6 +65,86 @@ public interface QGGroupRelation : GroupRelation {
         reserveBaseName = "getGroup"
     )
     override suspend fun group(id: ID): QGGroup?
+
+
+    /**
+     * 获取指定群的成员列表。收集时请求平台 API 并按游标自动翻页，每页最多 30 条。
+     *
+     * @param groupId 群 OpenID。
+     * @since 5.0
+     */
+    public fun members(groupId: ID): Collectable<QGGroupMemberWithInfo>
+
+
+    /**
+     * 查询 [groupId] 对应群中指定成员的完整信息。每次调用都请求平台 API。
+     *
+     * @param memberId 群成员 ID。
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @throws IllegalStateException 响应的成员 ID 与请求目标不一致
+     * @since 5.0
+     */
+    @ST
+    public suspend fun memberInfo(groupId: ID, memberId: ID): GroupMemberInfo
+
+    /**
+     * 查询 [groupId] 对应群中指定成员，并返回带有成员信息的成员对象。
+     *
+     * @param memberId 群成员 ID。
+     * @see memberInfo
+     * @since 5.0
+     */
+    @ST
+    public suspend fun memberWithInfo(groupId: ID, memberId: ID): QGGroupMemberWithInfo
+
+    /**
+     * 查询 [groupId] 对应群的黑名单列表，收集时按平台 API 游标自动翻页。
+     *
+     * @since 5.0
+     */
+    public fun blacklist(groupId: ID): Collectable<GroupBlacklistUser>
+
+    /**
+     * 批量移除 [groupId] 对应群的成员，可选择同时加入黑名单。单次最多 20 个（数量上限由服务端校验）。
+     *
+     * 返回结果包含移除状态和同时加入黑名单失败的成员 ID。
+     *
+     * @param memberIds 需要移除的群成员 ID 列表。
+     * @param addToBlacklist 是否同时加入群黑名单，默认 false。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun removeMembers(
+        groupId: ID,
+        memberIds: List<ID>,
+        addToBlacklist: Boolean = false,
+    ): GroupMembersRemoveResult
+
+    /**
+     * 将指定用户加入 [groupId] 对应群的黑名单。只有在目标用户不在群中时才能加入群黑名单。
+     * 单次最多 20 个（数量上限由服务端校验）。返回结果包含操作失败的成员 ID。
+     *
+     * @param memberIds 目标成员 OpenID 列表。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun addToBlacklist(groupId: ID, memberIds: List<ID>): GroupBlacklistModifyResult
+
+    /**
+     * 将指定用户移出 [groupId] 对应群的黑名单。单次最多 20 个，数量上限由服务端校验。
+     * 返回结果包含操作失败的成员 OpenID。
+     *
+     * @param memberIds 目标成员 OpenID 列表。
+     * @throws IllegalArgumentException 群或成员 ID 为空白，或成员列表为空
+     * @throws love.forte.simbot.qguild.QQGuildApiException API 调用过程中可能产生的异常
+     * @since 5.0
+     */
+    @ST
+    public suspend fun removeFromBlacklist(groupId: ID, memberIds: List<ID>): GroupBlacklistModifyResult
 
     /**
      * 每次通过 API 查询 [groupId] 对应的 QQ 群基本信息。

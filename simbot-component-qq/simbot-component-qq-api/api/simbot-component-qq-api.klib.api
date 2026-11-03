@@ -75,6 +75,17 @@ final enum class love.forte.simbot.qguild.api.group/ApproveGroupJoinRequestOp : 
     final fun values(): kotlin/Array<love.forte.simbot.qguild.api.group/ApproveGroupJoinRequestOp> // love.forte.simbot.qguild.api.group/ApproveGroupJoinRequestOp.values|values#static(){}[0]
 }
 
+final enum class love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp : kotlin/Enum<love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp> { // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp|null[0]
+    enum entry ADD // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.ADD|null[0]
+    enum entry DEL // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.DEL|null[0]
+
+    final val entries // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp> // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp> // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp.values|values#static(){}[0]
+}
+
 final enum class love.forte.simbot.qguild.api.group/SetGroupMuteSettingOp : kotlin/Enum<love.forte.simbot.qguild.api.group/SetGroupMuteSettingOp> { // love.forte.simbot.qguild.api.group/SetGroupMuteSettingOp|null[0]
     enum entry ADD // love.forte.simbot.qguild.api.group/SetGroupMuteSettingOp.ADD|null[0]
     enum entry DEL // love.forte.simbot.qguild.api.group/SetGroupMuteSettingOp.DEL|null[0]
@@ -1281,6 +1292,17 @@ final class love.forte.simbot.qguild.api.group/ApproveGroupJoinRequestApi : love
     }
 }
 
+final class love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model.group/GroupMembersRemoveResult> { // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi|null[0]
+    final val body // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.body|{}body[0]
+        final fun <get-body>(): kotlin/Any // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupMembersRemoveResult> // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin.collections/Iterable<kotlin/String>, kotlin/Boolean = ...): love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi // love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi.Factory.create|create(kotlin.String;kotlin.collections.Iterable<kotlin.String>;kotlin.Boolean){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.api.group/GetGroupBotStateApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupBotState> { // love.forte.simbot.qguild.api.group/GetGroupBotStateApi|null[0]
     final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupBotStateApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupBotState> // love.forte.simbot.qguild.api.group/GetGroupBotStateApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
@@ -1309,12 +1331,50 @@ final class love.forte.simbot.qguild.api.group/GetGroupJoinRequestListApi : love
     }
 }
 
+final class love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupBlacklistPage> { // love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupBlacklistPage> // love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String? = ..., kotlin/Int? = ...): love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi // love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.Factory.create|create(kotlin.String;kotlin.String?;kotlin.Int?){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupMemberInfo> { // love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupMemberInfo> // love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String): love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi // love.forte.simbot.qguild.api.group/GetGroupMemberInfoApi.Factory.create|create(kotlin.String;kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/GetGroupMemberListApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupMemberPage> { // love.forte.simbot.qguild.api.group/GetGroupMemberListApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupMemberListApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupMemberPage> // love.forte.simbot.qguild.api.group/GetGroupMemberListApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupMemberListApi.Factory|null[0]
+        final fun create(kotlin/String, kotlin/String? = ...): love.forte.simbot.qguild.api.group/GetGroupMemberListApi // love.forte.simbot.qguild.api.group/GetGroupMemberListApi.Factory.create|create(kotlin.String;kotlin.String?){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupMuteSetting> { // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi|null[0]
     final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupMuteSetting> // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
 
     final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.Factory|null[0]
         final fun create(kotlin/String): love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult> { // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi|null[0]
+    final val body // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.body|{}body[0]
+        final fun <get-body>(): kotlin/Any // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult> // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.Factory|null[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistOp, kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi // love.forte.simbot.qguild.api.group/ModifyGroupMemberBlacklistApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp;kotlin.collections.Iterable<kotlin.String>){}[0]
     }
 }
 
@@ -5491,6 +5551,80 @@ final class love.forte.simbot.qguild.model.forum/VideoElem { // love.forte.simbo
     }
 }
 
+final class love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult { // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult|null[0]
+    final val failOpenids // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.failOpenids|{}failOpenids[0]
+        final fun <get-failOpenids>(): kotlin.collections/List<kotlin/String> // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.failOpenids.<get-failOpenids>|<get-failOpenids>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult> { // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult) // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupBlacklistModifyResult){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult> // love.forte.simbot.qguild.model.group/GroupBlacklistModifyResult.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupBlacklistPage { // love.forte.simbot.qguild.model.group/GroupBlacklistPage|null[0]
+    final val nextCursor // love.forte.simbot.qguild.model.group/GroupBlacklistPage.nextCursor|{}nextCursor[0]
+        final fun <get-nextCursor>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistPage.nextCursor.<get-nextCursor>|<get-nextCursor>(){}[0]
+    final val users // love.forte.simbot.qguild.model.group/GroupBlacklistPage.users|{}users[0]
+        final fun <get-users>(): kotlin.collections/List<love.forte.simbot.qguild.model.group/GroupBlacklistUser> // love.forte.simbot.qguild.model.group/GroupBlacklistPage.users.<get-users>|<get-users>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistPage.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistPage> { // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupBlacklistPage // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupBlacklistPage) // love.forte.simbot.qguild.model.group/GroupBlacklistPage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupBlacklistPage){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupBlacklistPage.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupBlacklistPage.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistPage> // love.forte.simbot.qguild.model.group/GroupBlacklistPage.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupBlacklistUser { // love.forte.simbot.qguild.model.group/GroupBlacklistUser|null[0]
+    final val bannedAt // love.forte.simbot.qguild.model.group/GroupBlacklistUser.bannedAt|{}bannedAt[0]
+        final fun <get-bannedAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupBlacklistUser.bannedAt.<get-bannedAt>|<get-bannedAt>(){}[0]
+    final val bot // love.forte.simbot.qguild.model.group/GroupBlacklistUser.bot|{}bot[0]
+        final fun <get-bot>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupBlacklistUser.bot.<get-bot>|<get-bot>(){}[0]
+    final val memberOpenid // love.forte.simbot.qguild.model.group/GroupBlacklistUser.memberOpenid|{}memberOpenid[0]
+        final fun <get-memberOpenid>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistUser.memberOpenid.<get-memberOpenid>|<get-memberOpenid>(){}[0]
+    final val unionOpenid // love.forte.simbot.qguild.model.group/GroupBlacklistUser.unionOpenid|{}unionOpenid[0]
+        final fun <get-unionOpenid>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupBlacklistUser.unionOpenid.<get-unionOpenid>|<get-unionOpenid>(){}[0]
+    final val username // love.forte.simbot.qguild.model.group/GroupBlacklistUser.username|{}username[0]
+        final fun <get-username>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistUser.username.<get-username>|<get-username>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupBlacklistUser.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistUser> { // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupBlacklistUser // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupBlacklistUser) // love.forte.simbot.qguild.model.group/GroupBlacklistUser.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupBlacklistUser){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupBlacklistUser.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupBlacklistUser> // love.forte.simbot.qguild.model.group/GroupBlacklistUser.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.model.group/GroupBotState { // love.forte.simbot.qguild.model.group/GroupBotState|null[0]
     final val allowProactiveMsg // love.forte.simbot.qguild.model.group/GroupBotState.allowProactiveMsg|{}allowProactiveMsg[0]
         final fun <get-allowProactiveMsg>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupBotState.allowProactiveMsg.<get-allowProactiveMsg>|<get-allowProactiveMsg>(){}[0]
@@ -5689,6 +5823,38 @@ final class love.forte.simbot.qguild.model.group/GroupJoinVerifyInfo { // love.f
     }
 }
 
+final class love.forte.simbot.qguild.model.group/GroupMemberInfo { // love.forte.simbot.qguild.model.group/GroupMemberInfo|null[0]
+    final val bot // love.forte.simbot.qguild.model.group/GroupMemberInfo.bot|{}bot[0]
+        final fun <get-bot>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupMemberInfo.bot.<get-bot>|<get-bot>(){}[0]
+    final val joinedAt // love.forte.simbot.qguild.model.group/GroupMemberInfo.joinedAt|{}joinedAt[0]
+        final fun <get-joinedAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupMemberInfo.joinedAt.<get-joinedAt>|<get-joinedAt>(){}[0]
+    final val memberOpenid // love.forte.simbot.qguild.model.group/GroupMemberInfo.memberOpenid|{}memberOpenid[0]
+        final fun <get-memberOpenid>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberInfo.memberOpenid.<get-memberOpenid>|<get-memberOpenid>(){}[0]
+    final val memberRole // love.forte.simbot.qguild.model.group/GroupMemberInfo.memberRole|{}memberRole[0]
+        final fun <get-memberRole>(): love.forte.simbot.qguild.event/GroupMessageAuthorRole // love.forte.simbot.qguild.model.group/GroupMemberInfo.memberRole.<get-memberRole>|<get-memberRole>(){}[0]
+    final val unionOpenid // love.forte.simbot.qguild.model.group/GroupMemberInfo.unionOpenid|{}unionOpenid[0]
+        final fun <get-unionOpenid>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupMemberInfo.unionOpenid.<get-unionOpenid>|<get-unionOpenid>(){}[0]
+    final val username // love.forte.simbot.qguild.model.group/GroupMemberInfo.username|{}username[0]
+        final fun <get-username>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberInfo.username.<get-username>|<get-username>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberInfo.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupMemberInfo> { // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupMemberInfo // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupMemberInfo) // love.forte.simbot.qguild.model.group/GroupMemberInfo.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupMemberInfo){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupMemberInfo.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupMemberInfo.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupMemberInfo> // love.forte.simbot.qguild.model.group/GroupMemberInfo.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.model.group/GroupMemberMuteState { // love.forte.simbot.qguild.model.group/GroupMemberMuteState|null[0]
     final val memberOpenid // love.forte.simbot.qguild.model.group/GroupMemberMuteState.memberOpenid|{}memberOpenid[0]
         final fun <get-memberOpenid>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberMuteState.memberOpenid.<get-memberOpenid>|<get-memberOpenid>(){}[0]
@@ -5712,6 +5878,59 @@ final class love.forte.simbot.qguild.model.group/GroupMemberMuteState { // love.
 
     final object Companion { // love.forte.simbot.qguild.model.group/GroupMemberMuteState.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupMemberMuteState> // love.forte.simbot.qguild.model.group/GroupMemberMuteState.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupMemberPage { // love.forte.simbot.qguild.model.group/GroupMemberPage|null[0]
+    final val members // love.forte.simbot.qguild.model.group/GroupMemberPage.members|{}members[0]
+        final fun <get-members>(): kotlin.collections/List<love.forte.simbot.qguild.model.group/GroupMemberInfo> // love.forte.simbot.qguild.model.group/GroupMemberPage.members.<get-members>|<get-members>(){}[0]
+    final val nextCursor // love.forte.simbot.qguild.model.group/GroupMemberPage.nextCursor|{}nextCursor[0]
+        final fun <get-nextCursor>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberPage.nextCursor.<get-nextCursor>|<get-nextCursor>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMemberPage.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupMemberPage> { // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupMemberPage // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupMemberPage) // love.forte.simbot.qguild.model.group/GroupMemberPage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupMemberPage){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupMemberPage.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupMemberPage.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupMemberPage> // love.forte.simbot.qguild.model.group/GroupMemberPage.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupMembersRemoveResult { // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult|null[0]
+    final val addToMemberBlacklistFailOpenids // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.addToMemberBlacklistFailOpenids|{}addToMemberBlacklistFailOpenids[0]
+        final fun <get-addToMemberBlacklistFailOpenids>(): kotlin.collections/List<kotlin/String> // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.addToMemberBlacklistFailOpenids.<get-addToMemberBlacklistFailOpenids>|<get-addToMemberBlacklistFailOpenids>(){}[0]
+    final val isRemoveMembersSuccess // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.isRemoveMembersSuccess|{}isRemoveMembersSuccess[0]
+        final fun <get-isRemoveMembersSuccess>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.isRemoveMembersSuccess.<get-isRemoveMembersSuccess>|<get-isRemoveMembersSuccess>(){}[0]
+    final val removeMembersResult // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.removeMembersResult|{}removeMembersResult[0]
+        final fun <get-removeMembersResult>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.removeMembersResult.<get-removeMembersResult>|<get-removeMembersResult>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupMembersRemoveResult> { // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupMembersRemoveResult // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupMembersRemoveResult) // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupMembersRemoveResult){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.Companion|null[0]
+        final const val REMOVE_MEMBERS_RESULT_SUCCESS // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.Companion.REMOVE_MEMBERS_RESULT_SUCCESS|{}REMOVE_MEMBERS_RESULT_SUCCESS[0]
+            final fun <get-REMOVE_MEMBERS_RESULT_SUCCESS>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.Companion.REMOVE_MEMBERS_RESULT_SUCCESS.<get-REMOVE_MEMBERS_RESULT_SUCCESS>|<get-REMOVE_MEMBERS_RESULT_SUCCESS>(){}[0]
+
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupMembersRemoveResult> // love.forte.simbot.qguild.model.group/GroupMembersRemoveResult.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -10349,6 +10568,8 @@ final fun love.forte.simbot.qguild.event/resolveDispatchSerializer(kotlin/String
 final fun love.forte.simbot.qguild.event/resolveDispatchSerializer(kotlinx.serialization.json/JsonObject, kotlin/Boolean = ...): kotlinx.serialization/KSerializer<out love.forte.simbot.qguild.event/Signal.Dispatch>? // love.forte.simbot.qguild.event/resolveDispatchSerializer|resolveDispatchSerializer(kotlinx.serialization.json.JsonObject;kotlin.Boolean){}[0]
 final fun love.forte.simbot.qguild.message/buildArk(kotlin/String): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String){}[0]
 final inline fun (love.forte.simbot.qguild.api.group/GetGroupJoinRequestListApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., kotlin/Int? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupJoinRequestListApi, love.forte.simbot.qguild.model.group/GroupJoinRequestPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupJoinRequest> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupJoinRequestListApi.Factory(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupJoinRequestListApi,love.forte.simbot.qguild.model.group.GroupJoinRequestPage>){}[0]
+final inline fun (love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., kotlin/Int? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi, love.forte.simbot.qguild.model.group/GroupBlacklistPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupBlacklistUser> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupMemberBlacklistApi.Factory(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupMemberBlacklistApi,love.forte.simbot.qguild.model.group.GroupBlacklistPage>){}[0]
+final inline fun (love.forte.simbot.qguild.api.group/GetGroupMemberListApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupMemberListApi, love.forte.simbot.qguild.model.group/GroupMemberPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupMemberInfo> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupMemberListApi.Factory(kotlin.String;kotlin.String?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupMemberListApi,love.forte.simbot.qguild.model.group.GroupMemberPage>){}[0]
 final inline fun (love.forte.simbot.qguild.api.member/GetGuildMemberListApi.Factory).love.forte.simbot.qguild.api.member/createFlow(kotlin/String, kotlin/Int = ..., kotlin/String? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.member/GetGuildMemberListApi, kotlin.collections/List<love.forte.simbot.qguild.model/SimpleMember>>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model/SimpleMember> // love.forte.simbot.qguild.api.member/createFlow|createFlow@love.forte.simbot.qguild.api.member.GetGuildMemberListApi.Factory(kotlin.String;kotlin.Int;kotlin.String?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.member.GetGuildMemberListApi,kotlin.collections.List<love.forte.simbot.qguild.model.SimpleMember>>){}[0]
 final inline fun (love.forte.simbot.qguild.api.member/GetGuildRoleMemberListApi.Factory).love.forte.simbot.qguild.api.member/createFlow(kotlin/String, kotlin/String, kotlin/Int = ..., kotlin/String? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.member/GetGuildRoleMemberListApi, love.forte.simbot.qguild.api.member/GuildRoleMemberList>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model/SimpleMember> // love.forte.simbot.qguild.api.member/createFlow|createFlow@love.forte.simbot.qguild.api.member.GetGuildRoleMemberListApi.Factory(kotlin.String;kotlin.String;kotlin.Int;kotlin.String?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.member.GetGuildRoleMemberListApi,love.forte.simbot.qguild.api.member.GuildRoleMemberList>){}[0]
 final inline fun (love.forte.simbot.qguild.api.message.direct/DmsSendApi.Factory).love.forte.simbot.qguild.api.message.direct/create(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.api.message/MessageSendApi.Body.Builder, kotlin/Unit>): love.forte.simbot.qguild.api.message.direct/DmsSendApi // love.forte.simbot.qguild.api.message.direct/create|create@love.forte.simbot.qguild.api.message.direct.DmsSendApi.Factory(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.api.message.MessageSendApi.Body.Builder,kotlin.Unit>){}[0]
