@@ -52,5 +52,11 @@ public class GroupBlacklistUser @ApiModelConstructor internal constructor(
     public val unionOpenid: String? = null,
 ) {
     override fun toString(): String =
-        "GroupBlacklistUser(memberOpenid=$memberOpenid, username=$username, bannedAt=$bannedAt, bot=$bot, unionOpenid=$unionOpenid)"
+        "GroupBlacklistUser(" +
+            "memberOpenid=$memberOpenid, " +
+            "username=$username, " +
+            "bannedAt=$bannedAt, " +
+            "bot=$bot, " +
+            "unionOpenid=$unionOpenid" +
+            ")"
 }

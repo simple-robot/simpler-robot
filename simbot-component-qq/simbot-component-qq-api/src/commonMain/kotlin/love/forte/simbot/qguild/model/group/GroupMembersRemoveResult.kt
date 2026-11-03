@@ -51,5 +51,8 @@ public class GroupMembersRemoveResult @ApiModelConstructor internal constructor(
         get() = removeMembersResult == REMOVE_MEMBERS_RESULT_SUCCESS
 
     override fun toString(): String =
-        "GroupMembersRemoveResult(removeMembersResult=$removeMembersResult, addToMemberBlacklistFailOpenids=$addToMemberBlacklistFailOpenids)"
+        "GroupMembersRemoveResult(" +
+            "removeMembersResult=$removeMembersResult, " +
+            "addToMemberBlacklistFailOpenids=$addToMemberBlacklistFailOpenids" +
+            ")"
 }

@@ -56,5 +56,12 @@ public class GroupMemberInfo @ApiModelConstructor internal constructor(
     public val unionOpenid: String? = null,
 ) {
     override fun toString(): String =
-        "GroupMemberInfo(memberOpenid=$memberOpenid, username=$username, memberRole=$memberRole, bot=$bot, joinedAt=$joinedAt, unionOpenid=$unionOpenid)"
+        "GroupMemberInfo(" +
+            "memberOpenid=$memberOpenid, " +
+            "username=$username, " +
+            "memberRole=$memberRole, " +
+            "bot=$bot, " +
+            "joinedAt=$joinedAt, " +
+            "unionOpenid=$unionOpenid" +
+            ")"
 }
