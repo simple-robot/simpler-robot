@@ -1928,12 +1928,17 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public fun addMemberMuteAtMillisecondsReserve (Llove/forte/simbot/common/id/ID;J)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun addMemberMuteBlocking (Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;)V
 	public fun addMemberMuteReserve (Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun addToBlacklist (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addToBlacklistAsync (Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
+	public fun addToBlacklistBlocking (Ljava/util/List;)Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;
+	public fun addToBlacklistReserve (Ljava/util/List;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun botAsMember (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun botAsMemberWithState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract synthetic fun botState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun botStateAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun botStateBlocking ()Llove/forte/simbot/qguild/model/group/GroupBotState;
 	public fun botStateReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getBlacklist ()Llove/forte/simbot/common/collectable/Collectable;
 	public fun getBotAsMember ()Llove/forte/simbot/component/qguild/group/QGGroupMember;
 	public synthetic fun getBotAsMember ()Llove/forte/simbot/definition/Member;
 	public fun getBotAsMemberAsync ()Ljava/util/concurrent/CompletableFuture;
@@ -1947,7 +1952,7 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public synthetic fun getMember (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/Member;
 	public fun getMemberAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun getMemberReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
-	public fun getMembers ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun getMembers ()Llove/forte/simbot/common/collectable/Collectable;
 	public fun getName ()Ljava/lang/String;
 	public fun getOwnerId ()Llove/forte/simbot/common/id/ID;
 	public fun getRoles ()Llove/forte/simbot/common/collectable/Collectable;
@@ -1968,10 +1973,30 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public fun includeInfoOrSelfReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun includeInfoReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public synthetic fun member (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun memberInfo (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberInfoAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun memberInfoBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/qguild/model/group/GroupMemberInfo;
+	public fun memberInfoReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun memberWithInfo (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberWithInfoAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun memberWithInfoBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/group/QGGroupMemberWithInfo;
+	public fun memberWithInfoReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun muteSetting (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun muteSettingAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun muteSettingBlocking ()Llove/forte/simbot/qguild/model/group/GroupMuteSetting;
 	public fun muteSettingReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun removeFromBlacklist (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeFromBlacklistAsync (Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeFromBlacklistBlocking (Ljava/util/List;)Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;
+	public fun removeFromBlacklistReserve (Ljava/util/List;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun removeMembers (Ljava/util/List;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun removeMembers$default (Llove/forte/simbot/component/qguild/group/QGGroup;Ljava/util/List;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun removeMembersAsync (Ljava/util/List;Z)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun removeMembersAsync$default (Llove/forte/simbot/component/qguild/group/QGGroup;Ljava/util/List;ZILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeMembersBlocking (Ljava/util/List;Z)Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;
+	public static synthetic fun removeMembersBlocking$default (Llove/forte/simbot/component/qguild/group/QGGroup;Ljava/util/List;ZILjava/lang/Object;)Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;
+	public fun removeMembersReserve (Ljava/util/List;Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun removeMembersReserve$default (Llove/forte/simbot/component/qguild/group/QGGroup;Ljava/util/List;ZILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setMemberMutes (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setMemberMutesAsync (Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
 	public fun setMemberMutesBlocking (Ljava/util/List;)V
@@ -2132,6 +2157,16 @@ public final class love/forte/simbot/component/qguild/group/QGGroupMemberMuteCha
 	public final fun getMuteExpireAt ()Lkotlin/time/Instant;
 }
 
+public abstract class love/forte/simbot/component/qguild/group/QGGroupMemberWithInfo : love/forte/simbot/component/qguild/group/QGGroupMember {
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getJoinTime ()Llove/forte/simbot/common/time/Timestamp;
+	public final fun getMemberRole ()Llove/forte/simbot/component/qguild/group/QGGroupRole;
+	public fun getName ()Ljava/lang/String;
+	public abstract fun getSource ()Llove/forte/simbot/qguild/model/group/GroupMemberInfo;
+	public final fun getUnionOpenid ()Ljava/lang/String;
+	public final fun isBot ()Z
+}
+
 public final class love/forte/simbot/component/qguild/group/QGGroupMuteDurationExtensionsKt {
 	public static final fun addMemberMuteFor-1Y68eR8 (Llove/forte/simbot/component/qguild/group/QGGroup;Llove/forte/simbot/common/id/ID;JLkotlin/time/Instant;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun addMemberMuteFor-1Y68eR8$default (Llove/forte/simbot/component/qguild/group/QGGroup;Llove/forte/simbot/common/id/ID;JLkotlin/time/Instant;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -2156,6 +2191,10 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public fun addMemberMuteAtMillisecondsReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;J)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public fun addMemberMuteBlocking (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;)V
 	public fun addMemberMuteReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun addToBlacklist (Llove/forte/simbot/common/id/ID;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addToBlacklistAsync (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
+	public fun addToBlacklistBlocking (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;
+	public fun addToBlacklistReserve (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun approveJoinRequest (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun approveJoinRequest$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun approveJoinRequestAsync (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;)Ljava/util/concurrent/CompletableFuture;
@@ -2164,6 +2203,7 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public static synthetic fun approveJoinRequestBlocking$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;ILjava/lang/Object;)V
 	public fun approveJoinRequestReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun approveJoinRequestReserve$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/AcceptOption;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun blacklist (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/common/collectable/Collectable;
 	public fun getGroup (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/group/QGGroup;
 	public synthetic fun getGroup (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/definition/ChatGroup;
 	public fun getGroupAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
@@ -2180,6 +2220,15 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public fun groupInfoBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/qguild/model/group/GroupInfo;
 	public fun groupInfoReserve (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract fun joinRequests (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/common/collectable/Collectable;
+	public abstract synthetic fun memberInfo (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberInfoAsync (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun memberInfoBlocking (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/qguild/model/group/GroupMemberInfo;
+	public fun memberInfoReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun memberWithInfo (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun memberWithInfoAsync (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
+	public fun memberWithInfoBlocking (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/group/QGGroupMemberWithInfo;
+	public fun memberWithInfoReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun members (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/common/collectable/Collectable;
 	public abstract synthetic fun muteSetting (Llove/forte/simbot/common/id/ID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun muteSettingAsync (Llove/forte/simbot/common/id/ID;)Ljava/util/concurrent/CompletableFuture;
 	public fun muteSettingBlocking (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/qguild/model/group/GroupMuteSetting;
@@ -2192,6 +2241,18 @@ public abstract interface class love/forte/simbot/component/qguild/group/QGGroup
 	public static synthetic fun rejectJoinRequestBlocking$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/RejectOption;ILjava/lang/Object;)V
 	public fun rejectJoinRequestReserve (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/RejectOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public static synthetic fun rejectJoinRequestReserve$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;[Llove/forte/simbot/ability/RejectOption;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun removeFromBlacklist (Llove/forte/simbot/common/id/ID;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeFromBlacklistAsync (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeFromBlacklistBlocking (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;
+	public fun removeFromBlacklistReserve (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun removeMembers (Llove/forte/simbot/common/id/ID;Ljava/util/List;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun removeMembers$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Ljava/util/List;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun removeMembersAsync (Llove/forte/simbot/common/id/ID;Ljava/util/List;Z)Ljava/util/concurrent/CompletableFuture;
+	public static synthetic fun removeMembersAsync$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Ljava/util/List;ZILjava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeMembersBlocking (Llove/forte/simbot/common/id/ID;Ljava/util/List;Z)Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;
+	public static synthetic fun removeMembersBlocking$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Ljava/util/List;ZILjava/lang/Object;)Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;
+	public fun removeMembersReserve (Llove/forte/simbot/common/id/ID;Ljava/util/List;Z)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public static synthetic fun removeMembersReserve$default (Llove/forte/simbot/component/qguild/group/QGGroupRelation;Llove/forte/simbot/common/id/ID;Ljava/util/List;ZILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun setMemberMutes (Llove/forte/simbot/common/id/ID;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun setMemberMutesAsync (Llove/forte/simbot/common/id/ID;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;
 	public fun setMemberMutesBlocking (Llove/forte/simbot/common/id/ID;Ljava/util/List;)V
