@@ -115,6 +115,22 @@ final enum class love.forte.simbot.qguild.event/GroupMessageAuthorRole : kotlin/
     }
 }
 
+final enum class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp : kotlin/Enum<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp|null[0]
+    enum entry ADD // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.ADD|null[0]
+    enum entry DEL // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.DEL|null[0]
+
+    final val entries // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.values|values#static(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
 final enum class love.forte.simbot.qguild.model/PrivateType : kotlin/Enum<love.forte.simbot.qguild.model/PrivateType> { // love.forte.simbot.qguild.model/PrivateType|null[0]
     enum entry ADMIN_AND_DESIGNATED_MEMBER // love.forte.simbot.qguild.model/PrivateType.ADMIN_AND_DESIGNATED_MEMBER|null[0]
     enum entry ADMIN_ONLY // love.forte.simbot.qguild.model/PrivateType.ADMIN_ONLY|null[0]
@@ -1303,6 +1319,30 @@ final class love.forte.simbot.qguild.api.group/BatchRemoveGroupMembersApi : love
     }
 }
 
+final class love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated> { // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi|null[0]
+    final val body // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated> // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.Factory|null[0]
+        final fun create(love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate): love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.Factory.create|create(love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyCreate){}[0]
+        final inline fun create(kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/CreateGroupJoinApprovalStrategyApi.Factory.create|create(kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyCreateBuilder,kotlin.Unit>){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/DeleteGroupJoinApprovalStrategyApi : love.forte.simbot.qguild.api/DeleteQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.group/DeleteGroupJoinApprovalStrategyApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimpleDeleteApiDescription { // love.forte.simbot.qguild.api.group/DeleteGroupJoinApprovalStrategyApi.Factory|null[0]
+        final fun create(kotlin/String): love.forte.simbot.qguild.api.group/DeleteGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/DeleteGroupJoinApprovalStrategyApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/ExecuteGroupJoinApprovalStrategyApi : love.forte.simbot.qguild.api/PostQQGuildApi<kotlin/Unit>, love.forte.simbot.qguild.api/QQGuildApiWithoutResult { // love.forte.simbot.qguild.api.group/ExecuteGroupJoinApprovalStrategyApi|null[0]
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.group/ExecuteGroupJoinApprovalStrategyApi.Factory|null[0]
+        final fun create(kotlin/String): love.forte.simbot.qguild.api.group/ExecuteGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/ExecuteGroupJoinApprovalStrategyApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
 final class love.forte.simbot.qguild.api.group/GetGroupBotStateApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupBotState> { // love.forte.simbot.qguild.api.group/GetGroupBotStateApi|null[0]
     final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupBotStateApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupBotState> // love.forte.simbot.qguild.api.group/GetGroupBotStateApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
@@ -1318,6 +1358,16 @@ final class love.forte.simbot.qguild.api.group/GetGroupInfoApi : love.forte.simb
 
     final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupInfoApi.Factory|null[0]
         final fun create(kotlin/String): love.forte.simbot.qguild.api.group/GetGroupInfoApi // love.forte.simbot.qguild.api.group/GetGroupInfoApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi : love.forte.simbot.qguild.api/GetQQGuildApi<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage> { // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi|null[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage> // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.Factory|null[0]
+        final fun create(): love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.Factory.create|create(){}[0]
+        final fun create(kotlin/String? = ..., kotlin/Int? = ...): love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi // love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.Factory.create|create(kotlin.String?;kotlin.Int?){}[0]
     }
 }
 
@@ -1364,6 +1414,29 @@ final class love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi : love.for
 
     final object Factory : love.forte.simbot.qguild.api/SimpleGetApiDescription { // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.Factory|null[0]
         final fun create(kotlin/String): love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi // love.forte.simbot.qguild.api.group/GetGroupMuteSettingApi.Factory.create|create(kotlin.String){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi : love.forte.simbot.qguild.api/PatchQQGuildApi<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified> { // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi|null[0]
+    final val body // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.body|{}body[0]
+        final fun <get-body>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified> // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePatchApiDescription { // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.Factory|null[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify): love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyModify){}[0]
+        final inline fun create(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder, kotlin/Unit>): love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyApi.Factory.create|create(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyModifyBuilder,kotlin.Unit>){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi : love.forte.simbot.qguild.api/PostQQGuildApi<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified> { // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi|null[0]
+    final val body // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.body|{}body[0]
+        final fun <get-body>(): kotlin/Any // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.body.<get-body>|<get-body>(){}[0]
+    final val resultDeserializationStrategy // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
+        final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified> // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+
+    final object Factory : love.forte.simbot.qguild.api/SimplePostApiDescription { // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.Factory|null[0]
+        final fun create(kotlin/String, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp, kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi // love.forte.simbot.qguild.api.group/ModifyGroupJoinApprovalStrategyWhitelistApi.Factory.create|create(kotlin.String;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyOp;kotlin.collections.Iterable<kotlin.String>){}[0]
     }
 }
 
@@ -5710,6 +5783,289 @@ final class love.forte.simbot.qguild.model.group/GroupInfo { // love.forte.simbo
         final val $childSerializers // love.forte.simbot.qguild.model.group/GroupInfo.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupInfo> // love.forte.simbot.qguild.model.group/GroupInfo.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy|null[0]
+    final val createdAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.createdAt|{}createdAt[0]
+        final fun <get-createdAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.createdAt.<get-createdAt>|<get-createdAt>(){}[0]
+    final val expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+    final val groupIds // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.groupIds|{}groupIds[0]
+        final fun <get-groupIds>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.groupIds.<get-groupIds>|<get-groupIds>(){}[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+    final val remark // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.remark.<get-remark>|<get-remark>(){}[0]
+    final val strategyId // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.strategyId|{}strategyId[0]
+        final fun <get-strategyId>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.strategyId.<get-strategyId>|<get-strategyId>(){}[0]
+    final val updatedAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.updatedAt|{}updatedAt[0]
+        final fun <get-updatedAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+    final val whitelistUserCount // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.whitelistUserCount|{}whitelistUserCount[0]
+        final fun <get-whitelistUserCount>(): kotlin/Int // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.whitelistUserCount.<get-whitelistUserCount>|<get-whitelistUserCount>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategy){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate|null[0]
+    final val expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+    final val groupIds // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.groupIds|{}groupIds[0]
+        final fun <get-groupIds>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.groupIds.<get-groupIds>|<get-groupIds>(){}[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+    final val remark // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.remark.<get-remark>|<get-remark>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyCreate){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.Companion.builder|builder(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.<init>|<init>(){}[0]
+
+    final var expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+        final fun <set-expireAt>(kotlin.time/Instant?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.expireAt.<set-expireAt>|<set-expireAt>(kotlin.time.Instant?){}[0]
+    final var isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+        final fun <set-isEnable>(kotlin/Boolean?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.isEnable.<set-isEnable>|<set-isEnable>(kotlin.Boolean?){}[0]
+    final var remark // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.remark.<get-remark>|<get-remark>(){}[0]
+        final fun <set-remark>(kotlin/String?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.remark.<set-remark>|<set-remark>(kotlin.String?){}[0]
+
+    final fun addGroupId(kotlin/String): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.addGroupId|addGroupId(kotlin.String){}[0]
+    final fun addGroupIds(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.addGroupIds|addGroupIds(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun addGroupOpenid(kotlin/String): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.addGroupOpenid|addGroupOpenid(kotlin.String){}[0]
+    final fun addGroupOpenids(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.addGroupOpenids|addGroupOpenids(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.build|build(){}[0]
+    final fun clearGroupIds(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.clearGroupIds|clearGroupIds(){}[0]
+    final fun clearGroupOpenids(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.clearGroupOpenids|clearGroupOpenids(){}[0]
+    final fun expireAt(kotlin.time/Instant?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.expireAt|expireAt(kotlin.time.Instant?){}[0]
+    final fun isEnable(kotlin/Boolean?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.isEnable|isEnable(kotlin.Boolean?){}[0]
+    final fun remark(kotlin/String?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder.remark|remark(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated|null[0]
+    final val expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+    final val isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+    final val strategyId // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.strategyId|{}strategyId[0]
+        final fun <get-strategyId>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.strategyId.<get-strategyId>|<get-strategyId>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyCreated){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreated.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction|null[0]
+    final val groupIds // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.groupIds|{}groupIds[0]
+        final fun <get-groupIds>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.groupIds.<get-groupIds>|<get-groupIds>(){}[0]
+    final val groupOpenids // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.groupOpenids|{}groupOpenids[0]
+        final fun <get-groupOpenids>(): kotlin.collections/List<kotlin/String>? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.groupOpenids.<get-groupOpenids>|<get-groupOpenids>(){}[0]
+    final val op // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.op|{}op[0]
+        final fun <get-op>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.op.<get-op>|<get-op>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyGroupAction){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun builder(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.Companion.builder|builder(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.<init>|<init>(){}[0]
+
+    final var op // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.op|{}op[0]
+        final fun <get-op>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.op.<get-op>|<get-op>(){}[0]
+        final fun <set-op>(love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.op.<set-op>|<set-op>(love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyOp?){}[0]
+
+    final fun addGroupId(kotlin/String): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.addGroupId|addGroupId(kotlin.String){}[0]
+    final fun addGroupIds(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.addGroupIds|addGroupIds(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun addGroupOpenid(kotlin/String): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.addGroupOpenid|addGroupOpenid(kotlin.String){}[0]
+    final fun addGroupOpenids(kotlin.collections/Iterable<kotlin/String>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.addGroupOpenids|addGroupOpenids(kotlin.collections.Iterable<kotlin.String>){}[0]
+    final fun build(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.build|build(){}[0]
+    final fun clearGroupIds(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.clearGroupIds|clearGroupIds(){}[0]
+    final fun clearGroupOpenids(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.clearGroupOpenids|clearGroupOpenids(){}[0]
+    final fun op(love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyOp?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder.op|op(love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyOp?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified|null[0]
+    final val expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+    final val isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyModified){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModified.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify|null[0]
+    final val expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+    final val groupAction // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.groupAction|{}groupAction[0]
+        final fun <get-groupAction>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.groupAction.<get-groupAction>|<get-groupAction>(){}[0]
+    final val isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+    final val remark // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.remark.<get-remark>|<get-remark>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyModify){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.Companion|null[0]
+        final fun builder(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.Companion.builder|builder(){}[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder|null[0]
+    constructor <init>() // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.<init>|<init>(){}[0]
+
+    final var expireAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.expireAt|{}expireAt[0]
+        final fun <get-expireAt>(): kotlin.time/Instant? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.expireAt.<get-expireAt>|<get-expireAt>(){}[0]
+        final fun <set-expireAt>(kotlin.time/Instant?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.expireAt.<set-expireAt>|<set-expireAt>(kotlin.time.Instant?){}[0]
+    final var groupAction // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.groupAction|{}groupAction[0]
+        final fun <get-groupAction>(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.groupAction.<get-groupAction>|<get-groupAction>(){}[0]
+        final fun <set-groupAction>(love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.groupAction.<set-groupAction>|<set-groupAction>(love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyGroupAction?){}[0]
+    final var isEnable // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.isEnable|{}isEnable[0]
+        final fun <get-isEnable>(): kotlin/Boolean? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.isEnable.<get-isEnable>|<get-isEnable>(){}[0]
+        final fun <set-isEnable>(kotlin/Boolean?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.isEnable.<set-isEnable>|<set-isEnable>(kotlin.Boolean?){}[0]
+    final var remark // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.remark|{}remark[0]
+        final fun <get-remark>(): kotlin/String? // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.remark.<get-remark>|<get-remark>(){}[0]
+        final fun <set-remark>(kotlin/String?) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.remark.<set-remark>|<set-remark>(kotlin.String?){}[0]
+
+    final fun build(): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.build|build(){}[0]
+    final fun expireAt(kotlin.time/Instant?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.expireAt|expireAt(kotlin.time.Instant?){}[0]
+    final fun groupAction(kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.groupAction|groupAction(kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyGroupActionBuilder,kotlin.Unit>){}[0]
+    final fun groupAction(love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.groupAction|groupAction(love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyGroupAction?){}[0]
+    final fun isEnable(kotlin/Boolean?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.isEnable|isEnable(kotlin.Boolean?){}[0]
+    final fun remark(kotlin/String?): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder.remark|remark(kotlin.String?){}[0]
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage|null[0]
+    final val nextCursor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.nextCursor|{}nextCursor[0]
+        final fun <get-nextCursor>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.nextCursor.<get-nextCursor>|<get-nextCursor>(){}[0]
+    final val strategies // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.strategies|{}strategies[0]
+        final fun <get-strategies>(): kotlin.collections/List<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.strategies.<get-strategies>|<get-strategies>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyPage){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.Companion|null[0]
+        final val $childSerializers // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final class love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified|null[0]
+    final val strategyId // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.strategyId|{}strategyId[0]
+        final fun <get-strategyId>(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.strategyId.<get-strategyId>|<get-strategyId>(){}[0]
+    final val updatedAt // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.updatedAt|{}updatedAt[0]
+        final fun <get-updatedAt>(): kotlin.time/Instant // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+    final val whitelistUserCount // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.whitelistUserCount|{}whitelistUserCount[0]
+        final fun <get-whitelistUserCount>(): kotlin/Int // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.whitelistUserCount.<get-whitelistUserCount>|<get-whitelistUserCount>(){}[0]
+
+    final fun toString(): kotlin/String // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified> { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer|null[0]
+        final val descriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified) // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyWhitelistModified){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified> // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyWhitelistModified.Companion.serializer|serializer(){}[0]
     }
 }
 
@@ -10567,6 +10923,7 @@ final fun (love.forte.simbot.qguild/QQGuildApiException).love.forte.simbot.qguil
 final fun love.forte.simbot.qguild.event/resolveDispatchSerializer(kotlin/String): kotlinx.serialization/KSerializer<out love.forte.simbot.qguild.event/Signal.Dispatch>? // love.forte.simbot.qguild.event/resolveDispatchSerializer|resolveDispatchSerializer(kotlin.String){}[0]
 final fun love.forte.simbot.qguild.event/resolveDispatchSerializer(kotlinx.serialization.json/JsonObject, kotlin/Boolean = ...): kotlinx.serialization/KSerializer<out love.forte.simbot.qguild.event/Signal.Dispatch>? // love.forte.simbot.qguild.event/resolveDispatchSerializer|resolveDispatchSerializer(kotlinx.serialization.json.JsonObject;kotlin.Boolean){}[0]
 final fun love.forte.simbot.qguild.message/buildArk(kotlin/String): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String){}[0]
+final inline fun (love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String? = ..., kotlin/Int? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupJoinApprovalStrategyListApi, love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategy> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupJoinApprovalStrategyListApi.Factory(kotlin.String?;kotlin.Int?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupJoinApprovalStrategyListApi,love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyPage>){}[0]
 final inline fun (love.forte.simbot.qguild.api.group/GetGroupJoinRequestListApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., kotlin/Int? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupJoinRequestListApi, love.forte.simbot.qguild.model.group/GroupJoinRequestPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupJoinRequest> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupJoinRequestListApi.Factory(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupJoinRequestListApi,love.forte.simbot.qguild.model.group.GroupJoinRequestPage>){}[0]
 final inline fun (love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., kotlin/Int? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupMemberBlacklistApi, love.forte.simbot.qguild.model.group/GroupBlacklistPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupBlacklistUser> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupMemberBlacklistApi.Factory(kotlin.String;kotlin.String?;kotlin.Int?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupMemberBlacklistApi,love.forte.simbot.qguild.model.group.GroupBlacklistPage>){}[0]
 final inline fun (love.forte.simbot.qguild.api.group/GetGroupMemberListApi.Factory).love.forte.simbot.qguild.api.group/createFlow(kotlin/String, kotlin/String? = ..., crossinline kotlin.coroutines/SuspendFunction1<love.forte.simbot.qguild.api.group/GetGroupMemberListApi, love.forte.simbot.qguild.model.group/GroupMemberPage>): kotlinx.coroutines.flow/Flow<love.forte.simbot.qguild.model.group/GroupMemberInfo> // love.forte.simbot.qguild.api.group/createFlow|createFlow@love.forte.simbot.qguild.api.group.GetGroupMemberListApi.Factory(kotlin.String;kotlin.String?;kotlin.coroutines.SuspendFunction1<love.forte.simbot.qguild.api.group.GetGroupMemberListApi,love.forte.simbot.qguild.model.group.GroupMemberPage>){}[0]
@@ -10581,6 +10938,9 @@ final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiE
 final inline fun <#A: reified kotlin/Any?> (love.forte.simbot.qguild/QQGuildApiException).love.forte.simbot.qguild/ifNotFoundThenNull(kotlin/Boolean = ...): #A? // love.forte.simbot.qguild/ifNotFoundThenNull|ifNotFoundThenNull@love.forte.simbot.qguild.QQGuildApiException(kotlin.Boolean){0§<kotlin.Any?>}[0]
 final inline fun love.forte.simbot.qguild.event/Intents(kotlin/Function1<love.forte.simbot.qguild.event/IntentsAppenderOp, kotlin/Unit>): love.forte.simbot.qguild.event/Intents // love.forte.simbot.qguild.event/Intents|Intents(kotlin.Function1<love.forte.simbot.qguild.event.IntentsAppenderOp,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.message/buildArk(kotlin/String, kotlin/Function1<love.forte.simbot.qguild.message/ArkBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/Message.Ark // love.forte.simbot.qguild.message/buildArk|buildArk(kotlin.String;kotlin.Function1<love.forte.simbot.qguild.message.ArkBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate(kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreateBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyCreate|GroupJoinApprovalStrategyCreate(kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyCreateBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction(kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupActionBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyGroupAction|GroupJoinApprovalStrategyGroupAction(kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyGroupActionBuilder,kotlin.Unit>){}[0]
+final inline fun love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify(kotlin/Function1<love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModifyBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify // love.forte.simbot.qguild.model.group/GroupJoinApprovalStrategyModify|GroupJoinApprovalStrategyModify(kotlin.Function1<love.forte.simbot.qguild.model.group.GroupJoinApprovalStrategyModifyBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model.menu/CustomMenu(kotlin/Function1<love.forte.simbot.qguild.model.menu/CustomMenuBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.menu/CustomMenu // love.forte.simbot.qguild.model.menu/CustomMenu|CustomMenu(kotlin.Function1<love.forte.simbot.qguild.model.menu.CustomMenuBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model.panel/CommandPanel(kotlin/Function1<love.forte.simbot.qguild.model.panel/CommandPanelBuilder, kotlin/Unit>): love.forte.simbot.qguild.model.panel/CommandPanel // love.forte.simbot.qguild.model.panel/CommandPanel|CommandPanel(kotlin.Function1<love.forte.simbot.qguild.model.panel.CommandPanelBuilder,kotlin.Unit>){}[0]
 final inline fun love.forte.simbot.qguild.model/MessageKeyboards(kotlin/Function1<love.forte.simbot.qguild.model/MessageKeyboardsBuilder, kotlin/Unit>): love.forte.simbot.qguild.model/MessageKeyboards // love.forte.simbot.qguild.model/MessageKeyboards|MessageKeyboards(kotlin.Function1<love.forte.simbot.qguild.model.MessageKeyboardsBuilder,kotlin.Unit>){}[0]
