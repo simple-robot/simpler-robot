@@ -44,9 +44,8 @@ import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageData
-import love.forte.simbot.qguild.model.group.GroupBotState
-import love.forte.simbot.qguild.model.group.GroupInfo
-import love.forte.simbot.qguild.model.group.GroupMuteSetting
+import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
+import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
 
@@ -64,6 +63,26 @@ internal class QGGroupImpl(
     private val isFake: Boolean,
 ) : QGGroup {
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
+
+    override val members: Collectable<QGGroupMember>
+        get() = bot.groupMembers(id)
+
+    override val blacklist: Collectable<GroupBlacklistUser>
+        get() = bot.groupBlacklist(id)
+
+    override suspend fun memberInfo(memberId: ID): GroupMemberInfo = bot.queryGroupMemberInfo(id, memberId)
+
+    override suspend fun memberWithInfo(memberId: ID): QGGroupMemberWithInfo =
+        bot.queryGroupMemberWithInfo(id, memberId)
+
+    override suspend fun removeMembers(memberIds: List<ID>, addToBlacklist: Boolean): GroupMembersRemoveResult =
+        bot.removeGroupMembers(id, memberIds, addToBlacklist)
+
+    override suspend fun addToBlacklist(memberIds: List<ID>): GroupBlacklistModifyResult =
+        bot.modifyGroupBlacklist(id, memberIds, ModifyGroupMemberBlacklistOp.ADD)
+
+    override suspend fun removeFromBlacklist(memberIds: List<ID>): GroupBlacklistModifyResult =
+        bot.modifyGroupBlacklist(id, memberIds, ModifyGroupMemberBlacklistOp.DEL)
 
     override val joinRequests: Collectable<QGGroupJoinRequest>
         get() = bot.groupJoinRequests(id)

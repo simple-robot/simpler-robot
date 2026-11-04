@@ -70,7 +70,6 @@ class QGGroupMuteCoreTests : AbstractInteractionTests() {
                 assertNull(QGGroupMemberImpl(bot, group.id, "other".ID).muteState())
             }
             assertEquals(List(8) { "/v2/groups/group/restrict_chat_setting" }, paths)
-            assertNull(group.member("member".ID))
         } finally {
             app.cancel()
             bot.cancel()

@@ -1336,6 +1336,20 @@ public final class love/forte/simbot/qguild/api/group/ApproveGroupJoinRequestOp 
 	public static fun values ()[Llove/forte/simbot/qguild/api/group/ApproveGroupJoinRequestOp;
 }
 
+public final class love/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi : love/forte/simbot/qguild/api/PostQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi$Factory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/Iterable;Z)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
+	public fun getBody ()Ljava/lang/Object;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final fun create (Ljava/lang/String;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/Iterable;Z)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi$Factory;Ljava/lang/String;Ljava/lang/Iterable;ZILjava/lang/Object;)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
+}
+
 public final class love/forte/simbot/qguild/api/group/GetGroupBotStateApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupBotStateApi$Factory;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupBotStateApi;
@@ -1374,6 +1388,54 @@ public final class love/forte/simbot/qguild/api/group/GetGroupJoinRequestListApi
 	public static synthetic fun createFlow$default (Llove/forte/simbot/qguild/api/group/GetGroupJoinRequestListApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApiKt {
+	public static final fun createFlow (Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun createFlow$default (Llove/forte/simbot/qguild/api/group/GetGroupMemberBlacklistApi$Factory;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberInfoApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupMemberInfoApi$Factory;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberInfoApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberInfoApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberInfoApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberListApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi$Factory;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupMemberListApiKt {
+	public static final fun createFlow (Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi$Factory;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun createFlow$default (Llove/forte/simbot/qguild/api/group/GetGroupMemberListApi$Factory;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class love/forte/simbot/qguild/api/group/GetGroupMuteSettingApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupMuteSettingApi$Factory;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMuteSettingApi;
@@ -1382,6 +1444,25 @@ public final class love/forte/simbot/qguild/api/group/GetGroupMuteSettingApi : l
 
 public final class love/forte/simbot/qguild/api/group/GetGroupMuteSettingApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
 	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMuteSettingApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi : love/forte/simbot/qguild/api/PostQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi$Factory;
+	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi;
+	public fun getBody ()Ljava/lang/Object;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp : java/lang/Enum {
+	public static final field ADD Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;
+	public static final field DEL Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;
+	public static fun values ()[Llove/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistOp;
 }
 
 public final class love/forte/simbot/qguild/api/group/SetGroupMuteSettingApi : love/forte/simbot/qguild/api/PostQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
@@ -9105,6 +9186,71 @@ public final class love/forte/simbot/qguild/model/forum/VideoElem$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistModifyResult {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult$Companion;
+	public final fun getFailOpenids ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupBlacklistModifyResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupBlacklistModifyResult;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistModifyResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistPage {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupBlacklistPage$Companion;
+	public final fun getNextCursor ()Ljava/lang/String;
+	public final fun getUsers ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupBlacklistPage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupBlacklistPage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupBlacklistPage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupBlacklistPage;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistPage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistUser {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupBlacklistUser$Companion;
+	public final fun getBannedAt ()Lkotlin/time/Instant;
+	public final fun getBot ()Z
+	public final fun getMemberOpenid ()Ljava/lang/String;
+	public final fun getUnionOpenid ()Ljava/lang/String;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupBlacklistUser$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupBlacklistUser$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupBlacklistUser;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupBlacklistUser;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupBlacklistUser$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class love/forte/simbot/qguild/model/group/GroupBotReceiveMessageSetting {
 	public static final field ALL_VALUE Ljava/lang/String;
 	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupBotReceiveMessageSetting$Companion;
@@ -9454,6 +9600,31 @@ public final class love/forte/simbot/qguild/model/group/GroupJoinVerifyMethod$Co
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class love/forte/simbot/qguild/model/group/GroupMemberInfo {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupMemberInfo$Companion;
+	public final fun getBot ()Z
+	public final fun getJoinedAt ()Lkotlin/time/Instant;
+	public final fun getMemberOpenid ()Ljava/lang/String;
+	public final fun getMemberRole ()Llove/forte/simbot/qguild/event/GroupMessageAuthorRole;
+	public final fun getUnionOpenid ()Ljava/lang/String;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupMemberInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupMemberInfo$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupMemberInfo;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupMemberInfo;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupMemberInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class love/forte/simbot/qguild/model/group/GroupMemberMuteState {
 	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupMemberMuteState$Companion;
 	public final fun getMemberOpenid ()Ljava/lang/String;
@@ -9474,6 +9645,50 @@ public final synthetic class love/forte/simbot/qguild/model/group/GroupMemberMut
 }
 
 public final class love/forte/simbot/qguild/model/group/GroupMemberMuteState$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupMemberPage {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupMemberPage$Companion;
+	public final fun getMembers ()Ljava/util/List;
+	public final fun getNextCursor ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupMemberPage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupMemberPage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupMemberPage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupMemberPage;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupMemberPage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupMembersRemoveResult {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult$Companion;
+	public static final field REMOVE_MEMBERS_RESULT_SUCCESS Ljava/lang/String;
+	public final fun getAddToMemberBlacklistFailOpenids ()Ljava/util/List;
+	public final fun getRemoveMembersResult ()Ljava/lang/String;
+	public final fun isRemoveMembersSuccess ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupMembersRemoveResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupMembersRemoveResult;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupMembersRemoveResult$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
