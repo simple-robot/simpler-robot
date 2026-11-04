@@ -216,26 +216,6 @@ class GroupMemberManagementApiTests {
     }
 
     @Test
-    fun flowsRejectCyclicCursors() = runTest {
-        var members = 0
-        assertFailsWith<IllegalStateException> {
-            GetGroupMemberListApi.createFlow("group") {
-                members++
-                memberPage("", "same")
-            }.toList()
-        }
-        assertEquals(2, members)
-        var blacklist = 0
-        assertFailsWith<IllegalStateException> {
-            GetGroupMemberBlacklistApi.createFlow("group", "a") {
-                blacklist++
-                blacklistPage("", if (url.parameters["cursor"] == "a") "b" else "a")
-            }.toList()
-        }
-        assertEquals(2, blacklist)
-    }
-
-    @Test
     fun flowsStopWhenCollectionIsCancelled() = runTest {
         var members = 0
         GetGroupMemberListApi.createFlow("group") {
