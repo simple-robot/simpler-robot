@@ -33,6 +33,7 @@ import love.forte.simbot.qguild.model.group.GroupMemberMuteState;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -56,21 +57,21 @@ public class QGGroupMuteJavaTests {
      * 实际调用阻塞入口，供带模拟客户端的运行测试验证请求及委托。
      */
     public static GroupMemberMuteState exercise(
-            QGGroupMember member, QGGroup group, QGGroupRelation relation, long milliseconds) {
-        member.addMuteAtMillisecondsBlocking(milliseconds);
-        member.updateMuteAtMillisecondsBlocking(milliseconds);
-        member.unmuteBlocking();
-        GroupMemberMuteState state = member.muteStateBlocking();
-        group.addMemberMuteAtMillisecondsBlocking(member.getId(), milliseconds);
-        group.updateMemberMuteAtMillisecondsBlocking(member.getId(), milliseconds);
-        group.unmuteMemberBlocking(member.getId());
-        group.muteSettingBlocking();
-        relation.addMemberMuteAtMillisecondsBlocking(group.getId(), member.getId(), milliseconds);
-        relation.updateMemberMuteAtMillisecondsBlocking(group.getId(), member.getId(), milliseconds);
-        relation.unmuteMemberBlocking(group.getId(), member.getId());
-        relation.muteSettingBlocking(group.getId());
-        group.setMemberMutesBlocking(Collections.singletonList(QGGroupMemberMuteChange.remove(member.getId())));
-        relation.setMemberMutesBlocking(group.getId(), Collections.singletonList(QGGroupMemberMuteChange.remove(member.getId())));
+            QGGroupMember member, QGGroup group, QGGroupRelation relation, long milliseconds) throws ReflectiveOperationException {
+        QGGroupMember.class.getMethod("addMuteAtMillisecondsBlocking", long.class).invoke(member, milliseconds);
+        QGGroupMember.class.getMethod("updateMuteAtMillisecondsBlocking", long.class).invoke(member, milliseconds);
+        QGGroupMember.class.getMethod("unmuteBlocking").invoke(member);
+        GroupMemberMuteState state = (GroupMemberMuteState) QGGroupMember.class.getMethod("muteStateBlocking").invoke(member);
+        QGGroup.class.getMethod("addMemberMuteAtMillisecondsBlocking", ID.class, long.class).invoke(group, member.getId(), milliseconds);
+        QGGroup.class.getMethod("updateMemberMuteAtMillisecondsBlocking", ID.class, long.class).invoke(group, member.getId(), milliseconds);
+        QGGroup.class.getMethod("unmuteMemberBlocking", ID.class).invoke(group, member.getId());
+        QGGroup.class.getMethod("muteSettingBlocking").invoke(group);
+        QGGroupRelation.class.getMethod("addMemberMuteAtMillisecondsBlocking", ID.class, ID.class, long.class).invoke(relation, group.getId(), member.getId(), milliseconds);
+        QGGroupRelation.class.getMethod("updateMemberMuteAtMillisecondsBlocking", ID.class, ID.class, long.class).invoke(relation, group.getId(), member.getId(), milliseconds);
+        QGGroupRelation.class.getMethod("unmuteMemberBlocking", ID.class, ID.class).invoke(relation, group.getId(), member.getId());
+        QGGroupRelation.class.getMethod("muteSettingBlocking", ID.class).invoke(relation, group.getId());
+        QGGroup.class.getMethod("setMemberMutesBlocking", List.class).invoke(group, Collections.singletonList(QGGroupMemberMuteChange.remove(member.getId())));
+        QGGroupRelation.class.getMethod("setMemberMutesBlocking", ID.class, List.class).invoke(relation, group.getId(), Collections.singletonList(QGGroupMemberMuteChange.remove(member.getId())));
         return state;
     }
 }

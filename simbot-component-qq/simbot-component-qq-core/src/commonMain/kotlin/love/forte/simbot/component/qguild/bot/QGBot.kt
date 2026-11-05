@@ -40,8 +40,10 @@ import love.forte.simbot.component.qguild.event.QGAtMessageCreateEvent
 import love.forte.simbot.component.qguild.event.QGGroupAtMessageCreateEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.group.QGGroup
+import love.forte.simbot.component.qguild.group.QGGroupJoinApprovalStrategyManager
 import love.forte.simbot.component.qguild.group.QGGroupRelation
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
+import love.forte.simbot.component.qguild.internal.group.QGGroupJoinApprovalStrategyManagerImpl
 import love.forte.simbot.component.qguild.internal.menu.QGCustomMenuManagerImpl
 import love.forte.simbot.component.qguild.internal.message.QGMessageContentImpl
 import love.forte.simbot.component.qguild.internal.panel.QGCommandPanelManagerImpl
@@ -198,6 +200,15 @@ public interface QGBot : Bot, EventMentionAware {
      */
     public val commandPanels: QGCommandPanelManager
         get() = QGCommandPanelManagerImpl(this)
+
+    /**
+     * 机器人创建的入群自动审批策略，支持创建、分页查询及按策略 ID 操作。
+     *
+     * @since 5.0
+     */
+    public val groupJoinApprovalStrategies: QGGroupJoinApprovalStrategyManager
+        get() = QGGroupJoinApprovalStrategyManagerImpl(this)
+
 
     /**
      * 直接向目标子频道发送消息。
