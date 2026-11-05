@@ -1350,6 +1350,37 @@ public final class love/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi
 	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi$Factory;Ljava/lang/String;Ljava/lang/Iterable;ZILjava/lang/Object;)Llove/forte/simbot/qguild/api/group/BatchRemoveGroupMembersApi;
 }
 
+public final class love/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi : love/forte/simbot/qguild/api/PostQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi$Factory;
+	public static final fun create (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)Llove/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final synthetic fun create (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi;
+	public final fun create (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)Llove/forte/simbot/qguild/api/group/CreateGroupJoinApprovalStrategyApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/DeleteGroupJoinApprovalStrategyApi : love/forte/simbot/qguild/api/DeleteQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/DeleteGroupJoinApprovalStrategyApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/DeleteGroupJoinApprovalStrategyApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/DeleteGroupJoinApprovalStrategyApi$Factory : love/forte/simbot/qguild/api/SimpleDeleteApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/DeleteGroupJoinApprovalStrategyApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ExecuteGroupJoinApprovalStrategyApi : love/forte/simbot/qguild/api/PostQQGuildApi, love/forte/simbot/qguild/api/QQGuildApiWithoutResult {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/ExecuteGroupJoinApprovalStrategyApi$Factory;
+	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/ExecuteGroupJoinApprovalStrategyApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ExecuteGroupJoinApprovalStrategyApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/ExecuteGroupJoinApprovalStrategyApi;
+}
+
 public final class love/forte/simbot/qguild/api/group/GetGroupBotStateApi : love/forte/simbot/qguild/api/GetQQGuildApi {
 	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupBotStateApi$Factory;
 	public static final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupBotStateApi;
@@ -1368,6 +1399,24 @@ public final class love/forte/simbot/qguild/api/group/GetGroupInfoApi : love/for
 
 public final class love/forte/simbot/qguild/api/group/GetGroupInfoApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
 	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupInfoApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi$Factory;
+	public static final fun create ()Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi;
+	public static final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
+	public final fun create ()Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi;
+	public final fun create (Ljava/lang/String;Ljava/lang/Integer;)Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi;
+	public static synthetic fun create$default (Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi$Factory;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApiKt {
+	public static final fun createFlow (Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi$Factory;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun createFlow$default (Llove/forte/simbot/qguild/api/group/GetGroupJoinApprovalStrategyListApi$Factory;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class love/forte/simbot/qguild/api/group/GetGroupJoinRequestListApi : love/forte/simbot/qguild/api/GetQQGuildApi {
@@ -1444,6 +1493,30 @@ public final class love/forte/simbot/qguild/api/group/GetGroupMuteSettingApi : l
 
 public final class love/forte/simbot/qguild/api/group/GetGroupMuteSettingApi$Factory : love/forte/simbot/qguild/api/SimpleGetApiDescription {
 	public final fun create (Ljava/lang/String;)Llove/forte/simbot/qguild/api/group/GetGroupMuteSettingApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi : love/forte/simbot/qguild/api/PatchQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi$Factory;
+	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi;
+	public synthetic fun getBody ()Ljava/lang/Object;
+	public fun getBody ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi$Factory : love/forte/simbot/qguild/api/SimplePatchApiDescription {
+	public final synthetic fun create (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi;
+	public final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyApi;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyWhitelistApi : love/forte/simbot/qguild/api/PostQQGuildApi {
+	public static final field Factory Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyWhitelistApi$Factory;
+	public static final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyWhitelistApi;
+	public fun getBody ()Ljava/lang/Object;
+	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+}
+
+public final class love/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyWhitelistApi$Factory : love/forte/simbot/qguild/api/SimplePostApiDescription {
+	public final fun create (Ljava/lang/String;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;Ljava/lang/Iterable;)Llove/forte/simbot/qguild/api/group/ModifyGroupJoinApprovalStrategyWhitelistApi;
 }
 
 public final class love/forte/simbot/qguild/api/group/ModifyGroupMemberBlacklistApi : love/forte/simbot/qguild/api/PostQQGuildApi {
@@ -9458,6 +9531,266 @@ public final class love/forte/simbot/qguild/model/group/GroupJoinApplySource$Com
 	public final fun getSelfApply-50rj-G0 ()Ljava/lang/String;
 	public final fun of (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApplySource;
 	public final fun of-4ovXWuQ (Ljava/lang/String;)Ljava/lang/String;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy$Companion;
+	public final fun getCreatedAt ()Lkotlin/time/Instant;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getGroupIds ()Ljava/util/List;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun getStrategyId ()Ljava/lang/String;
+	public final fun getUpdatedAt ()Lkotlin/time/Instant;
+	public final fun getWhitelistUserCount ()I
+	public final fun isEnable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategy$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyBuilderKt {
+	public static final synthetic fun GroupJoinApprovalStrategyCreate (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;
+	public static final synthetic fun GroupJoinApprovalStrategyGroupAction (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;
+	public static final synthetic fun GroupJoinApprovalStrategyModify (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate$Companion;
+	public static final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getGroupIds ()Ljava/util/List;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun isEnable ()Ljava/lang/Boolean;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder {
+	public fun <init> ()V
+	public final fun addGroupId (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun addGroupIds (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun addGroupOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun addGroupOpenids (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;
+	public final fun clearGroupIds ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun clearGroupOpenids ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun expireAt (Lkotlin/time/Instant;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun isEnable ()Ljava/lang/Boolean;
+	public final fun isEnable (Ljava/lang/Boolean;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun remark (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreateBuilder;
+	public final fun setEnable (Ljava/lang/Boolean;)V
+	public final fun setExpireAt (Lkotlin/time/Instant;)V
+	public final fun setRemark (Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated$Companion;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getStrategyId ()Ljava/lang/String;
+	public final fun isEnable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreated$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction$Companion;
+	public static final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun getGroupIds ()Ljava/util/List;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getOp ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder {
+	public fun <init> ()V
+	public final fun addGroupId (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun addGroupIds (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun addGroupOpenid (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun addGroupOpenids (Ljava/lang/Iterable;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun build ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;
+	public final fun clearGroupIds ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun clearGroupOpenids ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun getOp ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+	public final fun op (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupActionBuilder;
+	public final fun setOp (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified$Companion;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun isEnable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify$Companion;
+	public static final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getGroupAction ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun isEnable ()Ljava/lang/Boolean;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify$Companion {
+	public final fun builder ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder {
+	public fun <init> ()V
+	public final fun build ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;
+	public final fun expireAt (Lkotlin/time/Instant;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getGroupAction ()Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;
+	public final fun getRemark ()Ljava/lang/String;
+	public final synthetic fun groupAction (Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun groupAction (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun isEnable ()Ljava/lang/Boolean;
+	public final fun isEnable (Ljava/lang/Boolean;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun remark (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModifyBuilder;
+	public final fun setEnable (Ljava/lang/Boolean;)V
+	public final fun setExpireAt (Lkotlin/time/Instant;)V
+	public final fun setGroupAction (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyGroupAction;)V
+	public final fun setRemark (Ljava/lang/String;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp : java/lang/Enum {
+	public static final field ADD Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp$Companion;
+	public static final field DEL Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+	public static fun values ()[Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyOp$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage$Companion;
+	public final fun getNextCursor ()Ljava/lang/String;
+	public final fun getStrategies ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyPage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified {
+	public static final field Companion Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified$Companion;
+	public final fun getStrategyId ()Ljava/lang/String;
+	public final fun getUpdatedAt ()Lkotlin/time/Instant;
+	public final fun getWhitelistUserCount ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified;)V
+}
+
+public final class love/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
