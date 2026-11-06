@@ -45,7 +45,7 @@ public inline fun <reified T : Throwable> T.initCause0(cause: Throwable): T {
 }
 
 /**
- * QQ频道API请求过程中出现的异常
+ * QQ Bot API 请求过程中出现的异常
  *
  */
 @Suppress("MemberVisibilityCanBePrivate")

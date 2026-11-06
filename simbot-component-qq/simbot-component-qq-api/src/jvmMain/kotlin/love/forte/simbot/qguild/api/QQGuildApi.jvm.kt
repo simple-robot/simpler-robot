@@ -30,9 +30,6 @@ private val logNameProcessor: HttpMethod.() -> String = run {
     // default true
     val enable = System.getProperty("simbot.qguild.api.logger.color.enable")?.toBoolean() ?: true
 
-    // 以 DELETE 为最长标准
-    // API基本不存在 HEAD OPTIONS
-
     if (enable) {
         {
             when (this) {
@@ -40,13 +37,13 @@ private val logNameProcessor: HttpMethod.() -> String = run {
                     GET        绿色
                     POST       蓝色
                     PUT, PATCH 紫色
-                    DELETE     红色
+                    DEL        红色
                  */
-                HttpMethod.Get -> "\u001B[32m   GET\u001B[0m"
-                HttpMethod.Post -> "\u001B[34m  POST\u001B[0m"
-                HttpMethod.Put -> "\u001B[35m   PUT\u001B[0m"
-                HttpMethod.Patch -> "\u001B[35m PATCH\u001B[0m"
-                HttpMethod.Delete -> "\u001B[31mDELETE\u001B[0m"
+                HttpMethod.Get -> "\u001B[32m  GET\u001B[0m"
+                HttpMethod.Post -> "\u001B[34m POST\u001B[0m"
+                HttpMethod.Put -> "\u001B[35m  PUT\u001B[0m"
+                HttpMethod.Patch -> "\u001B[35mPATCH\u001B[0m"
+                HttpMethod.Delete -> "\u001B[31mDEL\u001B[0m"
                 else -> value
             }
         }

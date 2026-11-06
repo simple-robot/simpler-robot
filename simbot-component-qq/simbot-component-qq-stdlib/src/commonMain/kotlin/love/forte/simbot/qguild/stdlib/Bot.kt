@@ -38,7 +38,7 @@ import love.forte.simbot.suspendrunner.STP
 import kotlin.coroutines.CoroutineContext
 
 /**
- * 一个 QQ频道Bot。
+ * 一个 QQ Bot。
  *
  * 在Java中，可以通过扩展工具类 `Bots.xxx` 得到更多兼容函数。
  *

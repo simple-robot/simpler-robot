@@ -52,7 +52,7 @@ public val apiLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.qguild
 internal const val TRACE_ID_HEAD: String = "X-Tps-trace-ID"
 
 /**
- * 表示为一个QQ频道的API。
+ * 表示为一个 QQ Bot API。
  *
  * 通过 [requestData] 发起一次请求。
  *
@@ -101,11 +101,17 @@ public interface QQGuildApi<out R : Any> : ApiDefinition<R> {
     public companion object
 }
 
+/**
+ * 没有返回值的 [QQGuildApi] 子类型。
+ */
 public interface QQGuildApiWithoutResult : QQGuildApi<Unit> {
     override val resultDeserializationStrategy: DeserializationStrategy<Unit>
         get() = Unit.serializer() // EmptyUnitSerializer
 }
 
+/**
+ * 请求方式为 GET 的 [QQGuildApi] 子类型。
+ */
 public abstract class GetQQGuildApi<R : Any> : GetApiDefinition<R>(), QQGuildApi<R> {
     protected abstract val path: Array<String>
 
@@ -121,6 +127,9 @@ public abstract class GetQQGuildApi<R : Any> : GetApiDefinition<R>(), QQGuildApi
         }.build()
 }
 
+/**
+ * 请求方式为 POST 的 [QQGuildApi] 子类型。
+ */
 public abstract class PostQQGuildApi<R : Any> : PostApiDefinition<R>(), QQGuildApi<R> {
     protected abstract val path: Array<String>
 
@@ -136,6 +145,9 @@ public abstract class PostQQGuildApi<R : Any> : PostApiDefinition<R>(), QQGuildA
         }.build()
 }
 
+/**
+ * 请求方式为 PUT 的 [QQGuildApi] 子类型。
+ */
 public abstract class PutQQGuildApi<R : Any> : PutApiDefinition<R>(), QQGuildApi<R> {
     protected abstract val path: Array<String>
 
@@ -151,6 +163,9 @@ public abstract class PutQQGuildApi<R : Any> : PutApiDefinition<R>(), QQGuildApi
         }.build()
 }
 
+/**
+ * 请求方式为 DELETE 的 [QQGuildApi] 子类型。
+ */
 public abstract class DeleteQQGuildApi<R : Any> : DeleteApiDefinition<R>(), QQGuildApi<R> {
     protected abstract val path: Array<String>
 
@@ -166,6 +181,9 @@ public abstract class DeleteQQGuildApi<R : Any> : DeleteApiDefinition<R>(), QQGu
         }.build()
 }
 
+/**
+ * 请求方式为 PATCH 的 [QQGuildApi] 子类型。
+ */
 public abstract class PatchQQGuildApi<R : Any> : PutQQGuildApi<R>(), QQGuildApi<R> {
     override val method: HttpMethod
         get() = HttpMethod.Patch
@@ -176,7 +194,7 @@ internal fun HttpMethod.defaultForLogName(): String = when (this) {
     HttpMethod.Post -> "  POST"
     HttpMethod.Put -> "   PUT"
     HttpMethod.Patch -> " PATCH"
-    HttpMethod.Delete -> "DELETE"
+    HttpMethod.Delete -> "DEL"
     else -> value
 }
 
