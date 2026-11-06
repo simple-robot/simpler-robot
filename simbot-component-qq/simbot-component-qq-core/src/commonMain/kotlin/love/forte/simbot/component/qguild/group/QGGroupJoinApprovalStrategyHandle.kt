@@ -36,6 +36,12 @@ import kotlin.jvm.JvmSynthetic
 /**
  * 入群自动审批策略操作句柄，保存策略 ID 并提供对其的操作行为。
  *
+ * ```kotlin
+ * val strategy = bot.groupJoinApprovalStrategies.handle("策略ID".ID)
+ * strategy.update { isEnable = false }
+ * strategy.addWhitelistUsers(listOf("1234567".ID))
+ * ```
+ *
  * @since 5.0
  */
 @SubclassOptInRequired(InternalForInheritanceQGGroupJoinApprovalStrategyApi::class)
@@ -59,7 +65,7 @@ public interface QGGroupJoinApprovalStrategyHandle : DeleteSupport {
     /**
      * 对指定策略批量新增白名单 QQ 号码，单次最多 10000 个，号码上限 10W。
      *
-     * @param users QQ 号码列表，使用字符串类型避免 JS 精度问题。
+     * @param users QQ 号码的 ID 列表。
      * @return 操作后策略当前白名单号码数（估算）及更新时间。
      * @throws IllegalArgumentException [users] 为空或包含空白号码。
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝或产生错误。
@@ -70,7 +76,7 @@ public interface QGGroupJoinApprovalStrategyHandle : DeleteSupport {
     /**
      * 对指定策略批量删除白名单 QQ 号码，单次最多 10000 个。
      *
-     * @param users QQ 号码列表。
+     * @param users QQ 号码的 ID 列表。
      * @return 操作后策略当前白名单号码数（估算）及更新时间。
      * @throws IllegalArgumentException [users] 为空或包含空白号码。
      * @throws love.forte.simbot.qguild.QQGuildApiException 请求被 QQ API 拒绝或产生错误。

@@ -205,7 +205,9 @@ public class GroupJoinApprovalStrategyModifyBuilder {
     /**
      * 设置关联群增删操作；群标识形式须与创建时一致。
      */
-    public fun groupAction(groupAction: GroupJoinApprovalStrategyGroupAction?): GroupJoinApprovalStrategyModifyBuilder = also {
+    public fun groupAction(
+        groupAction: GroupJoinApprovalStrategyGroupAction?
+    ): GroupJoinApprovalStrategyModifyBuilder = also {
         this.groupAction = groupAction
     }
 

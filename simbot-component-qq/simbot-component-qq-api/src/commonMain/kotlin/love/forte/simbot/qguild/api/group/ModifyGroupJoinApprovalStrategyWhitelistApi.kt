@@ -46,7 +46,9 @@ public class ModifyGroupJoinApprovalStrategyWhitelistApi private constructor(
     /**
      * [ModifyGroupJoinApprovalStrategyWhitelistApi] 的描述与构建入口。
      */
-    public companion object Factory : SimplePostApiDescription("/v2/groups/join_approval_strategy/{strategy_id}/whitelist_users") {
+    public companion object Factory : SimplePostApiDescription(
+        "/v2/groups/join_approval_strategy/{strategy_id}/whitelist_users"
+    ) {
         /**
          * 构建一次白名单号码操作请求。
          *

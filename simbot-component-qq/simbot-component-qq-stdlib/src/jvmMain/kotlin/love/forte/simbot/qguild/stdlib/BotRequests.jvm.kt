@@ -30,11 +30,14 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.qguild.api.QQGuildApi
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -152,5 +155,50 @@ public fun <R : Any> Bot.requestDataReserve(
     api: QQGuildApi<R>,
     scope: CoroutineScope? = null
 ): SuspendReserve<R> = suspendReserve(scope ?: apiClient, EmptyCoroutineContext) {
+    requestData(api)
+}
+
+/**
+ * 使用此 bot 以响应式方式请求并获取原始 HTTP 响应。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param api 要执行的 API。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun Bot.requestReactive(api: QQGuildApi<*>): Publisher<HttpResponse> = asPublisher {
+    request(api)
+}
+
+/**
+ * 使用此 bot 以响应式方式请求并获取响应文本。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param api 要执行的 API。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun Bot.requestTextReactive(api: QQGuildApi<*>): Publisher<String> = asPublisher {
+    requestText(api)
+}
+
+/**
+ * 使用此 bot 以响应式方式请求并获取反序列化结果。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param api 要执行的 API。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <R : Any> Bot.requestDataReactive(api: QQGuildApi<R>): Publisher<R> = asPublisher {
     requestData(api)
 }

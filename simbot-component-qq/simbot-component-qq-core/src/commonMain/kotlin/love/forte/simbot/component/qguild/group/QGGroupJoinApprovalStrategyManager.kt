@@ -33,6 +33,14 @@ import kotlin.jvm.JvmSynthetic
 /**
  * 机器人创建的入群自动审批策略管理器。
  *
+ * ```kotlin
+ * val created = bot.groupJoinApprovalStrategies.create {
+ *     addGroupOpenid("群OpenID")
+ *     isEnable = true
+ * }
+ * created.execute()
+ * ```
+ *
  * @since 5.0
  */
 @SubclassOptInRequired(InternalForInheritanceQGGroupJoinApprovalStrategyApi::class)

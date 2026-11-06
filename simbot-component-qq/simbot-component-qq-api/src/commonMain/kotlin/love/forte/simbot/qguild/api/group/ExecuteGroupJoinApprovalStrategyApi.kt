@@ -43,7 +43,9 @@ public class ExecuteGroupJoinApprovalStrategyApi private constructor(
     /**
      * [ExecuteGroupJoinApprovalStrategyApi] 的描述与构建入口。
      */
-    public companion object Factory : SimplePostApiDescription("/v2/groups/join_approval_strategy/{strategy_id}/execute") {
+    public companion object Factory : SimplePostApiDescription(
+        "/v2/groups/join_approval_strategy/{strategy_id}/execute"
+    ) {
         /**
          * 构建 [ExecuteGroupJoinApprovalStrategyApi]。
          *

@@ -70,7 +70,8 @@ public class GroupJoinApprovalStrategyGroupAction @ApiModelConstructor internal 
          * 获取 [GroupJoinApprovalStrategyGroupActionBuilder]。
          */
         @JvmStatic
-        public fun builder(): GroupJoinApprovalStrategyGroupActionBuilder = GroupJoinApprovalStrategyGroupActionBuilder()
+        public fun builder(): GroupJoinApprovalStrategyGroupActionBuilder =
+            GroupJoinApprovalStrategyGroupActionBuilder()
     }
 
     override fun toString(): String {
