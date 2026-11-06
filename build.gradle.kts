@@ -111,6 +111,7 @@ detekt {
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
 tasks.detekt {
+    // 修改排除规则时，别忘了同步修改 config/detekt/detekt.yml 中的 excludedPaths 之类的
     // internal 处理器不管
     exclude("internal-processors/**")
     // tests 不管
