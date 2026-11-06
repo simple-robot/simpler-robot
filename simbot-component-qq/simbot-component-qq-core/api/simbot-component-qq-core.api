@@ -94,6 +94,7 @@ public abstract interface class love/forte/simbot/component/qguild/bot/QGBot : l
 	public abstract fun getComponent ()Llove/forte/simbot/component/qguild/QQGuildComponent;
 	public fun getContactRelation ()Llove/forte/simbot/bot/ContactRelation;
 	public fun getCustomMenus ()Llove/forte/simbot/component/qguild/menu/QGCustomMenuManager;
+	public fun getGroupJoinApprovalStrategies ()Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyManager;
 	public synthetic fun getGroupRelation ()Llove/forte/simbot/bot/GroupRelation;
 	public abstract fun getGroupRelation ()Llove/forte/simbot/component/qguild/group/QGGroupRelation;
 	public synthetic fun getGuildRelation ()Llove/forte/simbot/bot/GuildRelation;
@@ -1919,6 +1920,9 @@ public abstract interface class love/forte/simbot/component/qguild/friend/QGFrie
 	public fun uploadMediaReserve (Ljava/lang/String;I)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
+public abstract interface annotation class love/forte/simbot/component/qguild/group/InternalForInheritanceQGGroupJoinApprovalStrategyApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface class love/forte/simbot/component/qguild/group/QGGroup : love/forte/simbot/definition/ChatGroup {
 	public synthetic fun addMemberMute (Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun addMemberMuteAsync (Llove/forte/simbot/common/id/ID;Lkotlin/time/Instant;)Ljava/util/concurrent/CompletableFuture;
@@ -2032,6 +2036,67 @@ public abstract class love/forte/simbot/component/qguild/group/QGGroupBotMember 
 	public final fun getMemberRole ()Llove/forte/simbot/component/qguild/group/QGGroupRole;
 	public final fun getRecvMsgSetting ()Llove/forte/simbot/qguild/model/group/GroupBotReceiveMessageSetting;
 	public final fun getRecvMsgSetting-IOwocdk ()Ljava/lang/String;
+}
+
+public abstract class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyCreated : love/forte/simbot/component/qguild/QGObjectiveContainer, love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandle {
+	public fun <init> ()V
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun isEnable ()Z
+}
+
+public abstract interface class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandle : love/forte/simbot/ability/DeleteSupport {
+	public abstract synthetic fun addWhitelistUsers (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addWhitelistUsersAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun addWhitelistUsersBlocking (Ljava/util/Collection;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified;
+	public fun addWhitelistUsersReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deleteAsync ([Llove/forte/simbot/ability/DeleteOption;)Ljava/util/concurrent/CompletableFuture;
+	public fun deleteBlocking ([Llove/forte/simbot/ability/DeleteOption;)V
+	public fun deleteReserve ([Llove/forte/simbot/ability/DeleteOption;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun executeAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun executeBlocking ()V
+	public fun executeReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public abstract synthetic fun removeWhitelistUsers (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun removeWhitelistUsersAsync (Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;
+	public fun removeWhitelistUsersBlocking (Ljava/util/Collection;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyWhitelistModified;
+	public fun removeWhitelistUsersReserve (Ljava/util/Collection;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun update (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun updateAsync (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)Ljava/util/concurrent/CompletableFuture;
+	public fun updateBlocking (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModified;
+	public fun updateReserve (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyModify;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+}
+
+public final class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandleKt {
+	public static final synthetic fun update (Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandle;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyManager {
+	public abstract synthetic fun create (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun createAsync (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)Ljava/util/concurrent/CompletableFuture;
+	public fun createBlocking (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyCreated;
+	public fun createReserve (Llove/forte/simbot/qguild/model/group/GroupJoinApprovalStrategyCreate;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract fun handle (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandle;
+	public fun list ()Llove/forte/simbot/common/collectable/Collectable;
+	public abstract fun list (Ljava/lang/String;Ljava/lang/Integer;Z)Llove/forte/simbot/common/collectable/Collectable;
+	public static synthetic fun list$default (Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyManager;Ljava/lang/String;Ljava/lang/Integer;ZILjava/lang/Object;)Llove/forte/simbot/common/collectable/Collectable;
+}
+
+public final class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyManagerKt {
+	public static final synthetic fun create (Llove/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyManager;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyRecord : love/forte/simbot/component/qguild/QGObjectiveContainer, love/forte/simbot/component/qguild/group/QGGroupJoinApprovalStrategyHandle {
+	public fun <init> ()V
+	public final fun getCreatedAt ()Lkotlin/time/Instant;
+	public final fun getExpireAt ()Lkotlin/time/Instant;
+	public final fun getGroupIds ()Ljava/util/List;
+	public final fun getGroupOpenids ()Ljava/util/List;
+	public final fun getRemark ()Ljava/lang/String;
+	public final fun getUpdatedAt ()Lkotlin/time/Instant;
+	public final fun getWhitelistUserCount ()I
+	public final fun isEnable ()Z
 }
 
 public abstract class love/forte/simbot/component/qguild/group/QGGroupJoinRequest : love/forte/simbot/ability/AcceptSupport, love/forte/simbot/ability/RejectSupport, love/forte/simbot/component/qguild/QGObjectiveContainer {

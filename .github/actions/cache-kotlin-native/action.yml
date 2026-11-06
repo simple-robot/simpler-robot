@@ -1,0 +1,24 @@
+name: Cache Kotlin Native
+description: Preserve Kotlin Native toolchains and caches separately from Gradle User Home
+runs:
+  using: composite
+  steps:
+    - name: Identify Native SDK
+      id: sdk
+      shell: bash
+      run: |
+        sdk=none
+        if [[ "$RUNNER_OS" == "macOS" ]]; then
+          sdk=$(xcodebuild -version | shasum -a 256 | cut -d ' ' -f 1)
+        fi
+        echo "version=$sdk" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Kotlin Native components
+      uses: actions/cache@v5
+      with:
+        path: ~/.konan
+        # Do not restore across hosts, architectures, Xcode versions or dependency versions.
+        # Separate jobs may populate different target caches; fall back to a compatible job's cache.
+        key: konan-v1-${{ runner.os }}-${{ runner.arch }}-${{ env.ImageOS }}-${{ steps.sdk.outputs.version }}-${{ hashFiles('gradle/libs.versions.toml', '**/*.def') }}-${{ github.job }}
+        restore-keys: |
+          konan-v1-${{ runner.os }}-${{ runner.arch }}-${{ env.ImageOS }}-${{ steps.sdk.outputs.version }}-${{ hashFiles('gradle/libs.versions.toml', '**/*.def') }}-

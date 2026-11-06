@@ -23,11 +23,13 @@
 
 @file:OptIn(ExperimentalAbiValidation::class)
 
+import com.github.gmazzo.buildconfig.generators.BuildConfigKotlinGenerator
 import com.google.devtools.ksp.gradle.KspAATask
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.TypeSpec
 import love.forte.plugin.suspendtrans.gradle.SuspendTransPluginConstants
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
-import java.time.Instant
 
 plugins {
     id("simbot.kotlin-multiplatform")
@@ -174,17 +176,36 @@ ksp {
 
 // BuildConfig for the current version
 // love.forte.simbot.annotations.InternalSimbotAPI
+class SimbotBuiltinGenerator : BuildConfigKotlinGenerator(
+    topLevelConstants = false,
+    internalVisibility = false,
+) {
+    override fun adaptSpec(spec: TypeSpec): TypeSpec = spec.toBuilder().apply {
+        propertySpecs.replaceAll { property ->
+            if (property.name == "BUILD_AT") {
+                property.toBuilder()
+                    .addAnnotation(
+                        AnnotationSpec.builder(Deprecated::class)
+                            .addMember("%S", "Frozen for compatibility, no longer reflects the build time.")
+                            .build()
+                    )
+                    .build()
+            } else {
+                property
+            }
+        }
+    }.build()
+}
+
 buildConfig {
-    useKotlinOutput {
-        topLevelConstants = false
-        internalVisibility = false
-    }
+    generator(SimbotBuiltinGenerator())
 
     className.set("SimbotBuiltin")
     packageName.set("love.forte.simbot")
     buildConfigField<String>("VERSION", P.Simbot.version)
     buildConfigField<String>("BUILD_KOTLIN_VERSION", libs.versions.kotlin)
     buildConfigField<Boolean>("IS_SNAPSHOT", isSnapshot())
-    buildConfigField<String>("BUILD_AT", Instant.now().toString())
+    // Keep the public constant for compatibility without introducing a volatile task input.
+    buildConfigField<String>("BUILD_AT", "2026-11-06T00:00:00Z")
     documentation.set("Auto-generated simbot built-in constants.")
 }

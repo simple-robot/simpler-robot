@@ -34,11 +34,14 @@ import kotlinx.coroutines.future.future
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.qguild.common.QQ
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.coroutines.EmptyCoroutineContext
@@ -209,5 +212,77 @@ public fun <R : Any> QQGuildApi<R>.requestDataReserve(
     scope: CoroutineScope? = null,
     appId: String? = null,
 ): SuspendReserve<R> = suspendReserve(scope = scope ?: client, context = EmptyCoroutineContext) {
+    requestData(client = client, token = token, server = server, appId = appId)
+}
+
+/**
+ * 以响应式方式请求并获取原始 HTTP 响应。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param client 用于本次请求的 HTTP 客户端。
+ * @param token 用于本次请求鉴权的 token。
+ * @param server 请求目标服务器。
+ * @param appId 应用 ID，提供时会添加到请求头。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+@OptIn(InternalSimbotAPI::class)
+public fun QQGuildApi<*>.requestReactive(
+    client: HttpClient,
+    token: String,
+    server: Url = Url(QQ.URL),
+    appId: String? = null,
+): Publisher<HttpResponse> = asPublisher {
+    request(client = client, token = token, server = server, appId = appId)
+}
+
+/**
+ * 以响应式方式请求并获取响应文本。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param client 用于本次请求的 HTTP 客户端。
+ * @param token 用于本次请求鉴权的 token。
+ * @param server 请求目标服务器。
+ * @param appId 应用 ID，提供时会添加到请求头。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+@OptIn(InternalSimbotAPI::class)
+public fun QQGuildApi<*>.requestTextReactive(
+    client: HttpClient,
+    token: String,
+    server: Url = Url(QQ.URL),
+    appId: String? = null,
+): Publisher<String> = asPublisher {
+    requestText(client = client, token = token, server = server, appId = appId)
+}
+
+/**
+ * 以响应式方式请求并获取反序列化结果。每次订阅都会发起一次请求。
+ * 请求失败或响应反序列化失败时，错误也会通过 Publisher 传递给订阅者。
+ *
+ * @param client 用于本次请求的 HTTP 客户端。
+ * @param token 用于本次请求鉴权的 token。
+ * @param server 请求目标服务器。
+ * @param appId 应用 ID，提供时会添加到请求头。
+ * @return 在订阅时执行请求的 Publisher。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+@OptIn(InternalSimbotAPI::class)
+public fun <R : Any> QQGuildApi<R>.requestDataReactive(
+    client: HttpClient,
+    token: String,
+    server: Url = Url(QQ.URL),
+    appId: String? = null,
+): Publisher<R> = asPublisher {
     requestData(client = client, token = token, server = server, appId = appId)
 }

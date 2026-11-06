@@ -28,35 +28,38 @@ import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.component.qguild.group.QGGroupRole
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-class QGGroupMemberManagementJavaRuntimeTests : AbstractInteractionTests() {
+class QGGroupJoinApprovalStrategyJavaRuntimeTests : AbstractInteractionTests() {
     @Test
-    fun javaBlockingEntrypointsExecuteRequests() = runTest {
-        var queries = 0
-        var writes = 0
+    fun javaBlockingAndAsyncCallsUseBotRequests() = runTest {
+        var requests = 0
+        val time = "2027-08-05T15:30:16+08:00"
         val app = app { request ->
-            if (request.method == HttpMethod.Get) {
-                queries++
-                respondOk("""{"member_openid":"member","username":"成员","member_role":"owner","bot":false,"joined_at":"2026-08-20T01:15:00Z"}""")
-            } else {
-                writes++
-                if (request.url.encodedPath.endsWith("/batch_remove_members")) respondOk("""{"remove_members_result":"success","add_to_member_blacklist_fail_openids":[]}""")
-                else respondOk("""{"fail_openids":[]}""")
+            requests++
+            when {
+                request.url.encodedPath.endsWith("/whitelist_users") ->
+                    respondOk("""{"strategy_id":"created","whitelist_user_count":1,"updated_at":"$time"}""")
+                request.method == HttpMethod.Patch ->
+                    respondOk("""{"is_enable":"off","expire_at":"$time"}""")
+                request.url.encodedPath == "/v2/groups/join_approval_strategy" ->
+                    respondOk("""{"strategy_id":"created","is_enable":"on","expire_at":"$time"}""")
+                else -> respondOk()
             }
         }
         val bot = app.bot()
         try {
-            val group = bot.groupRelation.group("group".ID)!!
-            val member = withContext(Dispatchers.Default) {
-                QGGroupMemberManagementJavaCalls.exercise(group, bot.groupRelation, "member".ID)
+            val result = withContext(Dispatchers.Default) {
+                QGGroupJoinApprovalStrategyJavaCalls.exercise(bot.groupJoinApprovalStrategies)
             }
-            assertEquals("member".ID, member.id)
-            assertEquals(QGGroupRole.OWNER, member.memberRole)
-            assertEquals(5, queries)
-            assertEquals(6, writes)
-        } finally { app.cancel(); bot.cancel() }
+            assertEquals("created", result.id.toString())
+            assertTrue(result.isEnable)
+            assertEquals(6, requests)
+        } finally {
+            app.cancel()
+            bot.cancel()
+        }
     }
 }

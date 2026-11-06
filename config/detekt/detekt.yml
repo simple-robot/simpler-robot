@@ -53,6 +53,15 @@ output-reports:
 
 comments:
   active: true
+  # 与根 build.gradle.kts 中的 detekt 排除规则保持同步，供 Gradle 和 IDEA 插件共用。
+  # 新增规则集时也需引用 excludedPaths。
+  excludes: &excludedPaths
+    - '**/internal-processors/**'
+    - '**/tests/**'
+    - '**/build/**'
+    - '**/src/*/resources/**'
+    - '**/src/*Test/**'
+    - '**/src/test/**'
   AbsentOrWrongFileLicense:
     active: false
     licenseTemplateFile: 'license.template'
@@ -93,6 +102,7 @@ comments:
 
 complexity:
   active: false # 暂时不管复杂度检测
+  excludes: *excludedPaths
   CognitiveComplexMethod:
     active: false
     threshold: 15
@@ -179,6 +189,7 @@ complexity:
 
 coroutines:
   active: true
+  excludes: *excludedPaths
   GlobalCoroutineUsage:
     active: false
   InjectDispatcher:
@@ -200,6 +211,7 @@ coroutines:
 
 empty-blocks:
   active: true
+  excludes: *excludedPaths
   EmptyCatchBlock:
     active: true
     allowedExceptionNameRegex: '_|(ignore|expected).*'
@@ -235,6 +247,7 @@ empty-blocks:
 
 exceptions:
   active: true
+  excludes: *excludedPaths
   ExceptionRaisedInUnexpectedLocation:
     active: true
     methodNames:
@@ -306,6 +319,7 @@ exceptions:
 
 naming:
   active: true
+  excludes: *excludedPaths
   BooleanPropertyNaming:
     active: false
     allowedPattern: '^(is|has|are)'
@@ -382,6 +396,7 @@ naming:
 
 performance:
   active: true
+  excludes: *excludedPaths
   ArrayPrimitive:
     active: true
   CouldBeSequence:
@@ -400,6 +415,7 @@ performance:
 
 potential-bugs:
   active: true
+  excludes: *excludedPaths
   AvoidReferentialEquality:
     active: true
     forbiddenTypePatterns:
@@ -504,6 +520,7 @@ potential-bugs:
 
 style:
   active: true
+  excludes: *excludedPaths
   AlsoCouldBeApply:
     active: false
   BracesOnIfStatements:
@@ -786,6 +803,7 @@ style:
 
 formatting:
   active: true
+  excludes: *excludedPaths
   android: false
   autoCorrect: true
   AnnotationOnSeparateLine:

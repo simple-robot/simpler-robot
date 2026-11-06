@@ -8,7 +8,7 @@ on:
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
-  GRADLE_VERSION: 9.6.0
+  GRADLE_VERSION: 9.6.1
   NODE_VERSION: 22
   IS_CI: true
   SIMBOT_TEST: true
@@ -26,19 +26,23 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: 'gradle'
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Kotlin Native
+        uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           add-job-summary-as-pr-comment: 'on-failure'
           dependency-graph: generate-and-submit
           build-scan-publish: true
@@ -79,19 +83,23 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: 'gradle'
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Kotlin Native
+        uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           add-job-summary-as-pr-comment: 'on-failure'
           build-scan-publish: true
           build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
@@ -110,19 +118,24 @@ jobs:
 
   detekt-check:
     name: Detekt check
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: 'gradle'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           add-job-summary-as-pr-comment: 'on-failure'
 
       - name: Run Detekt
@@ -140,7 +153,7 @@ jobs:
       # Make sure we always run this upload task,
       # because the previous step may fail if there are findings.
       - name: Upload SARIF to GitHub using the upload-sarif action
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('build/reports/detekt/detekt.sarif') != ''
         with:
           sarif_file: 'build/reports/detekt/detekt.sarif'
