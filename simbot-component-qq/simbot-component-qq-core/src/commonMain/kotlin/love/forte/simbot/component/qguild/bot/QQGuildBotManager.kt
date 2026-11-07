@@ -52,7 +52,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
- * QQ频道BOT的bot管理器。
+ * [QQBot] 的 bot 管理器。
  *
  * [QQGuildBotManager] 不允许注册相同 `appId` 的bot。
  *
@@ -247,7 +247,7 @@ public class QQGuildBotManagerConfiguration {
      * 当前 botManager 使用的协程上下文。
      * 初始值为 [ApplicationConfiguration] 所提供的上下文。
      *
-     * 此上下文会用作每一个构建出来的 [QGBot] 的基础上下文。
+     * 此上下文会用作每一个构建出来的 [QQBot] 的基础上下文。
      * 如果其中包括 [Job]，则会使用此 [Job] 作为 parent Job.
      * 如果 [ApplicationConfiguration] 也提供了 Job，
      * 则会将产生的 Job [链接][Job.linkTo] 到 application 的 Job 上。

@@ -70,15 +70,22 @@ import love.forte.simbot.qguild.model.User as QGSourceUser
 import love.forte.simbot.qguild.stdlib.Bot as QGSourceBot
 
 /**
- * 一个 [QQ频道Bot][QGSourceBot] 的 simbot组件实现接口，
- * 是一个具有功能的 QQ频道组件Bot。
+ * 一个 [QQ Bot][QGSourceBot] 的 simbot 组件实现接口，
+ * 是一个具有功能的 QQ 组件 [Bot]。
  *
- * ### AppID 与 用户ID
+ * ## 命名
+ * 在早期，QQ 官方 API 仅支持 QQ 频道相关的功能，因此整个组件当时仅面向 QQ 频道。
+ * 但是后来官方直接在原本的 API 基础上扩充了有关 QQ 群聊、C2C 单聊等相关的内容，
+ * 因此 QGBot 已经不在仅仅承载频道相关的内容了，但是为了兼容性，类型命名风格、包路径都仍然延续了之前使用的 `QG` 的风格。
+ *
+ * 从 5.0 开始，我们会提供若干类型别名来提供语义相对更准确的类型命名，例如 [QQBot]。
+ *
+ * ## AppID 与 用户ID
  * [QGBot] 的 [id] 是用于连接服务器的 `appId` 而并非系统用户ID。
  * 如果希望获取bot的 **用户ID**, 至少执行过一次 [QGBot.start] 后通过 [userId] 获取，
  * 或者通过 [me] 实时查询。
  *
- * _Note: QGBot仅由内部实现，对外不稳定_
+ * _Note: QGBot 仅由内部实现，对外不稳定_
  *
  * @author ForteScarlet
  */

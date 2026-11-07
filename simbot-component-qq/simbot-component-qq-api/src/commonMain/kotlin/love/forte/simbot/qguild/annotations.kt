@@ -24,7 +24,7 @@
 package love.forte.simbot.qguild
 
 /**
- * 标记一个类型为作为QQ频道中定义的对象模型。
+ * 标记一个类型为作为 QQ 组件中定义的对象模型。
  *
  * 这些类型对使用者来讲应当仅作为API交互时的**序列化**内容使用，
  * 尽量避免直接使用它们的构造函数，避免因不兼容变更而产生异常。
@@ -71,7 +71,7 @@ public annotation class ApiModel
 public annotation class ApiModelConstructor
 
 /**
- * 标记一个API类型，代表它是一个在QQ频道API文档中被标记 **仅支持私域机器人** 的API。
+ * 标记一个API类型，代表它是一个在 QQ Bot API 文档中被标记 **仅支持私域机器人** 的API。
  *
  * 文档原文警告如下：
  *
