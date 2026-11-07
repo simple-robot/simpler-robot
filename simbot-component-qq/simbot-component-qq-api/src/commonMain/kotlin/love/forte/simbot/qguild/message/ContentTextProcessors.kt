@@ -33,9 +33,9 @@ private const val E_GT: String = "&gt;"
 private const val E_AMP: String = "&amp;"
 
 /**
- * QQ频道[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)解码器。
+ * QQ Bot API [内嵌格式](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/message/format.html)解码器。
  *
- * 用于将**转义后**字符解码为**源字符**。
+ * 用于将 **转义后** 字符解码为 **源字符**。
  *
  * | **源字符** | **转义后** |
  * |----------|----------|
@@ -264,9 +264,9 @@ private class SimpleMatcher(matchers: List<String>) {
 
 
 /**
- * QQ频道[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)编码器。
+ * QQ Bot API [内嵌格式](https://bot.q.qq.com/wiki/develop/api-v2/server-inter/channel/message/format.html)编码器。
  *
- * 用于将**源字符**编码为**转义后**字符。
+ * 用于将 **源字符** 编码为 **转义后** 字符。
  *
  * | **源字符** | **转义后** |
  * |----------|----------|
