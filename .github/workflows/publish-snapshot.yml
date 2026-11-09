@@ -55,7 +55,7 @@ jobs:
         uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           cache-read-only: ${{ github.event_name == 'pull_request' }}
@@ -106,7 +106,7 @@ jobs:
         uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           cache-read-only: ${{ github.event_name == 'pull_request' }}
@@ -144,7 +144,7 @@ jobs:
         uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           cache-read-only: ${{ github.event_name == 'pull_request' }}
@@ -187,7 +187,7 @@ jobs:
         uses: ./.github/actions/cache-kotlin-native
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: ${{ env.GRADLE_VERSION }}
           cache-read-only: ${{ github.event_name == 'pull_request' }}
