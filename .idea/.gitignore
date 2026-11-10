@@ -13,3 +13,4 @@ modules.xml
 aws.xml
 deployment.xml
 webServers.xml
+vcs.xml
