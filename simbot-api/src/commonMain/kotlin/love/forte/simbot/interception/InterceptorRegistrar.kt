@@ -20,34 +20,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 package love.forte.simbot.interception
 
 import love.forte.simbot.common.PriorityConstant
 
 /**
- * 拦截器的注册器
+ * 为指定拦截点注册拦截器的注册器。
+ *
+ * 同一拦截器可以多次注册，每次产生具有不同 ID 的独立注册对象。
  *
  * @since 5.0
  * @author ForteScarlet
  */
 public interface InterceptorRegistrar {
     /**
-     * 基于拦截点标记，注册一个指定拦截点的拦截器。
-     * @param point 拦截点标记
-     * @param priority 这个拦截器在相同拦截点或一组拦截器之间的优先级，默认为 [PriorityConstant.DEFAULT]。
-     * @param interceptor 拦截器
+     * 为 [point] 注册一个拦截器，返回可查询其信息及注销本次注册的对象。
      *
-     * @return 注册后的回执句柄，可用于取消注册的拦截器
+     * 同一个点内优先级数值越小越先进入，同优先级按注册顺序进入，正常返回时顺序相反。
+     * 注册后的拦截器可能被多个操作并发调用，其实现应自行保证并发安全。
+     *
+     * 注册过程是弱一致性的。
+     *
+     * Java 语言中构建 [Interceptor] 实例可以使用 `Interceptors` 提供的静态工厂方法，例如
+     * `Interceptors.blocking`、`Interceptors.async`、`Interceptors.reactive`。
+     *
+     * @param point 关联上下文及返回值类型的拦截点。
+     * @param priority 当前点内的执行优先级，默认为 [PriorityConstant.DEFAULT]。
+     * @param interceptor 用户提供的拦截逻辑。
+     * @return 包含 ID、拦截点、优先级及受失效状态控制的执行视图的注册对象。
      */
-    public fun <
-        C : Interceptor.Context,
-        R,
-        P : InterceptionPoint<C, R>
-        > register(
+    public fun <C : Any, R, P : InterceptionPoint<C, R>> register(
         point: P,
         priority: Int = PriorityConstant.DEFAULT,
         interceptor: Interceptor<C, R, P>
-    ): InterceptorRegistration
+    ): InterceptorRegistration<C, R, P>
 }
-

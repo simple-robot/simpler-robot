@@ -28,7 +28,7 @@ import love.forte.simbot.interception.InterceptorRegistrar
 
 
 /**
- * 拦截器管理器，是对拦截器注册和拦截器获取的统一单元。
+ * 同时提供拦截器注册、查询和按 ID 注销的管理器。
  * @since 5.0
  * @author ForteScarlet
  */

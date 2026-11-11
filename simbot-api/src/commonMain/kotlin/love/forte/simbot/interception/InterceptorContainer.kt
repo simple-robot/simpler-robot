@@ -20,54 +20,58 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 package love.forte.simbot.interception
 
 /**
- * [拦截器][Interceptor] 的容器，可以用于根据调用点获取对应的拦截器。
+ * 查询和注销已注册拦截器的容器，可通过字符串 ID 重新定位注册对象。
+ *
+ * 查询是弱一致性的，但序列在实际迭代时会过滤已注销的内容。
+ * 但元素在检查后仍可能立即被并发注销，因此返回对象不能保证继续有效，因此如有需要仍需要进行失效检查。
  *
  * @since 5.0
  * @author ForteScarlet
  */
 public interface InterceptorContainer {
     /**
-     * 当前容器中所有的拦截器的序列。
-     * 会以 (interception point, Interceptor priority) 的顺序返回此序列，
-     * 而 interception point 本身无顺序，因此 point 会随机排序。
-     * 例如:
-     * ```
-     * point1, interceptor1(priority 1)
-     * point1, interceptor1(priority 2)
-     * point1, interceptor1(priority 3)
-     * point2, interceptor1(priority 1)
-     * point2, interceptor1(priority 2)
-     * point2, interceptor1(priority 3)
-     * ```
-     *
-     * 拦截器序列是弱一致性的，若在迭代过程中某拦截器使用了 [InterceptorRegistration.dispose]，
-     * 不保证本次迭代一定会掠过此元素，但能保证最终一致性。
+     * 返回所有当前可见的有效注册项的序列，会过滤掉已注销的内容。
+     * 同一个拦截点的拦截器信息会连续出现，并按优先级升序、同优先级按注册顺序排列。不同拦截点之间的顺序随机。
      */
-    public val interceptors: Sequence<Map.Entry<InterceptionPoint<*, *>, Interceptor<*, *, *>>>
+    public val interceptors: Sequence<InterceptorRegistration<*, *, *>>
 
     /**
-     * 根据指定的 [InterceptionPoint] 获取对应的拦截器序列。
+     * 查询 [point] 对应的有效注册项，按优先级升序、同优先级按注册顺序排列。
      *
-     * 拦截器序列是弱一致性的，若在迭代过程中某拦截器使用了 [InterceptorRegistration.dispose]，
-     * 不保证本次迭代一定会掠过此元素，但能保证最终一致性。
-     *
-     * @param point 拦截点标记
+     * @param point 注册时使用的拦截点。
+     * @return 与注册返回值相同的注册对象组成的弱一致性序列。
      */
-    public fun <
-        C : Interceptor.Context,
-        R,
-        P : InterceptionPoint<C, R>
-        > interceptors(point: P): Sequence<Interceptor<C, R, P>>
+    public fun <C : Any, R, P : InterceptionPoint<C, R>> interceptors(
+        point: P
+    ): Sequence<InterceptorRegistration<C, R, P>>
 
     /**
-     *  根据指定的 [InterceptionPoint] 判断是否存在任意拦截器元素。
-     *
-     * @param point 拦截点标记
+     * 判断此时 [point] 是否存在可见的有效拦截器信息。
      */
     public fun hasInterceptors(point: InterceptionPoint<*, *>): Boolean
-}
 
+    /**
+     * 根据所属容器内的 [id] 查找有效的拦截器注册信息，不存在或已经注销时返回 `null`。
+     */
+    public fun findById(id: String): InterceptorRegistration<*, *, *>?
+
+    /**
+     * 根据所属容器内的 [id] 以及其对应的 [point] 查找有效的拦截器注册信息，不存在或已经注销时返回 `null`。
+     * 如果仅仅是 id 相同但 point 不匹配也会返回 `null`。
+     */
+    public fun <C : Any, R, P : InterceptionPoint<C, R>> findById(
+        id: String,
+        point: P
+    ): InterceptorRegistration<C, R, P>?
+
+    /**
+     * 注销 [id] 对应的注册，与注册对象的 [InterceptorRegistration.dispose] 具有相同效果。
+     *
+     * @return 本次调用首次将有效注册标记为失效时返回 `true`，不存在或已失效时返回 `false`。
+     * 同一注册的并发注销只有一个调用能成功完成状态切换。
+     */
+    public fun disposeById(id: String): Boolean
+}

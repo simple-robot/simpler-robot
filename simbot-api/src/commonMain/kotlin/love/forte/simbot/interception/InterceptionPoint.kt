@@ -20,18 +20,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 package love.forte.simbot.interception
 
-
 /**
- * 一个 [拦截器][Interceptor] 的拦截点定义。
+ * 标识一种可拦截操作，并关联其业务上下文 [C] 与返回值 [R]。
  *
- * [InterceptionPoint] 的实现与应用应当是唯一的，例如使用 `object` 进行定义。
- * 通常由 application 内某组件或某插件进行实现与提供。
+ * 通常由组件或插件以单例 `object` 定义，注册与执行必须使用同一个拦截点实例。
+ * 注册表按拦截点的 `equals` / `hashCode` 查找，因此不同类型的点不得比较为相等，
+ * 也不得在注册期间改变这些方法的结果。
  *
+ * @param C 非空的业务上下文类型。
+ * @param R 操作返回值类型，可以为空。
  * @since 5.0
  * @author ForteScarlet
  */
 @Suppress("unused")
-public interface InterceptionPoint<C : Interceptor.Context, R>
+public interface InterceptionPoint<C : Any, R>
