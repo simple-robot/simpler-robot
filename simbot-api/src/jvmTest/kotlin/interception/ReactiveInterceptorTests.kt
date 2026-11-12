@@ -31,6 +31,7 @@ import reactor.core.Disposable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
+import reactor.core.scheduler.Schedulers
 import java.util.concurrent.Executors
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.*
@@ -94,38 +95,48 @@ class ReactiveInterceptorTests {
     }
 
     /**
-     * Independently subscribed work remains owned by the user after interception completes.
+     * 独立订阅在拦截返回后仍可继续执行，由订阅者显式取消并等待清理。
      */
     @Test
-    fun independentSubscriptionRunsUntilUserDisposesIt() = runBlocking {
+    fun independentSubscriptionContinuesAfterInterceptionReturnsUntilDisposed() = runBlocking {
         val result = Sinks.one<String>()
+        val entered = CompletableDeferred<Unit>()
         val continueExecution = CompletableDeferred<Unit>()
         val continued = CompletableDeferred<Unit>()
         val finished = CompletableDeferred<Unit>()
         var subscription: Disposable? = null
         val interceptor = reactive<String, String, Point> { _, c, chain ->
-            subscription = Mono.from(chain.proceed(c)).subscribe()
+            subscription = Mono.from(chain.proceed(c)).subscribe({}, {})
             result.asMono()
         }
-        try {
-            assertEquals("short", InterceptorInvoker(Point, listOf(interceptor)) {
+        val call = async {
+            InterceptorInvoker(Point, listOf(interceptor)) {
                 try {
-                    result.tryEmitValue("short")
+                    entered.complete(Unit)
+                    assertEquals(Sinks.EmitResult.OK, result.tryEmitValue("short"))
                     continueExecution.await()
                     continued.complete(Unit)
                     awaitCancellation()
                 } finally {
                     finished.complete(Unit)
                 }
-            }.invoke("request"))
-            // Resume only after interception returns to prove the subscription outlives it.
+            }.invoke("request")
+        }
+        try {
+            assertEquals("short", call.await())
             assertFalse(finished.isCompleted)
+            // 仅在拦截返回后放行，证明独立订阅仍能继续执行。
             continueExecution.complete(Unit)
-            withTimeout(5_000) { continued.await() }
+            continued.await()
+            assertFalse(finished.isCompleted)
             assertNotNull(subscription).dispose()
-            withTimeout(5_000) { finished.await() }
+            finished.await()
         } finally {
             subscription?.dispose()
+            call.cancelAndJoin()
+            if (entered.isCompleted) {
+                withContext(NonCancellable) { withTimeout(5_000) { finished.await() } }
+            }
         }
     }
 
@@ -159,6 +170,127 @@ class ReactiveInterceptorTests {
                 assertEquals("nullable-caller", currentCoroutineContext()[CoroutineName]?.name)
             }
         }
+    }
+
+    /**
+     * 即使在 Reactor 工作线程订阅，下游仍使用构建 chain 时的完整入口环境。
+     */
+    @Test
+    fun subscriptionOnAnotherThreadRestoresEntryEnvironment() = runBlocking {
+        val local = ThreadLocal<String>()
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { dispatcher ->
+            withContext(dispatcher + CoroutineName("entry") + local.asContextElement("entry")) {
+                val entryThread = Thread.currentThread()
+                val subscribedThread = CompletableDeferred<Thread>()
+                val interceptor = reactive<String, String, Point> { _, c, chain ->
+                    Mono.from(chain.proceed(c))
+                        .doOnSubscribe { subscribedThread.complete(Thread.currentThread()) }
+                        .subscribeOn(Schedulers.parallel())
+                }
+                assertEquals("value", InterceptorInvoker(Point, listOf(interceptor)) {
+                    assertSame(dispatcher, currentCoroutineContext()[ContinuationInterceptor])
+                    assertEquals("entry", currentCoroutineContext()[CoroutineName]?.name)
+                    assertSame(entryThread, Thread.currentThread())
+                    assertEquals("entry", local.get())
+                    "value"
+                }.invoke("request"))
+                assertNotSame(entryThread, subscribedThread.await())
+                assertEquals("entry", local.get())
+            }
+        }
+    }
+
+    /**
+     * 外层 Java 回调的特殊上下文不会覆盖嵌套 reactive 和 Kotlin 下游的入口环境。
+     */
+    @Test
+    fun nestedAsyncCallbackPreservesReactiveEntryEnvironment() = runBlocking {
+        val local = ThreadLocal<String>()
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { entryDispatcher ->
+            Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { javaDispatcher ->
+                withContext(entryDispatcher + CoroutineName("entry") + local.asContextElement("entry")) {
+                    val entryThread = Thread.currentThread()
+                    val calls = mutableListOf<String>()
+                    val javaContext = javaDispatcher + CoroutineName("java") + local.asContextElement("java")
+                    val javaInterceptor = async<String, String, Point>(javaContext) { _, c, chain ->
+                        assertEquals("java", local.get())
+                        assertNotSame(entryThread, Thread.currentThread())
+                        chain.proceed(c)
+                    }
+                    val reactiveInterceptor = reactive<String, String, Point> { _, c, chain ->
+                        assertSame(entryThread, Thread.currentThread())
+                        assertEquals("entry", local.get())
+                        Mono.from(chain.proceed(c))
+                    }
+                    val observer = Interceptor<String, String, Point> { _, c, chain ->
+                        assertSame(entryDispatcher, currentCoroutineContext()[ContinuationInterceptor])
+                        assertEquals("entry", currentCoroutineContext()[CoroutineName]?.name)
+                        assertSame(entryThread, Thread.currentThread())
+                        assertEquals("entry", local.get())
+                        calls += "before"
+                        chain.proceed(c).also {
+                            assertSame(entryThread, Thread.currentThread())
+                            assertEquals("entry", local.get())
+                            calls += "after"
+                        }
+                    }
+                    assertEquals("value", InterceptorInvoker(Point, listOf(javaInterceptor, reactiveInterceptor, observer)) {
+                        assertSame(entryDispatcher, currentCoroutineContext()[ContinuationInterceptor])
+                        assertEquals("entry", currentCoroutineContext()[CoroutineName]?.name)
+                        assertEquals("entry", local.get())
+                        "value"
+                    }.invoke("request"))
+                    assertEquals(listOf("before", "after"), calls)
+                    assertSame(entryThread, Thread.currentThread())
+                    assertEquals("entry", local.get())
+                }
+            }
+        }
+        assertNull(local.get())
+    }
+
+    /**
+     * 可空下游失败可被响应式恢复，恢复后的空完成仍表示 null。
+     */
+    @Test
+    fun nullableDownstreamFailureCanRecoverWithAnotherAttempt() = runBlocking {
+        var attempts = 0
+        val interceptor = reactiveNullable<String, String, NullablePoint> { _, c, chain ->
+            Mono.from(chain.proceed(c)).onErrorResume { Mono.from(chain.proceed(c)) }
+        }
+        assertNull(InterceptorInvoker(NullablePoint, listOf(interceptor)) {
+            if (++attempts == 1) error("first attempt")
+            null
+        }.invoke("request"))
+        assertEquals(2, attempts)
+        assertTrue(currentCoroutineContext().isActive)
+    }
+
+    /**
+     * 可空适配器同样向订阅和挂起下游传播父调用的取消。
+     */
+    @Test
+    fun nullableCallerCancellationCancelsSubscriptionAndDownstream() = runBlocking {
+        val entered = CompletableDeferred<Unit>()
+        val finished = CompletableDeferred<Unit>()
+        val cancelled = CompletableDeferred<Unit>()
+        val interceptor = reactiveNullable<String, String, NullablePoint> { _, c, chain ->
+            Mono.from(chain.proceed(c)).doOnCancel { cancelled.complete(Unit) }
+        }
+        val call = launch {
+            InterceptorInvoker(NullablePoint, listOf(interceptor)) {
+                entered.complete(Unit)
+                try {
+                    awaitCancellation()
+                } finally {
+                    finished.complete(Unit)
+                }
+            }.invoke("request")
+        }
+        entered.await()
+        call.cancelAndJoin()
+        finished.await()
+        cancelled.await()
     }
 
     @Test
@@ -252,6 +384,51 @@ class ReactiveInterceptorTests {
             call.cancelAndJoin()
             finished.await()
             cancelled.await()
+        }
+    }
+
+    /**
+     * 父取消仅影响返回的 publisher，独立订阅仍由订阅者负责取消。
+     */
+    @Test
+    fun callerCancellationLeavesIndependentSubscriptionForUserToDispose() = runBlocking {
+        val entered = CompletableDeferred<Unit>()
+        val continueExecution = CompletableDeferred<Unit>()
+        val continued = CompletableDeferred<Unit>()
+        val finished = CompletableDeferred<Unit>()
+        var subscription: Disposable? = null
+        val interceptor = reactive<String, String, Point> { _, c, chain ->
+            subscription = Mono.from(chain.proceed(c)).subscribe({}, {})
+            Mono.never()
+        }
+        val call = launch {
+            InterceptorInvoker(Point, listOf(interceptor)) {
+                try {
+                    entered.complete(Unit)
+                    continueExecution.await()
+                    continued.complete(Unit)
+                    awaitCancellation()
+                } finally {
+                    finished.complete(Unit)
+                }
+            }.invoke("request")
+        }
+        try {
+            entered.await()
+            call.cancelAndJoin()
+            assertFalse(finished.isCompleted)
+            // 父调用已结束，再次执行握手后才由用户取消该订阅。
+            continueExecution.complete(Unit)
+            continued.await()
+            assertFalse(finished.isCompleted)
+            assertNotNull(subscription).dispose()
+            finished.await()
+        } finally {
+            subscription?.dispose()
+            call.cancelAndJoin()
+            if (entered.isCompleted) {
+                withContext(NonCancellable) { withTimeout(5_000) { finished.await() } }
+            }
         }
     }
 

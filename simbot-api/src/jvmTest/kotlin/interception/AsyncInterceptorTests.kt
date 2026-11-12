@@ -31,6 +31,7 @@ import love.forte.simbot.interception.InterceptorInvoker
 import love.forte.simbot.interception.async
 import org.junit.jupiter.api.Timeout
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.test.*
 
@@ -75,6 +76,20 @@ class AsyncInterceptorTests {
             "ok"
         }.invoke("request"))
         assertEquals(2, attempts)
+    }
+
+    /**
+     * 下游失败可由 Java 提供备用结果，不能提前取消父调用。
+     */
+    @Test
+    fun downstreamFailureCanBeRecoveredWithFallback() = runBlocking {
+        val interceptor = async<String, String, Point> { _, c, chain ->
+            chain.proceed(c).exceptionally { "fallback" }
+        }
+        assertEquals("fallback", InterceptorInvoker(Point, listOf(interceptor)) {
+            error("downstream failed")
+        }.invoke("request"))
+        currentCoroutineContext().ensureActive()
     }
 
     @Test
@@ -126,7 +141,7 @@ class AsyncInterceptorTests {
     }
 
     /**
-     * 独立 future 在拦截返回后仍可执行，由用户负责取消。
+     * 未组合的下游在拦截返回后继续执行，由用户取消其 future。
      */
     @Test
     fun independentFutureRunsUntilUserCancelsIt() = runBlocking {
@@ -134,38 +149,41 @@ class AsyncInterceptorTests {
         val continueExecution = CompletableDeferred<Unit>()
         val continued = CompletableDeferred<Unit>()
         val finished = CompletableDeferred<Unit>()
-        var independent: CompletableFuture<String>? = null
+        val source = AtomicReference<CompletableFuture<String>>()
         val interceptor = async<String, String, Point> { _, c, chain ->
-            independent = chain.proceed(c)
+            chain.proceed(c).also(source::set)
             entered.thenApply { "short" }
         }
         try {
-            assertEquals("short", InterceptorInvoker(Point, listOf(interceptor)) {
-                try {
-                    entered.complete(Unit)
-                    continueExecution.await()
-                    continued.complete(Unit)
-                    awaitCancellation()
-                } finally {
-                    finished.complete(Unit)
-                }
-            }.invoke("request"))
-            // 仅在拦截返回后放行，证明独立 future 的生命周期由用户管理。
-            assertFalse(finished.isCompleted)
-            continueExecution.complete(Unit)
-            withTimeout(5_000) { continued.await() }
-            assertTrue(assertNotNull(independent).cancel(false))
-            withTimeout(5_000) { finished.await() }
+            withTimeout(5_000) {
+                assertEquals("short", InterceptorInvoker(Point, listOf(interceptor)) {
+                    try {
+                        entered.complete(Unit)
+                        continueExecution.await()
+                        continued.complete(Unit)
+                        awaitCancellation()
+                    } finally {
+                        finished.complete(Unit)
+                    }
+                }.invoke("request"))
+                // 仅在拦截返回后放行，证明源 future 没有被框架等待或取消。
+                assertFalse(finished.isCompleted)
+                continueExecution.complete(Unit)
+                continued.await()
+                assertFalse(source.get().isDone)
+                assertTrue(source.get().cancel(false))
+                finished.await()
+            }
         } finally {
-            independent?.cancel(false)
+            source.get()?.cancel(false)
         }
     }
 
     /**
-     * 取消依赖 stage 遵循 CompletableFuture 规则，不会自动取消源 future。
+     * 父调用仅取消返回的组合 stage，源 future 仍由用户管理。
      */
     @Test
-    fun cancellingDependentStageDoesNotCancelSourceFuture() = runBlocking {
+    fun callerCancellationDoesNotCancelSourceOfDependentStage() = runBlocking {
         val entered = CompletableDeferred<Unit>()
         val continueExecution = CompletableDeferred<Unit>()
         val continued = CompletableDeferred<Unit>()
@@ -188,18 +206,49 @@ class AsyncInterceptorTests {
             }.invoke("request")
         }
         try {
-            withTimeout(5_000) { entered.await() }
-            call.cancelAndJoin()
-            assertTrue(dependent.get().isCancelled)
-            assertFalse(source.get().isDone)
-            continueExecution.complete(Unit)
-            withTimeout(5_000) { continued.await() }
-            assertTrue(source.get().cancel(false))
-            withTimeout(5_000) { finished.await() }
+            withTimeout(5_000) {
+                entered.await()
+                call.cancelAndJoin()
+                assertTrue(dependent.get().isCancelled)
+                assertFalse(source.get().isDone)
+                continueExecution.complete(Unit)
+                continued.await()
+                assertFalse(finished.isCompleted)
+                assertTrue(source.get().cancel(false))
+                finished.await()
+            }
         } finally {
             call.cancel()
             source.get()?.cancel(false)
         }
+    }
+
+    /**
+     * 直接返回源 future 时，父超时经 await 取消对应下游。
+     */
+    @Test
+    fun callerTimeoutCancelsDirectDownstream() = runBlocking {
+        val entered = CompletableDeferred<Unit>()
+        val finished = CompletableDeferred<Unit>()
+        val source = AtomicReference<CompletableFuture<String>>()
+        val interceptor = async<String, String, Point> { _, c, chain ->
+            chain.proceed(c).also(source::set)
+        }
+        assertFailsWith<TimeoutCancellationException> {
+            withTimeout(250) {
+                InterceptorInvoker(Point, listOf(interceptor)) {
+                    try {
+                        entered.complete(Unit)
+                        awaitCancellation()
+                    } finally {
+                        finished.complete(Unit)
+                    }
+                }.invoke("request")
+            }
+        }
+        assertTrue(entered.isCompleted)
+        assertTrue(source.get().isCancelled)
+        withTimeout(5_000) { finished.await() }
     }
 
     /**
@@ -234,24 +283,73 @@ class AsyncInterceptorTests {
     }
 
     /**
-     * 附加上下文覆盖回调及下游，同时保持调用方原有上下文。
+     * Java 配置仅作用于回调，下游恢复入口上下文且不继承新增元素。
      */
     @Test
-    fun additionalContextAppliesToCallbackAndDownstream() {
+    fun additionalContextIsIsolatedFromDownstream() {
         val local = ThreadLocal<String>()
+        val javaOnly = ThreadLocal<String>()
         runBlocking(CoroutineName("caller") + local.asContextElement("caller")) {
+            assertEquals("caller", local.get())
+            assertNull(javaOnly.get())
             val interceptor =
-                async<String, String, Point>(CoroutineName("adapter") + local.asContextElement("adapter")) { _, c, chain ->
+                async<String, String, Point>(
+                    CoroutineName("adapter") + local.asContextElement("adapter") + javaOnly.asContextElement("java-only")
+                ) { _, c, chain ->
                     assertEquals("adapter", local.get())
+                    assertEquals("java-only", javaOnly.get())
                     chain.proceed(c)
                 }
             assertEquals("value", InterceptorInvoker(Point, listOf(interceptor)) {
-                assertEquals("adapter", currentCoroutineContext()[CoroutineName]?.name)
-                assertEquals("adapter", local.get())
+                assertEquals("caller", currentCoroutineContext()[CoroutineName]?.name)
+                assertEquals("caller", local.get())
+                assertNull(javaOnly.get())
                 it
             }.invoke("value"))
             assertEquals("caller", currentCoroutineContext()[CoroutineName]?.name)
             assertEquals("caller", local.get())
+            assertNull(javaOnly.get())
+        }
+        assertNull(local.get())
+        assertNull(javaOnly.get())
+    }
+
+    /**
+     * Java 使用独立线程时，下游仍回到入口线程并恢复入口上下文。
+     */
+    @Test
+    fun downstreamRestoresCallerDispatcherAcrossJavaThread() = runBlocking {
+        val local = ThreadLocal<String>()
+        val javaOnly = ThreadLocal<String>()
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { callerDispatcher ->
+            Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { javaDispatcher ->
+                withContext(callerDispatcher + CoroutineName("caller") + local.asContextElement("caller")) {
+                    val callerThread = Thread.currentThread()
+                    val javaThread = AtomicReference<Thread>()
+                    val interceptor = async<String, String, Point>(
+                        javaDispatcher + CoroutineName("java") + local.asContextElement("java") +
+                            javaOnly.asContextElement("java-only")
+                    ) { _, c, chain ->
+                        javaThread.set(Thread.currentThread())
+                        assertNotSame(callerThread, Thread.currentThread())
+                        assertEquals("java", local.get())
+                        assertEquals("java-only", javaOnly.get())
+                        chain.proceed(c)
+                    }
+                    assertEquals("value", InterceptorInvoker(Point, listOf(interceptor)) {
+                        assertSame(callerThread, Thread.currentThread())
+                        assertNotSame(javaThread.get(), Thread.currentThread())
+                        assertEquals("caller", currentCoroutineContext()[CoroutineName]?.name)
+                        assertEquals("caller", local.get())
+                        assertNull(javaOnly.get())
+                        "value"
+                    }.invoke("request"))
+                    assertSame(callerThread, Thread.currentThread())
+                    assertEquals("caller", currentCoroutineContext()[CoroutineName]?.name)
+                    assertEquals("caller", local.get())
+                    assertNull(javaOnly.get())
+                }
+            }
         }
     }
 

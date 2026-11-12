@@ -36,6 +36,7 @@ import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactive.publish
 import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.common.attribute.MutableAttributeMap
+import org.jetbrains.annotations.NonBlocking
 import org.reactivestreams.Publisher
 import kotlin.coroutines.CoroutineContext
 
@@ -94,9 +95,9 @@ public fun <C : Any, R : Any, P : InterceptionPoint<C, R?>> reactiveNullable(
  * 等待唯一结果及完成信号，空完成抛出 [NoSuchElementException]，
  * 多元素抛出 [IllegalArgumentException]，错误信号向调用方传播。
  *
- * 回调、初始订阅及下游协程继承调用上下文，publisher 协程由订阅管理生命周期。
- * 调用取消会取消对返回 publisher 的订阅；正确组合的下游随订阅取消。
- * 用户自行订阅的任务及其取消由用户管理，框架不会在拦截结束时统一清理。
+ * 回调及下游继承入口执行环境，每次下游执行的生命周期由其订阅管理。
+ * 父调用取消会取消返回 publisher 的订阅，正常组合的下游随订阅取消。
+ * 用户独立 subscribe 启动的任务由用户负责取消，本次调用不会等待或统一取消它们。
  *
  * 下游失败通过 publisher 传播，允许使用响应式操作符处理或重试。
  * 每次订阅重新执行后续链，可能重复外部副作用。
@@ -111,7 +112,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
     JvmPlatformInterceptor<C, R, P>() {
     @JvmSynthetic
     final override suspend fun intercept(point: P, context: C, chain: Interceptor.Chain<C, R>): R =
-        interceptReactive(point, context, Chain(chain, currentCoroutineContext().minusKey(Job))).awaitSingle()
+        interceptReactive(point, context, Chain(chain, currentCoroutineContext())).awaitSingle()
 
     /**
      * 返回恰好包含一个非空结果并完成的 publisher。
@@ -132,6 +133,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
          * 使用当前 [point]、业务 [context] 和后续 [chain] 处理本次操作。
          * 返回值及异常遵循 [interceptReactive] 的约定。
          */
+        @NonBlocking
         @Throws(Exception::class)
         public fun intercept(point: P, context: C, chain: Chain<C, R>): Publisher<out R>
     }
@@ -144,7 +146,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
      */
     public class Chain<C : Any, R> internal constructor(
         private val source: Interceptor.Chain<C, R>,
-        private val coroutineContext: CoroutineContext
+        private val entryContext: CoroutineContext
     ) {
         /**
          * 与原始 chain 相同的共享属性 Map，并发访问须自行协调。
@@ -156,7 +158,8 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
          * 每次订阅重新执行；非空结果发送一次，`null` 转为空完成，失败发送错误信号。
          * 列表等容器作为一个元素发送，不会自动展开。
          */
-        public fun proceed(context: C): Publisher<R & Any> = publish(coroutineContext) {
+        public fun proceed(context: C): Publisher<R & Any> = publish(entryContext.minusKey(Job)) {
+            // 保留入口执行环境，由订阅管理本次执行的生命周期。
             val result = source.proceed(context)
             if (result != null) {
                 send(result)
@@ -181,7 +184,7 @@ public abstract class NullableReactiveInterceptor<C : Any, R : Any, P : Intercep
     JvmPlatformInterceptor<C, R?, P>() {
     @JvmSynthetic
     final override suspend fun intercept(point: P, context: C, chain: Interceptor.Chain<C, R?>): R? =
-        interceptReactive(point, context, ReactiveInterceptor.Chain(chain, currentCoroutineContext().minusKey(Job)))
+        interceptReactive(point, context, ReactiveInterceptor.Chain(chain, currentCoroutineContext()))
             .asFlow()
             .map<R, R?> { it }
             .onEmpty { emit(null) }
