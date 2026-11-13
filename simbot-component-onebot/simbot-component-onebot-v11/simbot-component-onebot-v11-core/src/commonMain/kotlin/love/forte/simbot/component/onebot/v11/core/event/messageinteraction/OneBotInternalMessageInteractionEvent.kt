@@ -38,6 +38,8 @@ import love.forte.simbot.message.Message
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotInternalMessageInteractionEvent : OneBotInternalEvent, InternalMessageInteractionEvent
 
 /**
@@ -48,6 +50,8 @@ public interface OneBotInternalMessageInteractionEvent : OneBotInternalEvent, In
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotInternalMessagePreSendEvent :
     OneBotInternalMessageInteractionEvent,
     InternalMessagePreSendEvent
@@ -60,6 +64,8 @@ public interface OneBotInternalMessagePreSendEvent :
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotInternalMessagePostSendEvent :
     OneBotInternalMessageInteractionEvent,
     InternalMessagePostSendEvent {

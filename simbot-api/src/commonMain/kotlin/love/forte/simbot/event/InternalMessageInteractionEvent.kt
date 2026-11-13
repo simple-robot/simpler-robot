@@ -42,6 +42,7 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
 public interface InternalMessageInteractionEvent : InternalEvent {
     /**
      * 进行消息交互的实体。
@@ -93,6 +94,8 @@ public interface InternalMessageInteractionEvent : InternalEvent {
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Suppress("DEPRECATION")
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
 public interface InternalMessagePreSendEvent :
     InternalInterceptionEvent,
     InternalMessageInteractionEvent {
@@ -129,6 +132,8 @@ public interface InternalMessagePreSendEvent :
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Suppress("DEPRECATION")
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
 public interface InternalMessagePostSendEvent : InternalNotificationEvent, InternalMessageInteractionEvent {
     /**
      * 在消息发送时

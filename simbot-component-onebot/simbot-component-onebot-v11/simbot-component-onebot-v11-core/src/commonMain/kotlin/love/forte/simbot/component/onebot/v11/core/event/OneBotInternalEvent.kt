@@ -41,6 +41,8 @@ import love.forte.simbot.event.InternalInterceptionException
 public interface OneBotInternalEvent : OneBotCommonEvent, InternalEvent
 
 
+@Deprecated("旧消息拦截事件已停止使用，消息拦截器的异常会直接向调用方传播。")
+@Suppress("DEPRECATION")
 public open class OneBotInternalInterceptionException : InternalInterceptionException {
     public constructor() : super()
     public constructor(message: String?) : super(message)

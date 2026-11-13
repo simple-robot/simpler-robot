@@ -34,6 +34,8 @@ import love.forte.simbot.event.*
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGMessageEventInteractionEvent :
     MessageEventInteractionEvent,
     QGInternalMessageInteractionEvent {
@@ -48,6 +50,8 @@ public interface QGMessageEventInteractionEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGMessageEventPreReplyEvent :
     QGMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -61,6 +65,8 @@ public interface QGMessageEventPreReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGMessageEventPostReplyEvent :
     QGMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
@@ -74,6 +80,8 @@ public interface QGMessageEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGAtMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatChannelMessageEventInteractionEvent {
@@ -85,6 +93,8 @@ public interface QGAtMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGAtMessageCreateEventPreReplyEvent :
     QGAtMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -95,6 +105,8 @@ public interface QGAtMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGAtMessageCreateEventPostReplyEvent :
     QGAtMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -105,6 +117,8 @@ public interface QGAtMessageCreateEventPostReplyEvent :
  * @since 4.3.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -116,6 +130,8 @@ public interface QGGroupMessageCreateEventInteractionEvent :
  * @since 4.3.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupMessageCreateEventPreReplyEvent :
     QGGroupMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -126,6 +142,8 @@ public interface QGGroupMessageCreateEventPreReplyEvent :
  * @since 4.3.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupMessageCreateEventPostReplyEvent :
     QGGroupMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -136,6 +154,8 @@ public interface QGGroupMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGDirectMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ContactMessageEventInteractionEvent {
@@ -147,6 +167,8 @@ public interface QGDirectMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGDirectMessageCreateEventPreReplyEvent :
     QGDirectMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -157,6 +179,8 @@ public interface QGDirectMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGDirectMessageCreateEventPostReplyEvent :
     QGDirectMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -167,6 +191,8 @@ public interface QGDirectMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGC2CMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ContactMessageEventInteractionEvent {
@@ -178,6 +204,8 @@ public interface QGC2CMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGC2CMessageCreateEventPreReplyEvent :
     QGC2CMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -188,6 +216,8 @@ public interface QGC2CMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGC2CMessageCreateEventPostReplyEvent :
     QGC2CMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -198,6 +228,8 @@ public interface QGC2CMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupAtMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -209,6 +241,8 @@ public interface QGGroupAtMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupAtMessageCreateEventPreReplyEvent :
     QGGroupAtMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -219,6 +253,8 @@ public interface QGGroupAtMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGGroupAtMessageCreateEventPostReplyEvent :
     QGGroupAtMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,

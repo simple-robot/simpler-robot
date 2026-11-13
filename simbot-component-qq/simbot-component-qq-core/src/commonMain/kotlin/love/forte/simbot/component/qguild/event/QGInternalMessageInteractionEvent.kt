@@ -35,6 +35,8 @@ import love.forte.simbot.event.InternalMessagePreSendEvent
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGInternalMessageInteractionEvent : InternalMessageInteractionEvent, QGInternalEvent
 
 /**
@@ -43,6 +45,8 @@ public interface QGInternalMessageInteractionEvent : InternalMessageInteractionE
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGInternalMessagePreSendEvent : QGInternalMessageInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -51,4 +55,6 @@ public interface QGInternalMessagePreSendEvent : QGInternalMessageInteractionEve
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface QGInternalMessagePostSendEvent : QGInternalMessageInteractionEvent, InternalMessagePostSendEvent

@@ -42,6 +42,8 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotMessageEventInteractionEvent :
     MessageEventInteractionEvent,
     OneBotInternalMessageInteractionEvent {
@@ -56,6 +58,8 @@ public interface OneBotMessageEventInteractionEvent :
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotMessageEventPreReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: OneBotMessageEvent
 }
@@ -66,6 +70,8 @@ public interface OneBotMessageEventPreReplyEvent : OneBotMessageEventInteraction
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotMessageEventPostReplyEvent : OneBotMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: OneBotMessageEvent
     override val message: OneBotSegmentsInteractionMessage
@@ -80,6 +86,8 @@ public interface OneBotMessageEventPostReplyEvent : OneBotMessageEventInteractio
  * @see love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupMessageEventInteractionEvent :
     OneBotMessageEventInteractionEvent {
     override val content: OneBotGroupMessageEvent
@@ -94,7 +102,8 @@ public interface OneBotGroupMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupMessageEventPreReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
     OneBotMessageEventPreReplyEvent {
@@ -109,7 +118,8 @@ public interface OneBotGroupMessageEventPreReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupMessageEventPostReplyEvent :
     OneBotGroupMessageEventInteractionEvent,
     OneBotMessageEventPostReplyEvent {
@@ -126,6 +136,8 @@ public interface OneBotGroupMessageEventPostReplyEvent :
  * OneBot组件中针对 [OneBotNormalGroupMessageEvent] 的拦截或通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNormalGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -140,6 +152,8 @@ public interface OneBotNormalGroupMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNormalGroupMessageEventPreReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
@@ -153,6 +167,8 @@ public interface OneBotNormalGroupMessageEventPreReplyEvent :
  * OneBot组件中针对 [OneBotNormalGroupMessageEvent.reply] 的通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNormalGroupMessageEventPostReplyEvent :
     OneBotNormalGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
@@ -169,6 +185,8 @@ public interface OneBotNormalGroupMessageEventPostReplyEvent :
  * OneBot组件中针对 [OneBotAnonymousGroupMessageEvent] 的拦截或通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotAnonymousGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -183,6 +201,8 @@ public interface OneBotAnonymousGroupMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
@@ -196,6 +216,8 @@ public interface OneBotAnonymousGroupMessageEventPreReplyEvent :
  * OneBot组件中针对 [OneBotAnonymousGroupMessageEvent.reply] 的通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
     OneBotAnonymousGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
@@ -212,6 +234,8 @@ public interface OneBotAnonymousGroupMessageEventPostReplyEvent :
  * OneBot组件中针对 [OneBotNoticeGroupMessageEvent] 的拦截或通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNoticeGroupMessageEventInteractionEvent :
     OneBotGroupMessageEventInteractionEvent {
     override val content: OneBotNoticeGroupMessageEvent
@@ -225,6 +249,8 @@ public interface OneBotNoticeGroupMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNoticeGroupMessageEventPreReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPreReplyEvent {
@@ -238,6 +264,8 @@ public interface OneBotNoticeGroupMessageEventPreReplyEvent :
  * OneBot组件中针对 [OneBotNoticeGroupMessageEvent.reply] 的通知事件。
  * @since 1.6.0
  */
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotNoticeGroupMessageEventPostReplyEvent :
     OneBotNoticeGroupMessageEventInteractionEvent,
     OneBotGroupMessageEventPostReplyEvent {
@@ -260,6 +288,8 @@ public interface OneBotNoticeGroupMessageEventPostReplyEvent :
  * @since 1.6.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotPrivateMessageEventInteractionEvent :
     OneBotMessageEventInteractionEvent {
     override val content: OneBotPrivateMessageEvent
@@ -271,7 +301,8 @@ public interface OneBotPrivateMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotPrivateMessageEventPreReplyEvent :
     OneBotPrivateMessageEventInteractionEvent,
     OneBotMessageEventPreReplyEvent {
@@ -283,7 +314,8 @@ public interface OneBotPrivateMessageEventPreReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotPrivateMessageEventPostReplyEvent :
     OneBotPrivateMessageEventInteractionEvent,
     OneBotMessageEventPostReplyEvent {
@@ -297,7 +329,8 @@ public interface OneBotPrivateMessageEventPostReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupPrivateMessageEventInteractionEvent :
     OneBotPrivateMessageEventInteractionEvent {
     override val content: OneBotGroupPrivateMessageEvent
@@ -312,7 +345,8 @@ public interface OneBotGroupPrivateMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupPrivateMessageEventPreReplyEvent :
     OneBotGroupPrivateMessageEventInteractionEvent,
     OneBotPrivateMessageEventPreReplyEvent {
@@ -327,7 +361,8 @@ public interface OneBotGroupPrivateMessageEventPreReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotGroupPrivateMessageEventPostReplyEvent :
     OneBotGroupPrivateMessageEventInteractionEvent,
     OneBotPrivateMessageEventPostReplyEvent {
@@ -346,7 +381,8 @@ public interface OneBotGroupPrivateMessageEventPostReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotFriendMessageEventInteractionEvent :
     OneBotPrivateMessageEventInteractionEvent {
     override val content: OneBotFriendMessageEvent
@@ -361,7 +397,8 @@ public interface OneBotFriendMessageEventInteractionEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotFriendMessageEventPreReplyEvent :
     OneBotFriendMessageEventInteractionEvent,
     OneBotPrivateMessageEventPreReplyEvent {
@@ -376,7 +413,8 @@ public interface OneBotFriendMessageEventPreReplyEvent :
  *
  * @since 1.6.0
  */
-@OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
+@Suppress("DEPRECATION")
 public interface OneBotFriendMessageEventPostReplyEvent :
     OneBotFriendMessageEventInteractionEvent,
     OneBotPrivateMessageEventPostReplyEvent {
