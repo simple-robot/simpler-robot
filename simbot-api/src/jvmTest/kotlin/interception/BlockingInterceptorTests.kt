@@ -27,6 +27,7 @@ import love.forte.simbot.annotations.Api4J
 import love.forte.simbot.common.attribute.mutableAttributeMapOf
 import love.forte.simbot.interception.*
 import org.junit.jupiter.api.Timeout
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.*
@@ -268,5 +269,68 @@ class BlockingInterceptorTests {
         assertEquals(42, InterceptorInvoker(Point, listOf(interceptor)) {
             error("short-circuited")
         }.invoke(Context()))
+    }
+
+    /**
+     * 父取消会中断 Java 回调本身的阻塞，复用同一执行线程时不会残留中断标志。
+     */
+    @Test
+    fun callerCancellationInterruptsBlockingCallbackAndClearsWorkerInterrupt() = runBlocking {
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { dispatcher ->
+            val entered = CompletableDeferred<Thread>()
+            val finished = CompletableDeferred<Unit>()
+            val gate = CountDownLatch(1)
+            val interceptor = blocking<Context, Int, Point>(dispatcher) { _, _, _ ->
+                entered.complete(Thread.currentThread())
+                try {
+                    gate.await()
+                    42
+                } catch (failure: InterruptedException) {
+                    // 模拟保留中断状态的同步代码，验证桥接层仍能清理线程状态。
+                    Thread.currentThread().interrupt()
+                    throw failure
+                } finally {
+                    finished.complete(Unit)
+                }
+            }
+            val call = launch {
+                InterceptorInvoker(Point, listOf(interceptor)) { error("short-circuited") }.invoke(Context())
+            }
+            val worker = entered.await()
+            try {
+                withTimeout(5_000) {
+                    call.cancelAndJoin()
+                    finished.await()
+                }
+                assertTrue(call.isCancelled)
+                withContext(dispatcher) {
+                    assertSame(worker, Thread.currentThread())
+                    assertFalse(Thread.currentThread().isInterrupted)
+                }
+            } finally {
+                gate.countDown()
+                call.cancelAndJoin()
+            }
+        }
+    }
+
+    /**
+     * 同步回调抛出的中断异常转为协程取消，普通业务异常继续按原类型传播。
+     */
+    @Test
+    fun blockingCallbackDistinguishesInterruptionFromBusinessFailure() = runBlocking {
+        val interrupted = blocking<Context, Int, Point> { _, _, _ -> throw InterruptedException("interrupted") }
+        val cancellation = assertFailsWith<CancellationException> {
+            InterceptorInvoker(Point, listOf(interrupted)) { error("short-circuited") }.invoke(Context())
+        }
+        // 栈恢复可能复制取消异常，中断原因应仍保留在完整原因链中。
+        assertTrue(generateSequence(cancellation as Throwable) { it.cause }.any {
+            it is InterruptedException && it.message == "interrupted"
+        })
+        val business = blocking<Context, Int, Point> { _, _, _ -> throw IllegalArgumentException("business") }
+        assertEquals("business", assertFailsWith<IllegalArgumentException> {
+            InterceptorInvoker(Point, listOf(business)) { error("short-circuited") }.invoke(Context())
+        }.message)
+        currentCoroutineContext().ensureActive()
     }
 }

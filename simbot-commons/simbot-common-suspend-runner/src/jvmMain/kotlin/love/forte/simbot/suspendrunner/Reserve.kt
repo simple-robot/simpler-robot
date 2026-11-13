@@ -44,7 +44,8 @@ public class Reserve<out T>(
 ) {
 
     /**
-     * Executes the given block of code in a no-scope blocking manner.
+     * 阻塞执行不带 [CoroutineScope] 接收者的挂起函数，不使用本实例的 scope。
+     * 默认遵循 [runBlocking][kotlinx.coroutines.runBlocking] 的上下文、线程中断和子协程完成语义。
      *
      * @return the result of executing the block
      */
@@ -58,4 +59,3 @@ public class Reserve<out T>(
     @OptIn(InternalSimbotAPI::class)
     public fun async(): CompletableFuture<out T> = runInAsync(scope, context) { block.invoke() }
 }
-

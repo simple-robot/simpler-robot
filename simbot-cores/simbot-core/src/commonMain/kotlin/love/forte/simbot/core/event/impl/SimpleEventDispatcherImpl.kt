@@ -325,7 +325,7 @@ public class SimpleEventDispatcherImpl(
         val context = EventContextImpl(dispatcherContext, event)
 
         return runCatching {
-            dispatchInterceptorsInvoker?.invoke(context) { eventFlow(context) } ?: eventFlow(context)
+            dispatchInterceptorsInvoker?.invoke(context) { eventFlow(it) } ?: eventFlow(context)
         }.getOrElse { e ->
             return flow {
                 // emit exception

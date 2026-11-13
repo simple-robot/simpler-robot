@@ -24,8 +24,9 @@
 package love.forte.simbot.application
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import org.jetbrains.annotations.Blocking
 import java.util.concurrent.CompletionStage
 import kotlin.coroutines.CoroutineContext
@@ -33,6 +34,9 @@ import kotlin.coroutines.CoroutineContext
 /**
  * [Application] 的预处理启动器。
  * 当执行 [ApplicationLauncher.launch] 时会构建并启动 [Application]。
+ *
+ * 转为挂起启动器后，父调用取消会中断回调线程，仅对可中断的阻塞操作有效。
+ * 回调抛出的 [InterruptedException] 会转为 [kotlinx.coroutines.CancellationException]，其他业务异常直接传播。
  *
  * @see ApplicationLauncher
  */
@@ -51,6 +55,7 @@ public fun interface JBlockingApplicationLauncher<out A : Application> {
          * 将 [JBlockingApplicationLauncher] 转化为 [ApplicationLauncher]。
          *
          * @param dispatcherContext 执行阻塞API时切换到的上下文。默认会使用 [Dispatchers.IO].
+         * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
          */
         @JvmStatic
         @JvmOverloads
@@ -67,8 +72,12 @@ private class JBlockingApplicationLauncherImpl<out A : Application>(
     val handler: JBlockingApplicationLauncher<A>,
     private val handlerContext: CoroutineContext
 ) : ApplicationLauncher<A> {
+    init {
+        require(handlerContext[Job] == null) { "Application launcher context must not contain a Job" }
+    }
+
     override suspend fun launch(): A {
-        return withContext(handlerContext) {
+        return runInterruptible(handlerContext) {
             handler.launch()
         }
     }

@@ -27,6 +27,7 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runInterruptible
 import love.forte.simbot.annotations.Api4J
@@ -247,6 +248,7 @@ public fun interface JBlockEventListener {
          * Will be used in [runInterruptible].
          * @param listener The [JBlockEventListener] to be converted.
          * @return The converted [EventListener].
+         * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
          */
         @JvmStatic
         @JvmOverloads
@@ -295,6 +297,7 @@ public fun interface TypedJBlockEventListener<E : Event> {
          * Will be used in [runInterruptible].
          * @param listener The [TypedJBlockEventListener] to be converted.
          * @return The converted [EventListener].
+         * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
          */
         @JvmStatic
         @JvmOverloads
@@ -320,6 +323,10 @@ private class JBlockingEventListenerImpl(
     private val jbListener: JBlockEventListener,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
+    init {
+        require(dispatcherContext[Job] == null) { "Listener context must not contain a Job" }
+    }
+
     override suspend fun EventListenerContext.handle(): EventResult {
         return runInterruptible(dispatcherContext) {
             jbListener.handle(this)
@@ -352,6 +359,10 @@ private class TypedJBlockingEventListenerImpl<E : Event>(
     private val jbListener: TypedJBlockEventListener<E>,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
+    init {
+        require(dispatcherContext[Job] == null) { "Listener context must not contain a Job" }
+    }
+
     override suspend fun EventListenerContext.handle(): EventResult {
         val event = context.event
         if (type.isInstance(event)) {
@@ -408,6 +419,7 @@ public fun <E : Event> async(type: Class<E>, function: TypedJAsyncEventListener<
  *
  * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
  * 会在 [runInterruptible] 中使用。
+ * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
  */
 @Api4J
 @JvmOverloads
@@ -421,6 +433,7 @@ public fun block(dispatcherContext: CoroutineContext = Dispatchers.IO, function:
  *
  * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
  * 会在 [runInterruptible] 中使用。
+ * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
  */
 @Api4J
 @JvmOverloads

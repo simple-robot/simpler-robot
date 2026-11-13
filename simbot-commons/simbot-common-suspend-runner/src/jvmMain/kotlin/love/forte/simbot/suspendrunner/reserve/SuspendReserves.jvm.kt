@@ -45,8 +45,10 @@ import io.reactivex.rxjava3.core.Maybe as Rx3Maybe
 
 /**
  * 得到一个阻塞直到结果完成的阻塞转化器。
- * 此转化器不会使用任何作用域或上下文，[SuspendReserve.Transformer.invoke]
- * 中的相关参数会被忽略。
+ * 此转化器不使用 [SuspendReserve.Transformer.invoke] 的 scope，
+ * 显式的 context 会叠加到默认的阻塞执行环境。
+ * 挂起函数没有 [CoroutineScope] 接收者，默认遵循 [runBlocking][kotlinx.coroutines.runBlocking]
+ * 的上下文、线程中断和子协程完成语义。
  *
  * ```java
  * String name = foo.getNameReserve().transform(block());
@@ -89,6 +91,7 @@ private object AsyncTransformer : SuspendReserve.Transformer<Any?, CompletableFu
 
 /**
  * 得到一个将结果转化为 [Mono] 的响应式转化器。
+ * 继承 scope 的执行环境，显式 context 优先。Job 不会继承，生命周期由订阅管理。
  * 需要你的依赖环境中存在
  * [`kotlinx-coroutines-reactor`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
  * 依赖。
@@ -105,11 +108,12 @@ public fun <T> mono(): SuspendReserve.Transformer<T, Mono<T>> =
 
 private object MonoTransformer : SuspendReserve.Transformer<Any?, Mono<*>> {
     override fun <T1> invoke(scope: CoroutineScope, context: CoroutineContext, block: suspend () -> T1): Mono<T1> =
-        mono(context.minusKey(Job)) { block() }
+        mono((scope.coroutineContext + context).minusKey(Job)) { block() }
 }
 
 /**
  * 得到一个将 [Flow]<T & Any> 的结果转化为 [Flux] 的响应式转化器。
+ * 继承 scope 的执行环境，显式 context 优先。Job 不继承，生命周期由订阅管理。
  * 需要你的依赖环境中存在
  * [`kotlinx-coroutines-reactor`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
  * 依赖。
@@ -130,7 +134,7 @@ private object FluxTransformer : SuspendReserve.Transformer<Flow<Any>, Flux<Any>
         context: CoroutineContext,
         block: suspend () -> T1
     ): Flux<Any> {
-        return flux(context.minusKey(Job)) {
+        return flux((scope.coroutineContext + context).minusKey(Job)) {
             block().collect {
                 send(it)
             }
@@ -146,7 +150,9 @@ private object FluxTransformer : SuspendReserve.Transformer<Flow<Any>, Flux<Any>
  * List<String> list = Collectables.transform(collectable, list());
  * ```
  *
- * 注意: 会产生不可避免的将挂起阻塞的行为，但不会使用 `invoke.scope`。
+ * 收集时会阻塞调用线程，不使用 `invoke.scope`，执行上下文使用 `invoke.context`。
+ * 挂起函数没有 [CoroutineScope] 接收者，默认遵循 [runBlocking][kotlinx.coroutines.runBlocking]
+ * 的上下文、线程中断和子协程完成语义。
  *
  */
 @Suppress("UNCHECKED_CAST")
@@ -165,6 +171,7 @@ private object ListTransformer : SuspendReserve.Transformer<Flow<Any?>, List<Any
 
 /**
  * 得到一个将结果转化为 [Rx2Maybe] 的响应式转化器。
+ * 继承 scope 的执行环境，显式 context 优先。Job 不继承，生命周期由订阅管理。
  * 需要你的依赖环境中存在
  * [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
  * 依赖。
@@ -181,11 +188,12 @@ public fun <T> rx2Maybe(): SuspendReserve.Transformer<T, Rx2Maybe<T>> =
 
 private object Rx2CompletableTransformer : SuspendReserve.Transformer<Any?, Rx2Maybe<*>> {
     override fun <T1> invoke(scope: CoroutineScope, context: CoroutineContext, block: suspend () -> T1): Rx2Maybe<T1> =
-        kotlinx.coroutines.rx2.rxMaybe(context.minusKey(Job)) { block() }
+        kotlinx.coroutines.rx2.rxMaybe((scope.coroutineContext + context).minusKey(Job)) { block() }
 }
 
 /**
  * 得到一个将结果转化为 [Rx3Maybe] 的响应式转化器。
+ * 继承 scope 的执行环境，显式 context 优先。Job 不继承，生命周期由订阅管理。
  * 需要你的依赖环境中存在
  * [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
  * 依赖。
@@ -206,6 +214,5 @@ private object Rx3CompletableTransformer : SuspendReserve.Transformer<Any?, Rx3M
         context: CoroutineContext,
         block: suspend () -> T1
     ): Rx3Maybe<T1 & Any> =
-        kotlinx.coroutines.rx3.rxMaybe(context.minusKey(Job)) { block() }
+        kotlinx.coroutines.rx3.rxMaybe((scope.coroutineContext + context).minusKey(Job)) { block() }
 }
-

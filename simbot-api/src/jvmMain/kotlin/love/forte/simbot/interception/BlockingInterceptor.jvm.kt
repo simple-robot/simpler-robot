@@ -33,6 +33,7 @@ import love.forte.simbot.common.coroutines.VirtualOrIO
 import love.forte.simbot.suspendrunner.runInBlocking
 import java.util.concurrent.Executor
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * JVM 平台拦截器适配的公共基类。
@@ -100,7 +101,8 @@ public fun <C : Any, R, P : InterceptionPoint<C, R>> blocking(
  *
  * Java 回调使用 [blockingContext]，chain 通过 [runInBlocking] 在入口上下文中同步执行下游。
  * 桥接保留父调用的取消关系，下游异常直接抛回 Java 回调，允许捕获后再次继续执行。
- * 父调用取消可以取消挂起中的下游，但不会自动中断任意同步阻塞代码。
+ * 父调用取消会取消挂起下游并中断 Java 回调线程，仅支持协作式取消或可中断的阻塞操作。
+ * 回调抛出的 [InterruptedException] 会转为 [CancellationException]，其他业务异常直接传播。
  * 阻塞回调不能独占下游恢复执行所需的唯一线程，否则可能死锁。
  *
  * 附加上下文不得包含 [Job]，以保留当前调用的取消关系。
@@ -119,16 +121,8 @@ public abstract class BlockingInterceptor<C : Any, R, P : InterceptionPoint<C, R
     @JvmSynthetic
     final override suspend fun intercept(point: P, context: C, chain: Interceptor.Chain<C, R>): R {
         val entryContext = currentCoroutineContext()
-        fun interceptInCurrentContext(): R = interceptBlocking(
-            point,
-            context,
-            Chain(chain, entryContext)
-        )
-
-        return if (blockingContext == null) {
-            interceptInCurrentContext()
-        } else {
-            withContext(blockingContext) { interceptInCurrentContext() }
+        return runInterruptible(blockingContext ?: EmptyCoroutineContext) {
+            interceptBlocking(point, context, Chain(chain, entryContext))
         }
     }
 
