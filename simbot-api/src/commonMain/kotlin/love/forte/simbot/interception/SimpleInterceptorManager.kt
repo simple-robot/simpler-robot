@@ -20,12 +20,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-package love.forte.simbot.core.interception
+package love.forte.simbot.interception
 
 import love.forte.simbot.common.collection.*
-import love.forte.simbot.interception.InterceptionPoint
-import love.forte.simbot.interception.Interceptor
-import love.forte.simbot.interception.InterceptorRegistration
 import kotlin.concurrent.Volatile
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -45,7 +42,7 @@ import kotlin.uuid.Uuid
  * @author ForteScarlet
  */
 @OptIn(ExperimentalSimbotCollectionApi::class)
-public class SimpleInterceptorManager : InterceptorManager {
+public class SimpleInterceptorManager internal constructor() : InterceptorManager {
     @OptIn(ExperimentalAtomicApi::class)
     private class RegisteredInterceptor<C : Any, R, P : InterceptionPoint<C, R>>(
         val delegate: Interceptor<C, R, P>

@@ -27,4 +27,8 @@ plugins {
 
 kotlin {
     explicitApi()
+    compilerOptions {
+        // TODO -Xcompanion-blocks
+        freeCompilerArgs.add("-Xcompanion-blocks-and-extensions")
+    }
 }

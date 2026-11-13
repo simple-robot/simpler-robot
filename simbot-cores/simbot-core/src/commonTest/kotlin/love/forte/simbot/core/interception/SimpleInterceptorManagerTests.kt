@@ -27,10 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
-import love.forte.simbot.interception.InterceptionPoint
-import love.forte.simbot.interception.Interceptor
-import love.forte.simbot.interception.InterceptorInvoker
-import love.forte.simbot.interception.InterceptorRegistration
+import love.forte.simbot.interception.*
 import kotlin.test.*
 
 class SimpleInterceptorManagerTests {
@@ -48,7 +45,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun emptyManagerHasNoRegistrations() {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         assertFalse(manager.hasInterceptors(Point))
         assertTrue(manager.interceptors(Point).none())
         assertTrue(manager.interceptors.none())
@@ -60,7 +57,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun typedLookupMatchesEquivalentPointsAndRejectsMismatches() {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val point = NamedPoint("message")
         val equivalent = NamedPoint("message")
         val registration = manager.register(point) { _, context, chain -> chain.proceed(context) }
@@ -81,7 +78,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun registrationMetadataAndQueriesReferToTheSameObject() {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val registration = manager.register(Point, 42) { _, c, chain -> chain.proceed(c) }
         assertTrue(registration.id.isNotBlank())
         assertSame(Point, registration.point)
@@ -95,7 +92,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun disposalInvalidatesSavedExecutionViewsAndRemovesRegistration() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         var calls = 0
         val registration = manager.register(Point) { _, c, chain ->
             calls++
@@ -118,7 +115,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun disposalByIdAlsoInvalidatesPreviouslySavedExecutionViews() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         var calls = 0
         val registration = manager.register(Point) { _, c, chain -> calls++; chain.proceed(c) }
         val savedInterceptor = registration.interceptor
@@ -133,7 +130,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun duplicateInterceptorInstancesHaveIndependentIdsAndLifecycles() {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val interceptor = Interceptor<Context, Int, Point> { _, c, chain -> chain.proceed(c) }
         val first = manager.register(Point, interceptor = interceptor)
         val second = manager.register(Point, interceptor = interceptor)
@@ -152,7 +149,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun prioritiesAndRegistrationOrderArePreservedForEachPoint() {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val middle1 = manager.register(Point, 0) { _, c, chain -> chain.proceed(c) }
         val other = manager.register(OtherPoint, 0) { _, c, chain -> chain.proceed(c) }
         val last = manager.register(Point, Int.MAX_VALUE) { _, c, chain -> chain.proceed(c) }
@@ -170,8 +167,8 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun sequencesFilterAtIterationTimeAndIdsAreScopedToTheManager() {
-        val manager = SimpleInterceptorManager()
-        val another = SimpleInterceptorManager()
+        val manager = InterceptorManager()
+        val another = InterceptorManager()
         val registration = manager.register(Point) { _, c, chain -> chain.proceed(c) }
         val byPoint = manager.interceptors(Point)
         val all = manager.interceptors
@@ -196,7 +193,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun concurrentRegistrationsRemainQueryableAcrossPriorities() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val start = CompletableDeferred<Unit>()
         val additions = List(32) { index ->
             async(Dispatchers.Default) {
@@ -222,7 +219,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun concurrentDisposalByIdHasExactlyOneWinner() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val registration = manager.register(Point) { _, c, chain -> chain.proceed(c) }
         val start = CompletableDeferred<Unit>()
         val attempts = List(16) {
@@ -241,7 +238,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun concurrentDisposalDoesNotLoseNewRegistrationsWhenBucketsBecomeEmpty() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         repeat(500) { iteration ->
             val old = manager.register(Point) { _, c, chain -> chain.proceed(c) }
             val keeper = if (iteration % 2 == 0) {
@@ -274,7 +271,7 @@ class SimpleInterceptorManagerTests {
 
     @Test
     fun disposalDoesNotInterruptAnAlreadyEnteredInterceptor() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val entered = CompletableDeferred<Unit>()
         val proceed = CompletableDeferred<Unit>()
         val registration = manager.register(Point) { _, c, chain ->
@@ -294,7 +291,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun iteratorSkipsAnUnreadDisposedRegistrationAndReusesTheRemainingSuffix() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val materializedIds = mutableListOf<String>()
         lateinit var skipped: InterceptorRegistration<Context, Int, Point>
         var skippedCalls = 0
@@ -333,7 +330,7 @@ class SimpleInterceptorManagerTests {
      */
     @Test
     fun cachedSuccessorStillChecksDisposalBetweenRepeatedProceed() = runTest {
-        val manager = SimpleInterceptorManager()
+        val manager = InterceptorManager()
         val materializedIds = mutableListOf<String>()
         lateinit var successor: InterceptorRegistration<Context, Int, Point>
         var successorCalls = 0

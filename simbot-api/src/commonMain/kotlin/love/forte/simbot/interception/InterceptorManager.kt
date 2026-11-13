@@ -21,15 +21,23 @@
  *
  */
 
-package love.forte.simbot.core.interception
-
-import love.forte.simbot.interception.InterceptorContainer
-import love.forte.simbot.interception.InterceptorRegistrar
+package love.forte.simbot.interception
 
 
 /**
  * 同时提供拦截器注册、查询和按 ID 注销的管理器。
+ *
  * @since 5.0
  * @author ForteScarlet
  */
 public interface InterceptorManager : InterceptorRegistrar, InterceptorContainer
+
+/**
+ * 构建一个基础的 [InterceptorManager]。
+ *
+ * @since 5.0
+ */
+public fun InterceptorManager(): InterceptorManager {
+    // 暂时没什么可配置的，就先不管配置类了。
+    return SimpleInterceptorManager()
+}

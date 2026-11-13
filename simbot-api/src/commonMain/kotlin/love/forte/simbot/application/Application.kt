@@ -35,6 +35,7 @@ import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.EventListenerRegistrar
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
@@ -79,6 +80,13 @@ public interface Application : CoroutineScope, LifecycleAware, CompletionAware {
      * [botManagers] 中的内容是 [plugins] 的子集。
      */
     public val botManagers: BotManagers
+
+    /**
+     * 当前 [Application] 的拦截器管理器。
+     *
+     * @since 5.0
+     */
+    public val interceptorManager: InterceptorManager
 
     /**
      * 终止当前 [Application]。

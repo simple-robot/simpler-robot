@@ -9,6 +9,5 @@ module simbot.core {
 
     exports love.forte.simbot.core.application;
     exports love.forte.simbot.core.event;
-    exports love.forte.simbot.core.interception;
     exports love.forte.simbot.core.event.impl;
 }

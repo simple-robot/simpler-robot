@@ -36,6 +36,7 @@ import love.forte.simbot.component.*
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.plugin.Plugin
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactoriesConfigurator
@@ -94,6 +95,8 @@ public object Spring : SpringApplicationFactory {
             c.invokeWith(registrar)
         }
 
+        val interceptorManager = InterceptorManager()
+
         // components
         val components = springConfigurer.componentFactoriesConfigurator.createAll(object : ComponentConfigureContext {
             override val applicationConfiguration: ApplicationConfiguration
@@ -118,6 +121,9 @@ public object Spring : SpringApplicationFactory {
 
             override val eventDispatcher: EventDispatcher
                 get() = dispatcher
+
+            override val interceptorManager: InterceptorManager
+                get() = interceptorManager
         })
 
 
@@ -131,6 +137,7 @@ public object Spring : SpringApplicationFactory {
             dispatcher,
             components,
             plugins,
+            interceptorManager,
             botManagers,
             events
         )

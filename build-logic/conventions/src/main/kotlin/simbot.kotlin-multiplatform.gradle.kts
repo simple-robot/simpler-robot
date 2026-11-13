@@ -32,4 +32,8 @@ plugins {
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+    compilerOptions {
+        // TODO -Xcompanion-blocks
+        freeCompilerArgs.add("-Xcompanion-blocks-and-extensions")
+    }
 }

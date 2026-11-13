@@ -25,6 +25,7 @@ package love.forte.simbot.core.interception
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.interception.InterceptionPoint
 import love.forte.simbot.interception.InterceptorInvoker
+import love.forte.simbot.interception.InterceptorManager
 import org.junit.jupiter.api.Timeout
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -54,7 +55,7 @@ class InterceptorDisposalVisibilityTests {
                     return 42
                 }
             }
-            val manager = SimpleInterceptorManager()
+            val manager = InterceptorManager()
             val delegateCalls = AtomicInteger()
             val registration = manager.register(point) { _, c, chain ->
                 delegateCalls.incrementAndGet()

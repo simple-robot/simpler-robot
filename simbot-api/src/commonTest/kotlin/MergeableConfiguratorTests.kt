@@ -29,6 +29,7 @@ import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.component.*
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.plugin.Plugin
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactoriesConfigurator
@@ -96,7 +97,7 @@ class MergeableConfiguratorTests {
 
         configurator.create(context, TestComponent)
 
-        assertEquals(count, 2)
+        assertEquals(2, count)
     }
 
     @Test
@@ -119,11 +120,12 @@ class MergeableConfiguratorTests {
             override val components: Components = emptyList<Component>().toComponents()
             override val eventDispatcher: EventDispatcher
                 get() = TODO("Not yet implemented")
+            override val interceptorManager: InterceptorManager = InterceptorManager()
         }
 
         configurator.create(context, TestPlugin)
 
-        assertEquals(count, 2)
+        assertEquals(2, count)
     }
 
 }
