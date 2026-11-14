@@ -27,8 +27,6 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.api.OneBotMessageOutgoing
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgApi
-import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
@@ -182,13 +180,6 @@ public fun sendGroupMsgApi(
     reply = reply,
 )
 
-
-internal suspend fun OneBotBotImpl.emitMessagePreSendEventAndUseCurrentMessage(
-    event: AbstractMessagePreSendEventImpl
-): InteractionMessage {
-    emitMessagePreSendEvent(event)
-    return event.useCurrentMessage()
-}
 
 internal inline fun <T> resolveInteractionMessage(
     interactionMessage: InteractionMessage,

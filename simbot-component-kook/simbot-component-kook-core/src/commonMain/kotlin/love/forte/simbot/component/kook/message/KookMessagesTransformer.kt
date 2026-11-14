@@ -31,10 +31,15 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.kook.bot.KookBot
+import love.forte.simbot.component.kook.bot.internal.KookBotImpl
+import love.forte.simbot.component.kook.internal.notifyMessageSent
 import love.forte.simbot.component.kook.message.KookAggregatedMessageReceipt.Companion.merge
 import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt.Companion.asReceipt
 import love.forte.simbot.component.kook.util.requestDataBy
-import love.forte.simbot.kook.ExperimentalKookApi
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
+import love.forte.simbot.interception.MessageSendInterceptionPoint
+import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.kook.InternalKookApi
 import love.forte.simbot.kook.api.KookApi
 import love.forte.simbot.kook.api.asset.CreateAssetApi
@@ -61,6 +66,7 @@ private data class QuoteRef(var quote: String?) {
 //        return q
 //    }
 }
+
 private data class TempTargetIdRef(var tempTargetId: String?)
 
 private const val NOT_DIRECT = 0
@@ -87,7 +93,24 @@ public suspend fun Message.sendToChannel(
     nonce: String? = null,
     tempTargetId: String? = null,
     defaultTempTargetId: String? = null,
-): KookMessageReceipt? = send0(bot, targetId, NOT_DIRECT, quote, nonce, tempTargetId, defaultTempTargetId)
+): KookMessageReceipt? = sendIntercepted(
+    bot,
+    KookMessageSendTarget(KookMessageSendTarget.Kind.CHANNEL, targetId),
+    KookChannelMessageSendOption(quote, nonce, tempTargetId, defaultTempTargetId),
+)
+
+/**
+ * 频道发送终端，供已进入拦截链的组件内部调用。
+ */
+internal suspend fun Message.sendToChannelDirect(
+    bot: KookBot,
+    targetId: String,
+    quote: String? = null,
+    nonce: String? = null,
+    tempTargetId: String? = null,
+    defaultTempTargetId: String? = null,
+    templateId: String? = null,
+): KookMessageReceipt? = send0(bot, targetId, NOT_DIRECT, quote, nonce, tempTargetId, defaultTempTargetId, templateId)
 
 
 /**
@@ -101,9 +124,27 @@ public suspend fun Message.sendToChannel(
  * - [MessageReference] 会覆盖 [quote]
  * - [KookTempTarget] 会覆盖 [tempTargetId]
  *
+ * 官方 Bot 实现通过消息发送拦截器。来源为接收消息，目标为 [KookMessageSendTarget]。
+ * 拦截器可返回为 null，为 null 视为未发送。仅取得非 null 回执时才会产生发送成功通知的事件。
+ *
  * @return 消息最终地发送结果回执。如果为 `null` 则代表没有有效消息发送。
  */
 public suspend fun Message.sendToDirectByTargetId(
+    bot: KookBot,
+    targetId: String,
+    quote: String? = null,
+    nonce: String? = null,
+    tempTargetId: String? = null,
+): KookMessageReceipt? = sendIntercepted(
+    bot,
+    KookMessageSendTarget(KookMessageSendTarget.Kind.USER, targetId),
+    KookChannelMessageSendOption(quote, nonce, tempTargetId),
+)
+
+/**
+ * 用户 ID 私聊发送消息的最终入口。
+ */
+internal suspend fun Message.sendToDirectByTargetIdDirect(
     bot: KookBot,
     targetId: String,
     quote: String? = null,
@@ -122,6 +163,9 @@ public suspend fun Message.sendToDirectByTargetId(
  * - [MessageReference] 会覆盖 [quote]
  * - [KookTempTarget] 会覆盖 [tempTargetId]
  *
+ * 官方 Bot 实现通过消息发送拦截器。来源为接收消息，目标为 [KookMessageSendTarget]。
+ * 拦截器可返回为 null，为 null 视为未发送。仅取得非 null 回执时才会产生发送成功通知的事件。
+ *
  * @return 消息最终地发送结果回执。如果为 `null` 则代表没有有效消息发送。
  */
 public suspend fun Message.sendToDirectByChatCode(
@@ -130,7 +174,80 @@ public suspend fun Message.sendToDirectByChatCode(
     quote: String? = null,
     nonce: String? = null,
     tempTargetId: String? = null,
-): KookMessageReceipt? = send0(bot, chatCode, DIRECT_TYPE_BY_CODE, quote, nonce, tempTargetId)
+): KookMessageReceipt? = sendIntercepted(
+    bot,
+    KookMessageSendTarget(KookMessageSendTarget.Kind.CHAT_CODE, chatCode),
+    KookChannelMessageSendOption(quote, nonce, tempTargetId),
+)
+
+/**
+ * 公共消息扩展的调用来源是接收消息。目标只包含原始 ID。
+ */
+private suspend fun Message.sendIntercepted(
+    bot: KookBot,
+    target: KookMessageSendTarget,
+    option: KookChannelMessageSendOption,
+): KookMessageReceipt? {
+    val directType = when (target.kind) {
+        KookMessageSendTarget.Kind.CHANNEL -> NOT_DIRECT
+        KookMessageSendTarget.Kind.USER -> DIRECT_TYPE_BY_TARGET
+        KookMessageSendTarget.Kind.CHAT_CODE -> DIRECT_TYPE_BY_CODE
+    }
+    // 第三方 Bot 实现不提供 Application 的容器，保留其既有的发送行为不做拦截。
+    if (bot !is KookBotImpl) {
+        return send0(
+            bot,
+            target.id,
+            directType,
+            option.quote,
+            option.nonce,
+            option.tempTargetId,
+            option.defaultTempTargetId
+        )
+    }
+    val context = KookMessageSendContext(
+        bot,
+        this,
+        InteractionMessage.valueOf(this),
+        target,
+        listOf(option),
+    )
+    val result = MessageSendInterceptionPoint.invokeWithReceipt<KookMessageReceipt>(
+        bot.interceptorContainer,
+        context,
+    ) { current ->
+        val options = (current as MessageSendContext.Send).options
+            .filterIsInstance<KookChannelMessageSendOption>().lastOrNull() ?: KookChannelMessageSendOption()
+        val native = current.message as? KookChannelRequestMessage
+        if (native != null && directType == NOT_DIRECT) {
+            val receipt = native.request.requestDataBy(bot).asReceipt(false, bot)
+            bot.notifyMessageSent(current, receipt)
+            return@invokeWithReceipt receipt
+        }
+        val currentMessage = when (val message = current.message) {
+            is InteractionMessage.Text -> Text.of(message.text)
+            is InteractionMessage.Message -> message.message
+            is InteractionMessage.MessageContent -> message.messageContent.messages
+            is InteractionMessage.Extension -> throw UnsupportedOperationException("Unsupported KOOK message: $message")
+        }
+        val receipt = currentMessage.send0(
+            bot,
+            target.id,
+            directType,
+            options.quote,
+            options.nonce,
+            options.tempTargetId,
+            options.defaultTempTargetId,
+            options.templateId,
+        )
+        if (receipt != null) {
+            bot.notifyMessageSent(current, receipt)
+        }
+        // TODO 实现一个 KookEmptyReceipt？
+        receipt!!
+    }
+    return result
+}
 
 
 /**
@@ -284,7 +401,7 @@ private suspend fun Message.send0(
  * 不需要处理 [KookApiMessage], 外层自行处理。
  *
  */
-@OptIn(ExperimentalSimbotAPI::class, ExperimentalKookApi::class)
+@OptIn(ExperimentalSimbotAPI::class)
 private suspend inline fun Message.Element.elementToRequest(
     bot: KookBot,
 

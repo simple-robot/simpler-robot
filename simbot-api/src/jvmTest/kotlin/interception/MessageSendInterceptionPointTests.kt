@@ -93,7 +93,7 @@ class MessageSendInterceptionPointTests {
     }
 
     /**
-     * 中间层和终端无需满足最终类型，外层仍可修正结果；合法替换不要求同一实例。
+     * 中间层和终端无需满足最终类型，外层仍可修正结果。合法替换不要求同一实例。
      */
     @Test
     fun onlyFinalReceiptIsValidated() = runTest {
@@ -101,7 +101,7 @@ class MessageSendInterceptionPointTests {
         val expected = mockk<ExpectedReceipt>()
         var targetCalls = 0
         manager.register(MessageSendInterceptionPoint, -1) { _, context, chain ->
-            assertSame(receipt, chain.proceed(context))
+            assertSame(expectedReceipt, chain.proceed(context))
             expected
         }
         manager.register(MessageSendInterceptionPoint, 1) { _, context, chain ->
@@ -229,7 +229,15 @@ class MessageSendInterceptionPointTests {
 
         assertSame(receipt, result)
         assertEquals(
-            listOf("first-before", "second-before", "late-before", "target", "late-after", "second-after", "first-after"),
+            listOf(
+                "first-before",
+                "second-before",
+                "late-before",
+                "target",
+                "late-after",
+                "second-after",
+                "first-after"
+            ),
             trace,
         )
         coVerify(exactly = 1) { sender.send("changed", changedOption) }
@@ -338,10 +346,11 @@ class MessageSendInterceptionPointTests {
             first
         }
 
-        assertSame(receipt, MessageSendInterceptionPoint.invoke(
-            manager,
-            MessageSendContext.Send(bot, sender, original),
-        ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
+        assertSame(
+            receipt, MessageSendInterceptionPoint.invoke(
+                manager,
+                MessageSendContext.DefaultSend(bot, sender, original),
+            ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
         coVerify(exactly = 1) { sender.send("original", *emptyArray<SendOption>()) }
         coVerify(exactly = 1) { sender.send("changed", *emptyArray<SendOption>()) }
     }
@@ -424,10 +433,11 @@ class MessageSendInterceptionPointTests {
         registration.dispose()
         coEvery { sender.send("original", *emptyArray<SendOption>()) } returns receipt
 
-        assertSame(receipt, MessageSendInterceptionPoint.invoke(
-            snapshot,
-            MessageSendContext.Send(bot, sender, original),
-        ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
+        assertSame(
+            receipt, MessageSendInterceptionPoint.invoke(
+                snapshot,
+                MessageSendContext.DefaultSend(bot, sender, original),
+            ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
         coVerify(exactly = 1) { sender.send("original", *emptyArray<SendOption>()) }
     }
 }

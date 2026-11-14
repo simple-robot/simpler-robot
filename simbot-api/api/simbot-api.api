@@ -2532,28 +2532,46 @@ public abstract class love/forte/simbot/interception/MessageSendContext {
 	public abstract fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
 }
 
-public final class love/forte/simbot/interception/MessageSendContext$Reply : love/forte/simbot/interception/MessageSendContext {
-	public fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getOptions ()Ljava/util/List;
-	public synthetic fun getSource ()Ljava/lang/Object;
-	public fun getSource ()Llove/forte/simbot/ability/ReplySupport;
+public final class love/forte/simbot/interception/MessageSendContext$DefaultReply : love/forte/simbot/interception/MessageSendContext$Reply {
+	public fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getOptions ()Ljava/util/List;
+	public fun getSource ()Ljava/lang/Object;
 	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$DefaultReply;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
 	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
-	public final fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$DefaultReply;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
 }
 
-public final class love/forte/simbot/interception/MessageSendContext$Send : love/forte/simbot/interception/MessageSendContext {
-	public fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;)V
-	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getOptions ()Ljava/util/List;
-	public synthetic fun getSource ()Ljava/lang/Object;
-	public fun getSource ()Llove/forte/simbot/ability/SendSupport;
+public final class love/forte/simbot/interception/MessageSendContext$DefaultSend : love/forte/simbot/interception/MessageSendContext$Send {
+	public fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getOptions ()Ljava/util/List;
+	public fun getSource ()Ljava/lang/Object;
 	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$DefaultSend;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
 	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
-	public final fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$DefaultSend;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
+}
+
+public abstract class love/forte/simbot/interception/MessageSendContext$Reply : love/forte/simbot/interception/MessageSendContext {
+	protected fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/event/InteractionMessage;)V
+	public abstract fun getOptions ()Ljava/util/List;
+	public abstract fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public abstract fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+}
+
+public abstract class love/forte/simbot/interception/MessageSendContext$Send : love/forte/simbot/interception/MessageSendContext {
+	protected fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/event/InteractionMessage;)V
+	public abstract fun getOptions ()Ljava/util/List;
+	public abstract fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public abstract fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
 }
 
 public final class love/forte/simbot/interception/MessageSendInterceptionPoint : love/forte/simbot/interception/InterceptionPoint {

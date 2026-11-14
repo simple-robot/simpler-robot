@@ -24,15 +24,10 @@
 package love.forte.simbot.component.kook.internal
 
 import io.ktor.http.*
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import love.forte.simbot.ability.DeleteFailureException
-import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.*
 import love.forte.simbot.ability.StandardDeleteOption.Companion.standardAnalysis
-import love.forte.simbot.ability.isIgnoreOnFailure
-import love.forte.simbot.ability.isIgnoreOnNoSuchTarget
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
@@ -49,6 +44,8 @@ import love.forte.simbot.component.kook.role.internal.KookGuildRoleImpl
 import love.forte.simbot.component.kook.role.internal.KookMemberRoleImpl
 import love.forte.simbot.component.kook.util.requestDataBy
 import love.forte.simbot.component.kook.util.requestResultBy
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.ApiResponseException
 import love.forte.simbot.kook.api.guild.CreateGuildMuteApi
 import love.forte.simbot.kook.api.guild.DeleteGuildMuteApi
@@ -60,7 +57,7 @@ import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 /**
@@ -90,9 +87,19 @@ internal class KookMemberImpl(
         return asContact().send(messageContent)
     }
 
-    override suspend fun send(text: String): KookMessageReceipt {
-        return asContact().send(text)
-    }
+    /**
+     * 发送消息。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 直接使用用户 ID 发送，避免内部委托丢失成员或会话这一调用来源。
+     */
+    private suspend fun send(message: InteractionMessage, options: List<SendOption>): KookMessageReceipt =
+        bot.interceptMessageSend(MessageSendContext.DefaultSend(bot, this, message, options)) {
+            sendDirectMessage(bot, source.id, it)
+        }
 
     @ExperimentalSimbotAPI
     override val roles: Collectable<KookMemberRoleImpl>
@@ -153,27 +160,27 @@ internal class KookMemberImpl(
         }
     }
 
-    private suspend fun mute0(type: Int, milli: Long) {
+    private suspend fun mute0(type: Int, duration: Duration) {
         val userId = source.id
         val guildIdStr = guildIdValue
 
         val api = CreateGuildMuteApi.create(guildIdStr, userId, type)
         api.requestDataBy(bot)
 
-        if (milli <= 0) {
+        if (duration <= Duration.ZERO) {
             return
         }
 
         val logger = bot.logger
         val name = source.username
         val delayJob = bot.launch(start = CoroutineStart.LAZY) {
-            delay(milli)
+            delay(duration)
             // delay and do unmute
             runCatching {
                 if (logger.isDebugEnabled) {
                     logger.debug(
                         "After a delay of {}, unmute(type={}) for member(id={}, username={}) in guild(id={})",
-                        milli.milliseconds.toString(),
+                        duration.toString(),
                         type,
                         userId,
                         name,
@@ -182,8 +189,13 @@ internal class KookMemberImpl(
                 }
                 DeleteGuildMuteApi.create(guildIdStr, userId, type).requestDataBy(bot)
             }.onFailure { e ->
+                if (e is CancellationException) {
+                    ensureActive()
+                }
+
                 logger.error(
                     "Can not unmute(type={}) for member(id={}, username={}) in guild(id={}) because of: {}",
+                    type,
                     userId,
                     name,
                     guildIdStr,
@@ -206,16 +218,16 @@ internal class KookMemberImpl(
     }
 
 
-    override suspend fun mute(type: Int): Boolean = true.also { mute0(type, 0L) }
+    override suspend fun mute(type: Int): Boolean = true.also { mute0(type, Duration.ZERO) }
 
 
     @ExperimentalSimbotAPI
     override suspend fun mute(type: Int, duration: Duration): Boolean =
-        true.also { mute0(type, duration.inWholeMilliseconds) }
+        true.also { mute0(type, duration) }
 
     @ExperimentalSimbotAPI
     override suspend fun mute(type: Int, time: Long, timeUnit: TimeUnit): Boolean =
-        true.also { mute0(type, timeUnit.toMillis(time)) }
+        true.also { mute0(type, timeUnit.toNanos(time).nanoseconds) }
 
     override suspend fun unmute(type: Int): Boolean {
         val userId = source.id

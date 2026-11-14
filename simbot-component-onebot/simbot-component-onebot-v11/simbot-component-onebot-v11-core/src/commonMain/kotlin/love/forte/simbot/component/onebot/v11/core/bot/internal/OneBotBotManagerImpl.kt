@@ -46,6 +46,7 @@ import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.internal.stage.OneBotBotRegisteredEventImpl
 import love.forte.simbot.component.onebot.v11.core.utils.onEachErrorLog
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.interception.InterceptorContainer
 import kotlin.coroutines.CoroutineContext
 
 
@@ -59,6 +60,7 @@ internal class OneBotBotManagerImpl(
     private val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
     private val serializersModule: SerializersModule,
+    private val interceptorContainer: InterceptorContainer,
 ) : OneBotBotManager(), CoroutineScope {
     private val decoderJson = Json(OneBot11.DefaultJson) {
         serializersModule = serializersModule overwriteWith this@OneBotBotManagerImpl.serializersModule
@@ -86,7 +88,8 @@ internal class OneBotBotManagerImpl(
                 configuration,
                 component,
                 eventProcessor,
-                decoderJson
+                decoderJson,
+                interceptorContainer
             )
 
         val created = bots.computeValue(

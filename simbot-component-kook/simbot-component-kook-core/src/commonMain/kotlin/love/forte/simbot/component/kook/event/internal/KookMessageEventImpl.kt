@@ -84,9 +84,21 @@ internal class KookChannelMessageEventImpl(
         return _channel.send(text = text, quote = sourceEvent.msgId)
     }
 
-    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt {
-        return _channel.send(messageContent, sourceEvent.msgId)
-    }
+    /**
+     * 回复消息。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 回复保留事件来源，目标仅在拦截器主动查询时解析。
+     */
+    private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
+        bot.interceptMessageSend(
+            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+        ) {
+            _channel.sendChannelMessage(it, sourceEvent.msgId, _author.source.id)
+        }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)
 }
@@ -121,9 +133,21 @@ internal class KookContactMessageEventImpl(
         return content().send(text)
     }
 
-    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt {
-        return content().send(messageContent)
-    }
+    /**
+     * 回复消息。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 回复消息。
+     */
+    private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
+        bot.interceptMessageSend(
+            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+        ) {
+            sendDirectMessage(bot, sourceEvent.authorId, it)
+        }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(true, bot)
 }
@@ -152,9 +176,21 @@ internal class KookBotSelfChannelMessageEventImpl(
         return _channel.send(text, sourceEvent.msgId)
     }
 
-    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt {
-        return _channel.send(messageContent, sourceEvent.msgId)
-    }
+    /**
+     * 回复消息。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 回复消息。
+     */
+    private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
+        bot.interceptMessageSend(
+            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+        ) {
+            _channel.sendChannelMessage(it, sourceEvent.msgId)
+        }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)
 
@@ -194,9 +230,21 @@ internal class KookBotSelfMessageEventImpl(
         return content().send(text)
     }
 
-    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt {
-        return content().send(messageContent)
-    }
+    /**
+     * 回复消息。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 回复消息。
+     */
+    private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
+        bot.interceptMessageSend(
+            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+        ) {
+            sendDirectMessage(bot, sourceEvent.authorId, it)
+        }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(true, bot)
 }

@@ -24,23 +24,18 @@
 package love.forte.simbot.component.kook.internal
 
 import io.ktor.http.*
-import love.forte.simbot.ability.DeleteFailureException
-import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.*
 import love.forte.simbot.ability.StandardDeleteOption.Companion.standardAnalysis
-import love.forte.simbot.ability.isIgnoreOnFailure
-import love.forte.simbot.ability.isIgnoreOnNoSuchTarget
 import love.forte.simbot.common.exception.initExceptionCause
 import love.forte.simbot.component.kook.KookUserChat
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
-import love.forte.simbot.component.kook.message.*
-import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt.Companion.asReceipt
-import love.forte.simbot.component.kook.util.requestDataBy
+import love.forte.simbot.component.kook.message.KookMessageReceipt
 import love.forte.simbot.component.kook.util.requestResultBy
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.ApiResponseException
-import love.forte.simbot.kook.api.message.SendDirectMessageApi
 import love.forte.simbot.kook.api.userchat.DeleteUserChatApi
 import love.forte.simbot.kook.api.userchat.UserChatView
-import love.forte.simbot.kook.messages.MessageType
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
@@ -95,11 +90,22 @@ internal class KookUserChatImpl(
                 ).requestDataBy(bot).asReceipt(true, bot)
             }
 
-            else -> {
-                send(messageContent.messages)
-            }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 直接使用用户 ID 发送，避免内部委托丢失成员或会话这一调用来源。
+     */
+    private suspend inline fun send(
+        message: InteractionMessage,
+        options: List<SendOption>
+    ): KookMessageReceipt =
+        bot.interceptMessageSend(MessageSendContext.DefaultSend(bot, this, message, options)) {
+            sendDirectMessage(bot, source.targetInfo.id, it)
         }
-    }
 
     override suspend fun delete(vararg options: DeleteOption) {
         val stdOpts = options.standardAnalysis()
