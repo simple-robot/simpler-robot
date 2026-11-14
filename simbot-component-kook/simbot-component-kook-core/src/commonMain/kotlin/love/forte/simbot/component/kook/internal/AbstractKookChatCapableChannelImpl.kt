@@ -24,18 +24,19 @@
 package love.forte.simbot.component.kook.internal
 
 import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.kook.KookCategory
 import love.forte.simbot.component.kook.KookChannelUpdater
 import love.forte.simbot.component.kook.KookChatCapableChannel
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
-import love.forte.simbot.component.kook.message.KookChannelMessageDetailsContent
+import love.forte.simbot.component.kook.message.*
 import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt.Companion.asReceipt
-import love.forte.simbot.component.kook.message.KookMessageReceipt
-import love.forte.simbot.component.kook.message.KookReceiveMessageContent
-import love.forte.simbot.component.kook.message.sendToChannel
 import love.forte.simbot.component.kook.util.requestDataBy
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
+import love.forte.simbot.interception.MessageSendInterceptionPoint
+import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.kook.api.message.SendChannelMessageApi
 import love.forte.simbot.kook.messages.MessageType
 import love.forte.simbot.kook.objects.Channel
@@ -54,16 +55,104 @@ internal abstract class AbstractKookChatCapableChannelImpl(
     override val coroutineContext: CoroutineContext
         get() = bot.subContext
 
+    /**
+     * 发送纯文本消息
+     */
+    override suspend fun send(text: String): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), emptyList())
+
+    /**
+     * 发送纯文本消息
+     */
+    override suspend fun send(text: String, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), options.toList())
+
+    /**
+     * 发送消息
+     */
+    override suspend fun send(message: Message): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 发送消息
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), options.toList())
+
+    /**
+     * 发送消息
+     */
+    override suspend fun send(messageContent: MessageContent): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), emptyList())
+
+    /**
+     * 发送消息
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 发送消息。
+     * 所有公开频道发送入口。
+     */
+    private suspend fun send(message: InteractionMessage, options: List<SendOption>): KookMessageReceipt =
+        MessageSendInterceptionPoint.invokeWithReceipt<KookMessageReceipt>(
+            bot.interceptorContainer,
+            if (message is KookChannelRequestMessage) {
+                KookMessageSendContext.create(
+                    bot,
+                    this,
+                    message,
+                    KookMessageSendTarget.channel(message.request.targetId),
+                    options,
+                )
+            } else {
+                MessageSendContext.DefaultSend(bot, this, message, options)
+            },
+        ) { context ->
+            val currentOptions = when (context) {
+                is MessageSendContext.Send -> context.options
+                is MessageSendContext.Reply -> error("A channel send must retain its send context.")
+            }
+            val option = currentOptions.toKookChannelMessageSendOptions()
+            val receipt = sendChannelMessage(
+                context.message,
+                option?.quote,
+                option?.defaultTempTargetId,
+                option?.tempTargetId,
+                option?.nonce,
+                option?.templateId,
+                (context as? KookMessageSendContext)?.destination?.id ?: source.id,
+            )
+            bot.notifyMessageSent(context, receipt)
+            receipt
+        }
+
     override suspend fun send(request: SendChannelMessageApi): KookMessageReceipt {
-        return request.requestDataBy(bot).asReceipt(false, bot)
+        return send(
+            KookChannelRequestMessage(request),
+            emptyList(),
+        )
     }
 
     override suspend fun send(message: Message, quote: ID?, tempTargetId: ID?): KookMessageReceipt {
-        return send(message, quote?.literal, tempTargetId?.literal)
+        return send(
+            InteractionMessage.valueOf(message),
+            listOfNotNull(
+                quote?.let { KookChannelMessageSendOption.quote(it) },
+                tempTargetId?.let { KookChannelMessageSendOption.tempTarget(it) },
+            ),
+        )
     }
 
     override suspend fun send(message: MessageContent, quote: ID?, tempTargetId: ID?): KookMessageReceipt {
-        return send(message, quote?.literal, tempTargetId?.literal)
+        return send(
+            InteractionMessage.valueOf(message),
+            listOfNotNull(
+                quote?.let { KookChannelMessageSendOption.quote(it) },
+                tempTargetId?.let { KookChannelMessageSendOption.tempTarget(it) },
+            ),
+        )
     }
 
     override val category: KookCategory?
@@ -79,21 +168,23 @@ internal abstract class AbstractKookChatCapableChannelImpl(
 internal suspend fun KookChatCapableChannel.send(
     message: Message,
     quote: String? = null,
-    tempTargetId: String? = null
+    tempTargetId: String? = null,
+    defaultTempTargetId: String? = null,
 ): KookMessageReceipt {
-    return message.sendToChannel(
+    return message.sendToChannelDirect(
         bot,
         targetId = source.id,
         quote = quote,
         tempTargetId = tempTargetId,
-        defaultTempTargetId = null
+        defaultTempTargetId = defaultTempTargetId
     ) ?: throw IllegalArgumentException("Valid messages must not be empty.")
 }
 
 internal suspend fun KookChatCapableChannel.send(
     message: MessageContent,
     quote: String? = null,
-    tempTargetId: String? = null
+    tempTargetId: String? = null,
+    defaultTempTargetId: String? = null,
 ): KookMessageReceipt {
     return when (message) {
         is KookReceiveMessageContent -> {
@@ -121,7 +212,7 @@ internal suspend fun KookChatCapableChannel.send(
         }
 
         else -> {
-            send(message.messages)
+            send(message.messages, quote, tempTargetId, defaultTempTargetId)
         }
     }
 }
@@ -151,5 +242,5 @@ private suspend fun KookChatCapableChannel.send(
     tempTargetId: String? = null,
 ): KookMessageReceipt {
     val request = SendChannelMessageApi.create(type, source.id, content, quote, nonce, tempTargetId)
-    return send(request)
+    return request.requestDataBy(bot).asReceipt(false, bot)
 }

@@ -67,12 +67,15 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
 
     /**
      * 根据 [SendChannelMessageApi] api 构建并发送消息。
+     * 通过消息发送拦截器。请求使用 [love.forte.simbot.component.kook.message.KookChannelRequestMessage] 表达。
+     * 未替换时直接执行原请求，包括请求自带的目标 ID。
      */
     @ST
     public suspend fun send(request: SendChannelMessageApi): KookMessageReceipt
 
     /**
      * 根据 [SendChannelMessageApi] api 构建并发送消息。
+     * 通过消息发送拦截器。
      */
     @ST
     public suspend fun send(
@@ -89,7 +92,8 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
 
 
     /**
-     * 发送纯文本消息，并指定 [tempTargetId].
+     * 发送纯文本消息，并指定 [tempTargetId]。
+     * 通过消息发送拦截器。
      *
      * @see SendChannelMessageApi.tempTargetId
      */
@@ -106,6 +110,7 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
 
     /**
      * 发送消息，并可选的指定 [quote] 和 [tempTargetId].
+     * 通过消息发送拦截器。
      *
      * @see SendChannelMessageApi.tempTargetId
      * @see SendChannelMessageApi.quote
@@ -115,6 +120,7 @@ public interface KookChatCapableChannel : KookChannel, ChatChannel, CoroutineSco
 
     /**
      * 发送消息，并可选的指定 [quote] 和 [tempTargetId].
+     * 通过消息发送拦截器。
      *
      * @see SendChannelMessageApi.tempTargetId
      * @see SendChannelMessageApi.quote

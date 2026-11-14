@@ -50,6 +50,36 @@ class MessageSendInterceptionPointTests {
      */
     private interface ExpectedReceipt : MessageReceipt
 
+    /**
+     * 模拟组件增加回复元数据，并通过协变复制保留其具体类型。
+     */
+    private class ComponentReply private constructor(
+        bot: Bot,
+        override val source: Any,
+        originalMessage: InteractionMessage,
+        message: InteractionMessage,
+        override val options: List<ReplyOption>,
+        val metadata: Any,
+        private val resolveTarget: suspend () -> Any?,
+    ) : MessageSendContext.Reply(bot, originalMessage, message) {
+        constructor(
+            bot: Bot,
+            source: Any,
+            message: InteractionMessage,
+            options: List<ReplyOption>,
+            metadata: Any,
+            target: suspend () -> Any?,
+        ) : this(bot, source, message, message, options.toList(), metadata, target)
+
+        override suspend fun target(): Any? = resolveTarget()
+
+        override fun withMessage(message: InteractionMessage): ComponentReply =
+            ComponentReply(bot, source, originalMessage, message, options, metadata, resolveTarget)
+
+        override fun withOptions(options: Collection<ReplyOption>): ComponentReply =
+            ComponentReply(bot, source, originalMessage, message, options.toList(), metadata, resolveTarget)
+    }
+
     private val bot = mockk<Bot>()
     private val sender = mockk<SendSupport>()
     private val replier = mockk<ReplySupport>()
@@ -57,6 +87,78 @@ class MessageSendInterceptionPointTests {
     private val expectedReceipt = mockk<ExpectedReceipt>()
     private val original = InteractionMessage.valueOf("original")
     private val changed = InteractionMessage.valueOf("changed")
+
+    /**
+     * 经抽象接口连续替换消息和选项后，组件回复类型、元数据与惰性目标仍保留。
+     */
+    @Test
+    fun componentReplyPreservesFieldsAcrossInterceptors() = runTest {
+        val manager = InterceptorManager()
+        val source = Any()
+        val target = Any()
+        val metadata = Any()
+        val option = object : ReplyOption {}
+        val initialOptions = mutableListOf(option)
+        var resolutions = 0
+        val initial = ComponentReply(bot, source, original, initialOptions, metadata) {
+            resolutions++
+            target
+        }
+        initialOptions.clear()
+        manager.onMessageSend(-1) { _, context, chain ->
+            val reply = context as MessageSendContext.Reply
+            assertEquals(listOf(option), reply.options)
+            chain.proceed(reply.withMessage(changed))
+        }
+        manager.onMessageSend(1) { _, context, chain ->
+            val replacement = mutableListOf(option)
+            val updated = (context as MessageSendContext.Reply).withOptions(replacement)
+            replacement.clear()
+            chain.proceed(updated)
+        }
+
+        assertSame(
+            expectedReceipt, MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+                manager, initial,
+            ) { context ->
+                val reply = kotlin.test.assertIs<ComponentReply>(context)
+                assertSame(metadata, reply.metadata)
+                assertSame(bot, reply.bot)
+                assertSame(source, reply.source)
+                assertSame(original, reply.originalMessage)
+                assertSame(changed, reply.message)
+                assertEquals(listOf(option), reply.options)
+                assertEquals(0, resolutions)
+                assertSame(target, reply.target())
+                expectedReceipt
+            })
+        assertEquals(1, resolutions)
+        assertSame(original, initial.message)
+    }
+
+    /**
+     * 默认回复替换选项时复制列表，保留已经替换的消息及目标解析。
+     */
+    @Test
+    fun defaultReplyOptionsCopyPreservesMessageAndTarget() = runTest {
+        val option = object : ReplyOption {}
+        val options = mutableListOf(option)
+        var resolutions = 0
+        val initial = MessageSendContext.DefaultReply(bot, replier, original) {
+            resolutions++
+            sender
+        }
+        val replaced = initial.withMessage(changed).withOptions(options)
+        options.clear()
+
+        assertEquals(0, resolutions)
+        assertSame(original, replaced.originalMessage)
+        assertSame(changed, replaced.message)
+        assertSame(replier, replaced.source)
+        assertEquals(listOf(option), replaced.options)
+        assertSame(sender, replaced.target())
+        assertEquals(1, resolutions)
+    }
 
     /**
      * 类型正确的短路可直接返回，无需进入发送终端。
@@ -68,7 +170,7 @@ class MessageSendInterceptionPointTests {
         manager.register(MessageSendInterceptionPoint) { _, _, _ -> expected }
 
         val result: ExpectedReceipt = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-            manager, MessageSendContext.Send(bot, sender, original),
+            manager, MessageSendContext.DefaultSend(bot, sender, original),
         ) { error("target reached") }
 
         assertSame(expected, result)
@@ -84,7 +186,7 @@ class MessageSendInterceptionPointTests {
 
         val failure = assertFailsWith<IllegalStateException> {
             MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-                manager, MessageSendContext.Send(bot, sender, original),
+                manager, MessageSendContext.DefaultSend(bot, sender, original),
             ) { error("target reached") }
         }
 
@@ -109,7 +211,7 @@ class MessageSendInterceptionPointTests {
         }
 
         val result = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-            manager, MessageSendContext.Send(bot, sender, original),
+            manager, MessageSendContext.DefaultSend(bot, sender, original),
         ) {
             targetCalls++
             expectedReceipt
@@ -134,7 +236,7 @@ class MessageSendInterceptionPointTests {
 
         assertFailsWith<IllegalStateException> {
             MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-                manager, MessageSendContext.Send(bot, sender, original),
+                manager, MessageSendContext.DefaultSend(bot, sender, original),
             ) {
                 targetCalls++
                 expected
@@ -150,7 +252,7 @@ class MessageSendInterceptionPointTests {
     fun sendMessageReplacementPreservesOriginalSourceAndOptions() = runTest {
         val option = object : SendOption {}
         val options = mutableListOf(option)
-        val initial = MessageSendContext.Send(bot, sender, original, options)
+        val initial = MessageSendContext.DefaultSend(bot, sender, original, options)
         options.clear()
 
         val replaced = initial.withMessage(changed)
@@ -166,6 +268,53 @@ class MessageSendInterceptionPointTests {
     }
 
     /**
+     * 直发复制保留独立来源与惰性目标，隔离选项列表且不丢失原始消息。
+     */
+    @Test
+    fun directSendCopiesPreserveSourceAndLazyTarget() = runTest {
+        val source = Any()
+        val target = Any()
+        val option = object : SendOption {}
+        val options = mutableListOf(option)
+        var resolutions = 0
+        val initial = MessageSendContext.DefaultSend(bot, source, original, options) {
+            resolutions++
+            target
+        }
+        options.clear()
+        val replacementOptions = mutableListOf<SendOption>(option)
+        val replaced = initial.withMessage(changed).withOptions(replacementOptions)
+        replacementOptions.clear()
+
+        assertEquals(0, resolutions)
+        assertSame(bot, replaced.bot)
+        assertSame(source, replaced.source)
+        assertSame(original, replaced.originalMessage)
+        assertSame(changed, replaced.message)
+        assertEquals(listOf(option), initial.options)
+        assertEquals(listOf(option), replaced.options)
+        assertSame(target, replaced.target())
+        assertEquals(1, resolutions)
+    }
+
+    /**
+     * 直发短路不解析目标，也不执行平台发送。
+     */
+    @Test
+    fun directSendShortCircuitDoesNotResolveTarget() = runTest {
+        val manager = InterceptorManager()
+        manager.register(MessageSendInterceptionPoint) { _, _, _ -> expectedReceipt }
+        val context = MessageSendContext.DefaultSend(bot, Any(), original) {
+            error("target resolved")
+        }
+
+        assertSame(
+            expectedReceipt, MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+                manager, context,
+            ) { error("terminal reached") })
+    }
+
+    /**
      * 回复上下文与其副本均延迟目标解析，保留回复来源及原始选项。
      */
     @Test
@@ -173,7 +322,7 @@ class MessageSendInterceptionPointTests {
         val option = object : ReplyOption {}
         val options = mutableListOf(option)
         var resolutions = 0
-        val initial = MessageSendContext.Reply(bot, replier, original, options) {
+        val initial = MessageSendContext.DefaultReply(bot, replier, original, options) {
             resolutions++
             sender
         }
@@ -219,12 +368,15 @@ class MessageSendInterceptionPointTests {
 
         val result = MessageSendInterceptionPoint.invoke(
             manager,
-            MessageSendContext.Send(bot, sender, original, listOf(initialOption)),
+            MessageSendContext.DefaultSend(bot, sender, original, listOf(initialOption)),
         ) { context ->
             trace += "target"
             val send = context as MessageSendContext.Send
             assertSame(original, send.originalMessage)
-            send.source.send((send.message as InteractionMessage.Text).text, *send.options.toTypedArray())
+            (send.source as SendSupport).send(
+                (send.message as InteractionMessage.Text).text,
+                *send.options.toTypedArray()
+            )
         }
 
         assertSame(receipt, result)
@@ -252,7 +404,7 @@ class MessageSendInterceptionPointTests {
         val initialOption = object : ReplyOption {}
         val changedOption = object : ReplyOption {}
         var resolutions = 0
-        val context = MessageSendContext.Reply(bot, replier, original, listOf(initialOption)) {
+        val context = MessageSendContext.DefaultReply(bot, replier, original, listOf(initialOption)) {
             resolutions++
             sender
         }
@@ -268,7 +420,10 @@ class MessageSendInterceptionPointTests {
             assertSame(sender, reply.target())
             assertSame(replier, reply.source)
             assertSame(original, reply.originalMessage)
-            reply.source.reply((reply.message as InteractionMessage.Text).text, *reply.options.toTypedArray())
+            (reply.source as ReplySupport).reply(
+                (reply.message as InteractionMessage.Text).text,
+                *reply.options.toTypedArray()
+            )
         }
 
         assertSame(receipt, result)
@@ -285,7 +440,7 @@ class MessageSendInterceptionPointTests {
         val failure = RuntimeException("blocked")
         var resolutions = 0
         var targetCalls = 0
-        val context = MessageSendContext.Reply(bot, replier, original) {
+        val context = MessageSendContext.DefaultReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -313,7 +468,7 @@ class MessageSendInterceptionPointTests {
         val cancellation = CancellationException("cancelled")
         var resolutions = 0
         var targetCalls = 0
-        val context = MessageSendContext.Reply(bot, replier, original) {
+        val context = MessageSendContext.DefaultReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -371,7 +526,7 @@ class MessageSendInterceptionPointTests {
         assertSame(failure, assertFailsWith<IllegalArgumentException> {
             MessageSendInterceptionPoint.invoke(
                 manager,
-                MessageSendContext.Send(bot, sender, original),
+                MessageSendContext.DefaultSend(bot, sender, original),
             ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) }
         })
         coVerify(exactly = 2) { sender.send("original", *emptyArray<SendOption>()) }
@@ -384,8 +539,8 @@ class MessageSendInterceptionPointTests {
     @Test
     fun replacementContextIsPassedToTargetWithoutIdentityValidation() = runTest {
         val manager = InterceptorManager()
-        val context = MessageSendContext.Send(bot, sender, original)
-        val replacement = MessageSendContext.Reply(bot, replier, changed)
+        val context = MessageSendContext.DefaultSend(bot, sender, original)
+        val replacement = MessageSendContext.DefaultReply(bot, replier, changed)
         var targetCalls = 0
         manager.register(MessageSendInterceptionPoint) { _, _, chain ->
             chain.proceed(replacement)
@@ -408,7 +563,7 @@ class MessageSendInterceptionPointTests {
         var resolutions = 0
         manager.register(MessageSendInterceptionPoint, -1) { _, _, _ -> receipt }
         manager.register(MessageSendInterceptionPoint, 1) { _, _, _ -> error("downstream reached") }
-        val context = MessageSendContext.Reply(bot, replier, original) {
+        val context = MessageSendContext.DefaultReply(bot, replier, original) {
             resolutions++
             sender
         }

@@ -54,41 +54,26 @@ internal class KookUserChatImpl(
         return "KookUserChat(code=${source.code}, target=${source.targetInfo})"
     }
 
-    override suspend fun send(text: String): KookMessageCreatedReceipt {
-        return SendDirectMessageApi
-            .createByTargetId(source.targetInfo.id, text, MessageType.TEXT.type, null, null)
-            .requestDataBy(bot)
-            .asReceipt(true, bot)
-    }
+    override suspend fun send(text: String): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun send(message: Message): KookMessageReceipt {
-        return message.sendToDirectByTargetId(bot, source.targetInfo.id, null, null, null)
-            ?: throw IllegalArgumentException("Valid messages must not be empty.")
-    }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), options.toList())
 
-    override suspend fun send(messageContent: MessageContent): KookMessageReceipt {
-        return when (messageContent) {
-            is KookReceiveMessageContent -> {
-                val source = messageContent.source
-                SendDirectMessageApi.createByTargetId(
-                    targetId = this.source.targetInfo.id,
-                    content = source.content,
-                    type = source.type?.value,
-                    quote = null,
-                    nonce = null,
-                ).requestDataBy(bot).asReceipt(true, bot)
-            }
+    override suspend fun send(message: Message): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), emptyList())
 
-            is KookChannelMessageDetailsContent -> {
-                val details = messageContent.details
-                SendDirectMessageApi.createByTargetId(
-                    targetId = this.source.targetInfo.id,
-                    content = details.content,
-                    type = details.type,
-                    quote = details.quote?.id,
-                    nonce = null,
-                ).requestDataBy(bot).asReceipt(true, bot)
-            }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun send(messageContent: MessageContent): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 保留本次发送选项并进入共享拦截链。

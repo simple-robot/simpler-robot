@@ -79,13 +79,26 @@ internal class KookMemberImpl(
         get() = bot.internalGuild(guildIdValue) ?: throw kookGuildNotExistsException(guildIdValue)
 
 
-    override suspend fun send(message: Message): KookMessageReceipt {
-        return asContact().send(message)
-    }
+    override suspend fun send(text: String): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun send(messageContent: MessageContent): KookMessageReceipt {
-        return asContact().send(messageContent)
-    }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), options.toList())
+
+    override suspend fun send(message: Message): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun send(messageContent: MessageContent): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 发送消息。
@@ -236,5 +249,4 @@ internal class KookMemberImpl(
         return true
     }
 
-    private suspend fun asContact(): KookUserChatImpl = bot.contactRelation.contact(id)
 }

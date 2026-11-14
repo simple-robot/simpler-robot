@@ -28,7 +28,9 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.launch
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.kook.bot.KookBot
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
@@ -69,9 +71,11 @@ private data class QuoteRef(var quote: String?) {
 
 private data class TempTargetIdRef(var tempTargetId: String?)
 
-private const val NOT_DIRECT = 0
-private const val DIRECT_TYPE_BY_TARGET = 1
-private const val DIRECT_TYPE_BY_CODE = 2
+private enum class DirectType {
+    NOT_DIRECT,
+    DIRECT_TYPE_BY_TARGET,
+    DIRECT_TYPE_BY_CODE
+}
 
 /**
  * 将消息发送给目标。此消息如果是个消息链，则有可能会被拆分为多条消息发送，
@@ -84,6 +88,8 @@ private const val DIRECT_TYPE_BY_CODE = 2
  * - [MessageReference] 会覆盖 [quote]
  * - [KookTempTarget] 会覆盖 [tempTargetId]
  *
+ * 官方 Bot 实现通过拦截器后进行消息发送。来源为接收消息，目标为 [KookMessageSendTarget]。
+ *
  * @return 消息最终地发送结果回执。如果为 `null` 则代表没有有效消息发送。
  */
 public suspend fun Message.sendToChannel(
@@ -95,8 +101,13 @@ public suspend fun Message.sendToChannel(
     defaultTempTargetId: String? = null,
 ): KookMessageReceipt? = sendIntercepted(
     bot,
-    KookMessageSendTarget(KookMessageSendTarget.Kind.CHANNEL, targetId),
-    KookChannelMessageSendOption(quote, nonce, tempTargetId, defaultTempTargetId),
+    KookMessageSendTarget.channel(targetId),
+    listOfNotNull(
+        quote?.let { KookChannelMessageSendOption.quote(it.ID) },
+        nonce?.let { KookChannelMessageSendOption.nonce(it) },
+        tempTargetId?.let { KookChannelMessageSendOption.tempTarget(it.ID) },
+        defaultTempTargetId?.let { KookChannelMessageSendOption.defaultTempTarget(it.ID) },
+    ),
 )
 
 /**
@@ -110,7 +121,17 @@ internal suspend fun Message.sendToChannelDirect(
     tempTargetId: String? = null,
     defaultTempTargetId: String? = null,
     templateId: String? = null,
-): KookMessageReceipt? = send0(bot, targetId, NOT_DIRECT, quote, nonce, tempTargetId, defaultTempTargetId, templateId)
+): KookMessageReceipt? =
+    send0(
+        bot = bot,
+        targetId = targetId,
+        directType = DirectType.NOT_DIRECT,
+        quote = quote,
+        nonce = nonce,
+        tempTargetId = tempTargetId,
+        defaultTempTargetId = defaultTempTargetId,
+        templateId = templateId
+    )
 
 
 /**
@@ -137,8 +158,12 @@ public suspend fun Message.sendToDirectByTargetId(
     tempTargetId: String? = null,
 ): KookMessageReceipt? = sendIntercepted(
     bot,
-    KookMessageSendTarget(KookMessageSendTarget.Kind.USER, targetId),
-    KookChannelMessageSendOption(quote, nonce, tempTargetId),
+    KookMessageSendTarget.user(targetId),
+    listOfNotNull(
+        quote?.let { KookChannelMessageSendOption.quote(it.ID) },
+        nonce?.let { KookChannelMessageSendOption.nonce(it) },
+        tempTargetId?.let { KookChannelMessageSendOption.tempTarget(it.ID) },
+    ),
 )
 
 /**
@@ -150,7 +175,7 @@ internal suspend fun Message.sendToDirectByTargetIdDirect(
     quote: String? = null,
     nonce: String? = null,
     tempTargetId: String? = null,
-): KookMessageReceipt? = send0(bot, targetId, DIRECT_TYPE_BY_TARGET, quote, nonce, tempTargetId)
+): KookMessageReceipt? = send0(bot, targetId, DirectType.DIRECT_TYPE_BY_TARGET, quote, nonce, tempTargetId)
 
 /**
  * 将消息发送给目标。此消息如果是个消息链，则有可能会被拆分为多条消息发送，
@@ -176,8 +201,12 @@ public suspend fun Message.sendToDirectByChatCode(
     tempTargetId: String? = null,
 ): KookMessageReceipt? = sendIntercepted(
     bot,
-    KookMessageSendTarget(KookMessageSendTarget.Kind.CHAT_CODE, chatCode),
-    KookChannelMessageSendOption(quote, nonce, tempTargetId),
+    KookMessageSendTarget.chatCode(chatCode),
+    listOfNotNull(
+        quote?.let { KookChannelMessageSendOption.quote(it.ID) },
+        nonce?.let { KookChannelMessageSendOption.nonce(it) },
+        tempTargetId?.let { KookChannelMessageSendOption.tempTarget(it.ID) },
+    ),
 )
 
 /**
@@ -186,40 +215,41 @@ public suspend fun Message.sendToDirectByChatCode(
 private suspend fun Message.sendIntercepted(
     bot: KookBot,
     target: KookMessageSendTarget,
-    option: KookChannelMessageSendOption,
+    options: List<SendOption>,
 ): KookMessageReceipt? {
-    val directType = when (target.kind) {
-        KookMessageSendTarget.Kind.CHANNEL -> NOT_DIRECT
-        KookMessageSendTarget.Kind.USER -> DIRECT_TYPE_BY_TARGET
-        KookMessageSendTarget.Kind.CHAT_CODE -> DIRECT_TYPE_BY_CODE
+    val directType = when (target) {
+        is KookMessageSendTarget.Channel -> DirectType.NOT_DIRECT
+        is KookMessageSendTarget.User -> DirectType.DIRECT_TYPE_BY_TARGET
+        is KookMessageSendTarget.ChatCode -> DirectType.DIRECT_TYPE_BY_CODE
     }
     // 第三方 Bot 实现不提供 Application 的容器，保留其既有的发送行为不做拦截。
     if (bot !is KookBotImpl) {
+        val option = options.toKookChannelMessageSendOptions()
         return send0(
             bot,
             target.id,
             directType,
-            option.quote,
-            option.nonce,
-            option.tempTargetId,
-            option.defaultTempTargetId
+            option?.quote,
+            option?.nonce,
+            option?.tempTargetId,
+            option?.defaultTempTargetId
         )
     }
-    val context = KookMessageSendContext(
+    val context = KookMessageSendContext.create(
         bot,
         this,
         InteractionMessage.valueOf(this),
         target,
-        listOf(option),
+        options,
     )
     val result = MessageSendInterceptionPoint.invokeWithReceipt<KookMessageReceipt>(
         bot.interceptorContainer,
         context,
     ) { current ->
-        val options = (current as MessageSendContext.Send).options
-            .filterIsInstance<KookChannelMessageSendOption>().lastOrNull() ?: KookChannelMessageSendOption()
+        val currentOptions = (current as MessageSendContext.Send).options
+            .toKookChannelMessageSendOptions()
         val native = current.message as? KookChannelRequestMessage
-        if (native != null && directType == NOT_DIRECT) {
+        if (native != null && directType == DirectType.NOT_DIRECT) {
             val receipt = native.request.requestDataBy(bot).asReceipt(false, bot)
             bot.notifyMessageSent(current, receipt)
             return@invokeWithReceipt receipt
@@ -234,11 +264,11 @@ private suspend fun Message.sendIntercepted(
             bot,
             target.id,
             directType,
-            options.quote,
-            options.nonce,
-            options.tempTargetId,
-            options.defaultTempTargetId,
-            options.templateId,
+            currentOptions?.quote,
+            currentOptions?.nonce,
+            currentOptions?.tempTargetId,
+            currentOptions?.defaultTempTargetId,
+            currentOptions?.templateId,
         )
         if (receipt != null) {
             bot.notifyMessageSent(current, receipt)
@@ -269,26 +299,40 @@ private suspend fun Message.sendIntercepted(
 private suspend fun Message.send0(
     bot: KookBot,
     targetId: String,
-    directType: Int,
+    directType: DirectType,
     quote: String? = null,
     nonce: String? = null,
     tempTargetId: String? = null,
     defaultTempTargetId: String? = null,
+    templateId: String? = null,
 ): KookMessageReceipt? {
     fun doRequest(type: Int, content: String, nonce: String?, quote: String?, tempTargetId: String?): KookApi<*> {
         return when (directType) {
-            NOT_DIRECT -> SendChannelMessageApi.create(
+            DirectType.NOT_DIRECT -> SendChannelMessageApi.create(
                 type = type,
                 targetId = targetId,
                 content = content,
                 quote = quote,
                 nonce = nonce,
-                tempTargetId = tempTargetId
+                tempTargetId = tempTargetId,
+                templateId = templateId,
             )
 
-            DIRECT_TYPE_BY_TARGET -> SendDirectMessageApi.createByTargetId(targetId, content, type, quote, nonce)
-            DIRECT_TYPE_BY_CODE -> SendDirectMessageApi.createByChatCode(targetId, content, type, quote, nonce)
-            else -> throw IllegalArgumentException("Unknown direct type: $directType")
+            DirectType.DIRECT_TYPE_BY_TARGET -> SendDirectMessageApi.createByTargetId(
+                targetId,
+                content,
+                type,
+                quote,
+                nonce
+            )
+
+            DirectType.DIRECT_TYPE_BY_CODE -> SendDirectMessageApi.createByChatCode(
+                targetId,
+                content,
+                type,
+                quote,
+                nonce
+            )
         }
     }
 

@@ -47,6 +47,7 @@ import love.forte.simbot.component.kook.internal.*
 import love.forte.simbot.component.kook.util.requestData
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.event.onEachError
+import love.forte.simbot.interception.InterceptorContainer
 import love.forte.simbot.kook.api.ApiResultType
 import love.forte.simbot.kook.api.KookApi
 import love.forte.simbot.kook.api.channel.ChannelInfo
@@ -77,7 +78,11 @@ internal class KookBotImpl(
     internal val eventProcessor: EventProcessor,
     override val sourceBot: KBot,
     override val component: KookComponent,
-    private val configuration: KookBotConfiguration
+    private val configuration: KookBotConfiguration,
+    /**
+     * 与所属 Application 共享发送拦截器。
+     */
+    internal val interceptorContainer: InterceptorContainer,
 ) : KookBot, JobBasedBot() {
     override val coroutineContext: CoroutineContext = sourceBot.coroutineContext
     internal val subContext: CoroutineContext = coroutineContext.minusKey(Job)

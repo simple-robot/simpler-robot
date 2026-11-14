@@ -283,7 +283,7 @@ public abstract interface class love/forte/simbot/component/kook/KookUserChat : 
 	public fun sendAsync (Ljava/lang/String;)Ljava/util/concurrent/CompletableFuture;
 	public fun sendAsync (Llove/forte/simbot/message/Message;)Ljava/util/concurrent/CompletableFuture;
 	public fun sendAsync (Llove/forte/simbot/message/MessageContent;)Ljava/util/concurrent/CompletableFuture;
-	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageCreatedReceipt;
+	public fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public synthetic fun sendBlocking (Ljava/lang/String;)Llove/forte/simbot/message/MessageReceipt;
 	public fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/component/kook/message/KookMessageReceipt;
 	public synthetic fun sendBlocking (Llove/forte/simbot/message/Message;)Llove/forte/simbot/message/MessageReceipt;
@@ -1420,6 +1420,70 @@ public final class love/forte/simbot/component/kook/message/KookChannelMessageDe
 	public final fun toMessages (Llove/forte/simbot/kook/messages/ChannelMessageDetails;)Llove/forte/simbot/message/Messages;
 }
 
+public abstract class love/forte/simbot/component/kook/message/KookChannelMessageSendOption : love/forte/simbot/ability/SendOption {
+	public static final fun defaultTempTarget (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOption$DefaultTempTarget;
+	public static final fun nonce (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOption$Nonce;
+	public static final fun quote (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOption$Quote;
+	public static final fun tempTarget (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOption$TempTarget;
+	public static final fun template (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOption$Template;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOption$DefaultTempTarget : love/forte/simbot/component/kook/message/KookChannelMessageSendOption {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOption$Nonce : love/forte/simbot/component/kook/message/KookChannelMessageSendOption {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNonce ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOption$Quote : love/forte/simbot/component/kook/message/KookChannelMessageSendOption {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOption$TempTarget : love/forte/simbot/component/kook/message/KookChannelMessageSendOption {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOption$Template : love/forte/simbot/component/kook/message/KookChannelMessageSendOption {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOptions {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultTempTargetId ()Ljava/lang/String;
+	public final fun getNonce ()Ljava/lang/String;
+	public final fun getQuote ()Ljava/lang/String;
+	public final fun getTempTargetId ()Ljava/lang/String;
+	public final fun getTemplateId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelMessageSendOptionsKt {
+	public static final fun toKookChannelMessageSendOptions (Ljava/lang/Iterable;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOptions;
+	public static final fun toKookChannelMessageSendOptions ([Llove/forte/simbot/ability/SendOption;)Llove/forte/simbot/component/kook/message/KookChannelMessageSendOptions;
+}
+
+public final class love/forte/simbot/component/kook/message/KookChannelRequestMessage : love/forte/simbot/event/InteractionMessage$Extension {
+	public fun <init> (Llove/forte/simbot/kook/api/message/SendChannelMessageApi;)V
+	public final fun getRequest ()Llove/forte/simbot/kook/api/message/SendChannelMessageApi;
+}
+
 public final synthetic class love/forte/simbot/component/kook/message/KookKMarkdownMessage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Llove/forte/simbot/component/kook/message/KookKMarkdownMessage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -1471,6 +1535,56 @@ public abstract interface class love/forte/simbot/component/kook/message/KookMes
 }
 
 public abstract interface class love/forte/simbot/component/kook/message/KookMessageReceipt : love/forte/simbot/message/MessageReceipt {
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendContext : love/forte/simbot/interception/MessageSendContext$Send {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookMessageSendContext$Companion;
+	public final fun getDestination ()Llove/forte/simbot/component/kook/message/KookMessageSendTarget;
+	public fun getOptions ()Ljava/util/List;
+	public fun getSource ()Ljava/lang/Object;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/kook/message/KookMessageSendContext;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/component/kook/message/KookMessageSendContext;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendContext$Companion {
+	public final fun create (Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/kook/message/KookMessageSendTarget;Ljava/util/List;)Llove/forte/simbot/component/kook/message/KookMessageSendContext;
+	public static synthetic fun create$default (Llove/forte/simbot/component/kook/message/KookMessageSendContext$Companion;Llove/forte/simbot/component/kook/bot/KookBot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/kook/message/KookMessageSendTarget;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/component/kook/message/KookMessageSendContext;
+}
+
+public abstract class love/forte/simbot/component/kook/message/KookMessageSendTarget {
+	public static final field Companion Llove/forte/simbot/component/kook/message/KookMessageSendTarget$Companion;
+	public abstract fun getId ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendTarget$Channel : love/forte/simbot/component/kook/message/KookMessageSendTarget {
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendTarget$ChatCode : love/forte/simbot/component/kook/message/KookMessageSendTarget {
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendTarget$Companion {
+	public final fun channel (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageSendTarget$Channel;
+	public final fun chatCode (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageSendTarget$ChatCode;
+	public final fun user (Ljava/lang/String;)Llove/forte/simbot/component/kook/message/KookMessageSendTarget$User;
+}
+
+public final class love/forte/simbot/component/kook/message/KookMessageSendTarget$User : love/forte/simbot/component/kook/message/KookMessageSendTarget {
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class love/forte/simbot/component/kook/message/KookMessages {

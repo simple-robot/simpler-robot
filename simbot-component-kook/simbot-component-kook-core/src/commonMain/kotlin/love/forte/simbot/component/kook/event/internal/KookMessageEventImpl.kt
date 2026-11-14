@@ -27,6 +27,7 @@ package love.forte.simbot.component.kook.event.internal
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.kook.KookChatChannel
@@ -38,15 +39,13 @@ import love.forte.simbot.component.kook.event.KookBotSelfChannelMessageEvent
 import love.forte.simbot.component.kook.event.KookBotSelfMessageEvent
 import love.forte.simbot.component.kook.event.KookChannelMessageEvent
 import love.forte.simbot.component.kook.event.KookContactMessageEvent
-import love.forte.simbot.component.kook.internal.KookGuildImpl
-import love.forte.simbot.component.kook.internal.KookMemberImpl
-import love.forte.simbot.component.kook.internal.KookUserChatImpl
-import love.forte.simbot.component.kook.internal.send
+import love.forte.simbot.component.kook.internal.*
 import love.forte.simbot.component.kook.message.KookMessageReceipt
 import love.forte.simbot.component.kook.message.KookReceiveMessageContent
-import love.forte.simbot.component.kook.message.sendToChannel
 import love.forte.simbot.component.kook.message.toContent
 import love.forte.simbot.component.kook.util.requestDataBy
+import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.userchat.CreateUserChatApi
 import love.forte.simbot.kook.event.TextExtra
 import love.forte.simbot.message.Message
@@ -69,20 +68,26 @@ internal class KookChannelMessageEventImpl(
     override suspend fun content(): KookChatChannel = _channel
     override suspend fun source(): KookGuild = _guild
 
-    override suspend fun reply(message: Message): KookMessageReceipt {
-        return message.sendToChannel(
-            bot,
-            targetId = _channel.source.id,
-            quote = sourceEvent.msgId,
-            tempTargetId = null,
-            defaultTempTargetId = _author.source.id
-        )
-            ?: throw IllegalArgumentException("Valid messages must not be empty.")
-    }
+    override suspend fun reply(text: String): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun reply(text: String): KookMessageReceipt {
-        return _channel.send(text = text, quote = sourceEvent.msgId)
-    }
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), options.toList())
+
+    override suspend fun reply(message: Message): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(message: Message, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 回复消息。
@@ -125,13 +130,26 @@ internal class KookContactMessageEventImpl(
         userChatView ?: userChatView().also { userChatView = it }
     }
 
-    override suspend fun reply(message: Message): KookMessageReceipt {
-        return content().send(message)
-    }
+    override suspend fun reply(text: String): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun reply(text: String): KookMessageReceipt {
-        return content().send(text)
-    }
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), options.toList())
+
+    override suspend fun reply(message: Message): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(message: Message, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 回复消息。
@@ -168,13 +186,26 @@ internal class KookBotSelfChannelMessageEventImpl(
     override suspend fun author(): KookMember = _member
     override suspend fun source(): KookGuild = _guild
 
-    override suspend fun reply(message: Message): KookMessageReceipt {
-        return _channel.send(message, sourceEvent.msgId)
-    }
+    override suspend fun reply(text: String): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun reply(text: String): KookMessageReceipt {
-        return _channel.send(text, sourceEvent.msgId)
-    }
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), options.toList())
+
+    override suspend fun reply(message: Message): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(message: Message, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 回复消息。
@@ -222,13 +253,26 @@ internal class KookBotSelfMessageEventImpl(
         userChatView ?: userChatView().also { userChatView = it }
     }
 
-    override suspend fun reply(message: Message): KookMessageReceipt {
-        return content().send(message)
-    }
+    override suspend fun reply(text: String): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun reply(text: String): KookMessageReceipt {
-        return content().send(text)
-    }
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(text), options.toList())
+
+    override suspend fun reply(message: Message): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), emptyList())
+
+    /**
+     * 保留本次回复选项并进入共享拦截链。
+     */
+    override suspend fun reply(message: Message, vararg options: ReplyOption): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(message), options.toList())
+
+    override suspend fun reply(messageContent: MessageContent): KookMessageReceipt =
+        reply(InteractionMessage.valueOf(messageContent), emptyList())
 
     /**
      * 回复消息。

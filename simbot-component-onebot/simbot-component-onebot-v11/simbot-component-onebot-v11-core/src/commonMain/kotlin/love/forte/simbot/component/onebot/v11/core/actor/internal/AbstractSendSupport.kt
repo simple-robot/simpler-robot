@@ -101,19 +101,31 @@ internal abstract class AbstractSendSupport : SendSupport {
      * 拦截并发送消息。
      * 仅在完整拦截链结束后校验入口要求的回执类型。
      */
-    protected suspend fun sendByInteractionMessage(interactionMessage: InteractionMessage): SendMsgResult {
-        return resolveInteractionMessage(
-            interactionMessage = interactionMessage,
-            onSegments = { sendSegments(it) },
-            onMessage = { sendMessage(it) },
-            onText = { sendText(it) },
-        )
-    }
-
-    protected fun OneBotMessageReceipt.alsoPostSend(
-        interactionMessage: InteractionMessage
-    ): OneBotMessageReceipt = apply {
-        val event = postSendEvent(interactionMessage)
-        bot.pushEventAndLaunch(event)
+    private suspend fun interceptionAndSend(
+        message: InteractionMessage,
+        options: List<SendOption> = emptyList(),
+    ): OneBotMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<OneBotMessageReceipt>(
+        bot.interceptorContainer,
+        MessageSendContext.DefaultSend(bot, this, message, options),
+    ) { context ->
+        // OneBot 暂无专属 SendOption；未知选项按 SendOption 契约忽略。
+        val segments = context.message.segmentsOrNull
+        val result = if (segments != null) {
+            sendSegments(segments)
+        } else {
+            resolveInteractionMessage(
+                interactionMessage = context.message,
+                onSegments = { sendSegments(it) },
+                onMessage = {
+                    if (it is PlainText) {
+                        sendText(it.text)
+                    } else {
+                        sendSegments(it.resolveToOneBotSegmentList(bot))
+                    }
+                },
+                onText = { sendText(it) },
+            )
+        }
+        result.toReceipt(bot).also { bot.notifyMessageSent(context, it) }
     }
 }
