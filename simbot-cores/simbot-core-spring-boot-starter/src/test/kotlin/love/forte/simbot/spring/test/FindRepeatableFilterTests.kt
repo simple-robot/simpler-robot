@@ -38,6 +38,7 @@ import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.FuzzyEventTypeImplementation
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.event.StandardEventResult
 import love.forte.simbot.message.*
@@ -71,6 +72,7 @@ import kotlin.test.*
     ]
 )
 @SpringBootConfiguration
+@Suppress("RedundantOpenModifierAllOpenCompilerPlugin")
 open class FindRepeatableFilterTests {
 
     @Test
@@ -163,6 +165,7 @@ open class FindRepeatableFilterTests {
     }
 
 
+    @OptIn(FuzzyEventTypeImplementation::class)
     class NopEvent : Event {
         override val id: ID = UUID.random()
 
@@ -170,6 +173,7 @@ open class FindRepeatableFilterTests {
         override val time: Timestamp = Timestamp.now()
     }
 
+    @OptIn(FuzzyEventTypeImplementation::class)
     class TestEvent(
         val plain: String,
         val continuation: Continuation<String>

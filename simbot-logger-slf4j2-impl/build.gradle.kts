@@ -43,6 +43,10 @@ dependencies {
     api(libs.lmax.disruptor)
 }
 
+tasks.test {
+    failOnNoDiscoveredTests = false
+}
+
 buildConfig {
     useKotlinOutput {
         internalVisibility = true
