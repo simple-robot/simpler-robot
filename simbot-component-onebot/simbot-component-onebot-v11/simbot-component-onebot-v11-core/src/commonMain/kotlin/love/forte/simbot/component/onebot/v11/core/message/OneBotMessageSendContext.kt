@@ -49,6 +49,7 @@ public class OneBotMessageSendContext private constructor(
     companion {
         /**
          * 创建一次发送操作，复制传入的选项列表。
+         * @since 5.0
          */
         public fun create(
             bot: OneBotBot,

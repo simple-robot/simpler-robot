@@ -31,12 +31,14 @@ import love.forte.simbot.qguild.stdlib.MessageDestination
  *
  * @property destination 区分子频道、频道私聊会话、群和用户。
  * @property id 对应目标的频道 ID、私聊会话 ID 或 openid。
+ * @since 5.0
  */
 public class QGMessageSendTarget private constructor(
     public val destination: MessageDestination,
     public val id: ID,
     /**
      * 按频道成员发送私信时所属的频道 ID，此时 [id] 为成员 ID。
+     * @since 5.0
      */
     public val guildId: ID? = null,
 ) {
@@ -65,12 +67,14 @@ public class QGMessageSendTarget private constructor(
     companion {
         /**
          * 创建一个消息发送目标。
+         * @since 5.0
          */
         public fun create(destination: MessageDestination, id: ID): QGMessageSendTarget =
             QGMessageSendTarget(destination, id)
 
         /**
          * 按频道和成员 ID 描述私信目标。
+         * @since 5.0
          */
         public fun member(guildId: ID, memberId: ID): QGMessageSendTarget =
             QGMessageSendTarget(MessageDestination.DMS, memberId, guildId)

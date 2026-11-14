@@ -120,6 +120,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
      * @param point 当前拦截点。
      * @param context 当前业务上下文。
      * @param chain 后续链的响应式视图，仅在本次拦截调用内有效。
+     * @since 5.0
      */
     @Throws(Exception::class)
     public abstract fun interceptReactive(point: P, context: C, chain: Chain<C, R>): Publisher<out R>
@@ -132,6 +133,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
         /**
          * 使用当前 [point]、业务 [context] 和后续 [chain] 处理本次操作。
          * 返回值及异常遵循 [interceptReactive] 的约定。
+         * @since 5.0
          */
         @NonBlocking
         @Throws(Exception::class)
@@ -150,6 +152,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
     ) {
         /**
          * 与原始 chain 相同的共享属性 Map，并发访问须自行协调。
+         * @since 5.0
          */
         public val attributes: MutableAttributeMap get() = source.attributes
 
@@ -157,6 +160,7 @@ public abstract class ReactiveInterceptor<C : Any, R : Any, P : InterceptionPoin
          * 构建使用 [context] 执行固定后续链的冷 publisher，调用本方法不启动下游。
          * 每次订阅重新执行；非空结果发送一次，`null` 转为空完成，失败发送错误信号。
          * 列表等容器作为一个元素发送，不会自动展开。
+         * @since 5.0
          */
         public fun proceed(context: C): Publisher<R & Any> = publish(entryContext.minusKey(Job)) {
             // 保留入口执行环境，由订阅管理本次执行的生命周期。
@@ -195,6 +199,7 @@ public abstract class NullableReactiveInterceptor<C : Any, R : Any, P : Intercep
      * @param point 当前拦截点。
      * @param context 当前业务上下文。
      * @param chain 后续链的响应式视图，仅在本次拦截调用内有效。
+     * @since 5.0
      */
     @Throws(Exception::class)
     public abstract fun interceptReactive(
@@ -211,6 +216,7 @@ public abstract class NullableReactiveInterceptor<C : Any, R : Any, P : Intercep
         /**
          * 使用当前 [point]、业务 [context] 和后续 [chain] 处理本次操作。
          * 返回值及异常遵循 [NullableReactiveInterceptor.interceptReactive] 的约定。
+         * @since 5.0
          */
         @Throws(Exception::class)
         public fun intercept(point: P, context: C, chain: ReactiveInterceptor.Chain<C, R?>): Publisher<out R>

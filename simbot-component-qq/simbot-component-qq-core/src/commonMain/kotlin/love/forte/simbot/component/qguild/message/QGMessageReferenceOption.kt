@@ -37,6 +37,7 @@ public class QGMessageReferenceOption private constructor(public val id: ID) : Q
     companion {
         /**
          * 引用指定消息。
+         * @since 5.0
          */
         public fun create(id: ID): QGMessageReferenceOption = QGMessageReferenceOption(id)
     }

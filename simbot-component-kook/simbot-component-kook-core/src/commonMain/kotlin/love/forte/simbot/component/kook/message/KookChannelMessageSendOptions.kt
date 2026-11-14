@@ -40,6 +40,7 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
 
     /**
      * 引用消息的 ID。
+     * @since 5.0
      */
     public class Quote internal constructor(public val id: ID) : KookChannelMessageSendOption() {
         override fun equals(other: Any?): Boolean =
@@ -52,6 +53,7 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
 
     /**
      * 平台原样返回的 nonce。
+     * @since 5.0
      */
     public class Nonce internal constructor(public val nonce: String) : KookChannelMessageSendOption() {
         override fun equals(other: Any?): Boolean =
@@ -64,6 +66,7 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
 
     /**
      * 临时消息的目标用户 ID。
+     * @since 5.0
      */
     public class TempTarget internal constructor(public val id: ID) : KookChannelMessageSendOption() {
         override fun equals(other: Any?): Boolean =
@@ -76,6 +79,7 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
 
     /**
      * KookTempTarget.current 使用的默认目标用户 ID。
+     * @since 5.0
      */
     public class DefaultTempTarget internal constructor(public val id: ID) : KookChannelMessageSendOption() {
         override fun equals(other: Any?): Boolean =
@@ -88,6 +92,7 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
 
     /**
      * 模板消息 ID，消息内容作为模板输入。
+     * @since 5.0
      */
     public class Template internal constructor(public val id: ID) : KookChannelMessageSendOption() {
         override fun equals(other: Any?): Boolean =
@@ -101,26 +106,31 @@ public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMe
     companion {
         /**
          * 引用消息的 ID。
+         * @since 5.0
          */
         public fun quote(id: ID): Quote = Quote(id)
 
         /**
          * 平台原样返回的 nonce。
+         * @since 5.0
          */
         public fun nonce(nonce: String): Nonce = Nonce(nonce)
 
         /**
          * 临时消息的目标用户 ID。
+         * @since 5.0
          */
         public fun tempTarget(id: ID): TempTarget = TempTarget(id)
 
         /**
          * KookTempTarget.current 使用的默认目标用户 ID。
+         * @since 5.0
          */
         public fun defaultTempTarget(id: ID): DefaultTempTarget = DefaultTempTarget(id)
 
         /**
          * 模板消息 ID，消息内容作为模板输入。
+         * @since 5.0
          */
         public fun template(id: ID): Template = Template(id)
 
@@ -199,22 +209,27 @@ public fun Array<out SendOption>.toKookChannelMessageSendOptions(): KookChannelM
 public class KookChannelMessageSendOptions internal constructor(
     /**
      * 引用消息的 ID。
+     * @since 5.0
      */
     public val quote: String? = null,
     /**
      * 平台原样返回的 nonce。
+     * @since 5.0
      */
     public val nonce: String? = null,
     /**
      * 临时消息的目标用户 ID。
+     * @since 5.0
      */
     public val tempTargetId: String? = null,
     /**
      * KookTempTarget.current 使用的默认目标用户 ID。
+     * @since 5.0
      */
     public val defaultTempTargetId: String? = null,
     /**
      * 模板消息 ID。消息内容作为模板输入。
+     * @since 5.0
      */
     public val templateId: String? = null,
 ) {

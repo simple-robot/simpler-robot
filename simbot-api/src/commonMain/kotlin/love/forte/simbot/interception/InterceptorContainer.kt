@@ -35,6 +35,7 @@ public interface InterceptorContainer {
     /**
      * 返回所有当前可见的有效注册项的序列，会过滤掉已注销的内容。
      * 同一个拦截点的拦截器信息会连续出现，并按优先级升序、同优先级按注册顺序排列。不同拦截点之间的顺序随机。
+     * @since 5.0
      */
     public val interceptors: Sequence<InterceptorRegistration<*, *, *>>
 
@@ -43,6 +44,7 @@ public interface InterceptorContainer {
      *
      * @param point 注册时使用的拦截点。
      * @return 与注册返回值相同的注册对象组成的弱一致性序列。
+     * @since 5.0
      */
     public fun <C : Any, R, P : InterceptionPoint<C, R>> interceptors(
         point: P
@@ -50,17 +52,20 @@ public interface InterceptorContainer {
 
     /**
      * 判断此时 [point] 是否存在可见的有效拦截器信息。
+     * @since 5.0
      */
     public fun hasInterceptors(point: InterceptionPoint<*, *>): Boolean
 
     /**
      * 根据所属容器内的 [id] 查找有效的拦截器注册信息，不存在或已经注销时返回 `null`。
+     * @since 5.0
      */
     public fun findById(id: String): InterceptorRegistration<*, *, *>?
 
     /**
      * 根据所属容器内的 [id] 以及其对应的 [point] 查找有效的拦截器注册信息，不存在或已经注销时返回 `null`。
      * 如果仅仅是 id 相同但 point 不匹配也会返回 `null`。
+     * @since 5.0
      */
     public fun <C : Any, R, P : InterceptionPoint<C, R>> findById(
         id: String,
@@ -72,6 +77,7 @@ public interface InterceptorContainer {
      *
      * @return 本次调用首次将有效注册标记为失效时返回 `true`，不存在或已失效时返回 `false`。
      * 同一注册的并发注销只有一个调用能成功完成状态切换。
+     * @since 5.0
      */
     public fun disposeById(id: String): Boolean
 }

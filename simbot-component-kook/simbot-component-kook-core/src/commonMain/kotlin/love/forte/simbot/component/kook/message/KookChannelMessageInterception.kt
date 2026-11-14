@@ -31,10 +31,12 @@ import love.forte.simbot.kook.api.message.SendChannelMessageApi
  *
  * [KookChannelMessageSendOption] 可覆盖请求中的对应参数，替换请求可以改变实际发送目标。
  * 替换为标准消息时使用上下文的目标和选项。
+ * @since 5.0
  */
 public class KookChannelRequestMessage(
     /**
      * 完整的原生请求，没有适用的选项覆盖时会直接用于执行。
+     * @since 5.0
      */
     public val request: SendChannelMessageApi,
 ) : InteractionMessage.Extension()
@@ -43,15 +45,18 @@ public class KookChannelRequestMessage(
  * KOOK 消息发送目标。
  *
  * 根据具体类型区分频道、用户和私聊会话，无需请求平台。
+ * @since 5.0
  */
 public sealed class KookMessageSendTarget private constructor() {
     /**
      * 频道 ID、用户 ID 或私聊会话 code。
+     * @since 5.0
      */
     public abstract val id: String
 
     /**
      * 频道 ID目标。
+     * @since 5.0
      */
     public class Channel internal constructor(override val id: String) : KookMessageSendTarget() {
         override fun equals(other: Any?): Boolean =
@@ -64,6 +69,7 @@ public sealed class KookMessageSendTarget private constructor() {
 
     /**
      * 用户 ID目标。
+     * @since 5.0
      */
     public class User internal constructor(override val id: String) : KookMessageSendTarget() {
         override fun equals(other: Any?): Boolean =
@@ -76,6 +82,7 @@ public sealed class KookMessageSendTarget private constructor() {
 
     /**
      * 私聊会话 code目标。
+     * @since 5.0
      */
     public class ChatCode internal constructor(override val id: String) : KookMessageSendTarget() {
         override fun equals(other: Any?): Boolean =
@@ -89,16 +96,19 @@ public sealed class KookMessageSendTarget private constructor() {
     companion {
         /**
          * 创建频道 ID 目标。
+         * @since 5.0
          */
         public fun channel(id: String): Channel = Channel(id)
 
         /**
          * 创建用户 ID 目标。
+         * @since 5.0
          */
         public fun user(id: String): User = User(id)
 
         /**
          * 创建私聊会话 code 目标。
+         * @since 5.0
          */
         public fun chatCode(id: String): ChatCode = ChatCode(id)
     }

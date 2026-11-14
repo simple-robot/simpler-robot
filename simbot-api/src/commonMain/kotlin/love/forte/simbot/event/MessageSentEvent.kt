@@ -38,11 +38,13 @@ import love.forte.simbot.message.MessageReceipt
 public interface MessageSentEvent : BotEvent, InternalNotificationEvent {
     /**
      * 实际发送使用的上下文，包含最终消息、选项及原始调用来源。
+     * @since 5.0
      */
     public val context: MessageSendContext
 
     /**
      * 实际发送终端返回的回执。
+     * @since 5.0
      */
     public val receipt: MessageReceipt
 

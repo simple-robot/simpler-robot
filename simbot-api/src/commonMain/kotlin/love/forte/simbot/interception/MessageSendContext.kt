@@ -39,30 +39,36 @@ import love.forte.simbot.suspendrunner.STP
 public sealed class MessageSendContext private constructor(
     /**
      * 执行本次操作的 Bot。
+     * @since 5.0
      */
     public open val bot: Bot,
     /**
      * 最初传入发送或回复方法的消息。
+     * @since 5.0
      */
     public open val originalMessage: InteractionMessage,
     /**
      * 当前传递给下游的消息。
+     * @since 5.0
      */
     public open val message: InteractionMessage,
 ) {
     /**
      * 被调用 send/reply 的对象。回复来源与最终发送目标可能不同。
+     * @since 5.0
      */
     public abstract val source: Any
 
     /**
      * 本次操作确定的不会产生副作用的稳定目标描述类型。由实现者决定内容。
+     * @since 5.0
      */
     public abstract val destination: Any?
 
     /**
      * 按需解析入口目标的实体，无法获取时返回 null。
      * 原生请求替换后仍解析本次操作最初确定的目标。
+     * @since 5.0
      */
     @STP
     public abstract suspend fun target(): Any?
@@ -70,6 +76,7 @@ public sealed class MessageSendContext private constructor(
     /**
      * 创建同一次操作的新上下文，替换当前消息。
      * 保留具体类型、原始消息、选项、来源和目标解析方式。
+     * @since 5.0
      */
     public abstract fun withMessage(message: InteractionMessage): MessageSendContext
 
@@ -79,6 +86,7 @@ public sealed class MessageSendContext private constructor(
      * 组件通过继承此类型扩展发送参数，并实现保持具体类型与附加字段的复制方法。
      *
      * @param originalMessage 本次操作最初的消息。
+     * @since 5.0
      */
     public abstract class Send protected constructor(
         bot: Bot,
@@ -87,6 +95,7 @@ public sealed class MessageSendContext private constructor(
     ) : MessageSendContext(bot, originalMessage, message) {
         /**
          * 当前发送选项。
+         * @since 5.0
          */
         public abstract val options: List<SendOption>
 
@@ -94,6 +103,7 @@ public sealed class MessageSendContext private constructor(
 
         /**
          * 替换发送选项并复制传入 [options] 列表。
+         * @since 5.0
          */
         public abstract fun withOptions(options: Collection<SendOption>): Send
     }
@@ -102,6 +112,7 @@ public sealed class MessageSendContext private constructor(
      * 所有回复 [ReplySupport.reply] 或相关行为的抽象上下文。
      *
      * @param originalMessage 本次操作最初的消息。
+     * @since 5.0
      */
     public abstract class Reply protected constructor(
         bot: Bot,
@@ -110,6 +121,7 @@ public sealed class MessageSendContext private constructor(
     ) : MessageSendContext(bot, originalMessage, message) {
         /**
          * 当前回复选项。
+         * @since 5.0
          */
         public abstract val options: List<ReplyOption>
 
@@ -117,6 +129,7 @@ public sealed class MessageSendContext private constructor(
 
         /**
          * 替换回复选项并复制传入 [options] 列表。
+         * @since 5.0
          */
         public abstract fun withOptions(options: Collection<ReplyOption>): Reply
     }

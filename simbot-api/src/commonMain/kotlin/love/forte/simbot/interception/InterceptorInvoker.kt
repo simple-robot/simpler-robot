@@ -44,6 +44,7 @@ public interface InterceptorInvoker<C : Any, R> {
      * 使用 [context] 执行整条拦截链，并返回链的结果。
      * 未处理的异常和取消异常会直接向上传播。
      * @throws IllegalStateException 如果 [invoke] 被重复执行
+     * @since 5.0
      */
     public suspend fun invoke(context: C): R
 }

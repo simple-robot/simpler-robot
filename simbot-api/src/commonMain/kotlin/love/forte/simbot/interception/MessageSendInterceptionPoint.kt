@@ -66,6 +66,7 @@ public object MessageSendInterceptionPoint : InterceptionPoint<MessageSendContex
      * @param context 本次发送或回复的初始上下文。
      * @param interceptedTarget 实际发送终端，必须使用传入上下文中的当前消息及选项。
      * @see invokeWithReceipt 组件入口承诺具体回执类型时应使用的执行入口。
+     * @since 5.0
      */
     public suspend fun invoke(
         container: InterceptorContainer,
@@ -85,6 +86,7 @@ public object MessageSendInterceptionPoint : InterceptionPoint<MessageSendContex
  * @param context 本次发送或回复的初始上下文。
  * @param interceptedTarget 实际发送逻辑，即被拦截的逻辑。
  * @throws IllegalStateException 最终回执不符合约定的类型 [R] 时。
+ * @since 5.0
  */
 public suspend inline fun <reified R : MessageReceipt> MessageSendInterceptionPoint.invokeWithReceipt(
     container: InterceptorContainer,

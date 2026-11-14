@@ -34,12 +34,14 @@ import love.forte.simbot.common.id.ID
 public sealed class OneBotMessageReplyOption : ReplyOption {
     /**
      * 引用消息的 ID。同一次操作中至多指定一次。
+     * @since 5.0
      */
     public class Quote internal constructor(public val id: ID) : OneBotMessageReplyOption()
 
     companion {
         /**
          * 引用指定消息。
+         * @since 5.0
          */
         public fun quote(id: ID): Quote = Quote(id)
     }

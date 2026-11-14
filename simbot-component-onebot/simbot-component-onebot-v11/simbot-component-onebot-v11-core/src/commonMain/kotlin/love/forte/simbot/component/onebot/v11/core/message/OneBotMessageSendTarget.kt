@@ -34,6 +34,7 @@ public class OneBotMessageSendTarget private constructor(public val type: Type, 
     companion {
         /**
          * 根据目标类型和 ID 创建目标描述。
+         * @since 5.0
          */
         public fun create(type: Type, id: ID): OneBotMessageSendTarget = OneBotMessageSendTarget(type, id)
     }
@@ -47,6 +48,7 @@ public class OneBotMessageSendTarget private constructor(public val type: Type, 
 
     /**
      * 群聊或私聊。
+     * @since 5.0
      */
     public enum class Type { GROUP, PRIVATE }
 }

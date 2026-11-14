@@ -48,6 +48,7 @@ public interface InterceptorRegistrar {
      * @param priority 当前点内的执行优先级，默认为 [PriorityConstant.DEFAULT]。
      * @param interceptor 用户提供的拦截逻辑。
      * @return 包含 ID、拦截点、优先级及受失效状态控制的执行视图的注册对象。
+     * @since 5.0
      */
     public fun <C : Any, R, P : InterceptionPoint<C, R>> register(
         point: P,

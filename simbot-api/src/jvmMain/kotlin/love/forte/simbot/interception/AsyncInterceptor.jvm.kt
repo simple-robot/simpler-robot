@@ -101,6 +101,7 @@ public abstract class AsyncInterceptor<C : Any, R, P : InterceptionPoint<C, R>> 
      * @param point 当前拦截点。
      * @param context 当前业务上下文。
      * @param chain 后续链的异步视图，不应阻塞等待它的结果。
+     * @since 5.0
      */
     @NonBlocking
     @Throws(Exception::class)
@@ -114,6 +115,7 @@ public abstract class AsyncInterceptor<C : Any, R, P : InterceptionPoint<C, R>> 
         /**
          * 使用当前 [point]、业务 [context] 和后续 [chain] 处理本次操作。
          * 返回值及异常遵循 [interceptAsync] 的约定。
+         * @since 5.0
          */
         @Throws(Exception::class)
         public fun intercept(point: P, context: C, chain: Chain<C, R>): CompletionStage<R>
@@ -130,6 +132,7 @@ public abstract class AsyncInterceptor<C : Any, R, P : InterceptionPoint<C, R>> 
     ) {
         /**
          * 与原始 chain 相同的共享属性 Map。
+         * @since 5.0
          */
         public val attributes: MutableAttributeMap get() = source.attributes
 
@@ -138,6 +141,7 @@ public abstract class AsyncInterceptor<C : Any, R, P : InterceptionPoint<C, R>> 
          * 取消或从外部完成此 future 会取消对应下游执行。
          * 未组合到回调返回值的 future 不会被本次调用等待或取消，应由用户管理。
          * 应在当前拦截调用内使用 chain，不应将其保存到调用之外。
+         * @since 5.0
          */
         @OptIn(DelicateCoroutinesApi::class)
         public fun proceed(context: C): CompletableFuture<R> =

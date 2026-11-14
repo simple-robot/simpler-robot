@@ -132,6 +132,7 @@ public abstract class BlockingInterceptor<C : Any, R, P : InterceptionPoint<C, R
      * @param point 当前拦截点。
      * @param context 当前业务上下文。
      * @param chain 后续链的阻塞视图，只应在本次回调内使用。
+     * @since 5.0
      */
     @Throws(Exception::class)
     public abstract fun interceptBlocking(point: P, context: C, chain: Chain<C, R>): R
@@ -144,6 +145,7 @@ public abstract class BlockingInterceptor<C : Any, R, P : InterceptionPoint<C, R
         /**
          * 使用当前 [point]、业务 [context] 和后续 [chain] 处理本次操作。
          * 返回值及异常遵循 [interceptBlocking] 的约定。
+         * @since 5.0
          */
         @Throws(Exception::class)
         public fun intercept(point: P, context: C, chain: Chain<C, R>): R
@@ -160,11 +162,13 @@ public abstract class BlockingInterceptor<C : Any, R, P : InterceptionPoint<C, R
     ) {
         /**
          * 与原始 chain 相同的共享属性 Map。
+         * @since 5.0
          */
         public val attributes: MutableAttributeMap get() = source.attributes
 
         /**
          * 在完整入口上下文中使用 [context] 执行固定后续链，阻塞等待结果；异常及取消直接抛出。
+         * @since 5.0
          */
         @Throws(Exception::class)
         public fun proceed(context: C): R = runInBlocking(coroutineContext) { source.proceed(context) }

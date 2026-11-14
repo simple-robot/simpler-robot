@@ -55,6 +55,7 @@ public fun interface Interceptor<C : Any, R, P : InterceptionPoint<C, R>> {
      * @param context 传递到当前拦截器的业务上下文。
      * @param chain 当前拦截器之后的执行链及本次操作的共享属性。
      * @return 拦截器处理后的操作结果，可能是最终目标实际执行结果，也可能是下一段拦截器或某自定义结果。
+     * @since 5.0
      */
     @JvmSynthetic
     public suspend fun intercept(point: P, context: C, chain: Chain<C, R>): R
@@ -77,12 +78,14 @@ public fun interface Interceptor<C : Any, R, P : InterceptionPoint<C, R>> {
          *
          * 并发执行时，调用方应保证此 Map、其中的值及复合读写操作的并发安全。AttributeMap 内部使用线程安全的 Map。
          * 默认执行器为每次操作提供独立的 Map，共享范围是一次完整的拦截处理链。
+         * @since 5.0
          */
         public val attributes: MutableAttributeMap
 
         /**
          * 使用 [context] 执行固定的后续链，并返回其结果。
          * 每次调用重新执行下游，异常及取消直接传播，具体调用次数限制由拦截点约定。
+         * @since 5.0
          */
         @JvmSynthetic
         public suspend fun proceed(context: C): R
@@ -95,6 +98,7 @@ public fun interface Interceptor<C : Any, R, P : InterceptionPoint<C, R>> {
              * @param attributes 与同一次操作的其他 chain 共享的属性。默认基于 [concurrentMutableMap] 构建。
              * @param proceed 每次继续执行时调用的后续操作。
              * @return 将 [proceed] 与 [attributes] 组合的执行链。
+             * @since 5.0
              */
             public fun <C : Any, R> create(
                 attributes: MutableAttributeMap = MutableAttributeMap.create(concurrentMutableMap()),
