@@ -33,6 +33,7 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
 import love.forte.simbot.component.qguild.message.sendMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
@@ -110,7 +111,8 @@ internal class QGTextChannelImpl internal constructor(
             ::sendByInteractionMessage
         )
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         fun MessageSendApi.Body.Builder.configMsgId() {
             if (msgId == null) {
                 msgId = currentMsgId

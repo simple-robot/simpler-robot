@@ -25,17 +25,20 @@ package love.forte.simbot.component.onebot.v11.core.actor.internal
 
 import love.forte.simbot.ability.SendOption
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notifyMessageSent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendContext
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.utils.resolveInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.definition.Actor
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.message.Message
@@ -106,9 +109,20 @@ internal abstract class AbstractSendSupport : SendSupport {
         options: List<SendOption> = emptyList(),
     ): OneBotMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<OneBotMessageReceipt>(
         bot.interceptorContainer,
-        MessageSendContext.DefaultSend(bot, this, message, options),
+        OneBotMessageSendContext.create(
+            bot = bot,
+            source = this,
+            message = message,
+            destination = when (this) {
+                is OneBotGroup -> OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.GROUP, id)
+                is Actor -> OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.PRIVATE, id)
+                else -> error("Unsupported OneBot send source: $this")
+            },
+            options = options,
+            target = { this },
+        ),
     ) { context ->
-        // OneBot 暂无专属 SendOption；未知选项按 SendOption 契约忽略。
+        // 未知选项按 SendOption 契约忽略。
         val segments = context.message.segmentsOrNull
         val result = if (segments != null) {
             sendSegments(segments)

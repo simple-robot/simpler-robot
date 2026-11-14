@@ -26,6 +26,7 @@ package love.forte.simbot.component.qguild.internal.event
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.channel.QGTextChannel
 import love.forte.simbot.component.qguild.event.QGAtMessageCreateEvent
 import love.forte.simbot.component.qguild.guild.QGGuild
@@ -35,6 +36,8 @@ import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
 import love.forte.simbot.component.qguild.internal.message.QGMessageContentImpl
 import love.forte.simbot.component.qguild.internal.message.interceptReply
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageReplyContext
+import love.forte.simbot.component.qguild.message.qgMessageReference
 import love.forte.simbot.component.qguild.message.sendMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.MessageContent
@@ -112,7 +115,9 @@ internal class QGAtMessageCreateEventImpl(
             ::replyByInteractionMessage
         )
 
-    private suspend fun replyByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
+        val message = context.message
+        val reference = context.options.qgMessageReference()?.literal
         var ref: Message.Reference? = null
 
         fun MessageSendApi.Body.Builder.configMsgIdAndRef() {
@@ -120,7 +125,7 @@ internal class QGAtMessageCreateEventImpl(
                 msgId = sourceEventEntity.id
             }
             if (messageReference == null) {
-                messageReference = ref ?: Message.Reference(sourceEventEntity.id).also { ref = it }
+                messageReference = reference?.let { id -> ref ?: Message.Reference(id).also { ref = it } }
             }
         }
 

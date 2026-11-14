@@ -38,6 +38,7 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMes
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
@@ -61,26 +62,32 @@ internal abstract class OneBotPrivateMessageEventImpl(
         bot
     )
 
+    override val replyDestination: OneBotMessageSendTarget
+        get() = OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.PRIVATE, sourceEvent.userId)
+
+
     override suspend fun replyTarget(): Any? = when (this) {
         is OneBotFriendMessageEvent -> content()
         is OneBotGroupPrivateMessageEvent -> content()
         else -> null
     }
 
-    override suspend fun replyText(text: String): SendMsgResult {
+    override suspend fun replyText(text: String, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendPrivateTextMsgApi(
                 target = sourceEvent.userId,
                 text,
+                reply = reply,
             )
         )
     }
 
-    override suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult {
+    override suspend fun replySegments(segments: List<OneBotMessageSegment>, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendPrivateMsgApi(
                 target = sourceEvent.userId,
-                message = segments
+                message = segments,
+                reply = reply,
             )
         )
     }

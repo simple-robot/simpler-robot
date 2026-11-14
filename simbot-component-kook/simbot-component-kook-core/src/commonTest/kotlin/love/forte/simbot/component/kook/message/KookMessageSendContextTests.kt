@@ -104,7 +104,7 @@ class KookMessageSendContextTests {
         assertSame(message, copy.originalMessage)
         assertSame(replacement, copy.message)
         assertSame(destination, copy.destination)
-        assertSame(destination, copy.target())
+        assertEquals(null, copy.target())
         assertEquals(listOf(option), initial.options)
     }
 }

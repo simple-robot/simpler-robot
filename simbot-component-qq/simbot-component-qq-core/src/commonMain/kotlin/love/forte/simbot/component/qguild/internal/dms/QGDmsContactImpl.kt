@@ -24,11 +24,13 @@
 package love.forte.simbot.component.qguild.internal.dms
 
 import love.forte.simbot.ability.SendOption
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
 import love.forte.simbot.component.qguild.message.sendDmsMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
@@ -50,6 +52,12 @@ internal class QGDmsContactImpl(
     private val guildId: String,
     private val currentMsgId: String?,
 ) : QGDmsContact {
+    internal val sendDestination
+        get() = love.forte.simbot.component.qguild.message.QGMessageSendTarget.create(
+            love.forte.simbot.qguild.stdlib.MessageDestination.DMS,
+            guildId.ID,
+        )
+
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 
     override suspend fun send(text: String): QGMessageReceipt =
@@ -94,7 +102,8 @@ internal class QGDmsContactImpl(
             send = ::sendByInteractionMessage
         )
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         fun MessageSendApi.Body.Builder.configMsgId() {
             if (msgId == null) {
                 msgId = currentMsgId

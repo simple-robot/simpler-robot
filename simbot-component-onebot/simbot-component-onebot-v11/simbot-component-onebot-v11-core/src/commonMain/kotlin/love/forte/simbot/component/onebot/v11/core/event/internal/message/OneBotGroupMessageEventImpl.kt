@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.internal.message
 
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
@@ -37,6 +38,8 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMess
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawGroupMessageEvent
@@ -65,24 +68,31 @@ internal abstract class OneBotGroupMessageEventImpl(
             ?: error("Group with id $groupId is not found")
     }
 
+    override val replyDestination: OneBotMessageSendTarget
+        get() = OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.GROUP, sourceEvent.groupId)
+
+    override val defaultReplyOptions: List<ReplyOption>
+        get() = listOf(OneBotMessageReplyOption.quote(sourceEvent.messageId))
+
+
     override suspend fun replyTarget(): Any? = content()
 
-    override suspend fun replyText(text: String): SendMsgResult {
+    override suspend fun replyText(text: String, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendGroupTextMsgApi(
                 target = sourceEvent.groupId,
                 text,
-                reply = sourceEvent.messageId
+                reply = reply
             )
         )
     }
 
-    override suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult {
+    override suspend fun replySegments(segments: List<OneBotMessageSegment>, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendGroupMsgApi(
                 target = sourceEvent.groupId,
                 message = segments,
-                reply = sourceEvent.messageId
+                reply = reply
             )
         )
     }

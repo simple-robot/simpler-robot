@@ -25,7 +25,9 @@ package love.forte.simbot.component.kook.internal
 
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.kook.KookChatCapableChannel
@@ -51,13 +53,12 @@ import love.forte.simbot.message.MessageReceipt
  */
 internal suspend inline fun KookBotImpl.interceptMessageSend(
     context: MessageSendContext,
-    crossinline send: suspend (InteractionMessage) -> KookMessageReceipt,
+    crossinline send: suspend (MessageSendContext) -> KookMessageReceipt,
 ): KookMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<KookMessageReceipt>(
     interceptorContainer,
     context
 ) { currentContext ->
-    // 这里的私聊与回复入口忽略未知选项，频道发送入口单独处理协议选项。
-    val receipt = send(currentContext.message)
+    val receipt = send(currentContext)
     notifyMessageSent(currentContext, receipt)
     receipt
 }
@@ -151,7 +152,13 @@ internal suspend fun KookChatCapableChannel.sendChannelMessage(
         )
     }
 
-    is KookChannelRequestMessage -> message.request.requestDataBy(bot).asReceipt(false, bot)
+    is KookChannelRequestMessage -> message.request.withOptions(
+        quote,
+        nonce,
+        tempTargetId,
+        templateId
+    ).requestDataBy(bot).asReceipt(false, bot)
+
     is InteractionMessage.Extension -> throw UnsupportedOperationException("Unsupported KOOK message: $message")
 }
 
@@ -162,16 +169,18 @@ internal suspend fun sendDirectMessage(
     bot: KookBot,
     targetId: String,
     message: InteractionMessage,
+    quote: String? = null,
+    nonce: String? = null,
 ): KookMessageReceipt = when (message) {
     is InteractionMessage.Text -> SendDirectMessageApi.createByTargetId(
         targetId,
         message.text,
         MessageType.TEXT.type,
-        null,
-        null,
+        quote,
+        nonce,
     ).requestDataBy(bot).asReceipt(true, bot)
 
-    is InteractionMessage.Message -> message.message.sendToDirectByTargetIdDirect(bot, targetId, null, null, null)
+    is InteractionMessage.Message -> message.message.sendToDirectByTargetIdDirect(bot, targetId, quote, nonce, null)
         ?: throw IllegalArgumentException("Valid messages must not be empty.")
 
     is InteractionMessage.MessageContent -> when (val content = message.messageContent) {
@@ -179,20 +188,67 @@ internal suspend fun sendDirectMessage(
             targetId = targetId,
             content = content.source.content,
             type = content.source.type?.value,
-            quote = null,
-            nonce = null,
+            quote = quote,
+            nonce = nonce,
         ).requestDataBy(bot).asReceipt(true, bot)
 
         is KookChannelMessageDetailsContent -> SendDirectMessageApi.createByTargetId(
             targetId = targetId,
             content = content.details.content,
             type = content.details.type,
-            quote = content.details.quote?.id,
-            nonce = null,
+            quote = quote ?: content.details.quote?.id,
+            nonce = nonce,
         ).requestDataBy(bot).asReceipt(true, bot)
 
-        else -> sendDirectMessage(bot, targetId, InteractionMessage.valueOf(content.messages))
+        else -> sendDirectMessage(bot, targetId, InteractionMessage.valueOf(content.messages), quote, nonce)
     }
 
     is InteractionMessage.Extension -> throw UnsupportedOperationException("Unsupported KOOK message: $message")
+}
+
+/**
+ * 取得当前上下文中适用的 KOOK 协议选项。
+ */
+internal fun MessageSendContext.kookMessageOptions(): KookChannelMessageSendOptions? =
+    when (this) {
+        is MessageSendContext.Send -> options
+        is MessageSendContext.Reply -> options.filterIsInstance<KookChannelMessageSendOption>()
+    }.toKookChannelMessageSendOptions()
+
+internal fun initialKookReplyOptions(
+    options: List<ReplyOption>,
+    quote: String? = null,
+    defaultTempTargetId: String? = null,
+): List<ReplyOption> = buildList {
+    if (quote != null && options.none { it is KookChannelMessageSendOption.Quote }) {
+        add(KookChannelMessageSendOption.quote(quote.ID))
+    }
+    if (defaultTempTargetId != null && options.none { it is KookChannelMessageSendOption.DefaultTempTarget }) {
+        add(KookChannelMessageSendOption.defaultTempTarget(defaultTempTargetId.ID))
+    }
+    addAll(options)
+}
+
+internal suspend fun KookChatCapableChannel.sendChannelMessage(context: MessageSendContext): KookMessageReceipt {
+    val options = context.kookMessageOptions()
+    return sendChannelMessage(
+        context.message,
+        options?.quote,
+        options?.defaultTempTargetId,
+        options?.tempTargetId,
+        options?.nonce,
+        options?.templateId,
+        (context.destination as KookMessageSendTarget.Channel).id,
+    )
+}
+
+internal suspend fun sendDirectMessage(bot: KookBot, context: MessageSendContext): KookMessageReceipt {
+    val options = context.kookMessageOptions()
+    return sendDirectMessage(
+        bot,
+        (context.destination as KookMessageSendTarget.User).id,
+        context.message,
+        options?.quote,
+        options?.nonce,
+    )
 }

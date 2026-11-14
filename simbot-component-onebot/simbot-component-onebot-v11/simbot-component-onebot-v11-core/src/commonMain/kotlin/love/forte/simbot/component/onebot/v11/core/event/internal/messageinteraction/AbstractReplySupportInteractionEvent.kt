@@ -25,17 +25,21 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.messageintera
 
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.ReplySupport
+import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notifyMessageSent
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
+import love.forte.simbot.component.onebot.v11.core.message.oneBotReplyQuote
 import love.forte.simbot.component.onebot.v11.core.utils.resolveInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.message.Message
@@ -56,15 +60,19 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
      */
     protected abstract suspend fun replyTarget(): Any?
 
-    /**
-     * 执行平台回复，避免再次进入拦截。
-     */
-    protected abstract suspend fun replyText(text: String): SendMsgResult
+    protected abstract val replyDestination: OneBotMessageSendTarget
+
+    protected open val defaultReplyOptions: List<ReplyOption> get() = emptyList()
 
     /**
-     * 执行平台回复，避免再次进入拦截。
+     * 执行平台回复。
      */
-    protected abstract suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult
+    protected abstract suspend fun replyText(text: String, reply: ID?): SendMsgResult
+
+    /**
+     * 执行平台回复。
+     */
+    protected abstract suspend fun replySegments(segments: List<OneBotMessageSegment>, reply: ID?): SendMsgResult
 
     /**
      * 通过拦截点执行本次回复。
@@ -111,24 +119,35 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
         options: List<ReplyOption> = emptyList(),
     ): OneBotMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<OneBotMessageReceipt>(
         bot.interceptorContainer,
-        MessageSendContext.DefaultReply(bot, this, message, options, target = { replyTarget() }),
+        OneBotMessageReplyContext.create(
+            bot = bot,
+            source = this,
+            message = message,
+            destination = replyDestination,
+            options = if (options.any { it is OneBotMessageReplyOption.Quote }) {
+                options
+            } else {
+                defaultReplyOptions + options
+            },
+            target = { replyTarget() },
+        ),
     ) { context ->
-        // OneBot 暂无专属 ReplyOption；未知选项按 ReplyOption 契约忽略。
+        val quote = (context as OneBotMessageReplyContext).options.oneBotReplyQuote()
         val segments = context.message.segmentsOrNull
         val result = if (segments != null) {
-            replySegments(segments)
+            replySegments(segments, quote)
         } else {
             resolveInteractionMessage(
                 interactionMessage = context.message,
-                onSegments = { replySegments(it) },
+                onSegments = { replySegments(it, quote) },
                 onMessage = {
                     if (it is PlainText) {
-                        replyText(it.text)
+                        replyText(it.text, quote)
                     } else {
-                        replySegments(it.resolveToOneBotSegmentList(bot))
+                        replySegments(it.resolveToOneBotSegmentList(bot), quote)
                     }
                 },
-                onText = { replyText(it) },
+                onText = { replyText(it, quote) },
             )
         }
         result.toReceipt(bot).also { bot.notifyMessageSent(context, it) }

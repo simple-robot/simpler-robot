@@ -105,9 +105,9 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
                 assertSame(bot, it.source)
                 assertSame(it.originalMessage, it.message)
                 assertTrue(it.options.isEmpty())
-                assertSame(direct.destination, it.target())
+                assertEquals(null, it.target())
             }
-            val targets = contexts.map { assertIs<QGMessageSendTarget>(it.target()) }
+            val targets = contexts.map { assertIs<QGMessageSendTarget>(it.destination) }
             assertEquals(
                 listOf(
                     MessageDestination.CHANNEL, MessageDestination.CHANNEL, MessageDestination.CHANNEL,
@@ -196,7 +196,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             val options = mutableListOf<SendOption>(option)
             val message = InteractionMessage.valueOf("original")
             val target = QGMessageSendTarget.create(MessageDestination.DMS, "dms".ID)
-            val initial = QGMessageSendContext(bot, message, target, options)
+            val initial = QGMessageSendContext.create(bot, bot, message, target, options)
             options.clear()
             val replacement = InteractionMessage.valueOf("replacement")
             val copied = initial.withMessage(replacement).withOptions(initial.options)
@@ -207,7 +207,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             assertSame(message, copied.originalMessage)
             assertSame(replacement, copied.message)
             assertSame(target, copied.destination)
-            assertSame(target, copied.target())
+            assertEquals(null, copied.target())
             assertEquals(listOf(option), initial.options)
             assertEquals(listOf(option), copied.options)
         } finally {
@@ -274,7 +274,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             assertSame(bot, context.source)
             assertEquals("original", assertIs<InteractionMessage.Text>(context.originalMessage).text)
             assertEquals("replacement", assertIs<InteractionMessage.Text>(context.message).text)
-            assertEquals(QGMessageSendTarget.create(MessageDestination.CHANNEL, "channel".ID), context.target())
+            assertEquals(QGMessageSendTarget.create(MessageDestination.CHANNEL, "channel".ID), context.destination)
             assertEquals(1, requests)
         } finally {
             app.cancel()

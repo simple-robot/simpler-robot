@@ -40,10 +40,7 @@ import love.forte.simbot.component.qguild.internal.message.asReceipt
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.internal.role.toGuildRole
 import love.forte.simbot.component.qguild.internal.role.toMemberRole
-import love.forte.simbot.component.qguild.message.MessageParsers
-import love.forte.simbot.component.qguild.message.QGMessageContent
-import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendMessageDirect
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.component.qguild.role.QGMemberRole
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
@@ -74,6 +71,9 @@ internal class QGMemberImpl(
     private val guildId: ID,
     private val sourceGuild: QGGuildImpl? = null
 ) : QGMember {
+    internal val sendDestination
+        get() = QGMessageSendTarget.member(guildId, id)
+
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
     private val user get() = source.user
     private val roleIdSet = source.roles.toSet()
@@ -166,8 +166,8 @@ internal class QGMemberImpl(
             send = ::sendByInteractionMessage
         )
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
-        return when (message) {
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        return when (val message = context.message) {
             is InteractionMessage.Text -> {
                 val dms = getDms()
                 bot.sendMessageDirect(dms.guildId, message.text)

@@ -34,12 +34,12 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.kook.bot.KookBot
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
+import love.forte.simbot.component.kook.internal.kookMessageOptions
 import love.forte.simbot.component.kook.internal.notifyMessageSent
 import love.forte.simbot.component.kook.message.KookAggregatedMessageReceipt.Companion.merge
 import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt.Companion.asReceipt
 import love.forte.simbot.component.kook.util.requestDataBy
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.kook.InternalKookApi
@@ -246,11 +246,15 @@ private suspend fun Message.sendIntercepted(
         bot.interceptorContainer,
         context,
     ) { current ->
-        val currentOptions = (current as MessageSendContext.Send).options
-            .toKookChannelMessageSendOptions()
+        val currentOptions = (current as KookMessageSendContext).kookMessageOptions()
         val native = current.message as? KookChannelRequestMessage
         if (native != null && directType == DirectType.NOT_DIRECT) {
-            val receipt = native.request.requestDataBy(bot).asReceipt(false, bot)
+            val receipt = native.request.withOptions(
+                currentOptions?.quote,
+                currentOptions?.nonce,
+                currentOptions?.tempTargetId,
+                currentOptions?.templateId,
+            ).requestDataBy(bot).asReceipt(false, bot)
             bot.notifyMessageSent(current, receipt)
             return@invokeWithReceipt receipt
         }

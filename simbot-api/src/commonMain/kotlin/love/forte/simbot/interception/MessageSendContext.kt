@@ -40,15 +40,15 @@ public sealed class MessageSendContext private constructor(
     /**
      * 执行本次操作的 Bot。
      */
-    public val bot: Bot,
+    public open val bot: Bot,
     /**
      * 最初传入发送或回复方法的消息。
      */
-    public val originalMessage: InteractionMessage,
+    public open val originalMessage: InteractionMessage,
     /**
      * 当前传递给下游的消息。
      */
-    public val message: InteractionMessage,
+    public open val message: InteractionMessage,
 ) {
     /**
      * 被调用 send/reply 的对象。回复来源与最终发送目标可能不同。
@@ -56,13 +56,20 @@ public sealed class MessageSendContext private constructor(
     public abstract val source: Any
 
     /**
-     * 获取最终发送目标，无法获取时返回 null。
+     * 本次操作确定的不会产生副作用的稳定目标描述类型。由实现者决定内容。
+     */
+    public abstract val destination: Any?
+
+    /**
+     * 按需解析入口目标的实体，无法获取时返回 null。
+     * 原生请求替换后仍解析本次操作最初确定的目标。
      */
     @STP
     public abstract suspend fun target(): Any?
 
     /**
      * 创建同一次操作的新上下文，替换当前消息。
+     * 保留具体类型、原始消息、选项、来源和目标解析方式。
      */
     public abstract fun withMessage(message: InteractionMessage): MessageSendContext
 
@@ -114,78 +121,4 @@ public sealed class MessageSendContext private constructor(
         public abstract fun withOptions(options: Collection<ReplyOption>): Reply
     }
 
-    // TODO 仅过渡用
-
-    /**
-     * 无额外组件字段时使用的默认发送上下文。
-     *
-     * 标准发送的来源通常为 [SendSupport]，直发也可使用 Bot 或消息对象。
-     * 目标独立于来源，初始化和复制均不触发目标解析。
-     */
-    public class DefaultSend private constructor(
-        bot: Bot,
-        override val source: Any,
-        originalMessage: InteractionMessage,
-        message: InteractionMessage,
-        override val options: List<SendOption>,
-        private val resolveTarget: suspend () -> Any?,
-    ) : Send(bot, originalMessage, message) {
-        /**
-         * 创建发送操作并复制选项列表，默认以方法接收者为目标。
-         *
-         * @param source 被调用发送方法的接收者。
-         * @param target 按需解析目标实体或组件目标描述。
-         */
-        public constructor(
-            bot: Bot,
-            source: Any,
-            message: InteractionMessage,
-            options: List<SendOption> = emptyList(),
-            target: suspend () -> Any? = { source },
-        ) : this(bot, source, message, message, options.toList(), target)
-
-        override suspend fun target(): Any? = resolveTarget()
-
-        override fun withMessage(message: InteractionMessage): DefaultSend =
-            DefaultSend(bot, source, originalMessage, message, options, resolveTarget)
-
-        override fun withOptions(options: Collection<SendOption>): DefaultSend =
-            DefaultSend(bot, source, originalMessage, message, options.toList(), resolveTarget)
-    }
-
-    /**
-     * 无额外组件字段时使用的默认回复上下文。
-     *
-     * 标准回复的来源通常为 [ReplySupport]；最终目标按需解析。
-     */
-    public class DefaultReply private constructor(
-        bot: Bot,
-        override val source: Any,
-        originalMessage: InteractionMessage,
-        message: InteractionMessage,
-        override val options: List<ReplyOption>,
-        private val resolveTarget: suspend () -> Any?,
-    ) : Reply(bot, originalMessage, message) {
-        /**
-         * 创建回复操作并复制选项列表，默认不解析目标。
-         *
-         * @param source 被调用回复方法的接收者。
-         * @param target 按需解析最终目标，无法确定时返回 null。
-         */
-        public constructor(
-            bot: Bot,
-            source: Any,
-            message: InteractionMessage,
-            options: List<ReplyOption> = emptyList(),
-            target: suspend () -> Any? = { null },
-        ) : this(bot, source, message, message, options.toList(), target)
-
-        override suspend fun target(): Any? = resolveTarget()
-
-        override fun withMessage(message: InteractionMessage): DefaultReply =
-            DefaultReply(bot, source, originalMessage, message, options, resolveTarget)
-
-        override fun withOptions(options: Collection<ReplyOption>): DefaultReply =
-            DefaultReply(bot, source, originalMessage, message, options.toList(), resolveTarget)
-    }
 }

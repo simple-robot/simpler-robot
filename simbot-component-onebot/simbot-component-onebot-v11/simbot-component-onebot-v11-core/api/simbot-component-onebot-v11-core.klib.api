@@ -2275,6 +2275,61 @@ final class love.forte.simbot.component.onebot.v11.core.event/OneBotUnsupportedE
     final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.event/OneBotUnsupportedEvent.toString|toString(){}[0]
 }
 
+final class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext : love.forte.simbot.interception/MessageSendContext.Reply { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext|null[0]
+    final val bot // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.bot|{}bot[0]
+        final fun <get-bot>(): love.forte.simbot.component.onebot.v11.core.bot/OneBotBot // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.bot.<get-bot>|<get-bot>(){}[0]
+    final val destination // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.destination|{}destination[0]
+        final fun <get-destination>(): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.destination.<get-destination>|<get-destination>(){}[0]
+    final val options // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.options|{}options[0]
+        final fun <get-options>(): kotlin.collections/List<love.forte.simbot.ability/ReplyOption> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.options.<get-options>|<get-options>(){}[0]
+    final val source // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.ability/ReplySupport // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.source.<get-source>|<get-source>(){}[0]
+
+    final fun create(love.forte.simbot.component.onebot.v11.core.bot/OneBotBot, love.forte.simbot.ability/ReplySupport, love.forte.simbot.event/InteractionMessage, love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget, kotlin.collections/List<love.forte.simbot.ability/ReplyOption> = ..., kotlin.coroutines/SuspendFunction0<kotlin/Any?> = ...): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.create|create#static(love.forte.simbot.component.onebot.v11.core.bot.OneBotBot;love.forte.simbot.ability.ReplySupport;love.forte.simbot.event.InteractionMessage;love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget;kotlin.collections.List<love.forte.simbot.ability.ReplyOption>;kotlin.coroutines.SuspendFunction0<kotlin.Any?>){}[0]
+    final fun withMessage(love.forte.simbot.event/InteractionMessage): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.withMessage|withMessage(love.forte.simbot.event.InteractionMessage){}[0]
+    final fun withOptions(kotlin.collections/Collection<love.forte.simbot.ability/ReplyOption>): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.withOptions|withOptions(kotlin.collections.Collection<love.forte.simbot.ability.ReplyOption>){}[0]
+    final suspend fun target(): kotlin/Any? // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyContext.target|target(){}[0]
+}
+
+final class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext : love.forte.simbot.interception/MessageSendContext.Send { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext|null[0]
+    final val bot // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.bot|{}bot[0]
+        final fun <get-bot>(): love.forte.simbot.component.onebot.v11.core.bot/OneBotBot // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.bot.<get-bot>|<get-bot>(){}[0]
+    final val destination // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.destination|{}destination[0]
+        final fun <get-destination>(): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.destination.<get-destination>|<get-destination>(){}[0]
+    final val options // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.options|{}options[0]
+        final fun <get-options>(): kotlin.collections/List<love.forte.simbot.ability/SendOption> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.options.<get-options>|<get-options>(){}[0]
+    final val source // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.ability/SendSupport // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.source.<get-source>|<get-source>(){}[0]
+
+    final fun create(love.forte.simbot.component.onebot.v11.core.bot/OneBotBot, love.forte.simbot.ability/SendSupport, love.forte.simbot.event/InteractionMessage, love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget, kotlin.collections/List<love.forte.simbot.ability/SendOption> = ..., kotlin.coroutines/SuspendFunction0<kotlin/Any?> = ...): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.create|create#static(love.forte.simbot.component.onebot.v11.core.bot.OneBotBot;love.forte.simbot.ability.SendSupport;love.forte.simbot.event.InteractionMessage;love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget;kotlin.collections.List<love.forte.simbot.ability.SendOption>;kotlin.coroutines.SuspendFunction0<kotlin.Any?>){}[0]
+    final fun withMessage(love.forte.simbot.event/InteractionMessage): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.withMessage|withMessage(love.forte.simbot.event.InteractionMessage){}[0]
+    final fun withOptions(kotlin.collections/Collection<love.forte.simbot.ability/SendOption>): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.withOptions|withOptions(kotlin.collections.Collection<love.forte.simbot.ability.SendOption>){}[0]
+    final suspend fun target(): kotlin/Any? // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.target|target(){}[0]
+}
+
+final class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget|null[0]
+    final val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id|{}id[0]
+        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id.<get-id>|<get-id>(){}[0]
+    final val type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.type|{}type[0]
+        final fun <get-type>(): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.type.<get-type>|<get-type>(){}[0]
+
+    final fun create(love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type, love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.create|create#static(love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget.Type;love.forte.simbot.common.id.ID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.toString|toString(){}[0]
+
+    final enum class Type : kotlin/Enum<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type|null[0]
+        enum entry GROUP // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.GROUP|null[0]
+        enum entry PRIVATE // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.PRIVATE|null[0]
+
+        final val entries // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.values|values#static(){}[0]
+    }
+}
+
 final value class love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutableScope { // love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutableScope|null[0]
     constructor <init>(love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutable) // love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutableScope.<init>|<init>(love.forte.simbot.component.onebot.v11.core.api.OneBotApiExecutable){}[0]
 
@@ -2445,6 +2500,15 @@ sealed class love.forte.simbot.component.onebot.v11.core.event.request/OneBotGro
 
     final object Companion { // love.forte.simbot.component.onebot.v11.core.event.request/OneBotGroupRequestRejectOption.Companion|null[0]
         final fun reason(kotlin/String): love.forte.simbot.component.onebot.v11.core.event.request/OneBotGroupRequestRejectOption.Reason // love.forte.simbot.component.onebot.v11.core.event.request/OneBotGroupRequestRejectOption.Companion.reason|reason(kotlin.String){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption : love.forte.simbot.ability/ReplyOption { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption|null[0]
+    final fun quote(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption.Quote // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption.quote|quote#static(love.forte.simbot.common.id.ID){}[0]
+
+    final class Quote : love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption.Quote|null[0]
+        final val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption.Quote.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageReplyOption.Quote.id.<get-id>|<get-id>(){}[0]
     }
 }
 

@@ -40,12 +40,13 @@ import love.forte.simbot.component.kook.bot.internal.KookBotImpl
 import love.forte.simbot.component.kook.bot.internal.MuteJob
 import love.forte.simbot.component.kook.kookGuildNotExistsException
 import love.forte.simbot.component.kook.message.KookMessageReceipt
+import love.forte.simbot.component.kook.message.KookMessageSendContext
+import love.forte.simbot.component.kook.message.KookMessageSendTarget
 import love.forte.simbot.component.kook.role.internal.KookGuildRoleImpl
 import love.forte.simbot.component.kook.role.internal.KookMemberRoleImpl
 import love.forte.simbot.component.kook.util.requestDataBy
 import love.forte.simbot.component.kook.util.requestResultBy
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.ApiResponseException
 import love.forte.simbot.kook.api.guild.CreateGuildMuteApi
 import love.forte.simbot.kook.api.guild.DeleteGuildMuteApi
@@ -110,8 +111,17 @@ internal class KookMemberImpl(
      * 直接使用用户 ID 发送，避免内部委托丢失成员或会话这一调用来源。
      */
     private suspend fun send(message: InteractionMessage, options: List<SendOption>): KookMessageReceipt =
-        bot.interceptMessageSend(MessageSendContext.DefaultSend(bot, this, message, options)) {
-            sendDirectMessage(bot, source.id, it)
+        bot.interceptMessageSend(
+            KookMessageSendContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.user(source.id),
+                options = options,
+                target = { this },
+            )
+        ) {
+            sendDirectMessage(bot, it)
         }
 
     @ExperimentalSimbotAPI

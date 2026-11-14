@@ -2521,41 +2521,16 @@ public abstract class love/forte/simbot/interception/JvmPlatformInterceptor : lo
 }
 
 public abstract class love/forte/simbot/interception/MessageSendContext {
-	public final fun getBot ()Llove/forte/simbot/bot/Bot;
-	public final fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
-	public final fun getOriginalMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public fun getBot ()Llove/forte/simbot/bot/Bot;
+	public abstract fun getDestination ()Ljava/lang/Object;
+	public fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public fun getOriginalMessage ()Llove/forte/simbot/event/InteractionMessage;
 	public abstract fun getSource ()Ljava/lang/Object;
 	public fun getTarget ()Ljava/lang/Object;
 	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
 	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 	public abstract synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
-}
-
-public final class love/forte/simbot/interception/MessageSendContext$DefaultReply : love/forte/simbot/interception/MessageSendContext$Reply {
-	public fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getOptions ()Ljava/util/List;
-	public fun getSource ()Ljava/lang/Object;
-	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$DefaultReply;
-	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
-	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
-	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$DefaultReply;
-	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
-}
-
-public final class love/forte/simbot/interception/MessageSendContext$DefaultSend : love/forte/simbot/interception/MessageSendContext$Send {
-	public fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getOptions ()Ljava/util/List;
-	public fun getSource ()Ljava/lang/Object;
-	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$DefaultSend;
-	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
-	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
-	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$DefaultSend;
-	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
 }
 
 public abstract class love/forte/simbot/interception/MessageSendContext$Reply : love/forte/simbot/interception/MessageSendContext {

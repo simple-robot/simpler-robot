@@ -35,6 +35,7 @@ import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineCon
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
 import love.forte.simbot.component.qguild.message.sendGroupMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
@@ -152,7 +153,8 @@ internal class QGGroupImpl(
         return bot.interceptSend(content, message, options) { sendByInteractionMessage(it) }
     }
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         return when (message) {
             is InteractionMessage.Text -> {
                 bot.sendGroupMessageDirect(

@@ -30,9 +30,10 @@ import love.forte.simbot.common.exception.initExceptionCause
 import love.forte.simbot.component.kook.KookUserChat
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
 import love.forte.simbot.component.kook.message.KookMessageReceipt
+import love.forte.simbot.component.kook.message.KookMessageSendContext
+import love.forte.simbot.component.kook.message.KookMessageSendTarget
 import love.forte.simbot.component.kook.util.requestResultBy
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.ApiResponseException
 import love.forte.simbot.kook.api.userchat.DeleteUserChatApi
 import love.forte.simbot.kook.api.userchat.UserChatView
@@ -88,8 +89,17 @@ internal class KookUserChatImpl(
         message: InteractionMessage,
         options: List<SendOption>
     ): KookMessageReceipt =
-        bot.interceptMessageSend(MessageSendContext.DefaultSend(bot, this, message, options)) {
-            sendDirectMessage(bot, source.targetInfo.id, it)
+        bot.interceptMessageSend(
+            KookMessageSendContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.user(source.targetInfo.id),
+                options = options,
+                target = { this },
+            )
+        ) {
+            sendDirectMessage(bot, it)
         }
 
     override suspend fun delete(vararg options: DeleteOption) {

@@ -2906,13 +2906,44 @@ public abstract interface class love/forte/simbot/component/qguild/message/QGMes
 	public synthetic fun delete ([Llove/forte/simbot/ability/DeleteOption;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class love/forte/simbot/component/qguild/message/QGMessageSendContext : love/forte/simbot/interception/MessageSendContext$Send {
-	public fun <init> (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;)V
-	public synthetic fun <init> (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getDestination ()Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
+public final class love/forte/simbot/component/qguild/message/QGMessageReferenceOption : love/forte/simbot/component/qguild/message/QGMessageReplyOption {
+	public static final fun create (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageReferenceOption;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageReplyContext : love/forte/simbot/interception/MessageSendContext$Reply {
+	public static final fun create (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/qguild/message/QGMessageReplyContext;
+	public static synthetic fun create$default (Llove/forte/simbot/component/qguild/bot/QGBot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/message/QGMessageReplyContext;
+	public synthetic fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getBot ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public synthetic fun getDestination ()Ljava/lang/Object;
+	public fun getDestination ()Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
 	public fun getOptions ()Ljava/util/List;
 	public synthetic fun getSource ()Ljava/lang/Object;
-	public fun getSource ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public fun getSource ()Llove/forte/simbot/ability/ReplySupport;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/qguild/message/QGMessageReplyContext;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/component/qguild/message/QGMessageReplyContext;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+}
+
+public abstract interface class love/forte/simbot/component/qguild/message/QGMessageReplyOption : love/forte/simbot/ability/ReplyOption {
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendContext : love/forte/simbot/interception/MessageSendContext$Send {
+	public static final fun create (Llove/forte/simbot/component/qguild/bot/QGBot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/qguild/message/QGMessageSendContext;
+	public static synthetic fun create$default (Llove/forte/simbot/component/qguild/bot/QGBot;Ljava/lang/Object;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/message/QGMessageSendContext;
+	public synthetic fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getBot ()Llove/forte/simbot/component/qguild/bot/QGBot;
+	public synthetic fun getDestination ()Ljava/lang/Object;
+	public fun getDestination ()Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
+	public fun getOptions ()Ljava/util/List;
+	public fun getSource ()Ljava/lang/Object;
 	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/qguild/message/QGMessageSendContext;
 	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
@@ -2922,15 +2953,13 @@ public final class love/forte/simbot/component/qguild/message/QGMessageSendConte
 }
 
 public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget {
-	public fun <init> (Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/common/id/ID;)V
-	public final fun component1 ()Llove/forte/simbot/qguild/stdlib/MessageDestination;
-	public final fun component2 ()Llove/forte/simbot/common/id/ID;
-	public final fun copy (Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
-	public static synthetic fun copy$default (Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/common/id/ID;ILjava/lang/Object;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
+	public static final fun create (Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDestination ()Llove/forte/simbot/qguild/stdlib/MessageDestination;
+	public final fun getGuildId ()Llove/forte/simbot/common/id/ID;
 	public final fun getId ()Llove/forte/simbot/common/id/ID;
 	public fun hashCode ()I
+	public static final fun member (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
 	public fun toString ()Ljava/lang/String;
 }
 

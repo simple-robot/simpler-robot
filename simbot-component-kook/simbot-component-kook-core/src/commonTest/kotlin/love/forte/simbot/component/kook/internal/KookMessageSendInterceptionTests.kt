@@ -177,7 +177,7 @@ class KookMessageSendInterceptionTests {
             source.reply(Text.of("original"))
             source.reply(event().toContent(false, bot))
             contexts.takeLast(3).forEach { assertSame(source, it.source) }
-            assertEquals(listOf(option), contexts[contexts.size - 3].options)
+            assertEquals(listOf(option), contexts[contexts.size - 3].options.filterNot { it is KookChannelMessageSendOption })
         }
         assertEquals(12, contexts.size)
         assertEquals(12, requests)
@@ -303,21 +303,18 @@ class KookMessageSendInterceptionTests {
     }
 
     /**
-     * 私聊文字入口保留具体创建回执契约，其他 KOOK 回执也不能通过校验。
+     * 私聊文字入口按公开声明接受 KOOK 回执。
      */
     @Test
-    fun textChatRejectsOtherKookReceiptTypes() = runTest {
+    fun textChatAcceptsCompatibleKookReceiptTypes() = runTest {
         val manager = InterceptorManager()
         val bot = bot(manager, backgroundScope.coroutineContext) { error("Short circuit must not issue HTTP requests") }
         val source = KookUserChatImpl(bot, chatView)
         val receipt = KookApiRequestedReceipt(Unit, true)
         manager.onMessageSend { _, _, _ -> receipt }
 
-        val failure = assertFailsWith<IllegalStateException> { source.send("original") }
-        assertTrue(failure.message.orEmpty().contains("KookMessageCreatedReceipt"))
-        assertTrue(failure.message.orEmpty().contains("KookApiRequestedReceipt"))
-        assertFailsWith<IllegalStateException> { source.send("original", object : SendOption {}) }
-        // 消息入口原本允许所有 KOOK 回执，不应被文字入口的具体约束收紧。
+        assertSame(receipt, source.send("original"))
+        assertSame(receipt, source.send("original", object : SendOption {}))
         assertSame(receipt, source.send(Text.of("original")))
     }
 
@@ -366,10 +363,10 @@ class KookMessageSendInterceptionTests {
     }
 
     /**
-     * 回执校验失败发生在完整链返回后，不撤销已经成功发送的通知。
+     * 外层替换为其他 KOOK 回执后，通知仍携带实际发送回执。
      */
     @Test
-    fun successfulSendStillNotifiesWhenReturnedReceiptTypeIsWrong() = runTest {
+    fun successfulSendNotifiesActualReceiptWhenResultIsReplaced() = runTest {
         val manager = InterceptorManager()
         val events = mutableListOf<MessageSentEvent>()
         val dispatcher = createSimpleEventDispatcherImpl {}
@@ -384,7 +381,7 @@ class KookMessageSendInterceptionTests {
             wrongReceipt
         }
 
-        assertFailsWith<IllegalStateException> { source.send("original") }
+        assertSame(wrongReceipt, source.send("original"))
         assertEquals(1, requests)
         runCurrent()
         val notification = events.single()
@@ -470,6 +467,13 @@ class KookMessageSendInterceptionTests {
         assertEquals(5, contexts.size)
         contexts.forEach {
             assertSame(source, it.source)
+            val native = it.message as? KookChannelRequestMessage
+            if (native != null) {
+                assertEquals("quote", native.request.quote)
+                assertEquals("temp", native.request.tempTargetId)
+                assertTrue((it as MessageSendContext.Send).options.isEmpty())
+                return@forEach
+            }
             val options = assertNotNull((when (it) {
                 is MessageSendContext.Send -> it.options
                 is MessageSendContext.Reply -> error("Not a send context")
@@ -516,7 +520,7 @@ class KookMessageSendInterceptionTests {
     }
 
     /**
-     * 替换标准消息后保留原生请求参数，完整请求替换则使用新请求的参数。
+     * 原生请求换为普通消息时只使用 options，替换原生请求时使用新请求参数。
      */
     @Test
     fun replacementKeepsProtocolParametersAndCanReplaceNativeRequest() = runTest {
@@ -526,12 +530,12 @@ class KookMessageSendInterceptionTests {
             requests++
             val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
             assertEquals("replaced", body.getValue("content").jsonPrimitive.content)
-            assertEquals("quote", body.getValue("quote").jsonPrimitive.content)
-            assertEquals("temp", body.getValue("temp_target_id").jsonPrimitive.content)
-            if (requests == 1) {
-                assertEquals("other-channel", body.getValue("target_id").jsonPrimitive.content)
-                assertEquals("nonce", body.getValue("nonce").jsonPrimitive.content)
-                assertEquals("template", body.getValue("template_id").jsonPrimitive.content)
+            if (requests <= 2) {
+                assertEquals(if (requests == 1) "other-channel" else "channel", body.getValue("target_id").jsonPrimitive.content)
+                assertTrue("quote" !in body && "nonce" !in body && "temp_target_id" !in body && "template_id" !in body)
+            } else {
+                assertEquals("quote", body.getValue("quote").jsonPrimitive.content)
+                assertEquals("temp", body.getValue("temp_target_id").jsonPrimitive.content)
             }
             success()
         }
@@ -574,7 +578,8 @@ class KookMessageSendInterceptionTests {
         manager.onMessageSend { _, context, chain ->
             val direct = assertIs<MessageSendContext.Send>(context)
             assertSame(message, direct.source)
-            targets += assertIs<KookMessageSendTarget>(direct.target())
+            targets += assertIs<KookMessageSendTarget>(direct.destination)
+            assertEquals(null, direct.target())
             chain.proceed(context.withMessage(InteractionMessage.valueOf("replaced")))
         }
         message.sendToChannel(bot, "channel", "quote", "nonce", "temp")
@@ -607,9 +612,7 @@ class KookMessageSendInterceptionTests {
             assertEquals("other-channel", body.getValue("target_id").jsonPrimitive.content)
             assertEquals("replaced", body.getValue("content").jsonPrimitive.content)
             assertEquals("new-quote", body.getValue("quote").jsonPrimitive.content)
-            assertEquals("nonce", body.getValue("nonce").jsonPrimitive.content)
-            assertEquals("temp", body.getValue("temp_target_id").jsonPrimitive.content)
-            assertEquals("template", body.getValue("template_id").jsonPrimitive.content)
+            assertTrue("nonce" !in body && "temp_target_id" !in body && "template_id" !in body)
             success()
         }
         val source = channel(bot)
@@ -646,7 +649,7 @@ class KookMessageSendInterceptionTests {
         assertEquals(1, requests)
         val sent = assertIs<KookMessageSendContext>(events.single().context)
         assertSame(destination, sent.destination)
-        assertSame(destination, sent.target())
+        assertEquals(null, sent.target())
         assertSame(api, assertIs<KookChannelRequestMessage>(sent.originalMessage).request)
     }
 
@@ -670,7 +673,95 @@ class KookMessageSendInterceptionTests {
         assertSame(source, replaced.source)
         assertSame(message, replaced.originalMessage)
         assertSame(destination, replaced.destination)
-        assertSame(destination, replaced.target())
+        assertEquals(null, replaced.target())
+    }
+
+
+    @Test
+    fun nativeRequestOptionsOverrideCurrentRequestWithoutSnapshotting() = runTest {
+        val manager = InterceptorManager()
+        var mode = 0
+        var requests = 0
+        val bot = bot(manager, backgroundScope.coroutineContext) { request ->
+            requests++
+            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
+            assertEquals(if (mode == 2) "initial-channel" else "replacement-channel", body.getValue("target_id").jsonPrimitive.content)
+            when (mode) {
+                0 -> assertEquals("override", body.getValue("quote").jsonPrimitive.content)
+                1, 2 -> assertTrue("quote" !in body)
+                3 -> assertEquals("replacement-quote", body.getValue("quote").jsonPrimitive.content)
+            }
+            assertTrue("nonce" !in body)
+            success()
+        }
+        val source = channel(bot)
+        val original = SendChannelMessageApi.create(9, "initial-channel", "original", "initial-quote", "initial-nonce", null)
+        manager.onMessageSend { _, context, chain ->
+            val send = assertIs<KookMessageSendContext>(context)
+            assertTrue(send.options.isEmpty())
+            assertEquals(KookMessageSendTarget.channel("initial-channel"), send.destination)
+            assertEquals(null, send.target())
+            val message = if (mode == 2) {
+                InteractionMessage.valueOf("text")
+            } else {
+                KookChannelRequestMessage(SendChannelMessageApi.create(
+                    1, "replacement-channel", "replacement",
+                    if (mode == 1) null else "replacement-quote", null, null,
+                ))
+            }
+            val withOverride = send.withMessage(message).withOptions(listOf(KookChannelMessageSendOption.quote("override".ID)))
+            val final = if (mode == 0) withOverride else withOverride.withOptions(emptyList())
+            assertSame(send.destination, final.destination)
+            chain.proceed(final)
+        }
+        repeat(4) {
+            mode = it
+            source.send(original)
+        }
+        assertEquals(4, requests)
+        assertEquals("initial-quote", original.quote)
+    }
+
+    @Test
+    fun replyOptionsCanReplaceAndRemoveAutomaticProtocolParameters() = runTest {
+        val manager = InterceptorManager()
+        var replace = false
+        var requests = 0
+        val bot = bot(manager, backgroundScope.coroutineContext) { request ->
+            requests++
+            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
+            if (replace) {
+                assertEquals("new-quote", body.getValue("quote").jsonPrimitive.content)
+                assertEquals("new-nonce", body.getValue("nonce").jsonPrimitive.content)
+            } else {
+                assertTrue("quote" !in body && "nonce" !in body)
+            }
+            success()
+        }
+        val channel = channel(bot)
+        val member = KookMemberImpl(bot, user, "guild")
+        val guild = KookGuildImpl(bot, SimpleGuild("guild", "guild", "", "owner", "", 0, "", false, "", "", ""))
+        val sources = listOf(
+            KookChannelMessageEventImpl(bot, event(), member, channel, guild, ""),
+            KookBotSelfChannelMessageEventImpl(bot, event(), channel, member, guild, ""),
+            KookContactMessageEventImpl(bot, event(), ""),
+            KookBotSelfMessageEventImpl(bot, event(), ""),
+        )
+        manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<KookMessageReplyContext>(context)
+            chain.proceed(reply.withOptions(if (replace) listOf(
+                KookChannelMessageSendOption.quote("new-quote".ID),
+                KookChannelMessageSendOption.nonce("new-nonce"),
+            ) else emptyList()))
+        }
+        for (source in sources) {
+            source.reply("text")
+        }
+        replace = true
+        for (source in sources) {
+            source.reply("text")
+        }
+        assertEquals(8, requests)
     }
 
     private val user = SimpleUser("user", "user", "")

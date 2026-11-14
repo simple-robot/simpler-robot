@@ -27,7 +27,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.qguild.stdlib.MessageDestination
 
 /**
- * QQ 按 ID 直接发送消息时的目标描述。
+ * QQ 消息发送或回复的目标描述。
  *
  * @property destination 区分子频道、频道私聊会话、群和用户。
  * @property id 对应目标的频道 ID、私聊会话 ID 或 openid。
@@ -35,6 +35,10 @@ import love.forte.simbot.qguild.stdlib.MessageDestination
 public class QGMessageSendTarget private constructor(
     public val destination: MessageDestination,
     public val id: ID,
+    /**
+     * 按频道成员发送私信时所属的频道 ID，此时 [id] 为成员 ID。
+     */
+    public val guildId: ID? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -42,6 +46,7 @@ public class QGMessageSendTarget private constructor(
 
         if (destination != other.destination) return false
         if (id != other.id) return false
+        if (guildId != other.guildId) return false
 
         return true
     }
@@ -49,11 +54,12 @@ public class QGMessageSendTarget private constructor(
     override fun hashCode(): Int {
         var result = destination.hashCode()
         result = 31 * result + id.hashCode()
+        result = 31 * result + guildId.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "QGMessageSendTarget(destination=$destination, id=$id)"
+        return "QGMessageSendTarget(destination=$destination, id=$id, guildId=$guildId)"
     }
 
     companion {
@@ -62,5 +68,11 @@ public class QGMessageSendTarget private constructor(
          */
         public fun create(destination: MessageDestination, id: ID): QGMessageSendTarget =
             QGMessageSendTarget(destination, id)
+
+        /**
+         * 按频道和成员 ID 描述私信目标。
+         */
+        public fun member(guildId: ID, memberId: ID): QGMessageSendTarget =
+            QGMessageSendTarget(MessageDestination.DMS, memberId, guildId)
     }
 }

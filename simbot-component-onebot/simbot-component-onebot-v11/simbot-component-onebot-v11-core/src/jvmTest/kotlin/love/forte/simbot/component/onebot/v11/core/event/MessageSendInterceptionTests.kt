@@ -53,6 +53,8 @@ import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
 import love.forte.simbot.component.onebot.v11.core.useOneBot11
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
@@ -198,8 +200,8 @@ class MessageSendInterceptionTests {
                 val calls = contexts.drop(start)
                 assertEquals(6, calls.size)
                 calls.forEach { assertSame(replier, it.source) }
-                calls.take(3).forEach { assertTrue(it.options.isEmpty()) }
-                calls.drop(3).forEach { assertEquals(listOf(replyOption), it.options) }
+                calls.take(3).forEach { assertTrue(it.options.filterNot { option -> option is OneBotMessageReplyOption }.isEmpty()) }
+                calls.drop(3).forEach { assertEquals(listOf(replyOption), it.options.filterNot { option -> option is OneBotMessageReplyOption }) }
                 for (request in requests.takeLast(6)) {
                     if (index < 4) {
                         val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(request.message).segments
@@ -211,6 +213,34 @@ class MessageSendInterceptionTests {
                 }
             }
             assertEquals(42, requests.size)
+        } finally {
+            bot.cancel()
+        }
+    }
+
+
+    @Test
+    fun replyOptionsReplaceAndRemoveTheAutomaticReference() = runTest {
+        val manager = InterceptorManager()
+        val bot = bot(manager)
+        val requests = mutableListOf<SendMsgApi.Body>()
+        coEvery { bot.executeData<SendMsgResult>(any()) } coAnswers {
+            requests += assertIs<SendMsgApi.Body>(assertIs<SendMsgApi>(firstArg()).body)
+            SendMsgResult(114.ID)
+        }
+        var clear = false
+        manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<OneBotMessageReplyContext>(context)
+            chain.proceed(reply.withOptions(if (clear) emptyList() else listOf(OneBotMessageReplyOption.quote(42.ID))))
+        }
+        try {
+            val source = repliers(bot).first()
+            source.reply("text")
+            val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(requests.single().message).segments
+            assertEquals(42.ID, assertIs<OneBotReply>(segments.first()).data.id)
+            clear = true
+            source.reply("text")
+            assertEquals("text", assertIs<OneBotMessageOutgoing.StringValue>(requests.last().message).value)
         } finally {
             bot.cancel()
         }

@@ -29,46 +29,49 @@ import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.interception.MessageSendContext
 
 /**
- * QQ Bot 按 ID 发送的上下文，复制消息或选项时保留具体类型与目标描述。
+ * QQ Bot 消息发送上下文。
+ *
+ * [destination] 描述入口确定的目标，[target] 按需解析对应实体。
+ * 复制消息或选项时保留调用来源、原始消息和目标。
  *
  * @since 5.0
  */
 public class QGMessageSendContext private constructor(
-    override val source: QGBot,
+    override val bot: QGBot,
+    override val source: Any,
     originalMessage: InteractionMessage,
     message: InteractionMessage,
-    /**
-     * 无需查询平台实体的发送目标，复制上下文后仍保留此描述。
-     */
-    public val destination: QGMessageSendTarget,
+    public override val destination: QGMessageSendTarget,
     override val options: List<SendOption>,
-) : MessageSendContext.Send(source, originalMessage, message) {
-    /**
-     * 创建一次按 ID 发送的上下文，复制选项列表以隔离调用方后续修改。
-     *
-     * @param destination 发送目标的类型及 ID，不需要平台查询。
-     */
-    public constructor(
-        bot: QGBot,
-        message: InteractionMessage,
-        destination: QGMessageSendTarget,
-        options: List<SendOption> = emptyList(),
-    ) : this(bot, message, message, destination, options.toList())
+    private val resolveTarget: suspend () -> Any?,
+) : MessageSendContext.Send(bot, originalMessage, message) {
+    companion {
+        /**
+         * 创建一次发送操作，复制传入的选项列表。
+         */
+        public fun create(
+            bot: QGBot,
+            source: Any,
+            message: InteractionMessage,
+            destination: QGMessageSendTarget,
+            options: List<SendOption> = emptyList(),
+            target: suspend () -> Any? = { null },
+        ): QGMessageSendContext = QGMessageSendContext(
+            bot,
+            source,
+            message,
+            message,
+            destination,
+            options.toList(),
+            target
+        )
+    }
 
-    /**
-     * 返回 ID 目标描述，不发起平台查询。
-     */
-    override suspend fun target(): QGMessageSendTarget = destination
+    override suspend fun target(): Any? = resolveTarget()
 
-    /**
-     * 保留原始消息、选项及 QQ 目标，使后续拦截器仍可使用组件上下文。
-     */
     override fun withMessage(message: InteractionMessage): QGMessageSendContext =
-        QGMessageSendContext(source, originalMessage, message, destination, options)
+        QGMessageSendContext(bot, source, originalMessage, message, destination, options, resolveTarget)
 
-    /**
-     * 复制传入的选项列表，保留消息与 QQ 目标。
-     */
     override fun withOptions(options: Collection<SendOption>): QGMessageSendContext =
-        QGMessageSendContext(source, originalMessage, message, destination, options.toList())
+        QGMessageSendContext(bot, source, originalMessage, message, destination, options.toList(), resolveTarget)
 }

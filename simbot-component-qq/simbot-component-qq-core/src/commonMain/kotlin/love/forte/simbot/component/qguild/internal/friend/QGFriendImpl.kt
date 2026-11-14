@@ -34,6 +34,7 @@ import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineCon
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
 import love.forte.simbot.component.qguild.message.sendUserMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
@@ -116,7 +117,8 @@ internal class QGFriendImpl(
             ::sendByInteractionMessage
         )
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         return when (message) {
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
             is InteractionMessage.Text -> {

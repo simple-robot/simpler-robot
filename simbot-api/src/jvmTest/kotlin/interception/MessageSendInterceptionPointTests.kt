@@ -71,6 +71,8 @@ class MessageSendInterceptionPointTests {
             target: suspend () -> Any?,
         ) : this(bot, source, message, message, options.toList(), metadata, target)
 
+        override val destination: Any get() = source
+
         override suspend fun target(): Any? = resolveTarget()
 
         override fun withMessage(message: InteractionMessage): ComponentReply =
@@ -144,7 +146,7 @@ class MessageSendInterceptionPointTests {
         val option = object : ReplyOption {}
         val options = mutableListOf(option)
         var resolutions = 0
-        val initial = MessageSendContext.DefaultReply(bot, replier, original) {
+        val initial = TestReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -170,7 +172,7 @@ class MessageSendInterceptionPointTests {
         manager.register(MessageSendInterceptionPoint) { _, _, _ -> expected }
 
         val result: ExpectedReceipt = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-            manager, MessageSendContext.DefaultSend(bot, sender, original),
+            manager, TestSend(bot, sender, original),
         ) { error("target reached") }
 
         assertSame(expected, result)
@@ -186,7 +188,7 @@ class MessageSendInterceptionPointTests {
 
         val failure = assertFailsWith<IllegalStateException> {
             MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-                manager, MessageSendContext.DefaultSend(bot, sender, original),
+                manager, TestSend(bot, sender, original),
             ) { error("target reached") }
         }
 
@@ -211,7 +213,7 @@ class MessageSendInterceptionPointTests {
         }
 
         val result = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-            manager, MessageSendContext.DefaultSend(bot, sender, original),
+            manager, TestSend(bot, sender, original),
         ) {
             targetCalls++
             expectedReceipt
@@ -236,7 +238,7 @@ class MessageSendInterceptionPointTests {
 
         assertFailsWith<IllegalStateException> {
             MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
-                manager, MessageSendContext.DefaultSend(bot, sender, original),
+                manager, TestSend(bot, sender, original),
             ) {
                 targetCalls++
                 expected
@@ -252,7 +254,7 @@ class MessageSendInterceptionPointTests {
     fun sendMessageReplacementPreservesOriginalSourceAndOptions() = runTest {
         val option = object : SendOption {}
         val options = mutableListOf(option)
-        val initial = MessageSendContext.DefaultSend(bot, sender, original, options)
+        val initial = TestSend(bot, sender, original, options)
         options.clear()
 
         val replaced = initial.withMessage(changed)
@@ -277,7 +279,7 @@ class MessageSendInterceptionPointTests {
         val option = object : SendOption {}
         val options = mutableListOf(option)
         var resolutions = 0
-        val initial = MessageSendContext.DefaultSend(bot, source, original, options) {
+        val initial = TestSend(bot, source, original, options) {
             resolutions++
             target
         }
@@ -304,7 +306,7 @@ class MessageSendInterceptionPointTests {
     fun directSendShortCircuitDoesNotResolveTarget() = runTest {
         val manager = InterceptorManager()
         manager.register(MessageSendInterceptionPoint) { _, _, _ -> expectedReceipt }
-        val context = MessageSendContext.DefaultSend(bot, Any(), original) {
+        val context = TestSend(bot, Any(), original) {
             error("target resolved")
         }
 
@@ -322,7 +324,7 @@ class MessageSendInterceptionPointTests {
         val option = object : ReplyOption {}
         val options = mutableListOf(option)
         var resolutions = 0
-        val initial = MessageSendContext.DefaultReply(bot, replier, original, options) {
+        val initial = TestReply(bot, replier, original, options) {
             resolutions++
             sender
         }
@@ -368,7 +370,7 @@ class MessageSendInterceptionPointTests {
 
         val result = MessageSendInterceptionPoint.invoke(
             manager,
-            MessageSendContext.DefaultSend(bot, sender, original, listOf(initialOption)),
+            TestSend(bot, sender, original, listOf(initialOption)),
         ) { context ->
             trace += "target"
             val send = context as MessageSendContext.Send
@@ -404,7 +406,7 @@ class MessageSendInterceptionPointTests {
         val initialOption = object : ReplyOption {}
         val changedOption = object : ReplyOption {}
         var resolutions = 0
-        val context = MessageSendContext.DefaultReply(bot, replier, original, listOf(initialOption)) {
+        val context = TestReply(bot, replier, original, listOf(initialOption)) {
             resolutions++
             sender
         }
@@ -440,7 +442,7 @@ class MessageSendInterceptionPointTests {
         val failure = RuntimeException("blocked")
         var resolutions = 0
         var targetCalls = 0
-        val context = MessageSendContext.DefaultReply(bot, replier, original) {
+        val context = TestReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -468,7 +470,7 @@ class MessageSendInterceptionPointTests {
         val cancellation = CancellationException("cancelled")
         var resolutions = 0
         var targetCalls = 0
-        val context = MessageSendContext.DefaultReply(bot, replier, original) {
+        val context = TestReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -504,7 +506,7 @@ class MessageSendInterceptionPointTests {
         assertSame(
             receipt, MessageSendInterceptionPoint.invoke(
                 manager,
-                MessageSendContext.DefaultSend(bot, sender, original),
+                TestSend(bot, sender, original),
             ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
         coVerify(exactly = 1) { sender.send("original", *emptyArray<SendOption>()) }
         coVerify(exactly = 1) { sender.send("changed", *emptyArray<SendOption>()) }
@@ -526,21 +528,20 @@ class MessageSendInterceptionPointTests {
         assertSame(failure, assertFailsWith<IllegalArgumentException> {
             MessageSendInterceptionPoint.invoke(
                 manager,
-                MessageSendContext.DefaultSend(bot, sender, original),
+                TestSend(bot, sender, original),
             ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) }
         })
         coVerify(exactly = 2) { sender.send("original", *emptyArray<SendOption>()) }
     }
 
     /**
-     * 上下文限制仅作文档约定，执行入口直接向终端传递替换对象。
-     * 此测试验证执行机制，不表示建议将发送改为回复。
+     * 通用执行入口将替换后的上下文交给终端处理。
      */
     @Test
-    fun replacementContextIsPassedToTargetWithoutIdentityValidation() = runTest {
+    fun replacementContextIsPassedToTarget() = runTest {
         val manager = InterceptorManager()
-        val context = MessageSendContext.DefaultSend(bot, sender, original)
-        val replacement = MessageSendContext.DefaultReply(bot, replier, changed)
+        val context = TestSend(bot, sender, original)
+        val replacement = TestReply(bot, replier, changed)
         var targetCalls = 0
         manager.register(MessageSendInterceptionPoint) { _, _, chain ->
             chain.proceed(replacement)
@@ -554,6 +555,29 @@ class MessageSendInterceptionPointTests {
         assertEquals(1, targetCalls)
     }
 
+
+    @Test
+    fun changedIdentityIsPassedToTarget() = runTest {
+        val initial = TestSend(bot, sender, original)
+        val invalid = listOf(
+            TestSend(mockk<Bot>(), sender, original),
+            TestSend(bot, Any(), original),
+            TestSend(bot, sender, changed),
+            TestSend(bot, sender, original, destination = Any()),
+        )
+        for (replacement in invalid) {
+            val manager = InterceptorManager()
+            manager.onMessageSend { _, _, chain -> chain.proceed(replacement) }
+            var calls = 0
+            assertSame(receipt, MessageSendInterceptionPoint.invoke(manager, initial) {
+                assertSame(replacement, it)
+                calls++
+                receipt
+            })
+            assertEquals(1, calls)
+        }
+    }
+
     /**
      * 拦截器可直接返回回执短路，不触达后续拦截器、目标解析或终端。
      */
@@ -563,7 +587,7 @@ class MessageSendInterceptionPointTests {
         var resolutions = 0
         manager.register(MessageSendInterceptionPoint, -1) { _, _, _ -> receipt }
         manager.register(MessageSendInterceptionPoint, 1) { _, _, _ -> error("downstream reached") }
-        val context = MessageSendContext.DefaultReply(bot, replier, original) {
+        val context = TestReply(bot, replier, original) {
             resolutions++
             sender
         }
@@ -591,8 +615,62 @@ class MessageSendInterceptionPointTests {
         assertSame(
             receipt, MessageSendInterceptionPoint.invoke(
                 snapshot,
-                MessageSendContext.DefaultSend(bot, sender, original),
+                TestSend(bot, sender, original),
             ) { sender.send((it.message as InteractionMessage.Text).text, *emptyArray<SendOption>()) })
         coVerify(exactly = 1) { sender.send("original", *emptyArray<SendOption>()) }
     }
+}
+
+private class TestSend private constructor(
+    bot: Bot,
+    override val source: Any,
+    originalMessage: InteractionMessage,
+    message: InteractionMessage,
+    override val options: List<SendOption>,
+    override val destination: Any,
+    private val resolveTarget: suspend () -> Any?,
+) : MessageSendContext.Send(bot, originalMessage, message) {
+    constructor(
+        bot: Bot,
+        source: Any,
+        message: InteractionMessage,
+        options: List<SendOption> = emptyList(),
+        destination: Any = source,
+        target: suspend () -> Any? = { source },
+    ) : this(bot, source, message, message, options.toList(), destination, target)
+
+    override suspend fun target(): Any? = resolveTarget()
+
+    override fun withMessage(message: InteractionMessage): TestSend =
+        TestSend(bot, source, originalMessage, message, options, destination, resolveTarget)
+
+    override fun withOptions(options: Collection<SendOption>): TestSend =
+        TestSend(bot, source, originalMessage, message, options.toList(), destination, resolveTarget)
+}
+
+private class TestReply private constructor(
+    bot: Bot,
+    override val source: Any,
+    originalMessage: InteractionMessage,
+    message: InteractionMessage,
+    override val options: List<ReplyOption>,
+    private val resolveTarget: suspend () -> Any?,
+) : MessageSendContext.Reply(bot, originalMessage, message) {
+    constructor(
+        bot: Bot,
+        source: Any,
+        message: InteractionMessage,
+        options: List<ReplyOption> = emptyList(),
+        target: suspend () -> Any? = { null },
+    ) : this(bot, source, message, message, options.toList(), target)
+
+    override val destination: Any get() = source
+
+    override suspend fun target(): Any? = resolveTarget()
+
+    override fun withMessage(message: InteractionMessage): TestReply =
+        TestReply(bot, source, originalMessage, message, options, resolveTarget)
+
+    override fun withOptions(options: Collection<ReplyOption>): TestReply =
+        TestReply(bot, source, originalMessage, message, options.toList(), resolveTarget)
 }

@@ -40,12 +40,9 @@ import love.forte.simbot.component.kook.event.KookBotSelfMessageEvent
 import love.forte.simbot.component.kook.event.KookChannelMessageEvent
 import love.forte.simbot.component.kook.event.KookContactMessageEvent
 import love.forte.simbot.component.kook.internal.*
-import love.forte.simbot.component.kook.message.KookMessageReceipt
-import love.forte.simbot.component.kook.message.KookReceiveMessageContent
-import love.forte.simbot.component.kook.message.toContent
+import love.forte.simbot.component.kook.message.*
 import love.forte.simbot.component.kook.util.requestDataBy
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.kook.api.userchat.CreateUserChatApi
 import love.forte.simbot.kook.event.TextExtra
 import love.forte.simbot.message.Message
@@ -100,9 +97,16 @@ internal class KookChannelMessageEventImpl(
      */
     private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
         bot.interceptMessageSend(
-            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+            KookMessageReplyContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.channel(_channel.source.id),
+                options = initialKookReplyOptions(options, sourceEvent.msgId, _author.source.id),
+                target = { content() },
+            ),
         ) {
-            _channel.sendChannelMessage(it, sourceEvent.msgId, _author.source.id)
+            _channel.sendChannelMessage(it)
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)
@@ -162,9 +166,16 @@ internal class KookContactMessageEventImpl(
      */
     private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
         bot.interceptMessageSend(
-            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+            KookMessageReplyContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.user(sourceEvent.authorId),
+                options = options,
+                target = { content() },
+            ),
         ) {
-            sendDirectMessage(bot, sourceEvent.authorId, it)
+            sendDirectMessage(bot, it)
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(true, bot)
@@ -218,9 +229,16 @@ internal class KookBotSelfChannelMessageEventImpl(
      */
     private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
         bot.interceptMessageSend(
-            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+            KookMessageReplyContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.channel(_channel.source.id),
+                options = initialKookReplyOptions(options, sourceEvent.msgId),
+                target = { content() },
+            ),
         ) {
-            _channel.sendChannelMessage(it, sourceEvent.msgId)
+            _channel.sendChannelMessage(it)
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)
@@ -285,9 +303,16 @@ internal class KookBotSelfMessageEventImpl(
      */
     private suspend fun reply(message: InteractionMessage, options: List<ReplyOption>): KookMessageReceipt =
         bot.interceptMessageSend(
-            MessageSendContext.DefaultReply(bot, this, message, options) { content() },
+            KookMessageReplyContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.user(sourceEvent.authorId),
+                options = options,
+                target = { content() },
+            ),
         ) {
-            sendDirectMessage(bot, sourceEvent.authorId, it)
+            sendDirectMessage(bot, it)
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(true, bot)

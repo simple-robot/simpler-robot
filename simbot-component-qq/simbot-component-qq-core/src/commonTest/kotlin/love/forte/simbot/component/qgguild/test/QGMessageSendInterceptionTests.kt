@@ -23,9 +23,13 @@
 
 package love.forte.simbot.component.qgguild.test
 
+import io.ktor.client.engine.mock.*
+import io.ktor.http.content.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.ability.*
 import love.forte.simbot.application.interceptors
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -38,6 +42,9 @@ import love.forte.simbot.component.qguild.internal.group.idGroup
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageReferenceOption
+import love.forte.simbot.component.qguild.message.QGMessageReplyContext
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.MessageReceipt
@@ -146,7 +153,7 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
                     assertSame(it.originalMessage, it.message)
                 }
                 captured.takeLast(3)
-                    .forEach { assertEquals(listOf(sendOption), assertIs<MessageSendContext.Send>(it).options) }
+                    .forEach { assertEquals(listOf(sendOption), assertIs<QGMessageSendContext>(it).options) }
             }
             replySources(bot).forEach { source ->
                 val before = contexts.size
@@ -160,11 +167,45 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
                 assertEquals(6, captured.size)
                 captured.forEach {
                     assertSame(source, it.source)
-                    assertIs<MessageSendContext.Reply>(it)
+                    assertIs<QGMessageReplyContext>(it)
                 }
                 captured.takeLast(3)
-                    .forEach { assertEquals(listOf(replyOption), assertIs<MessageSendContext.Reply>(it).options) }
+                    .forEach { assertEquals(listOf(replyOption), assertIs<MessageSendContext.Reply>(it).options.filterNot { option -> option is QGMessageReferenceOption }) }
             }
+        } finally {
+            app.cancel()
+            bot.cancel()
+        }
+    }
+
+
+    @Test
+    fun replyOptionsReplaceAndRemoveAutomaticReferences() = runTest {
+        var clear = false
+        var requests = 0
+        val app = app { request ->
+            requests++
+            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
+            if (clear) {
+                assertTrue(body["message_reference"] == null || body["message_reference"] == kotlinx.serialization.json.JsonNull, body.toString())
+            } else {
+                assertEquals("replacement", body.getValue("message_reference").jsonObject.getValue("message_id").jsonPrimitive.content)
+            }
+            respondOk("""{"id":"sent","channel_id":"channel","guild_id":"guild","content":"text","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":1}""")
+        }
+        val bot = app.bot() as QGBotImpl
+        try {
+            app.interceptors {
+                onMessageSend { _, context, chain ->
+                    val reply = assertIs<QGMessageReplyContext>(context)
+                    chain.proceed(reply.withOptions(if (clear) emptyList() else listOf(QGMessageReferenceOption.create("replacement".ID))))
+                }
+            }
+            val sources = replySources(bot).take(2)
+            for (source in sources) source.reply("text")
+            clear = true
+            for (source in sources) source.reply("text")
+            assertEquals(4, requests)
         } finally {
             app.cancel()
             bot.cancel()

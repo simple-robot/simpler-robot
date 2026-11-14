@@ -28,15 +28,14 @@ import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.event.QGC2CMessageCreateEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.friend.toFriend
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
 import love.forte.simbot.component.qguild.internal.message.interceptReply
-import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
-import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendUserMessageDirect
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -121,8 +120,13 @@ internal class QGC2CMessageCreateEventImpl(
             reply = ::replyByInteractionMessage
         )
 
-    private suspend fun replyByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
+        val message = context.message
+        val reference = context.options.qgMessageReference()?.literal
         fun GroupAndC2CSendBody.configMsgIdAndSeq() {
+            if (messageReference == null) {
+                messageReference = reference?.let { love.forte.simbot.qguild.model.Message.Reference(it) }
+            }
             if (msgId == null) {
                 msgId = sourceEventEntity.data.id
             }

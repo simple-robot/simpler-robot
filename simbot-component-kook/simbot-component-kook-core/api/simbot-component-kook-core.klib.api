@@ -91,6 +91,10 @@ abstract interface love.forte.simbot.component.kook.message/KookMessageElement :
 
 abstract interface love.forte.simbot.component.kook.message/KookMessageReceipt : love.forte.simbot.message/MessageReceipt // love.forte.simbot.component.kook.message/KookMessageReceipt|null[0]
 
+abstract interface love.forte.simbot.component.kook.message/KookMessageReplyOption : love.forte.simbot.ability/ReplyOption // love.forte.simbot.component.kook.message/KookMessageReplyOption|null[0]
+
+abstract interface love.forte.simbot.component.kook.message/KookMessageSendOption : love.forte.simbot.ability/SendOption // love.forte.simbot.component.kook.message/KookMessageSendOption|null[0]
+
 abstract interface love.forte.simbot.component.kook.role/KookRoleOperator // love.forte.simbot.component.kook.role/KookRoleOperator|null[0]
 
 abstract interface love.forte.simbot.component.kook/KookCategory : love.forte.simbot.definition/Category { // love.forte.simbot.component.kook/KookCategory|null[0]
@@ -1181,7 +1185,25 @@ final class love.forte.simbot.component.kook.message/KookMessageCreatedReceipt :
     final object Companion // love.forte.simbot.component.kook.message/KookMessageCreatedReceipt.Companion|null[0]
 }
 
+final class love.forte.simbot.component.kook.message/KookMessageReplyContext : love.forte.simbot.interception/MessageSendContext.Reply { // love.forte.simbot.component.kook.message/KookMessageReplyContext|null[0]
+    final val bot // love.forte.simbot.component.kook.message/KookMessageReplyContext.bot|{}bot[0]
+        final fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.message/KookMessageReplyContext.bot.<get-bot>|<get-bot>(){}[0]
+    final val destination // love.forte.simbot.component.kook.message/KookMessageReplyContext.destination|{}destination[0]
+        final fun <get-destination>(): love.forte.simbot.component.kook.message/KookMessageSendTarget // love.forte.simbot.component.kook.message/KookMessageReplyContext.destination.<get-destination>|<get-destination>(){}[0]
+    final val options // love.forte.simbot.component.kook.message/KookMessageReplyContext.options|{}options[0]
+        final fun <get-options>(): kotlin.collections/List<love.forte.simbot.ability/ReplyOption> // love.forte.simbot.component.kook.message/KookMessageReplyContext.options.<get-options>|<get-options>(){}[0]
+    final val source // love.forte.simbot.component.kook.message/KookMessageReplyContext.source|{}source[0]
+        final fun <get-source>(): love.forte.simbot.ability/ReplySupport // love.forte.simbot.component.kook.message/KookMessageReplyContext.source.<get-source>|<get-source>(){}[0]
+
+    final fun create(love.forte.simbot.component.kook.bot/KookBot, love.forte.simbot.ability/ReplySupport, love.forte.simbot.event/InteractionMessage, love.forte.simbot.component.kook.message/KookMessageSendTarget, kotlin.collections/List<love.forte.simbot.ability/ReplyOption> = ..., kotlin.coroutines/SuspendFunction0<kotlin/Any?> = ...): love.forte.simbot.component.kook.message/KookMessageReplyContext // love.forte.simbot.component.kook.message/KookMessageReplyContext.create|create#static(love.forte.simbot.component.kook.bot.KookBot;love.forte.simbot.ability.ReplySupport;love.forte.simbot.event.InteractionMessage;love.forte.simbot.component.kook.message.KookMessageSendTarget;kotlin.collections.List<love.forte.simbot.ability.ReplyOption>;kotlin.coroutines.SuspendFunction0<kotlin.Any?>){}[0]
+    final fun withMessage(love.forte.simbot.event/InteractionMessage): love.forte.simbot.component.kook.message/KookMessageReplyContext // love.forte.simbot.component.kook.message/KookMessageReplyContext.withMessage|withMessage(love.forte.simbot.event.InteractionMessage){}[0]
+    final fun withOptions(kotlin.collections/Collection<love.forte.simbot.ability/ReplyOption>): love.forte.simbot.component.kook.message/KookMessageReplyContext // love.forte.simbot.component.kook.message/KookMessageReplyContext.withOptions|withOptions(kotlin.collections.Collection<love.forte.simbot.ability.ReplyOption>){}[0]
+    final suspend fun target(): kotlin/Any? // love.forte.simbot.component.kook.message/KookMessageReplyContext.target|target(){}[0]
+}
+
 final class love.forte.simbot.component.kook.message/KookMessageSendContext : love.forte.simbot.interception/MessageSendContext.Send { // love.forte.simbot.component.kook.message/KookMessageSendContext|null[0]
+    final val bot // love.forte.simbot.component.kook.message/KookMessageSendContext.bot|{}bot[0]
+        final fun <get-bot>(): love.forte.simbot.component.kook.bot/KookBot // love.forte.simbot.component.kook.message/KookMessageSendContext.bot.<get-bot>|<get-bot>(){}[0]
     final val destination // love.forte.simbot.component.kook.message/KookMessageSendContext.destination|{}destination[0]
         final fun <get-destination>(): love.forte.simbot.component.kook.message/KookMessageSendTarget // love.forte.simbot.component.kook.message/KookMessageSendContext.destination.<get-destination>|<get-destination>(){}[0]
     final val options // love.forte.simbot.component.kook.message/KookMessageSendContext.options|{}options[0]
@@ -1189,13 +1211,10 @@ final class love.forte.simbot.component.kook.message/KookMessageSendContext : lo
     final val source // love.forte.simbot.component.kook.message/KookMessageSendContext.source|{}source[0]
         final fun <get-source>(): kotlin/Any // love.forte.simbot.component.kook.message/KookMessageSendContext.source.<get-source>|<get-source>(){}[0]
 
+    final fun create(love.forte.simbot.component.kook.bot/KookBot, kotlin/Any, love.forte.simbot.event/InteractionMessage, love.forte.simbot.component.kook.message/KookMessageSendTarget, kotlin.collections/List<love.forte.simbot.ability/SendOption> = ..., kotlin.coroutines/SuspendFunction0<kotlin/Any?> = ...): love.forte.simbot.component.kook.message/KookMessageSendContext // love.forte.simbot.component.kook.message/KookMessageSendContext.create|create#static(love.forte.simbot.component.kook.bot.KookBot;kotlin.Any;love.forte.simbot.event.InteractionMessage;love.forte.simbot.component.kook.message.KookMessageSendTarget;kotlin.collections.List<love.forte.simbot.ability.SendOption>;kotlin.coroutines.SuspendFunction0<kotlin.Any?>){}[0]
     final fun withMessage(love.forte.simbot.event/InteractionMessage): love.forte.simbot.component.kook.message/KookMessageSendContext // love.forte.simbot.component.kook.message/KookMessageSendContext.withMessage|withMessage(love.forte.simbot.event.InteractionMessage){}[0]
     final fun withOptions(kotlin.collections/Collection<love.forte.simbot.ability/SendOption>): love.forte.simbot.component.kook.message/KookMessageSendContext // love.forte.simbot.component.kook.message/KookMessageSendContext.withOptions|withOptions(kotlin.collections.Collection<love.forte.simbot.ability.SendOption>){}[0]
-    final suspend fun target(): love.forte.simbot.component.kook.message/KookMessageSendTarget // love.forte.simbot.component.kook.message/KookMessageSendContext.target|target(){}[0]
-
-    final object Companion { // love.forte.simbot.component.kook.message/KookMessageSendContext.Companion|null[0]
-        final fun create(love.forte.simbot.component.kook.bot/KookBot, kotlin/Any, love.forte.simbot.event/InteractionMessage, love.forte.simbot.component.kook.message/KookMessageSendTarget, kotlin.collections/List<love.forte.simbot.ability/SendOption> = ...): love.forte.simbot.component.kook.message/KookMessageSendContext // love.forte.simbot.component.kook.message/KookMessageSendContext.Companion.create|create(love.forte.simbot.component.kook.bot.KookBot;kotlin.Any;love.forte.simbot.event.InteractionMessage;love.forte.simbot.component.kook.message.KookMessageSendTarget;kotlin.collections.List<love.forte.simbot.ability.SendOption>){}[0]
-    }
+    final suspend fun target(): kotlin/Any? // love.forte.simbot.component.kook.message/KookMessageSendContext.target|target(){}[0]
 }
 
 final class love.forte.simbot.component.kook.message/KookQuote : love.forte.simbot.message/MessageReference { // love.forte.simbot.component.kook.message/KookQuote|null[0]
@@ -1377,7 +1396,7 @@ sealed class love.forte.simbot.component.kook.message/KookAttachmentMessage : lo
     }
 }
 
-sealed class love.forte.simbot.component.kook.message/KookChannelMessageSendOption : love.forte.simbot.ability/SendOption { // love.forte.simbot.component.kook.message/KookChannelMessageSendOption|null[0]
+sealed class love.forte.simbot.component.kook.message/KookChannelMessageSendOption : love.forte.simbot.component.kook.message/KookMessageReplyOption, love.forte.simbot.component.kook.message/KookMessageSendOption { // love.forte.simbot.component.kook.message/KookChannelMessageSendOption|null[0]
     final fun defaultTempTarget(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook.message/KookChannelMessageSendOption.DefaultTempTarget // love.forte.simbot.component.kook.message/KookChannelMessageSendOption.defaultTempTarget|defaultTempTarget#static(love.forte.simbot.common.id.ID){}[0]
     final fun nonce(kotlin/String): love.forte.simbot.component.kook.message/KookChannelMessageSendOption.Nonce // love.forte.simbot.component.kook.message/KookChannelMessageSendOption.nonce|nonce#static(kotlin.String){}[0]
     final fun quote(love.forte.simbot.common.id/ID): love.forte.simbot.component.kook.message/KookChannelMessageSendOption.Quote // love.forte.simbot.component.kook.message/KookChannelMessageSendOption.quote|quote#static(love.forte.simbot.common.id.ID){}[0]
@@ -1434,6 +1453,10 @@ sealed class love.forte.simbot.component.kook.message/KookMessageSendTarget { //
     abstract val id // love.forte.simbot.component.kook.message/KookMessageSendTarget.id|{}id[0]
         abstract fun <get-id>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessageSendTarget.id.<get-id>|<get-id>(){}[0]
 
+    final fun channel(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.Channel // love.forte.simbot.component.kook.message/KookMessageSendTarget.channel|channel#static(kotlin.String){}[0]
+    final fun chatCode(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.ChatCode // love.forte.simbot.component.kook.message/KookMessageSendTarget.chatCode|chatCode#static(kotlin.String){}[0]
+    final fun user(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.User // love.forte.simbot.component.kook.message/KookMessageSendTarget.user|user#static(kotlin.String){}[0]
+
     final class Channel : love.forte.simbot.component.kook.message/KookMessageSendTarget { // love.forte.simbot.component.kook.message/KookMessageSendTarget.Channel|null[0]
         final val id // love.forte.simbot.component.kook.message/KookMessageSendTarget.Channel.id|{}id[0]
             final fun <get-id>(): kotlin/String // love.forte.simbot.component.kook.message/KookMessageSendTarget.Channel.id.<get-id>|<get-id>(){}[0]
@@ -1459,12 +1482,6 @@ sealed class love.forte.simbot.component.kook.message/KookMessageSendTarget { //
         final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.kook.message/KookMessageSendTarget.User.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // love.forte.simbot.component.kook.message/KookMessageSendTarget.User.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // love.forte.simbot.component.kook.message/KookMessageSendTarget.User.toString|toString(){}[0]
-    }
-
-    final object Companion { // love.forte.simbot.component.kook.message/KookMessageSendTarget.Companion|null[0]
-        final fun channel(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.Channel // love.forte.simbot.component.kook.message/KookMessageSendTarget.Companion.channel|channel(kotlin.String){}[0]
-        final fun chatCode(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.ChatCode // love.forte.simbot.component.kook.message/KookMessageSendTarget.Companion.chatCode|chatCode(kotlin.String){}[0]
-        final fun user(kotlin/String): love.forte.simbot.component.kook.message/KookMessageSendTarget.User // love.forte.simbot.component.kook.message/KookMessageSendTarget.Companion.user|user(kotlin.String){}[0]
     }
 }
 

@@ -28,53 +28,66 @@ import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.ability.SendOption
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.qguild.bot.QGBot
+import love.forte.simbot.component.qguild.channel.QGTextChannel
+import love.forte.simbot.component.qguild.event.*
+import love.forte.simbot.component.qguild.friend.QGFriend
+import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
-import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.QGMessageSendContext
-import love.forte.simbot.component.qguild.message.QGMessageSendTarget
+import love.forte.simbot.component.qguild.internal.dms.QGDmsContactImpl
+import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.event.MessageSentEvent
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.qguild.stdlib.MessageDestination
 
 /**
  * 在消息解析和网络请求之前执行标准发送拦截链。
- * QQ 当前没有组件专属发送选项，未知选项由终端忽略。
+ * 未知发送选项由终端忽略。
  */
 internal suspend inline fun QGBotImpl.interceptSend(
     source: SendSupport,
     message: InteractionMessage,
     options: List<SendOption>,
-    crossinline send: suspend (InteractionMessage) -> QGMessageReceipt,
+    crossinline send: suspend (QGMessageSendContext) -> QGMessageReceipt,
 ): QGMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<QGMessageReceipt>(
     interceptorContainer,
-    MessageSendContext.DefaultSend(this, source, message, options),
+    QGMessageSendContext.create(this, source, message, source.sendDestination(), options, target = { source }),
 ) { context ->
-    send(context.message).also { receipt ->
+    send(context as QGMessageSendContext).also { receipt ->
         pushEventAndCollectAsync(QGMessageSentEventImpl(context, receipt))
     }
 }
 
 /**
  * 保留回复来源、延迟解析目标，并直接调用终端以避免再次进入 send 链。
- * QQ 当前没有组件专属回复选项，未知选项由终端忽略。
+ * 回复引用通过上下文选项传递。
  */
 internal suspend inline fun QGBotImpl.interceptReply(
     source: ReplySupport,
     message: InteractionMessage,
     options: List<ReplyOption>,
     noinline target: suspend () -> Any?,
-    crossinline reply: suspend (InteractionMessage) -> QGMessageReceipt,
+    crossinline reply: suspend (QGMessageReplyContext) -> QGMessageReceipt,
 ): QGMessageReceipt = MessageSendInterceptionPoint.invokeWithReceipt<QGMessageReceipt>(
     interceptorContainer,
-    MessageSendContext.DefaultReply(this, source, message, options, target),
+    QGMessageReplyContext.create(
+        this,
+        source,
+        message,
+        source.replyDestination(),
+        source.initialReplyOptions(options),
+        target,
+    ),
 ) { context ->
-    reply(context.message).also { receipt ->
+    reply(context as QGMessageReplyContext).also { receipt ->
         pushEventAndCollectAsync(QGMessageSentEventImpl(context, receipt))
     }
 }
@@ -103,10 +116,49 @@ internal suspend fun QGBot.interceptDirectSend(
     val bot = this as? QGBotImpl ?: return send(message)
     return MessageSendInterceptionPoint.invokeWithReceipt<QGMessageReceipt>(
         bot.interceptorContainer,
-        QGMessageSendContext(bot, message, target),
+        QGMessageSendContext.create(bot, bot, message, target),
     ) { context ->
         send(context.message).also { receipt ->
             bot.pushEventAndCollectAsync(QGMessageSentEventImpl(context, receipt))
         }
     }
+}
+
+private fun SendSupport.sendDestination(): QGMessageSendTarget = when (this) {
+    is QGTextChannel -> QGMessageSendTarget.create(MessageDestination.CHANNEL, id)
+    is QGDmsContactImpl -> sendDestination
+    is QGMemberImpl -> sendDestination
+    is QGFriend -> QGMessageSendTarget.create(MessageDestination.USER, id)
+    is QGGroup -> QGMessageSendTarget.create(MessageDestination.GROUP, id)
+    else -> error("Unsupported QQ send source: $this")
+}
+
+private fun ReplySupport.replyDestination(): QGMessageSendTarget = when (this) {
+    is QGAtMessageCreateEvent -> QGMessageSendTarget.create(MessageDestination.CHANNEL, sourceEventEntity.channelId.ID)
+    is QGDirectMessageCreateEvent -> QGMessageSendTarget.create(MessageDestination.DMS, sourceEventEntity.guildId.ID)
+    is QGGroupAtMessageCreateEvent -> QGMessageSendTarget.create(
+        MessageDestination.GROUP,
+        sourceEventEntity.data.groupOpenid.ID
+    )
+    is QGGroupMessageCreateEvent -> QGMessageSendTarget.create(
+        MessageDestination.GROUP,
+        sourceEventEntity.data.groupOpenid.ID
+    )
+    is QGC2CMessageCreateEvent -> QGMessageSendTarget.create(
+        MessageDestination.USER,
+        sourceEventEntity.data.author.userOpenid.ID
+    )
+    else -> error("Unsupported QQ reply source: $this")
+}
+
+private fun ReplySupport.initialReplyOptions(options: List<ReplyOption>): List<ReplyOption> {
+    if (options.any { it is QGMessageReferenceOption }) return options
+    val id = when (this) {
+        is QGAtMessageCreateEvent -> sourceEventEntity.id
+        is QGDirectMessageCreateEvent -> sourceEventEntity.id
+        is QGGroupAtMessageCreateEvent -> sourceEventEntity.data.id
+        is QGGroupMessageCreateEvent -> sourceEventEntity.data.id
+        else -> return options
+    }
+    return listOf(QGMessageReferenceOption.create(id.ID)) + options
 }

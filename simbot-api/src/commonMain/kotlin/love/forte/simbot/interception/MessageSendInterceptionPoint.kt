@@ -37,7 +37,7 @@ import love.forte.simbot.message.MessageReceipt
  * 重复调用会重新执行相同的后续链及发送终端，可能导致重复发送。
  *
  * 替换上下文可使用 [MessageSendContext.withMessage] 或具体上下文的 withOptions。
- * 约定替换时保留同一次操作的 Bot、调用来源、原始消息及发送或回复类型，不做运行时强制校验。
+ * 组件根据入口需要检查上下文类型，复制方法保留本次操作的来源、原始消息和目标信息。
  * 拦截器内应当避免二次直接调用 send/reply, 它们会进入独立新链，需注意避免递归。
  *
  * 拦截器应尽量直接返回 proceed 的结果，并且应避免伪造回执。根据不同的组件需求不同，
@@ -60,7 +60,7 @@ import love.forte.simbot.message.MessageReceipt
  */
 public object MessageSendInterceptionPoint : InterceptionPoint<MessageSendContext, MessageReceipt> {
     /**
-     * 使用当前容器中的注册项执行一次消息发送，保留惰性读取与注销后放行语义。
+     * 使用当前容器中的注册项执行一次消息发送。
      *
      * @param container 当前 Application 提供给组件的拦截器容器。
      * @param context 本次发送或回复的初始上下文。

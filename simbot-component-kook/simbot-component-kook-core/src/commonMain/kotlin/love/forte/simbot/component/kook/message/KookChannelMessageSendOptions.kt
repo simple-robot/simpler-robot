@@ -32,11 +32,11 @@ import love.forte.simbot.common.id.literal
  *
  * 同类选项至多出现一次，重复时会抛出异常。
  * 消息内的引用或临时目标元素仍按原有消息转换规则覆盖默认值。
- * [KookChannelRequestMessage] 始终使用完整请求中的参数。
+ * 用于原生请求时，已指定的选项可覆盖请求中的对应参数。
  *
  * @since 5.0
  */
-public sealed class KookChannelMessageSendOption : SendOption {
+public sealed class KookChannelMessageSendOption : KookMessageSendOption, KookMessageReplyOption {
 
     /**
      * 引用消息的 ID。
@@ -192,7 +192,7 @@ public fun Array<out SendOption>.toKookChannelMessageSendOptions(): KookChannelM
  * 频道发送消息的额外协议选项。
  *
  * 消息内的引用或临时目标元素仍按原有消息转换规则覆盖默认值。
- * 这些选项用于标准消息，[KookChannelRequestMessage] 始终使用其完整请求中的参数。
+ * 用于原生请求时，已指定的选项覆盖请求中的对应参数。
  *
  * @since 5.0
  */

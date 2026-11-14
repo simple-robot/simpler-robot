@@ -3242,3 +3242,64 @@ public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMes
 	public static synthetic fun getRecordInfoReserve$default (Llove/forte/simbot/component/onebot/v11/message/segment/OneBotRecord;Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Ljava/lang/String;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
 }
 
+public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyContext : love/forte/simbot/interception/MessageSendContext$Reply {
+	public static final fun create (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyContext;
+	public static synthetic fun create$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyContext;
+	public synthetic fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getBot ()Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;
+	public synthetic fun getDestination ()Ljava/lang/Object;
+	public fun getDestination ()Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;
+	public fun getOptions ()Ljava/util/List;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/ability/ReplySupport;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyContext;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyContext;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+}
+
+public abstract class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyOption : love/forte/simbot/ability/ReplyOption {
+	public static final fun quote (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyOption$Quote;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyOption$Quote : love/forte/simbot/component/onebot/v11/core/message/OneBotMessageReplyOption {
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendContext : love/forte/simbot/interception/MessageSendContext$Send {
+	public static final fun create (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendContext;
+	public static synthetic fun create$default (Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendContext;
+	public synthetic fun getBot ()Llove/forte/simbot/bot/Bot;
+	public fun getBot ()Llove/forte/simbot/component/onebot/v11/core/bot/OneBotBot;
+	public synthetic fun getDestination ()Ljava/lang/Object;
+	public fun getDestination ()Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;
+	public fun getOptions ()Ljava/util/List;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/ability/SendSupport;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendContext;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendContext;
+	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget {
+	public static final fun create (Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getType ()Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type : java/lang/Enum {
+	public static final field GROUP Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;
+	public static final field PRIVATE Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;
+	public static fun values ()[Llove/forte/simbot/component/onebot/v11/core/message/OneBotMessageSendTarget$Type;
+}
+

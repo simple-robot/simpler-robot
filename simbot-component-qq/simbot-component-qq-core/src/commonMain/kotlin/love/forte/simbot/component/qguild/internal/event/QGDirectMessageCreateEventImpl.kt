@@ -26,15 +26,14 @@ package love.forte.simbot.component.qguild.internal.event
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.event.QGDirectMessageCreateEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.dms.toDmsContact
 import love.forte.simbot.component.qguild.internal.message.QGMessageContentImpl
 import love.forte.simbot.component.qguild.internal.message.interceptReply
-import love.forte.simbot.component.qguild.message.QGMessageContent
-import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendDmsMessageDirect
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.qguild.api.message.MessageSendApi
@@ -112,7 +111,9 @@ internal class QGDirectMessageCreateEventImpl(
             reply = ::replyByInteractionMessage
         )
 
-    private suspend fun replyByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
+        val message = context.message
+        val reference = context.options.qgMessageReference()?.literal
         var ref: Message.Reference? = null
 
         fun MessageSendApi.Body.Builder.configMsgIdAndRef() {
@@ -120,7 +121,7 @@ internal class QGDirectMessageCreateEventImpl(
                 msgId = sourceEventEntity.id
             }
             if (messageReference == null) {
-                messageReference = ref ?: Message.Reference(sourceEventEntity.id).also { ref = it }
+                messageReference = reference?.let { id -> ref ?: Message.Reference(id).also { ref = it } }
             }
         }
 
