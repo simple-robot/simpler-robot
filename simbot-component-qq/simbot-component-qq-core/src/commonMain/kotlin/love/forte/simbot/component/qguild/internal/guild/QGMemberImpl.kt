@@ -147,18 +147,40 @@ internal class QGMemberImpl(
         return sendByInteractionMessage(message)
     }
 
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(text),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
+        )
 
-    override suspend fun send(messageContent: MessageContent): QGMessageReceipt {
-        val event = QGMemberSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(messageContent),
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(message),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
         )
         bot.emitMessagePreSendEvent(event)
         val message = event.useMessage()
 
-        return sendByInteractionMessage(message)
-    }
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(messageContent),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
+        )
 
     private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         return when (message) {

@@ -34,10 +34,7 @@ import love.forte.simbot.ability.SendOption
 import love.forte.simbot.ability.SendSupport
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.event.InteractionMessage
-import love.forte.simbot.interception.InterceptorContainer
-import love.forte.simbot.interception.InterceptorManager
-import love.forte.simbot.interception.MessageSendContext
-import love.forte.simbot.interception.MessageSendInterceptionPoint
+import love.forte.simbot.interception.*
 import love.forte.simbot.message.MessageReceipt
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -48,12 +45,103 @@ import kotlin.test.assertSame
  * 验证消息发送拦截点的上下文传递、终端调用及重复继续执行行为。
  */
 class MessageSendInterceptionPointTests {
+    /**
+     * 模拟组件入口承诺的具体回执类型。
+     */
+    private interface ExpectedReceipt : MessageReceipt
+
     private val bot = mockk<Bot>()
     private val sender = mockk<SendSupport>()
     private val replier = mockk<ReplySupport>()
     private val receipt = mockk<MessageReceipt>()
+    private val expectedReceipt = mockk<ExpectedReceipt>()
     private val original = InteractionMessage.valueOf("original")
     private val changed = InteractionMessage.valueOf("changed")
+
+    /**
+     * 类型正确的短路可直接返回，无需进入发送终端。
+     */
+    @Test
+    fun typedShortCircuitReturnsCompatibleReceipt() = runTest {
+        val manager = InterceptorManager()
+        val expected = mockk<ExpectedReceipt>()
+        manager.register(MessageSendInterceptionPoint) { _, _, _ -> expected }
+
+        val result: ExpectedReceipt = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+            manager, MessageSendContext.Send(bot, sender, original),
+        ) { error("target reached") }
+
+        assertSame(expected, result)
+    }
+
+    /**
+     * 类型错误的短路在链出口报错，并给出预期与实际类型。
+     */
+    @Test
+    fun typedShortCircuitRejectsIncompatibleReceipt() = runTest {
+        val manager = InterceptorManager()
+        manager.register(MessageSendInterceptionPoint) { _, _, _ -> receipt }
+
+        val failure = assertFailsWith<IllegalStateException> {
+            MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+                manager, MessageSendContext.Send(bot, sender, original),
+            ) { error("target reached") }
+        }
+
+        kotlin.test.assertTrue(failure.message.orEmpty().contains("ExpectedReceipt"))
+        kotlin.test.assertTrue(failure.message.orEmpty().contains("returned"))
+    }
+
+    /**
+     * 中间层和终端无需满足最终类型，外层仍可修正结果；合法替换不要求同一实例。
+     */
+    @Test
+    fun onlyFinalReceiptIsValidated() = runTest {
+        val manager = InterceptorManager()
+        val expected = mockk<ExpectedReceipt>()
+        var targetCalls = 0
+        manager.register(MessageSendInterceptionPoint, -1) { _, context, chain ->
+            assertSame(receipt, chain.proceed(context))
+            expected
+        }
+        manager.register(MessageSendInterceptionPoint, 1) { _, context, chain ->
+            chain.proceed(context)
+        }
+
+        val result = MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+            manager, MessageSendContext.Send(bot, sender, original),
+        ) {
+            targetCalls++
+            expectedReceipt
+        }
+
+        assertSame(expected, result)
+        assertEquals(1, targetCalls)
+    }
+
+    /**
+     * 终端成功后外层替换为错误类型，仍在链出口拒绝，已发生的发送不回滚。
+     */
+    @Test
+    fun incompatibleFinalReceiptFailsAfterSuccessfulTerminal() = runTest {
+        val manager = InterceptorManager()
+        val expected = mockk<ExpectedReceipt>()
+        var targetCalls = 0
+        manager.register(MessageSendInterceptionPoint) { _, context, chain ->
+            assertSame(expected, chain.proceed(context))
+            receipt
+        }
+
+        assertFailsWith<IllegalStateException> {
+            MessageSendInterceptionPoint.invokeWithReceipt<ExpectedReceipt>(
+                manager, MessageSendContext.Send(bot, sender, original),
+            ) {
+                targetCalls++
+                expected
+            }
+        }
+        assertEquals(1, targetCalls)
+    }
 
     /**
      * 发送消息替换保留来源与原始消息，并隔离调用方列表的后续修改。

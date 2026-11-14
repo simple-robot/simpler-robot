@@ -80,15 +80,44 @@ internal class QGC2CMessageCreateEventImpl(
         return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
     }
 
-    override suspend fun reply(messageContent: MessageContent): QGMessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(messageContent))
-    }
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(text),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
 
-    private suspend fun emitPreReplyEventAndReply(message: InteractionMessage): QGMessageReceipt {
-        val event = QGC2CMessageCreateEventPreReplyEventImpl(bot, this, message)
-        bot.emitMessagePreSendEvent(event)
-        return replyByInteractionMessage(event.useMessage())
-    }
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(
+        message: love.forte.simbot.message.Message,
+        vararg options: ReplyOption
+    ): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(message),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
+
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(messageContent),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
 
     private suspend fun replyByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         fun GroupAndC2CSendBody.configMsgIdAndSeq() {

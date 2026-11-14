@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.event
 
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.ID
@@ -34,14 +35,14 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.group.QGGroupAuthorImpl
 import love.forte.simbot.component.qguild.internal.group.toGroup
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
+import love.forte.simbot.component.qguild.internal.message.interceptReply
 import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
+import love.forte.simbot.component.qguild.message.QGMessageReceipt
 import love.forte.simbot.component.qguild.message.deleteGroupMessage
 import love.forte.simbot.component.qguild.message.sendGroupMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostReplyEvent
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.event.GroupMessageCreate
@@ -89,17 +90,46 @@ internal class QGGroupMessageCreateEventImpl(
         return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
     }
 
-    override suspend fun reply(messageContent: MessageContent): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(messageContent))
-    }
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(text),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
 
-    private suspend fun emitPreReplyEventAndReply(message: InteractionMessage): MessageReceipt {
-        val event = QGGroupMessageCreateEventPreReplyEventImpl(bot, this, message)
-        bot.emitMessagePreSendEvent(event)
-        return replyByInteractionMessage(event.useMessage())
-    }
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(
+        message: love.forte.simbot.message.Message,
+        vararg options: ReplyOption
+    ): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(message),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
 
-    private suspend fun replyByInteractionMessage(message: InteractionMessage): MessageReceipt {
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(messageContent),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
+
+    private suspend fun replyByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         fun GroupAndC2CSendBody.configRefAndMsgIdAndSeq() {
             if (messageReference == null) {
                 messageReference = love.forte.simbot.qguild.model.Message.Reference(

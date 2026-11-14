@@ -84,8 +84,38 @@ internal class QGFriendImpl(
     }
 
     /**
-     * 发送消息，然后emit post send事件并返回 receipt.
+     * 保留发送选项，并让本次操作只进入一次拦截链。
      */
+    override suspend fun send(text: String, vararg options: SendOption): MessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(text),
+            options.toList(),
+            ::sendByInteractionMessage
+        )
+
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): MessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(message),
+            options.toList(),
+            ::sendByInteractionMessage
+        )
+
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): MessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(messageContent),
+            options.toList(),
+            ::sendByInteractionMessage
+        )
+
     private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         return when (message) {
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")

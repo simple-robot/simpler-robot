@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.group
 
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.id.ID
@@ -31,20 +32,19 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.group.*
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
-import love.forte.simbot.component.qguild.internal.event.QGGroupSendSupportPreSendEventImpl
+import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMedia
+import love.forte.simbot.component.qguild.message.QGMessageReceipt
 import love.forte.simbot.component.qguild.message.sendGroupMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.ExperimentalQGMediaApi
+import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.common.QGInternalInheritanceApi
 import love.forte.simbot.qguild.event.GroupMessageData
-import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
 import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.resource.Resource
 import kotlin.coroutines.CoroutineContext
@@ -111,30 +111,33 @@ internal class QGGroupImpl(
         }
     }
 
-    override suspend fun send(text: String): MessageReceipt {
+    override suspend fun send(text: String): QGMessageReceipt {
         return sendWithContent(this, InteractionMessage.valueOf(text))
     }
 
-    override suspend fun send(message: Message): MessageReceipt {
+    override suspend fun send(message: Message): QGMessageReceipt {
         return sendWithContent(this, InteractionMessage.valueOf(message))
     }
 
-    override suspend fun send(messageContent: MessageContent): MessageReceipt {
+    override suspend fun send(messageContent: MessageContent): QGMessageReceipt {
         return sendWithContent(this, InteractionMessage.valueOf(messageContent))
     }
 
     /**
      * 使用当前句柄的消息上下文发送，并将实际发起发送的群对象传给发送事件。
      */
-    internal suspend fun sendWithContent(content: QGGroup, message: InteractionMessage): MessageReceipt {
-        val event = QGGroupSendSupportPreSendEventImpl(
-            bot = bot,
-            content = content,
-            message = message
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
-        return sendByInteractionMessage(content, message)
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): QGMessageReceipt =
+        sendWithContent(this, InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 使用当前句柄的消息上下文发送，并保留实际发起发送的群对象。
+     */
+    internal suspend fun sendWithContent(
+        content: QGGroup,
+        message: InteractionMessage,
+        options: List<SendOption> = emptyList(),
+    ): QGMessageReceipt {
+        return bot.interceptSend(content, message, options) { sendByInteractionMessage(it) }
     }
 
     private suspend fun sendByInteractionMessage(content: QGGroup, message: InteractionMessage): MessageReceipt {

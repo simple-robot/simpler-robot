@@ -24,6 +24,7 @@
 package love.forte.simbot.interception
 
 import love.forte.simbot.common.PriorityConstant
+import love.forte.simbot.interception.MessageSendInterceptionPoint.invoke
 import love.forte.simbot.message.MessageReceipt
 
 /**
@@ -38,6 +39,13 @@ import love.forte.simbot.message.MessageReceipt
  * 替换上下文可使用 [MessageSendContext.withMessage] 或具体上下文的 withOptions。
  * 约定替换时保留同一次操作的 Bot、调用来源、原始消息及发送或回复类型，不做运行时强制校验。
  * 拦截器内应当避免二次直接调用 send/reply, 它们会进入独立新链，需注意避免递归。
+ *
+ * 拦截器应尽量直接返回 proceed 的结果，并且应避免伪造回执。根据不同的组件需求不同，
+ * 针对 [MessageReceipt] 的类型要求可能不同（例如 QQ 组件要求返回 `QGMessageReceipt`），
+ * 擅自随意伪造结果可能会导致组件针对拦截器的最终类型校验失败。
+ * 如需短路或替换回执，结果必须符合当前 send/reply 入口承诺的具体回执类型。
+ * 组件通过 [invokeWithReceipt] 在整条链返回后校验一次最终类型，不校验中间层或回执真实性。
+ * 校验失败时实际发送可能已经完成，调用方不应仅因该异常便直接重试发送。
  *
  * 注册示例：
  * ```kotlin
@@ -57,6 +65,7 @@ public object MessageSendInterceptionPoint : InterceptionPoint<MessageSendContex
      * @param container 当前 Application 提供给组件的拦截器容器。
      * @param context 本次发送或回复的初始上下文。
      * @param interceptedTarget 实际发送终端，必须使用传入上下文中的当前消息及选项。
+     * @see invokeWithReceipt 组件入口承诺具体回执类型时应使用的执行入口。
      */
     public suspend fun invoke(
         container: InterceptorContainer,
@@ -69,12 +78,35 @@ public object MessageSendInterceptionPoint : InterceptionPoint<MessageSendContex
 }
 
 /**
+ * 通过 [invoke] 执行完整拦截链，并在成功返回后校验一次最终回执是否符合约定的类型 [R]。
+ *
+ * @param R 当前 send/reply 入口承诺的回执类型。
+ * @param container 当前 Application 提供给组件的拦截器容器。
+ * @param context 本次发送或回复的初始上下文。
+ * @param interceptedTarget 实际发送逻辑，即被拦截的逻辑。
+ * @throws IllegalStateException 最终回执不符合约定的类型 [R] 时。
+ */
+public suspend inline fun <reified R : MessageReceipt> MessageSendInterceptionPoint.invokeWithReceipt(
+    container: InterceptorContainer,
+    context: MessageSendContext,
+    noinline interceptedTarget: suspend (MessageSendContext) -> R,
+): R {
+    val receipt = invoke(container, context, interceptedTarget)
+    check(receipt is R) {
+        "Expected message receipt of type ${R::class.simpleName}, " +
+            "but interceptor chain returned ${receipt::class.simpleName}."
+    }
+    return receipt
+}
+
+/**
  * 消息发送操作的拦截器类型。
  *
  * 用于拦截由 [MessageSendInterceptionPoint] 标识的消息发送或回复流程。
  * 拦截器接收 [MessageSendContext] 作为本次发送操作的上下文，并返回 [MessageReceipt] 作为发送结果。
  *
- * 实现者可以在拦截过程中检查或替换向下游传递的消息、继续执行后续拦截链，或直接返回自定义回执以短路后续发送流程。
+ * 拦截器应尽量直接返回 proceed 的结果，并且应避免伪造回执。
+ * 更多约定、警告和说明参考 [MessageSendInterceptionPoint]。
  *
  * @see Interceptor
  * @see MessageSendContext
@@ -90,6 +122,8 @@ public typealias MessageSendInterceptor = Interceptor<MessageSendContext, Messag
  * 为消息发送操作注册一个拦截器。
  *
  * 拦截器与 [MessageSendInterceptionPoint] 关联并接收 [MessageSendContext] 作为拦截上下文。拦截结果为 [MessageReceipt]。
+ * 应尽量直接返回 proceed 的结果。短路或替换回执时须满足当前组件入口的具体返回类型的约定。
+ * 更多约定、警告和说明参考 [MessageSendInterceptionPoint]。
  *
  * @param priority 在消息发送拦截点内执行优先级，默认为 [PriorityConstant.DEFAULT]。
  * @param interceptor 应用于消息发送操作的拦截器逻辑。
