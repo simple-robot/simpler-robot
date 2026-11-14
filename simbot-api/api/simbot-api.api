@@ -219,6 +219,7 @@ public abstract interface class love/forte/simbot/application/Application : kotl
 	public abstract fun getConfiguration ()Llove/forte/simbot/application/ApplicationConfiguration;
 	public abstract fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
+	public abstract fun getInterceptorManager ()Llove/forte/simbot/interception/InterceptorManager;
 	public abstract fun getPlugins ()Llove/forte/simbot/plugin/Plugins;
 	public abstract synthetic fun join (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun joinBlocking ()V
@@ -321,6 +322,10 @@ public final class love/forte/simbot/application/Applications {
 	public static final fun launchApplicationBlocking (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;)Llove/forte/simbot/application/Application;
 	public static synthetic fun launchApplicationBlocking$default (Llove/forte/simbot/application/ApplicationFactory;Llove/forte/simbot/common/function/ConfigurerFunction;ILjava/lang/Object;)Llove/forte/simbot/application/Application;
 	public static final fun listeners (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class love/forte/simbot/application/InterceptorsKt {
+	public static final fun interceptors (Llove/forte/simbot/application/Application;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class love/forte/simbot/application/JAsyncApplicationLauncher {
@@ -2200,6 +2205,12 @@ public abstract interface class love/forte/simbot/event/MessageEventPostReplyEve
 public abstract interface class love/forte/simbot/event/MessageEventPreReplyEvent : love/forte/simbot/event/MessageEventInteractionEvent, love/forte/simbot/event/ReplySupportPreReplyEvent {
 }
 
+public abstract interface class love/forte/simbot/event/MessageSentEvent : love/forte/simbot/event/BotEvent, love/forte/simbot/event/InternalNotificationEvent {
+	public fun getBot ()Llove/forte/simbot/bot/Bot;
+	public abstract fun getContext ()Llove/forte/simbot/interception/MessageSendContext;
+	public abstract fun getReceipt ()Llove/forte/simbot/message/MessageReceipt;
+}
+
 public abstract interface class love/forte/simbot/event/OrganizationChangeEvent : love/forte/simbot/event/ChangeEvent, love/forte/simbot/event/OrganizationEvent {
 	public abstract synthetic fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun getContent ()Ljava/lang/Object;
@@ -2400,6 +2411,194 @@ public abstract interface class love/forte/simbot/event/TypedJNonBlockEventListe
 
 public final class love/forte/simbot/event/TypedJNonBlockEventListener$Companion {
 	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public abstract class love/forte/simbot/interception/AsyncInterceptor : love/forte/simbot/interception/JvmPlatformInterceptor {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun interceptAsync (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/AsyncInterceptor$Chain;)Ljava/util/concurrent/CompletionStage;
+}
+
+public final class love/forte/simbot/interception/AsyncInterceptor$Chain {
+	public final fun getAttributes ()Llove/forte/simbot/common/attribute/MutableAttributeMap;
+	public final fun proceed (Ljava/lang/Object;)Ljava/util/concurrent/CompletableFuture;
+}
+
+public abstract interface class love/forte/simbot/interception/AsyncInterceptor$Handler {
+	public abstract fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/AsyncInterceptor$Chain;)Ljava/util/concurrent/CompletionStage;
+}
+
+public abstract class love/forte/simbot/interception/BlockingInterceptor : love/forte/simbot/interception/JvmPlatformInterceptor {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun interceptBlocking (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/BlockingInterceptor$Chain;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/interception/BlockingInterceptor$Chain {
+	public final fun getAttributes ()Llove/forte/simbot/common/attribute/MutableAttributeMap;
+	public final fun proceed (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/interception/BlockingInterceptor$Handler {
+	public abstract fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/BlockingInterceptor$Chain;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptionPoint {
+}
+
+public abstract interface class love/forte/simbot/interception/Interceptor {
+	public abstract synthetic fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/interception/Interceptor$Chain {
+	public static fun create (Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;)Llove/forte/simbot/interception/Interceptor$Chain;
+	public static synthetic fun create$default (Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Llove/forte/simbot/interception/Interceptor$Chain;
+	public abstract fun getAttributes ()Llove/forte/simbot/common/attribute/MutableAttributeMap;
+	public abstract synthetic fun proceed (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptorContainer {
+	public abstract fun disposeById (Ljava/lang/String;)Z
+	public abstract fun findById (Ljava/lang/String;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public abstract fun findById (Ljava/lang/String;Llove/forte/simbot/interception/InterceptionPoint;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public abstract fun getInterceptors ()Lkotlin/sequences/Sequence;
+	public abstract fun hasInterceptors (Llove/forte/simbot/interception/InterceptionPoint;)Z
+	public abstract fun interceptors (Llove/forte/simbot/interception/InterceptionPoint;)Lkotlin/sequences/Sequence;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptorInvoker {
+	public abstract fun invoke (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/interception/InterceptorInvokerKt {
+	public static final fun InterceptorInvoker (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Iterable;Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;)Llove/forte/simbot/interception/InterceptorInvoker;
+	public static final fun InterceptorInvoker (Llove/forte/simbot/interception/InterceptionPoint;Ljava/util/Iterator;Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;)Llove/forte/simbot/interception/InterceptorInvoker;
+	public static synthetic fun InterceptorInvoker$default (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Iterable;Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Llove/forte/simbot/interception/InterceptorInvoker;
+	public static synthetic fun InterceptorInvoker$default (Llove/forte/simbot/interception/InterceptionPoint;Ljava/util/Iterator;Llove/forte/simbot/common/attribute/MutableAttributeMap;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Llove/forte/simbot/interception/InterceptorInvoker;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptorManager : love/forte/simbot/interception/InterceptorContainer, love/forte/simbot/interception/InterceptorRegistrar {
+}
+
+public final class love/forte/simbot/interception/InterceptorManagerKt {
+	public static final fun InterceptorManager ()Llove/forte/simbot/interception/InterceptorManager;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptorRegistrar {
+	public abstract fun register (Llove/forte/simbot/interception/InterceptionPoint;ILlove/forte/simbot/interception/Interceptor;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public static synthetic fun register$default (Llove/forte/simbot/interception/InterceptorRegistrar;Llove/forte/simbot/interception/InterceptionPoint;ILlove/forte/simbot/interception/Interceptor;ILjava/lang/Object;)Llove/forte/simbot/interception/InterceptorRegistration;
+}
+
+public abstract interface class love/forte/simbot/interception/InterceptorRegistration {
+	public abstract fun dispose ()V
+	public abstract fun getId ()Ljava/lang/String;
+	public abstract fun getInterceptor ()Llove/forte/simbot/interception/Interceptor;
+	public abstract fun getPoint ()Llove/forte/simbot/interception/InterceptionPoint;
+	public abstract fun getPriority ()I
+	public abstract fun isDisposed ()Z
+}
+
+public final class love/forte/simbot/interception/Interceptors {
+	public static final fun async (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/interception/AsyncInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun async (Llove/forte/simbot/interception/AsyncInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static synthetic fun async$default (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/interception/AsyncInterceptor$Handler;ILjava/lang/Object;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun blocking (Ljava/util/concurrent/Executor;Llove/forte/simbot/interception/BlockingInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun blocking (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/interception/BlockingInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun blocking (Llove/forte/simbot/interception/BlockingInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static synthetic fun blocking$default (Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/interception/BlockingInterceptor$Handler;ILjava/lang/Object;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun reactive (Llove/forte/simbot/interception/ReactiveInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+	public static final fun reactiveNullable (Llove/forte/simbot/interception/NullableReactiveInterceptor$Handler;)Llove/forte/simbot/interception/Interceptor;
+}
+
+public abstract interface annotation class love/forte/simbot/interception/InternalInterceptorInheritanceApi : java/lang/annotation/Annotation {
+}
+
+public abstract class love/forte/simbot/interception/JvmPlatformInterceptor : love/forte/simbot/interception/Interceptor {
+}
+
+public abstract class love/forte/simbot/interception/MessageSendContext {
+	public final fun getBot ()Llove/forte/simbot/bot/Bot;
+	public final fun getMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public final fun getOriginalMessage ()Llove/forte/simbot/event/InteractionMessage;
+	public abstract fun getSource ()Ljava/lang/Object;
+	public fun getTarget ()Ljava/lang/Object;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public abstract synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+}
+
+public final class love/forte/simbot/interception/MessageSendContext$Reply : love/forte/simbot/interception/MessageSendContext {
+	public fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/ReplySupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getOptions ()Ljava/util/List;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/ability/ReplySupport;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public final fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Reply;
+}
+
+public final class love/forte/simbot/interception/MessageSendContext$Send : love/forte/simbot/interception/MessageSendContext {
+	public fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;)V
+	public synthetic fun <init> (Llove/forte/simbot/bot/Bot;Llove/forte/simbot/ability/SendSupport;Llove/forte/simbot/event/InteractionMessage;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getOptions ()Ljava/util/List;
+	public synthetic fun getSource ()Ljava/lang/Object;
+	public fun getSource ()Llove/forte/simbot/ability/SendSupport;
+	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Send;
+	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;
+	public final fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
+}
+
+public final class love/forte/simbot/interception/MessageSendInterceptionPoint : love/forte/simbot/interception/InterceptionPoint {
+	public static final field INSTANCE Llove/forte/simbot/interception/MessageSendInterceptionPoint;
+	public final fun invoke (Llove/forte/simbot/interception/InterceptorContainer;Llove/forte/simbot/interception/MessageSendContext;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class love/forte/simbot/interception/MessageSendInterceptionPointKt {
+	public static final fun onMessageSend (Llove/forte/simbot/interception/InterceptorRegistrar;ILlove/forte/simbot/interception/Interceptor;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public static synthetic fun onMessageSend$default (Llove/forte/simbot/interception/InterceptorRegistrar;ILlove/forte/simbot/interception/Interceptor;ILjava/lang/Object;)Llove/forte/simbot/interception/InterceptorRegistration;
+}
+
+public abstract class love/forte/simbot/interception/NullableReactiveInterceptor : love/forte/simbot/interception/JvmPlatformInterceptor {
+	public fun <init> ()V
+	public final synthetic fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun interceptReactive (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/ReactiveInterceptor$Chain;)Lorg/reactivestreams/Publisher;
+}
+
+public abstract interface class love/forte/simbot/interception/NullableReactiveInterceptor$Handler {
+	public abstract fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/ReactiveInterceptor$Chain;)Lorg/reactivestreams/Publisher;
+}
+
+public abstract class love/forte/simbot/interception/ReactiveInterceptor : love/forte/simbot/interception/JvmPlatformInterceptor {
+	public fun <init> ()V
+	public final synthetic fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun interceptReactive (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/ReactiveInterceptor$Chain;)Lorg/reactivestreams/Publisher;
+}
+
+public final class love/forte/simbot/interception/ReactiveInterceptor$Chain {
+	public final fun getAttributes ()Llove/forte/simbot/common/attribute/MutableAttributeMap;
+	public final fun proceed (Ljava/lang/Object;)Lorg/reactivestreams/Publisher;
+}
+
+public abstract interface class love/forte/simbot/interception/ReactiveInterceptor$Handler {
+	public abstract fun intercept (Llove/forte/simbot/interception/InterceptionPoint;Ljava/lang/Object;Llove/forte/simbot/interception/ReactiveInterceptor$Chain;)Lorg/reactivestreams/Publisher;
+}
+
+public final class love/forte/simbot/interception/SimpleInterceptorManager : love/forte/simbot/interception/InterceptorManager {
+	public fun disposeById (Ljava/lang/String;)Z
+	public fun findById (Ljava/lang/String;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public fun findById (Ljava/lang/String;Llove/forte/simbot/interception/InterceptionPoint;)Llove/forte/simbot/interception/InterceptorRegistration;
+	public fun getInterceptors ()Lkotlin/sequences/Sequence;
+	public fun hasInterceptors (Llove/forte/simbot/interception/InterceptionPoint;)Z
+	public fun interceptors (Llove/forte/simbot/interception/InterceptionPoint;)Lkotlin/sequences/Sequence;
+	public fun register (Llove/forte/simbot/interception/InterceptionPoint;ILlove/forte/simbot/interception/Interceptor;)Llove/forte/simbot/interception/InterceptorRegistration;
 }
 
 public abstract class love/forte/simbot/message/AggregatedMessageReceipt : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, love/forte/simbot/message/StandardMessageReceipt {
@@ -3071,6 +3270,7 @@ public abstract interface class love/forte/simbot/plugin/PluginConfigureContext 
 	public abstract fun getApplicationEventRegistrar ()Llove/forte/simbot/application/ApplicationEventRegistrar;
 	public abstract fun getComponents ()Llove/forte/simbot/component/Components;
 	public abstract fun getEventDispatcher ()Llove/forte/simbot/event/EventDispatcher;
+	public abstract fun getInterceptorManager ()Llove/forte/simbot/interception/InterceptorManager;
 }
 
 public final class love/forte/simbot/plugin/PluginCreatorKt {

@@ -34,8 +34,8 @@ import love.forte.simbot.interception.InterceptorManager
  *
  * ```Kotlin
  * application.interceptors {
- *     // register ...
- *     // search ...
+ *     // 例如拦截消息发送...
+ *     onMessageSend { /* ... */ }
  * }
  * ```
  *
