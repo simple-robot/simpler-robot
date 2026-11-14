@@ -32,11 +32,10 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.component.qguild.event.QGGroupMessageCreateEventPreReplyEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.event.QGGroupMessageCreateEventImpl
-import love.forte.simbot.event.ChatGroupMessageEventPreReplyEvent
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.qguild.common.EventModelConstructor
 import love.forte.simbot.qguild.event.GroupMessageCreate
 import kotlin.test.Test
@@ -85,18 +84,19 @@ class QGGroupMessageCreateInteractionTests : AbstractInteractionTests() {
 
     @Test
     fun testQGGroupMessageCreateReplyInteraction() = runTest {
-        testInteractionEvent<_, QGGroupMessageCreateEventPreReplyEvent>(
+        testMessageSend<_, MessageSendContext.Reply>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to event(it)
             },
             listener = { (called, event), e, _, _ ->
                 called.value = true
-                assertIs<ChatGroupMessageEventPreReplyEvent>(e)
-                assertEquals(event, e.content)
+                assertIs<MessageSendContext.Reply>(e)
+                assertEquals(event, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
+                e
             }
         ) { (called, event), _ ->
             event.reply("TEXT")

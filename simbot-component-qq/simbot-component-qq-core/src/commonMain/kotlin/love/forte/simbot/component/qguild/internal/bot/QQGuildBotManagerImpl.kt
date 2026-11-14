@@ -46,6 +46,7 @@ import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.internal.event.QGBotRegisteredEventImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.onEachError
+import love.forte.simbot.interception.InterceptorContainer
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -61,6 +62,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 @OptIn(ExperimentalSimbotCollectionApi::class)
 internal class QQGuildBotManagerImpl(
     override val eventDispatcher: EventDispatcher,
+    private val interceptorContainer: InterceptorContainer,
     override val configuration: QQGuildBotManagerConfiguration,
     private val component: QQGuildComponent,
     override val job: Job,
@@ -159,7 +161,8 @@ internal class QQGuildBotManagerImpl(
             source = sourceBot,
             component = component,
             eventDispatcher = eventDispatcher,
-            configuration = config
+            configuration = config,
+            interceptorContainer = interceptorContainer,
         )
 
         bots.add(newBot)

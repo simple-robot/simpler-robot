@@ -26,7 +26,6 @@ package love.forte.simbot.component.qgguild.test
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
-import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -41,6 +40,7 @@ import love.forte.simbot.component.qguild.message.QGKeyboards
 import love.forte.simbot.component.qguild.message.QGMarkdown
 import love.forte.simbot.component.qguild.message.SendingMessageParser
 import love.forte.simbot.event.*
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.message.plus
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.model.MessageKeyboard
@@ -99,7 +99,8 @@ class QGBotTests {
             sourceBot,
             component,
             eventDispatcher,
-            QGBotComponentConfiguration()
+            QGBotComponentConfiguration(),
+            InterceptorManager()
         )
     }
 
@@ -121,7 +122,7 @@ class QGBotTests {
         assertTrue(toString.contains("123"), "Bot toString() should contain its ID")
     }
 
-    @OptIn(FuzzyEventTypeImplementation::class, ExperimentalSimbotAPI::class)
+    @OptIn(FuzzyEventTypeImplementation::class)
     @Test
     fun testIsMention() {
         val bot = createMockBot()

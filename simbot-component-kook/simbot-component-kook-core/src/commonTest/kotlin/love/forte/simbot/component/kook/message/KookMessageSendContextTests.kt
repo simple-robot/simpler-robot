@@ -19,13 +19,14 @@
  *     You should have received a copy of the Lesser GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- */rte.simbot.component.kook.message
+ */
+
+package love.forte.simbot.component.kook.message
 
 import io.ktor.client.engine.mock.*
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.ability.SendOption
-import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.component.kook.KookComponent
 import love.forte.simbot.component.kook.bot.KookBotConfiguration
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
@@ -42,7 +43,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
-@OptIn(ExperimentalSimbotAPI::class)
 class KookMessageSendContextTests {
     @Test
     fun targetEqualityIncludesTargetType() {

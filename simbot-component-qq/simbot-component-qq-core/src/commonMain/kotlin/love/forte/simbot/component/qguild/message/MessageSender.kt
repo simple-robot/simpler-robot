@@ -25,12 +25,15 @@ package love.forte.simbot.component.qguild.message
 
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.StandardDeleteOption
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.utils.runCatchingCancellable
 import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.internal.message.asGroupReceipt
 import love.forte.simbot.component.qguild.internal.message.asReceipt
 import love.forte.simbot.component.qguild.internal.message.asUserReceipt
+import love.forte.simbot.component.qguild.internal.message.interceptDirectSend
+import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -51,12 +54,30 @@ import love.forte.simbot.qguild.stdlib.requestDataBy
 private val logger = LoggerFactory.getLogger("love.forte.simbot.component.qguild.message.MessageSenderKt")
 
 /**
+ * 保留按 ID 发送的来源，拦截完成后才解析私聊消息。
+ */
+internal suspend fun QGBot.sendDmsInteractionMessage(
+    guildId: String,
+    message: InteractionMessage,
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.DMS, guildId.ID),
+    message,
+) { current ->
+    when (current) {
+        is InteractionMessage.Message -> sendDmsMessageDirect(guildId, current.message)
+        is InteractionMessage.MessageContent -> sendDmsMessageDirect(guildId, current.messageContent)
+        is InteractionMessage.Text -> sendDmsMessageDirect(guildId, current.text)
+        is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $current")
+    }
+}
+
+/**
  * 使用当前 [QGBot] 向 [channelId] 通过 [MessageSendApi] 发送一个消息，
  * 消息内容为 [message] 的解析结果。
  *
  * [message] 会通过 [MessageParsers.parse] 解析为一个或多个 [MessageSendApi.Body.Builder]。
- * 当解析结果数量为1时，[sendMessage] 的结果为 [QGSingleMessageReceipt] 类型的回执。
- * 相反如果结果大于1，则 [sendMessage] 会得到实际为 [QGAggregatedMessageReceipt] 类型的结果。
+ * 当解析结果数量为1时，[sendMessageDirect] 的结果为 [QGSingleMessageReceipt] 类型的回执。
+ * 相反如果结果大于1，则 [sendMessageDirect] 会得到实际为 [QGAggregatedMessageReceipt] 类型的结果。
  *
  * 需要注意如果 [message] 的解析结果最终没有任何可用元素（例如元素为空）则可能会引发API请求异常。
  *
@@ -72,8 +93,9 @@ private val logger = LoggerFactory.getLogger("love.forte.simbot.component.qguild
  *
  * @return 发送后的回执
  */
+@PublishedApi
 @QGInternalApi
-public suspend inline fun QGBot.sendMessage(
+internal suspend inline fun QGBot.sendMessageDirect(
     channelId: String,
     message: Message,
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -83,10 +105,10 @@ public suspend inline fun QGBot.sendMessage(
 
     if (parsed.size == 1) {
         val body = parsed[0].build()
-        return sendMessage(channelId, body)
+        return sendMessageDirect(channelId, body)
     }
 
-    return sendMessage(channelId, parsed)
+    return sendMessageDirect(channelId, parsed)
 }
 
 /**
@@ -112,8 +134,9 @@ public suspend inline fun QGBot.sendMessage(
  *
  * @return 发送后的回执
  */
+@PublishedApi
 @QGInternalApi
-public suspend inline fun QGBot.sendMessage(
+internal suspend inline fun QGBot.sendMessageDirect(
     channelId: String,
     messageContent: MessageContent,
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -126,10 +149,10 @@ public suspend inline fun QGBot.sendMessage(
             onEachPost()
         }
 
-        return sendMessage(channelId, body)
+        return sendMessageDirect(channelId, body)
     }
 
-    return sendMessage(channelId, messageContent.messages, onEachPre, onEachPost)
+    return sendMessageDirect(channelId, messageContent.messages, onEachPre, onEachPost)
 }
 
 /**
@@ -153,8 +176,9 @@ public suspend inline fun QGBot.sendMessage(
  *
  * @return 发送后的回执
  */
+@PublishedApi
 @QGInternalApi
-public suspend inline fun QGBot.sendMessage(
+internal suspend inline fun QGBot.sendMessageDirect(
     channelId: String,
     text: String,
     onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -172,23 +196,23 @@ public suspend inline fun QGBot.sendMessage(
         onEachPost()
     }
 
-    return sendMessage(channelId, body)
+    return sendMessageDirect(channelId, body)
 }
 
 @PublishedApi
 @QGInternalApi
-internal suspend fun QGBot.sendMessage(channelId: String, body: MessageSendApi.Body): QGMessageReceipt =
+internal suspend fun QGBot.sendMessageDirect(channelId: String, body: MessageSendApi.Body): QGMessageReceipt =
     MessageSendApi.create(channelId, body).requestDataBy(source).asReceipt()
 
 @PublishedApi
 @QGInternalApi
-internal suspend fun QGBot.sendMessage(
+internal suspend fun QGBot.sendMessageDirect(
     channelId: String, bodyBuilderList: List<MessageSendApi.Body.Builder>
 ): QGMessageReceipt = bodyBuilderList.mapTo(ArrayList(bodyBuilderList.size)) {
     MessageSendApi.create(channelId, it.build()).requestDataBy(source)
 }.asReceipt()
 
-internal suspend inline fun QGBot.sendDmsMessage(
+internal suspend inline fun QGBot.sendDmsMessageDirect(
     guildId: String,
     message: Message,
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -198,13 +222,13 @@ internal suspend inline fun QGBot.sendDmsMessage(
 
     if (parsed.size == 1) {
         val body = parsed[0].build()
-        return sendDmsMessage(guildId, body)
+        return sendDmsMessageDirect(guildId, body)
     }
 
-    return sendDmsMessage(guildId, parsed)
+    return sendDmsMessageDirect(guildId, parsed)
 }
 
-internal suspend inline fun QGBot.sendDmsMessage(
+internal suspend inline fun QGBot.sendDmsMessageDirect(
     guildId: String,
     messageContent: MessageContent,
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -217,13 +241,13 @@ internal suspend inline fun QGBot.sendDmsMessage(
             onEachPost()
         }
 
-        return sendDmsMessage(guildId, body)
+        return sendDmsMessageDirect(guildId, body)
     }
 
-    return sendDmsMessage(guildId, messageContent.messages, onEachPre, onEachPost)
+    return sendDmsMessageDirect(guildId, messageContent.messages, onEachPre, onEachPost)
 }
 
-internal suspend inline fun QGBot.sendDmsMessage(
+internal suspend inline fun QGBot.sendDmsMessageDirect(
     guildId: String,
     text: String,
     onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
@@ -241,26 +265,25 @@ internal suspend inline fun QGBot.sendDmsMessage(
         onEachPost()
     }
 
-    return sendDmsMessage(guildId, body)
+    return sendDmsMessageDirect(guildId, body)
 }
 
 @PublishedApi
 @QGInternalApi
-internal suspend fun QGBot.sendDmsMessage(guildId: String, body: MessageSendApi.Body): QGMessageReceipt =
+internal suspend fun QGBot.sendDmsMessageDirect(guildId: String, body: MessageSendApi.Body): QGMessageReceipt =
     DmsSendApi.create(guildId, body).requestDataBy(source).asReceipt()
 
 @PublishedApi
 @QGInternalApi
-internal suspend fun QGBot.sendDmsMessage(
+internal suspend fun QGBot.sendDmsMessageDirect(
     guildId: String, bodyBuilderList: List<MessageSendApi.Body.Builder>
 ): QGMessageReceipt = bodyBuilderList.mapTo(ArrayList(bodyBuilderList.size)) {
     DmsSendApi.create(guildId, it.build()).requestDataBy(source)
 }.asReceipt()
 
 
-
 @PublishedApi
-internal suspend fun QGBot.sendGroupMessage(
+internal suspend fun QGBot.sendGroupMessageDirect(
     openid: String,
     body: GroupAndC2CSendBody,
 ): QGMessageReceipt {
@@ -268,7 +291,7 @@ internal suspend fun QGBot.sendGroupMessage(
 }
 
 @PublishedApi
-internal suspend fun QGBot.sendGroupMessage(
+internal suspend fun QGBot.sendGroupMessageDirect(
     openid: String,
     list: List<GroupAndC2CSendBody>,
 ): QGMessageReceipt {
@@ -280,7 +303,7 @@ internal suspend fun QGBot.sendGroupMessage(
 }
 
 @PublishedApi
-internal suspend fun QGBot.sendUserMessage(
+internal suspend fun QGBot.sendUserMessageDirect(
     openid: String,
     list: List<GroupAndC2CSendBody>,
 ): QGMessageReceipt {
@@ -292,7 +315,7 @@ internal suspend fun QGBot.sendUserMessage(
 }
 
 @PublishedApi
-internal suspend fun QGBot.sendUserMessage(
+internal suspend fun QGBot.sendUserMessageDirect(
     openid: String,
     body: GroupAndC2CSendBody,
 ): QGMessageReceipt {
@@ -337,7 +360,11 @@ private suspend inline fun executeMessageDelete(
     }
 }
 
-internal suspend inline fun QGBot.sendGroupMessage(
+/**
+ * 执行已通过入口拦截的群文本发送。
+ */
+@PublishedApi
+internal suspend inline fun QGBot.sendGroupMessageDirect(
     openid: String,
     text: String,
     msgType: Int,
@@ -356,12 +383,12 @@ internal suspend inline fun QGBot.sendGroupMessage(
         GroupAndC2CSendBody.create(contentPlainText, msgType)
     }.also(configure)
 
-    return sendGroupMessage(openid, body)
+    return sendGroupMessageDirect(openid, body)
 }
 
 @OptIn(ExperimentalQGApi::class)
 @PublishedApi
-internal suspend inline fun QGBot.sendGroupMessage(
+internal suspend inline fun QGBot.sendGroupMessageDirect(
     openid: String,
     message: Message,
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
@@ -381,14 +408,15 @@ internal suspend inline fun QGBot.sendGroupMessage(
 
     if (parsed.size == 1) {
         val body = parsed[0]
-        return sendGroupMessage(openid, body)
+        return sendGroupMessageDirect(openid, body)
     }
 
-    return sendGroupMessage(openid, parsed)
+    return sendGroupMessageDirect(openid, parsed)
 }
 
+@PublishedApi
 @QGInternalApi
-public suspend inline fun QGBot.sendGroupMessage(
+internal suspend inline fun QGBot.sendGroupMessageDirect(
     openid: String,
     messageContent: MessageContent,
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
@@ -404,15 +432,19 @@ public suspend inline fun QGBot.sendGroupMessage(
             onEachPost()
         }
 
-        return sendGroupMessage(openid, body)
+        return sendGroupMessageDirect(openid, body)
     }
 
-    return sendGroupMessage(openid, messageContent.messages, onEachPre, onEachPost)
+    return sendGroupMessageDirect(openid, messageContent.messages, onEachPre, onEachPost)
 }
 
 // // Users
 
-internal suspend inline fun QGBot.sendUserMessage(
+/**
+ * 执行已通过入口拦截的用户文本发送。
+ */
+@PublishedApi
+internal suspend inline fun QGBot.sendUserMessageDirect(
     openid: String,
     text: String,
     msgType: Int,
@@ -431,12 +463,12 @@ internal suspend inline fun QGBot.sendUserMessage(
         GroupAndC2CSendBody.create(contentPlainText, msgType)
     }.also(configure)
 
-    return sendUserMessage(openid, body)
+    return sendUserMessageDirect(openid, body)
 }
 
 @OptIn(ExperimentalQGApi::class)
 @PublishedApi
-internal suspend inline fun QGBot.sendUserMessage(
+internal suspend inline fun QGBot.sendUserMessageDirect(
     openid: String,
     message: Message,
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
@@ -456,14 +488,15 @@ internal suspend inline fun QGBot.sendUserMessage(
 
     if (parsed.size == 1) {
         val body = parsed[0]
-        return sendUserMessage(openid, body)
+        return sendUserMessageDirect(openid, body)
     }
 
-    return sendUserMessage(openid, parsed)
+    return sendUserMessageDirect(openid, parsed)
 }
 
+@PublishedApi
 @QGInternalApi
-public suspend inline fun QGBot.sendUserMessage(
+internal suspend inline fun QGBot.sendUserMessageDirect(
     openid: String,
     messageContent: MessageContent,
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
@@ -479,8 +512,204 @@ public suspend inline fun QGBot.sendUserMessage(
             onEachPost()
         }
 
-        return sendUserMessage(openid, body)
+        return sendUserMessageDirect(openid, body)
     }
 
-    return sendUserMessage(openid, messageContent.messages, onEachPre, onEachPost)
+    return sendUserMessageDirect(openid, messageContent.messages, onEachPre, onEachPost)
+}
+
+/**
+ * 使用当前 [QGBot] 向 [channelId] 通过 [MessageSendApi] 发送一个消息，
+ * 消息内容为 [message] 的解析结果。
+ *
+ * [message] 会通过 [MessageParsers.parse] 解析为一个或多个 [MessageSendApi.Body.Builder]。
+ * 当解析结果数量为1时，[sendMessage] 的结果为 [QGSingleMessageReceipt] 类型的回执。
+ * 相反如果结果大于1，则 [sendMessage] 会得到实际为 [QGAggregatedMessageReceipt] 类型的结果。
+ *
+ * 需要注意如果 [message] 的解析结果最终没有任何可用元素（例如元素为空）则可能会引发API请求异常。
+ *
+ * @param channelId 目标频道ID
+ * @param message 解析消息
+ * @param onEachPre 对于每个 [MessageSendApi.Body.Builder] 被构造后的初始化行为
+ * @param onEachPost 对于每个 [MessageSendApi.Body.Builder] 最终执行的收尾行为
+ *
+ * @see MessageParsers.parse
+ *
+ * @throws QQGuildApiException 请求得到了异常的结果
+ * @throws MessageAuditedException 当响应状态为表示消息审核的 `304023`、`304024` 时
+ *
+ * @return 发送后的回执
+
+ * 短路时不解析消息或执行构建回调；回调延迟到发送终端执行，不支持非局部返回。
+ */
+@QGInternalApi
+public suspend inline fun QGBot.sendMessage(
+    channelId: String,
+    message: Message,
+    crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
+    crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    InteractionMessage.valueOf(message),
+) { message ->
+    sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
+}
+
+/**
+ * 使用当前 [QGBot] 向 [channelId] 通过 [MessageSendApi] 发送一个消息，
+ * 消息内容为 [messageContent] 的解析结果。
+ *
+ * 如果 [messageContent] 是其他QQ频道事件收到的消息（即为 [QGMessageContent] 类型），
+ * 则会直接通过 [MessageSendApi.Body.Builder.fromMessage] 转义内部信息而不会尝试解析 [MessageContent.messages]。
+ *
+ * **注意:** 在转化的过程中会丢失不支持发送的消息（例如附件、图片等）。
+ *
+ * 如果类型不是上述情况，则行为与使用 [MessageContent.messages] 一致。
+ *
+ * @param channelId 目标频道ID
+ * @param messageContent 解析消息本体
+ * @param onEachPre 对于每个 [MessageSendApi.Body.Builder] 被构造后的初始化行为
+ * @param onEachPost 对于每个 [MessageSendApi.Body.Builder] 最终执行的收尾行为
+ *
+ * @see MessageParsers.parse
+ *
+ * @throws QQGuildApiException 请求得到了异常的结果
+ * @throws MessageAuditedException 当响应状态为表示消息审核的 `304023`、`304024` 时
+ *
+ * @return 发送后的回执
+
+ * 短路时不解析消息或执行构建回调；回调延迟到发送终端执行，不支持非局部返回。
+ */
+@QGInternalApi
+public suspend inline fun QGBot.sendMessage(
+    channelId: String,
+    messageContent: MessageContent,
+    crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
+    crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    InteractionMessage.valueOf(messageContent),
+) { message ->
+    sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
+}
+
+/**
+ * 使用当前 [QGBot] 向 [channelId] 通过 [MessageSendApi] 发送一个消息，
+ * 消息内容为通过 [ContentTextEncoder.encode] 转义后的无特殊含义 [text] 文本。
+ *
+ * [text] 会通过 [ContentTextEncoder.encode] 进行转义来消除其中可能存在的[内嵌格式](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_format.html)文本。
+ * 如果你希望保留内嵌格式，参考使用 [QGContentText] 而不是纯文本内容。
+ *
+ *
+ * @param channelId 目标频道ID
+ * @param text 纯文本消息
+ * @param onEachPre 对于每个 [MessageSendApi.Body.Builder] 被构造后的初始化行为
+ * @param onEachPost 对于每个 [MessageSendApi.Body.Builder] 最终执行的收尾行为
+ *
+ * @see MessageParsers.parse
+ * @see QGContentText
+ *
+ * @throws QQGuildApiException 请求得到了异常的结果
+ * @throws MessageAuditedException 当响应状态为表示消息审核的 `304023`、`304024` 时
+ *
+ * @return 发送后的回执
+
+ * 短路时不解析消息或执行构建回调；回调延迟到发送终端执行，不支持非局部返回。
+ */
+@QGInternalApi
+public suspend inline fun QGBot.sendMessage(
+    channelId: String,
+    text: String,
+    crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
+    crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    InteractionMessage.valueOf(text),
+) { message ->
+    sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
+}
+
+/**
+ * 按目标 openid 发送消息内容，支持应用级消息拦截。
+ *
+ * @param onEachPre 每个发送体完成构造后的初始化操作。
+ * @param onEachPost 每个发送体发起请求前的收尾操作。
+
+ * 短路时不解析消息或执行构建回调；回调延迟到发送终端执行，不支持非局部返回。
+ */
+@QGInternalApi
+public suspend inline fun QGBot.sendGroupMessage(
+    openid: String,
+    messageContent: MessageContent,
+    crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
+    crossinline onEachPost: GroupAndC2CSendBody.() -> Unit = {},
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.GROUP, openid.ID),
+    InteractionMessage.valueOf(messageContent),
+) { message ->
+    when (message) {
+        is InteractionMessage.Message -> sendGroupMessageDirect(openid, message.message, onEachPre, onEachPost)
+        is InteractionMessage.MessageContent -> sendGroupMessageDirect(
+            openid,
+            message.messageContent,
+            onEachPre,
+            onEachPost
+        )
+
+        is InteractionMessage.Text -> sendGroupMessageDirect(openid, message.text, GroupAndC2CSendBody.MSG_TYPE_TEXT) {
+            onEachPre()
+            onEachPost()
+        }
+
+        is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
+    }
+}
+
+/**
+ * 按目标 openid 发送消息内容，支持应用级消息拦截。
+ *
+ * @param onEachPre 每个发送体完成构造后的初始化操作。
+ * @param onEachPost 每个发送体发起请求前的收尾操作。
+
+ * 短路时不解析消息或执行构建回调；回调延迟到发送终端执行，不支持非局部返回。
+ */
+@QGInternalApi
+public suspend inline fun QGBot.sendUserMessage(
+    openid: String,
+    messageContent: MessageContent,
+    crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
+    crossinline onEachPost: GroupAndC2CSendBody.() -> Unit = {},
+): QGMessageReceipt = interceptDirectSend(
+    QGMessageSendTarget.create(MessageDestination.USER, openid.ID),
+    InteractionMessage.valueOf(messageContent),
+) { message ->
+    when (message) {
+        is InteractionMessage.Message -> sendUserMessageDirect(openid, message.message, onEachPre, onEachPost)
+        is InteractionMessage.MessageContent ->
+            sendUserMessageDirect(openid, message.messageContent, onEachPre, onEachPost)
+
+        is InteractionMessage.Text -> sendUserMessageDirect(openid, message.text, GroupAndC2CSendBody.MSG_TYPE_TEXT) {
+            onEachPre()
+            onEachPost()
+        }
+
+        is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
+    }
+}
+
+/**
+ * 在完成入口拦截后解析频道消息，避免替换消息类型时丢失构建回调。
+ */
+@PublishedApi
+@QGInternalApi
+internal suspend inline fun QGBot.sendChannelInteractionMessageDirect(
+    channelId: String,
+    message: InteractionMessage,
+    crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit,
+    crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit,
+): QGMessageReceipt = when (message) {
+    is InteractionMessage.Message -> sendMessageDirect(channelId, message.message, onEachPre, onEachPost)
+    is InteractionMessage.MessageContent -> sendMessageDirect(channelId, message.messageContent, onEachPre, onEachPost)
+    is InteractionMessage.Text -> sendMessageDirect(channelId, message.text, onEachPre, onEachPost)
+    is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
 }

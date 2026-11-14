@@ -28,11 +28,11 @@ import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.component.qguild.event.QGSendSupportInteractionEvent
 import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.friend.QGFriendImpl
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.message.Text
 import kotlin.test.*
 
@@ -57,18 +57,19 @@ class QGFriendSendInteractionTests : AbstractInteractionTests() {
     @Test
     fun testQGFriendSendInteraction() = runTest {
         // TEXT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk() },
             prepare = {
                 atomic(false) to friend(it)
             },
             listener = { (atob, friend), e, _, _ ->
                 atob.value = true
-                assertIs<QGFriend>(e.content)
-                assertSame(friend, e.content)
+                assertIs<QGFriend>(e.source)
+                assertSame(friend, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
+                e
             }
         ) { (atob, friend), _ ->
             friend.send("TEXT")
@@ -76,20 +77,21 @@ class QGFriendSendInteractionTests : AbstractInteractionTests() {
         }
 
         // Message
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk() },
             prepare = {
                 atomic(false) to friend(it)
             },
             listener = { (atob, friend), e, _, _ ->
                 atob.value = true
-                assertIs<QGFriend>(e.content)
-                assertSame(friend, e.content)
+                assertIs<QGFriend>(e.source)
+                assertSame(friend, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Message>(message)
                 val messageMessage = message.message
                 assertIs<Text>(messageMessage)
                 assertEquals("TEXT", messageMessage.text)
+                e
             }
         ) { (atob, friend), _ ->
             friend.send(Text { "TEXT" })

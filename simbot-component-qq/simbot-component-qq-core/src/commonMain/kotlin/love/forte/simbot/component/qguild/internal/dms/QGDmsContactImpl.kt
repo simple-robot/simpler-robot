@@ -29,7 +29,7 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendDmsMessage
+import love.forte.simbot.component.qguild.message.sendDmsMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -52,9 +52,14 @@ internal class QGDmsContactImpl(
 ) : QGDmsContact {
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 
-    override suspend fun send(text: String): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(text))
-    }
+    override suspend fun send(text: String): QGMessageReceipt =
+        send(text, *emptyArray<SendOption>())
+
+    override suspend fun send(message: Message): QGMessageReceipt =
+        send(message, *emptyArray<SendOption>())
+
+    override suspend fun send(messageContent: MessageContent): QGMessageReceipt =
+        send(messageContent, *emptyArray<SendOption>())
 
     /**
      * 保留发送选项，并让本次操作只进入一次拦截链。
@@ -88,12 +93,8 @@ internal class QGDmsContactImpl(
             options = options.toList(),
             send = ::sendByInteractionMessage
         )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
-        return sendByInteractionMessage(message)
-    }
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): MessageReceipt {
+    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         fun MessageSendApi.Body.Builder.configMsgId() {
             if (msgId == null) {
                 msgId = currentMsgId
@@ -103,25 +104,25 @@ internal class QGDmsContactImpl(
         try {
             return when (message) {
                 is InteractionMessage.Message -> {
-                    bot.sendDmsMessage(guildId, message.message) {
+                    bot.sendDmsMessageDirect(guildId, message.message) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.MessageContent -> {
-                    bot.sendDmsMessage(guildId, message.messageContent) {
+                    bot.sendDmsMessageDirect(guildId, message.messageContent) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Text -> {
-                    bot.sendDmsMessage(guildId, message.text) {
+                    bot.sendDmsMessageDirect(guildId, message.text) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-            }.alsoEmitPostSendEvent(bot, this, message)
+            }
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "dmsContact.send" }
         }

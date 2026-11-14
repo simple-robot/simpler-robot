@@ -39,7 +39,7 @@ import love.forte.simbot.component.qguild.internal.message.interceptReply
 import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
 import love.forte.simbot.component.qguild.message.deleteGroupMessage
-import love.forte.simbot.component.qguild.message.sendGroupMessage
+import love.forte.simbot.component.qguild.message.sendGroupMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -81,13 +81,14 @@ internal class QGGroupAtMessageCreateEventImpl(
     override suspend fun content(): QGGroup =
         sourceEventEntity.data.toGroup(bot, msgSeq)
 
-    override suspend fun reply(text: String): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(text))
-    }
+    override suspend fun reply(text: String): QGMessageReceipt =
+        reply(text, *emptyArray<ReplyOption>())
 
-    override suspend fun reply(message: Message): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
-    }
+    override suspend fun reply(message: Message): QGMessageReceipt =
+        reply(message, *emptyArray<ReplyOption>())
+
+    override suspend fun reply(messageContent: MessageContent): QGMessageReceipt =
+        reply(messageContent, *emptyArray<ReplyOption>())
 
     /**
      * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
@@ -145,7 +146,7 @@ internal class QGGroupAtMessageCreateEventImpl(
 
         return when (message) {
             is InteractionMessage.Message -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     message = message.message,
                 ) {
@@ -154,7 +155,7 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.MessageContent -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     messageContent = message.messageContent,
                 ) {
@@ -163,7 +164,7 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.Text -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     text = message.text,
                     msgType = GroupMessageSendApi.MSG_TYPE_TEXT,
@@ -173,6 +174,6 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-        }.alsoEmitPostReplyEvent(bot, this, message)
+        }
     }
 }

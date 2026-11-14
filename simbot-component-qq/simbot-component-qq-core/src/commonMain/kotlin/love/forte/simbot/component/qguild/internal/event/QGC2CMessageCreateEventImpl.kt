@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.event
 
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.ID
@@ -32,10 +33,10 @@ import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.friend.toFriend
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
+import love.forte.simbot.component.qguild.internal.message.interceptReply
 import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendUserMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostReplyEvent
+import love.forte.simbot.component.qguild.message.sendUserMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -72,13 +73,14 @@ internal class QGC2CMessageCreateEventImpl(
         )
     }
 
-    override suspend fun reply(text: String): QGMessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(text))
-    }
+    override suspend fun reply(text: String): QGMessageReceipt =
+        reply(text, *emptyArray<ReplyOption>())
 
-    override suspend fun reply(message: Message): QGMessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
-    }
+    override suspend fun reply(message: Message): QGMessageReceipt =
+        reply(message, *emptyArray<ReplyOption>())
+
+    override suspend fun reply(messageContent: MessageContent): QGMessageReceipt =
+        reply(messageContent, *emptyArray<ReplyOption>())
 
     /**
      * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
@@ -131,7 +133,7 @@ internal class QGC2CMessageCreateEventImpl(
 
         return when (message) {
             is InteractionMessage.Message -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = sourceEventEntity.data.author.userOpenid,
                     message = message.message,
                 ) {
@@ -140,7 +142,7 @@ internal class QGC2CMessageCreateEventImpl(
             }
 
             is InteractionMessage.MessageContent -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = sourceEventEntity.data.author.userOpenid,
                     messageContent = message.messageContent,
                 ) {
@@ -149,7 +151,7 @@ internal class QGC2CMessageCreateEventImpl(
             }
 
             is InteractionMessage.Text -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = sourceEventEntity.data.author.userOpenid,
                     text = message.text,
                     msgType = GroupMessageSendApi.MSG_TYPE_TEXT,
@@ -159,6 +161,6 @@ internal class QGC2CMessageCreateEventImpl(
             }
 
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-        }.alsoEmitPostReplyEvent(bot, this, message)
+        }
     }
 }

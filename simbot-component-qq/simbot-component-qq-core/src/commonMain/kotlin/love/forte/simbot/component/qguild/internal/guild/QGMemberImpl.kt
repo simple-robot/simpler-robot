@@ -25,6 +25,7 @@ package love.forte.simbot.component.qguild.internal.guild
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.common.collectable.Collectable
 import love.forte.simbot.common.collectable.asCollectable
 import love.forte.simbot.common.id.ID
@@ -35,16 +36,15 @@ import love.forte.simbot.component.qguild.ExperimentalQGApi
 import love.forte.simbot.component.qguild.guild.QGMember
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
-import love.forte.simbot.component.qguild.internal.event.QGMemberSendSupportPreSendEventImpl
 import love.forte.simbot.component.qguild.internal.message.asReceipt
+import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.internal.role.toGuildRole
 import love.forte.simbot.component.qguild.internal.role.toMemberRole
 import love.forte.simbot.component.qguild.message.MessageParsers
 import love.forte.simbot.component.qguild.message.QGMessageContent
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendMessage
+import love.forte.simbot.component.qguild.message.sendMessageDirect
 import love.forte.simbot.component.qguild.role.QGMemberRole
-import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -123,29 +123,15 @@ internal class QGMemberImpl(
         }
 
     @JvmSynthetic
-    override suspend fun send(message: Message): QGMessageReceipt {
-        val event = QGMemberSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(message),
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
+    override suspend fun send(message: Message): QGMessageReceipt =
+        send(message, *emptyArray<SendOption>())
 
-        return sendByInteractionMessage(message)
-    }
+    override suspend fun send(text: String): QGMessageReceipt =
+        send(text, *emptyArray<SendOption>())
 
-    override suspend fun send(text: String): QGMessageReceipt {
-        val event = QGMemberSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(text),
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
 
-        return sendByInteractionMessage(message)
-    }
+    override suspend fun send(messageContent: MessageContent): QGMessageReceipt =
+        send(messageContent, *emptyArray<SendOption>())
 
     /**
      * 保留发送选项，并让本次操作只进入一次拦截链。
@@ -168,8 +154,6 @@ internal class QGMemberImpl(
             options = options.toList(),
             send = ::sendByInteractionMessage
         )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
 
     /**
      * 保留发送选项，并让本次操作只进入一次拦截链。
@@ -186,7 +170,7 @@ internal class QGMemberImpl(
         return when (message) {
             is InteractionMessage.Text -> {
                 val dms = getDms()
-                bot.sendMessage(dms.guildId, message.text)
+                bot.sendMessageDirect(dms.guildId, message.text)
             }
 
             is InteractionMessage.Message -> {
@@ -208,7 +192,7 @@ internal class QGMemberImpl(
             }
 
             else -> error("Unknown type of InteractionMessage: $message")
-        }.alsoEmitPostSendEvent(bot, this, message)
+        }
     }
 
 

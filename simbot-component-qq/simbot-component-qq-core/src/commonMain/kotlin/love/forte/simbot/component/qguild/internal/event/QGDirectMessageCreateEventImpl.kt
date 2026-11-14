@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.event
 
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.dms.QGDmsContact
@@ -30,10 +31,10 @@ import love.forte.simbot.component.qguild.event.QGDirectMessageCreateEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.dms.toDmsContact
 import love.forte.simbot.component.qguild.internal.message.QGMessageContentImpl
+import love.forte.simbot.component.qguild.internal.message.interceptReply
 import love.forte.simbot.component.qguild.message.QGMessageContent
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendDmsMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostReplyEvent
+import love.forte.simbot.component.qguild.message.sendDmsMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.qguild.api.message.MessageSendApi
@@ -63,13 +64,14 @@ internal class QGDirectMessageCreateEventImpl(
 
     override suspend fun content(): QGDmsContact = _content
 
-    override suspend fun reply(text: String): QGMessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(text))
-    }
+    override suspend fun reply(text: String): QGMessageReceipt =
+        reply(text, *emptyArray<ReplyOption>())
 
-    override suspend fun reply(message: love.forte.simbot.message.Message): QGMessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
-    }
+    override suspend fun reply(message: love.forte.simbot.message.Message): QGMessageReceipt =
+        reply(message, *emptyArray<ReplyOption>())
+
+    override suspend fun reply(messageContent: MessageContent): QGMessageReceipt =
+        reply(messageContent, *emptyArray<ReplyOption>())
 
     /**
      * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
@@ -124,24 +126,24 @@ internal class QGDirectMessageCreateEventImpl(
 
         return when (message) {
             is InteractionMessage.Message -> {
-                bot.sendDmsMessage(sourceEventEntity.guildId, message.message) {
+                bot.sendDmsMessageDirect(sourceEventEntity.guildId, message.message) {
                     configMsgIdAndRef()
                 }
             }
 
             is InteractionMessage.MessageContent -> {
-                bot.sendDmsMessage(sourceEventEntity.guildId, message.messageContent) {
+                bot.sendDmsMessageDirect(sourceEventEntity.guildId, message.messageContent) {
                     configMsgIdAndRef()
                 }
             }
 
             is InteractionMessage.Text -> {
-                bot.sendDmsMessage(sourceEventEntity.guildId, message.text) {
+                bot.sendDmsMessageDirect(sourceEventEntity.guildId, message.text) {
                     configMsgIdAndRef()
                 }
             }
 
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-        }.alsoEmitPostReplyEvent(bot, this, message)
+        }
     }
 }

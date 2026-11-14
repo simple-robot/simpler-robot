@@ -36,6 +36,7 @@ import love.forte.simbot.component.qguild.message.QGKeyboards
 import love.forte.simbot.component.qguild.message.QGMarkdown
 import love.forte.simbot.component.qguild.message.SendingMessageParser
 import love.forte.simbot.event.*
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.message.At
 import love.forte.simbot.message.plus
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
@@ -100,7 +101,8 @@ class MessageParserTests {
                 override val listeners: Sequence<EventListener>
                     get() = TODO("Not yet implemented")
             },
-            QGBotComponentConfiguration()
+            QGBotComponentConfiguration(),
+            InterceptorManager()
         )
 
         val bodies = MessageParsers.parseToGroupAndC2C(
@@ -158,7 +160,8 @@ class MessageParserTests {
                 override val listeners: Sequence<EventListener>
                     get() = TODO("Not yet implemented")
             },
-            QGBotComponentConfiguration()
+            QGBotComponentConfiguration(),
+            InterceptorManager()
         )
 
         val bodies = MessageParsers.parseToGroupAndC2C(

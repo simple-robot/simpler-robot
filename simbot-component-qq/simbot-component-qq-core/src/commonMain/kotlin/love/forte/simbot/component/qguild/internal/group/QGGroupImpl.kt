@@ -35,7 +35,7 @@ import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineCon
 import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendGroupMessage
+import love.forte.simbot.component.qguild.message.sendGroupMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -124,7 +124,19 @@ internal class QGGroupImpl(
     }
 
     /**
-     * 使用当前句柄的消息上下文发送，并将实际发起发送的群对象传给发送事件。
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): QGMessageReceipt =
+        sendWithContent(this, InteractionMessage.valueOf(text), options.toList())
+
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): QGMessageReceipt =
+        sendWithContent(this, InteractionMessage.valueOf(message), options.toList())
+
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
      */
     override suspend fun send(messageContent: MessageContent, vararg options: SendOption): QGMessageReceipt =
         sendWithContent(this, InteractionMessage.valueOf(messageContent), options.toList())
@@ -140,10 +152,10 @@ internal class QGGroupImpl(
         return bot.interceptSend(content, message, options) { sendByInteractionMessage(it) }
     }
 
-    private suspend fun sendByInteractionMessage(content: QGGroup, message: InteractionMessage): MessageReceipt {
+    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
         return when (message) {
             is InteractionMessage.Text -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = id.literal,
                     text = message.text,
                     msgType = GroupMessageSendApi.MSG_TYPE_TEXT
@@ -153,7 +165,7 @@ internal class QGGroupImpl(
             }
 
             is InteractionMessage.Message -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = id.literal,
                     message = message.message,
                 ) {
@@ -162,7 +174,7 @@ internal class QGGroupImpl(
             }
 
             is InteractionMessage.MessageContent -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = id.literal,
                     messageContent = message.messageContent,
                 ) {
@@ -173,7 +185,7 @@ internal class QGGroupImpl(
             else -> {
                 error("Unknown type of InteractionMessage: $message")
             }
-        }.alsoEmitPostSendEvent(bot, content, message)
+        }
     }
 
     override suspend fun uploadMedia(url: String, type: Int): QGMedia {

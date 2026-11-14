@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.friend
 
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -30,11 +31,10 @@ import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.friend.QGFriend
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
-import love.forte.simbot.component.qguild.internal.event.QGFriendSendSupportPreSendEventImpl
+import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendUserMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
+import love.forte.simbot.component.qguild.message.sendUserMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -120,7 +120,7 @@ internal class QGFriendImpl(
         return when (message) {
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
             is InteractionMessage.Text -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = id.literal,
                     text = message.text,
                     msgType = GroupAndC2CSendBody.MSG_TYPE_TEXT,
@@ -128,60 +128,35 @@ internal class QGFriendImpl(
                     initMsgIdAndSeq()
                 }
             }
+
             is InteractionMessage.Message -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = id.literal,
                     message = message.message,
                 ) {
                     initMsgIdAndSeq()
                 }
             }
+
             is InteractionMessage.MessageContent -> {
-                bot.sendUserMessage(
+                bot.sendUserMessageDirect(
                     openid = id.literal,
                     messageContent = message.messageContent,
                 ) {
                     initMsgIdAndSeq()
                 }
             }
-        }.alsoEmitPostSendEvent(bot, this, message)
+        }
     }
 
-    override suspend fun send(text: String): MessageReceipt {
-        val event = QGFriendSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(text),
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
+    override suspend fun send(text: String): MessageReceipt =
+        send(text, *emptyArray<SendOption>())
 
-        return sendByInteractionMessage(message)
-    }
+    override suspend fun send(message: Message): MessageReceipt =
+        send(message, *emptyArray<SendOption>())
 
-    override suspend fun send(message: Message): MessageReceipt {
-        val event = QGFriendSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(message),
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
-
-        return sendByInteractionMessage(message)
-    }
-
-    override suspend fun send(messageContent: MessageContent): MessageReceipt {
-        val event = QGFriendSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = InteractionMessage.valueOf(messageContent),
-        )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
-
-        return sendByInteractionMessage(message)
-    }
+    override suspend fun send(messageContent: MessageContent): MessageReceipt =
+        send(messageContent, *emptyArray<SendOption>())
 }
 
 internal fun C2CMessageCreate.Data.toFriend(
