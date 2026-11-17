@@ -63,7 +63,7 @@ internal abstract class OneBotPrivateMessageEventImpl(
     )
 
     override val replyDestination: OneBotMessageSendTarget
-        get() = OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.PRIVATE, sourceEvent.userId)
+        get() = OneBotMessageSendTarget.privateTarget(sourceEvent.userId)
 
 
     override suspend fun replyTarget(): Any? = when (this) {

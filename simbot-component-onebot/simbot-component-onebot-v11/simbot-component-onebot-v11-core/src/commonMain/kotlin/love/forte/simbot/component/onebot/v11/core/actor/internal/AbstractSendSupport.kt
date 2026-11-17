@@ -114,8 +114,8 @@ internal abstract class AbstractSendSupport : SendSupport {
             source = this,
             message = message,
             destination = when (this) {
-                is OneBotGroup -> OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.GROUP, id)
-                is Actor -> OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.PRIVATE, id)
+                is OneBotGroup -> OneBotMessageSendTarget.group(id)
+                is Actor -> OneBotMessageSendTarget.privateTarget(id)
                 else -> error("Unsupported OneBot send source: $this")
             },
             options = options,

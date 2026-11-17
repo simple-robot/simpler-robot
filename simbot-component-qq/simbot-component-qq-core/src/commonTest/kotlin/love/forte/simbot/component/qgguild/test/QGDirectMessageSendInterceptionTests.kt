@@ -47,7 +47,6 @@ import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.message.Text
 import love.forte.simbot.qguild.QGInternalApi
-import love.forte.simbot.qguild.stdlib.MessageDestination
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -110,13 +109,20 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             val targets = contexts.map { assertIs<QGMessageSendTarget>(it.destination) }
             assertEquals(
                 listOf(
-                    MessageDestination.CHANNEL, MessageDestination.CHANNEL, MessageDestination.CHANNEL,
-                    MessageDestination.DMS, MessageDestination.DMS, MessageDestination.DMS,
-                    MessageDestination.CHANNEL, MessageDestination.CHANNEL, MessageDestination.CHANNEL,
-                    MessageDestination.GROUP, MessageDestination.USER,
+                    QGMessageSendTarget.channel("channel".ID), QGMessageSendTarget.channel("channel".ID),
+                    QGMessageSendTarget.channel("channel".ID), QGMessageSendTarget.dms("dms".ID),
+                    QGMessageSendTarget.dms("dms".ID), QGMessageSendTarget.dms("dms".ID),
+                    QGMessageSendTarget.channel("channel".ID), QGMessageSendTarget.channel("channel".ID),
+                    QGMessageSendTarget.channel("channel".ID), QGMessageSendTarget.group("group".ID),
+                    QGMessageSendTarget.user("user".ID),
                 ),
-                targets.map { it.destination },
+                targets,
             )
+            targets.take(3).forEach { assertIs<QGMessageSendTarget.Channel>(it) }
+            targets.slice(3..5).forEach { assertIs<QGMessageSendTarget.Dms>(it) }
+            targets.slice(6..8).forEach { assertIs<QGMessageSendTarget.Channel>(it) }
+            assertIs<QGMessageSendTarget.Group>(targets[9])
+            assertIs<QGMessageSendTarget.User>(targets[10])
             assertEquals(listOf("channel", "channel", "channel", "dms", "dms", "dms",
                 "channel", "channel", "channel", "group", "user"), targets.map { it.id.toString() })
         } finally {
@@ -195,7 +201,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             val option = object : SendOption {}
             val options = mutableListOf<SendOption>(option)
             val message = InteractionMessage.valueOf("original")
-            val target = QGMessageSendTarget.create(MessageDestination.DMS, "dms".ID)
+            val target = QGMessageSendTarget.dms("dms".ID)
             val initial = QGMessageSendContext.create(bot, bot, message, target, options)
             options.clear()
             val replacement = InteractionMessage.valueOf("replacement")
@@ -274,7 +280,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             assertSame(bot, context.source)
             assertEquals("original", assertIs<InteractionMessage.Text>(context.originalMessage).text)
             assertEquals("replacement", assertIs<InteractionMessage.Text>(context.message).text)
-            assertEquals(QGMessageSendTarget.create(MessageDestination.CHANNEL, "channel".ID), context.destination)
+            assertEquals(QGMessageSendTarget.channel("channel".ID), context.destination)
             assertEquals(1, requests)
         } finally {
             app.cancel()

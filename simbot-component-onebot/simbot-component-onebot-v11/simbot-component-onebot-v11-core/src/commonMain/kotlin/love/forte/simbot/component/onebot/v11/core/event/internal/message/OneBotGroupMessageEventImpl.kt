@@ -69,7 +69,7 @@ internal abstract class OneBotGroupMessageEventImpl(
     }
 
     override val replyDestination: OneBotMessageSendTarget
-        get() = OneBotMessageSendTarget.create(OneBotMessageSendTarget.Type.GROUP, sourceEvent.groupId)
+        get() = OneBotMessageSendTarget.group(sourceEvent.groupId)
 
     override val defaultReplyOptions: List<ReplyOption>
         get() = listOf(OneBotMessageReplyOption.quote(sourceEvent.messageId))

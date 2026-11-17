@@ -46,7 +46,6 @@ import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.qguild.stdlib.MessageDestination
 
 /**
  * 在消息解析和网络请求之前执行标准发送拦截链。
@@ -125,28 +124,22 @@ internal suspend fun QGBot.interceptDirectSend(
 }
 
 private fun SendSupport.sendDestination(): QGMessageSendTarget = when (this) {
-    is QGTextChannel -> QGMessageSendTarget.create(MessageDestination.CHANNEL, id)
+    is QGTextChannel -> QGMessageSendTarget.channel(id)
     is QGDmsContactImpl -> sendDestination
     is QGMemberImpl -> sendDestination
-    is QGFriend -> QGMessageSendTarget.create(MessageDestination.USER, id)
-    is QGGroup -> QGMessageSendTarget.create(MessageDestination.GROUP, id)
+    is QGFriend -> QGMessageSendTarget.user(id)
+    is QGGroup -> QGMessageSendTarget.group(id)
     else -> error("Unsupported QQ send source: $this")
 }
 
 private fun ReplySupport.replyDestination(): QGMessageSendTarget = when (this) {
-    is QGAtMessageCreateEvent -> QGMessageSendTarget.create(MessageDestination.CHANNEL, sourceEventEntity.channelId.ID)
-    is QGDirectMessageCreateEvent -> QGMessageSendTarget.create(MessageDestination.DMS, sourceEventEntity.guildId.ID)
-    is QGGroupAtMessageCreateEvent -> QGMessageSendTarget.create(
-        MessageDestination.GROUP,
-        sourceEventEntity.data.groupOpenid.ID
+    is QGAtMessageCreateEvent -> QGMessageSendTarget.channel(sourceEventEntity.channelId.ID)
+    is QGDirectMessageCreateEvent -> QGMessageSendTarget.dms(sourceEventEntity.guildId.ID)
+    is QGGroupAtMessageCreateEvent -> QGMessageSendTarget.group(sourceEventEntity.data.groupOpenid.ID
     )
-    is QGGroupMessageCreateEvent -> QGMessageSendTarget.create(
-        MessageDestination.GROUP,
-        sourceEventEntity.data.groupOpenid.ID
+    is QGGroupMessageCreateEvent -> QGMessageSendTarget.group(sourceEventEntity.data.groupOpenid.ID
     )
-    is QGC2CMessageCreateEvent -> QGMessageSendTarget.create(
-        MessageDestination.USER,
-        sourceEventEntity.data.author.userOpenid.ID
+    is QGC2CMessageCreateEvent -> QGMessageSendTarget.user(sourceEventEntity.data.author.userOpenid.ID
     )
     else -> error("Unsupported QQ reply source: $this")
 }

@@ -26,6 +26,11 @@ package love.forte.simbot.component.qguild.message
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.component.qguild.bot.QGBot
+import love.forte.simbot.component.qguild.channel.QGTextChannel
+import love.forte.simbot.component.qguild.dms.QGDmsContact
+import love.forte.simbot.component.qguild.event.QGBaseMessageEvent
+import love.forte.simbot.component.qguild.friend.QGFriend
+import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.interception.MessageSendContext
 
@@ -39,9 +44,16 @@ import love.forte.simbot.interception.MessageSendContext
  */
 public class QGMessageReplyContext private constructor(
     override val bot: QGBot,
+    /**
+     * 创建上下文时传入的回复来源。通常为消息事件 [QGBaseMessageEvent]。
+     */
     override val source: ReplySupport,
     originalMessage: InteractionMessage,
     message: InteractionMessage,
+    /**
+     * 创建上下文时传入的目标描述 [QGMessageSendTarget]，包含子频道、频道私聊、群或用户的类型和标识。
+     * 组件回复构建时根据消息事件确定其值，复制消息或选项时保持不变。
+     */
     public override val destination: QGMessageSendTarget,
     override val options: List<ReplyOption>,
     private val resolveTarget: suspend () -> Any?,
@@ -69,6 +81,12 @@ public class QGMessageReplyContext private constructor(
         )
     }
 
+    /**
+     * 每次调用都会执行创建上下文时提供的目标解析函数。
+     * 组件的事件回复会解析消息所属的子频道 [QGTextChannel]、频道私聊会话 [QGDmsContact]、
+     * 好友 [QGFriend] 或群 [QGGroup]，解析可能发起查询或抛出异常。
+     * 通过公开工厂创建时解析函数可以返回任意值，默认返回 null。
+     */
     override suspend fun target(): Any? = resolveTarget()
 
     override fun withMessage(message: InteractionMessage): QGMessageReplyContext =

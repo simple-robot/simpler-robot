@@ -24,59 +24,111 @@
 package love.forte.simbot.component.qguild.message
 
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.qguild.stdlib.MessageDestination
 
 /**
  * QQ 消息发送或回复的目标描述。
  *
- * @property destination 区分子频道、频道私聊会话、群和用户。
- * @property id 对应目标的频道 ID、私聊会话 ID 或 openid。
  * @since 5.0
  */
-public class QGMessageSendTarget private constructor(
-    public val destination: MessageDestination,
-    public val id: ID,
+public sealed class QGMessageSendTarget {
     /**
-     * 按频道成员发送私信时所属的频道 ID，此时 [id] 为成员 ID。
-     * @since 5.0
+     * 目标的标识。对于 [Member]，这是成员 ID。
      */
-    public val guildId: ID? = null,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is QGMessageSendTarget) return false
+    public abstract val id: ID
 
-        if (destination != other.destination) return false
-        if (id != other.id) return false
-        if (guildId != other.guildId) return false
+    /**
+     * 文字子频道目标。
+     * @property id 子频道 ID。
+     */
+    public class Channel(override val id: ID) : QGMessageSendTarget() {
+        override fun equals(other: Any?): Boolean = other is Channel && id == other.id
 
-        return true
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "Channel(id=$id)"
     }
 
-    override fun hashCode(): Int {
-        var result = destination.hashCode()
-        result = 31 * result + id.hashCode()
-        result = 31 * result + guildId.hashCode()
-        return result
+    /**
+     * 已创建的频道私信会话目标。
+     * @property id 私信会话 ID。
+     */
+    public class Dms(override val id: ID) : QGMessageSendTarget() {
+        override fun equals(other: Any?): Boolean = other is Dms && id == other.id
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "Dms(id=$id)"
     }
 
-    override fun toString(): String {
-        return "QGMessageSendTarget(destination=$destination, id=$id, guildId=$guildId)"
+    /**
+     * QQ 群目标。
+     * @property id 群 openid。
+     */
+    public class Group(override val id: ID) : QGMessageSendTarget() {
+        override fun equals(other: Any?): Boolean = other is Group && id == other.id
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "Group(id=$id)"
+    }
+
+    /**
+     * QQ 用户私信目标。
+     * @property id 用户 openid。
+     */
+    public class User(override val id: ID) : QGMessageSendTarget() {
+        override fun equals(other: Any?): Boolean = other is User && id == other.id
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "User(id=$id)"
+    }
+
+    /**
+     * 通过频道成员创建私信会话的目标。
+     * @property guildId 成员所属的频道 ID。
+     * @property memberId 频道成员 ID。
+     */
+    public class Member(public val guildId: ID, public val memberId: ID) : QGMessageSendTarget() {
+        override val id: ID get() = memberId
+
+        override fun equals(other: Any?): Boolean =
+            other is Member && guildId == other.guildId && memberId == other.memberId
+
+        override fun hashCode(): Int = 31 * guildId.hashCode() + memberId.hashCode()
+
+        override fun toString(): String = "Member(guildId=$guildId, memberId=$memberId)"
     }
 
     companion {
         /**
-         * 创建一个消息发送目标。
+         * 创建文字子频道目标。
          * @since 5.0
          */
-        public fun create(destination: MessageDestination, id: ID): QGMessageSendTarget =
-            QGMessageSendTarget(destination, id)
+        public fun channel(id: ID): Channel = Channel(id)
+
+        /**
+         * 创建频道私信会话目标，ID 为已创建的会话 ID。
+         * @since 5.0
+         */
+        public fun dms(id: ID): Dms = Dms(id)
+
+        /**
+         * 创建 QQ 群目标。
+         * @since 5.0
+         */
+        public fun group(id: ID): Group = Group(id)
+
+        /**
+         * 创建 QQ 用户私信目标。
+         * @since 5.0
+         */
+        public fun user(id: ID): User = User(id)
 
         /**
          * 按频道和成员 ID 描述私信目标。
          * @since 5.0
          */
-        public fun member(guildId: ID, memberId: ID): QGMessageSendTarget =
-            QGMessageSendTarget(MessageDestination.DMS, memberId, guildId)
+        public fun member(guildId: ID, memberId: ID): Member = Member(guildId, memberId)
     }
 }

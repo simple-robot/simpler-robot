@@ -54,20 +54,30 @@ public sealed class MessageSendContext private constructor(
     public open val message: InteractionMessage,
 ) {
     /**
-     * 被调用 send/reply 的对象。回复来源与最终发送目标可能不同。
+     * 发起本次发送或回复的调用来源。
+     *
+     * 通常是调用发送或回复方法时使用的对象，例如 [SendSupport] 实体或 [ReplySupport] 事件。
+     * 组件也可能提供 [Bot] 按 ID 发送或消息扩展发送等入口，具体类型由组件和入口决定。
+     * 回复时来源与 [target] 解析的目标实体可能不同。
      * @since 5.0
      */
     public abstract val source: Any
 
     /**
-     * 本次操作确定的不会产生副作用的稳定目标描述类型。由实现者决定内容。
+     * 本次操作入口已确定的稳定的、没有副作用的目标描述。
+     *
+     * 描述内容和类型由实现者决定，例如目标类别及其 ID。无法提供描述时可以为 null。
+     * 通过 [withMessage] 或具体上下文替换选项时保留此描述。组件允许替换原生请求时，实际发送目标可能随请求改变，
+     * 但此属性仍描述最初已确定的目标。
      * @since 5.0
      */
     public abstract val destination: Any?
 
     /**
-     * 按需解析入口目标的实体，无法获取时返回 null。
-     * 原生请求替换后仍解析本次操作最初确定的目标。
+     * 按需解析本次操作入口确定的目标实体，无法获取时返回 null。
+     *
+     * 实体的类型和解析方式由实现者决定，可能与 [source] 不同。解析可能执行挂起操作、
+     * 查询平台或抛出异常，调用者应结合组件实现的具体说明处理。
      * @since 5.0
      */
     @STP

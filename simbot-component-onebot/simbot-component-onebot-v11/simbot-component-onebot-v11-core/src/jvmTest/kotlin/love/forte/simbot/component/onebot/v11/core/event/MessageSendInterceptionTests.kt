@@ -55,6 +55,8 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendContext
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.useOneBot11
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
@@ -62,6 +64,7 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherImpl
+import love.forte.simbot.definition.Actor
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.event.MessageSentEvent
@@ -141,7 +144,7 @@ class MessageSendInterceptionTests {
         val message: Message = Text { "original" }
         val content = mockk<MessageContent>()
         try {
-            for (sender in senders(bot)) {
+            for ((index, sender) in senders(bot).withIndex()) {
                 val start = contexts.size
                 sender.send("original")
                 sender.send(message)
@@ -155,6 +158,13 @@ class MessageSendInterceptionTests {
                     assertSame(sender, it.source)
                     assertSame(sender, it.target())
                     assertSame(bot, it.bot)
+                    val destination = assertIs<OneBotMessageSendContext>(it).destination
+                    val id = assertIs<Actor>(sender).id
+                    if (index == 1) {
+                        assertEquals(OneBotMessageSendTarget.group(id), assertIs<OneBotMessageSendTarget.Group>(destination))
+                    } else {
+                        assertEquals(OneBotMessageSendTarget.privateTarget(id), assertIs<OneBotMessageSendTarget.Private>(destination))
+                    }
                 }
                 calls.take(3).forEach { assertTrue(it.options.isEmpty()) }
                 calls.drop(3).forEach { assertEquals(listOf(sendOption), it.options) }
@@ -199,7 +209,17 @@ class MessageSendInterceptionTests {
                 replier.reply(content, replyOption)
                 val calls = contexts.drop(start)
                 assertEquals(6, calls.size)
-                calls.forEach { assertSame(replier, it.source) }
+                calls.forEach {
+                    assertSame(replier, it.source)
+                    val destination = assertIs<OneBotMessageReplyContext>(it).destination
+                    if (index < 4) {
+                        val id = assertIs<OneBotGroupMessageEventImpl>(replier).sourceEvent.groupId
+                        assertEquals(OneBotMessageSendTarget.group(id), assertIs<OneBotMessageSendTarget.Group>(destination))
+                    } else {
+                        val id = assertIs<OneBotPrivateMessageEventImpl>(replier).sourceEvent.userId
+                        assertEquals(OneBotMessageSendTarget.privateTarget(id), assertIs<OneBotMessageSendTarget.Private>(destination))
+                    }
+                }
                 calls.take(3).forEach { assertTrue(it.options.filterNot { option -> option is OneBotMessageReplyOption }.isEmpty()) }
                 calls.drop(3).forEach { assertEquals(listOf(replyOption), it.options.filterNot { option -> option is OneBotMessageReplyOption }) }
                 for (request in requests.takeLast(6)) {

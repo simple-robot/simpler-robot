@@ -55,7 +55,7 @@ class MessageSendInterceptionPointTests {
      */
     private class ComponentReply private constructor(
         bot: Bot,
-        override val source: Any,
+        override val source: ReplySupport,
         originalMessage: InteractionMessage,
         message: InteractionMessage,
         override val options: List<ReplyOption>,
@@ -64,7 +64,7 @@ class MessageSendInterceptionPointTests {
     ) : MessageSendContext.Reply(bot, originalMessage, message) {
         constructor(
             bot: Bot,
-            source: Any,
+            source: ReplySupport,
             message: InteractionMessage,
             options: List<ReplyOption>,
             metadata: Any,
@@ -96,7 +96,7 @@ class MessageSendInterceptionPointTests {
     @Test
     fun componentReplyPreservesFieldsAcrossInterceptors() = runTest {
         val manager = InterceptorManager()
-        val source = Any()
+        val source = mockk<ReplySupport>()
         val target = Any()
         val metadata = Any()
         val option = object : ReplyOption {}
@@ -650,7 +650,7 @@ private class TestSend private constructor(
 
 private class TestReply private constructor(
     bot: Bot,
-    override val source: Any,
+    override val source: ReplySupport,
     originalMessage: InteractionMessage,
     message: InteractionMessage,
     override val options: List<ReplyOption>,
@@ -658,7 +658,7 @@ private class TestReply private constructor(
 ) : MessageSendContext.Reply(bot, originalMessage, message) {
     constructor(
         bot: Bot,
-        source: Any,
+        source: ReplySupport,
         message: InteractionMessage,
         options: List<ReplyOption> = emptyList(),
         target: suspend () -> Any? = { null },

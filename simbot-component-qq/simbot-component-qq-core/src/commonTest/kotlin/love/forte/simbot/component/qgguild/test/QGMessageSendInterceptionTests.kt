@@ -41,10 +41,7 @@ import love.forte.simbot.component.qguild.internal.friend.idFriend
 import love.forte.simbot.component.qguild.internal.group.idGroup
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
-import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.QGMessageReferenceOption
-import love.forte.simbot.component.qguild.message.QGMessageReplyContext
-import love.forte.simbot.component.qguild.message.QGMessageSendContext
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.MessageReceipt
@@ -65,6 +62,35 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
 
     private val sendOption = object : SendOption {}
     private val replyOption = object : ReplyOption {}
+
+    /**
+     * 频道成员和私信会话即使 ID 相同也有不同的目标语义。
+     */
+    @Test
+    fun memberSendDestinationRetainsGuildAndMemberIds() = runTest {
+        val app = app { error("A short-circuited operation must not make requests") }
+        val bot = app.bot() as QGBotImpl
+        try {
+            app.interceptors {
+                onMessageSend { _, context, _ ->
+                    val target = assertIs<QGMessageSendTarget.Member>(
+                        assertIs<QGMessageSendContext>(context).destination
+                    )
+                    assertEquals("guild".ID, target.guildId)
+                    assertEquals("member".ID, target.memberId)
+                    assertEquals("member".ID, target.id)
+                    assertEquals(QGMessageSendTarget.member("guild".ID, "member".ID), target)
+                    assertNotEquals(QGMessageSendTarget.member("other".ID, "member".ID), target)
+                    assertNotEquals<QGMessageSendTarget>(QGMessageSendTarget.dms("member".ID), target)
+                    receipt
+                }
+            }
+            sendSources(bot).filterIsInstance<QGMemberImpl>().single().send("text")
+        } finally {
+            app.cancel()
+            bot.cancel()
+        }
+    }
 
     private fun sendSources(bot: QGBotImpl): List<SendSupport> = listOf(
         idGroup(bot, "group".ID),

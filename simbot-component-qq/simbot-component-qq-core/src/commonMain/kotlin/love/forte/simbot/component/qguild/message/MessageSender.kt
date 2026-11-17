@@ -60,7 +60,7 @@ internal suspend fun QGBot.sendDmsInteractionMessage(
     guildId: String,
     message: InteractionMessage,
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.DMS, guildId.ID),
+    QGMessageSendTarget.dms(guildId.ID),
     message,
 ) { current ->
     when (current) {
@@ -549,7 +549,7 @@ public suspend inline fun QGBot.sendMessage(
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
     crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    QGMessageSendTarget.channel(channelId.ID),
     InteractionMessage.valueOf(message),
 ) { message ->
     sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
@@ -587,7 +587,7 @@ public suspend inline fun QGBot.sendMessage(
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
     crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    QGMessageSendTarget.channel(channelId.ID),
     InteractionMessage.valueOf(messageContent),
 ) { message ->
     sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
@@ -623,7 +623,7 @@ public suspend inline fun QGBot.sendMessage(
     crossinline onEachPre: MessageSendApi.Body.Builder.() -> Unit = {},
     crossinline onEachPost: MessageSendApi.Body.Builder.() -> Unit = {},
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.CHANNEL, channelId.ID),
+    QGMessageSendTarget.channel(channelId.ID),
     InteractionMessage.valueOf(text),
 ) { message ->
     sendChannelInteractionMessageDirect(channelId, message, onEachPre, onEachPost)
@@ -644,7 +644,7 @@ public suspend inline fun QGBot.sendGroupMessage(
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
     crossinline onEachPost: GroupAndC2CSendBody.() -> Unit = {},
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.GROUP, openid.ID),
+    QGMessageSendTarget.group(openid.ID),
     InteractionMessage.valueOf(messageContent),
 ) { message ->
     when (message) {
@@ -680,7 +680,7 @@ public suspend inline fun QGBot.sendUserMessage(
     crossinline onEachPre: GroupAndC2CSendBody.() -> Unit = {},
     crossinline onEachPost: GroupAndC2CSendBody.() -> Unit = {},
 ): QGMessageReceipt = interceptDirectSend(
-    QGMessageSendTarget.create(MessageDestination.USER, openid.ID),
+    QGMessageSendTarget.user(openid.ID),
     InteractionMessage.valueOf(messageContent),
 ) { message ->
     when (message) {

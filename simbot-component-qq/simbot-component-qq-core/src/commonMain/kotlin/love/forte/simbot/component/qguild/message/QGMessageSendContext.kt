@@ -38,9 +38,16 @@ import love.forte.simbot.interception.MessageSendContext
  */
 public class QGMessageSendContext private constructor(
     override val bot: QGBot,
+    /**
+     * 创建上下文时传入的发送来源。组件通过 [QGBot] 按 ID 发送时为 Bot，通过实体发送时为该实体。
+     */
     override val source: Any,
     originalMessage: InteractionMessage,
     message: InteractionMessage,
+    /**
+     * 创建上下文时传入的目标描述 [QGMessageSendTarget]，包含子频道、频道私聊、群或用户的类型和标识。
+     * 组件发送构建时根据发送目标确定其值，复制消息或选项时保持不变。
+     */
     public override val destination: QGMessageSendTarget,
     override val options: List<SendOption>,
     private val resolveTarget: suspend () -> Any?,
@@ -68,6 +75,11 @@ public class QGMessageSendContext private constructor(
         )
     }
 
+    /**
+     * 每次调用都会执行创建上下文时提供的目标解析函数。
+     * 组件通过实体发送时返回该实体，通过 [QGBot] 按 ID 发送时返回 null。
+     * 通过公开工厂创建时解析函数可以返回任意值，默认返回 null。
+     */
     override suspend fun target(): Any? = resolveTarget()
 
     override fun withMessage(message: InteractionMessage): QGMessageSendContext =

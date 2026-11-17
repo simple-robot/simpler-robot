@@ -30,25 +30,43 @@ import love.forte.simbot.common.id.ID
  *
  * @since 5.0
  */
-public class OneBotMessageSendTarget private constructor(public val type: Type, public val id: ID) {
-    companion {
-        /**
-         * 根据目标类型和 ID 创建目标描述。
-         * @since 5.0
-         */
-        public fun create(type: Type, id: ID): OneBotMessageSendTarget = OneBotMessageSendTarget(type, id)
-    }
-
-    override fun equals(other: Any?): Boolean =
-        this === other || other is OneBotMessageSendTarget && type == other.type && id == other.id
-
-    override fun hashCode(): Int = 31 * type.hashCode() + id.hashCode()
-
-    override fun toString(): String = "OneBotMessageSendTarget(type=$type, id=$id)"
+public sealed interface OneBotMessageSendTarget {
+    /**
+     * 目标会话的 ID。
+     */
+    public val id: ID
 
     /**
-     * 群聊或私聊。
-     * @since 5.0
+     * 群聊目标。
      */
-    public enum class Type { GROUP, PRIVATE }
+    public class Group(override val id: ID) : OneBotMessageSendTarget {
+        override fun equals(other: Any?): Boolean = this === other || other is Group && id == other.id
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "Group(id=$id)"
+    }
+
+    /**
+     * 私聊目标。
+     */
+    public class Private(override val id: ID) : OneBotMessageSendTarget {
+        override fun equals(other: Any?): Boolean = this === other || other is Private && id == other.id
+
+        override fun hashCode(): Int = id.hashCode()
+
+        override fun toString(): String = "Private(id=$id)"
+    }
+
+    public companion object {
+        /**
+         * 创建群聊目标。
+         */
+        public fun group(id: ID): Group = Group(id)
+
+        /**
+         * 创建私聊目标。
+         */
+        public fun privateTarget(id: ID): Private = Private(id)
+    }
 }

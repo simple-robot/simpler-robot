@@ -25,9 +25,13 @@ package love.forte.simbot.component.kook.message
 
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.ReplySupport
+import love.forte.simbot.component.kook.KookChatChannel
+import love.forte.simbot.component.kook.KookUserChat
 import love.forte.simbot.component.kook.bot.KookBot
+import love.forte.simbot.component.kook.event.KookMessageEvent
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.interception.MessageSendContext
+import love.forte.simbot.suspendrunner.STP
 
 /**
  * Kook 消息回复上下文。
@@ -39,9 +43,16 @@ import love.forte.simbot.interception.MessageSendContext
  */
 public class KookMessageReplyContext private constructor(
     override val bot: KookBot,
+    /**
+     * 发起回复的对象。通常为一个消息事件 [KookMessageEvent]。
+     */
     override val source: ReplySupport,
     originalMessage: InteractionMessage,
     message: InteractionMessage,
+    /**
+     * 可以确定的目标*描述*。一个密封类型，根据类型不同可能表示包含频道 ID [KookMessageSendTarget.Channel]、
+     * 用户 ID [KookMessageSendTarget.User] 或私聊会话 code [KookMessageSendTarget.ChatCode]。
+     */
     public override val destination: KookMessageSendTarget,
     override val options: List<ReplyOption>,
     private val resolveTarget: suspend () -> Any?,
@@ -69,6 +80,13 @@ public class KookMessageReplyContext private constructor(
         )
     }
 
+    /**
+     * 调用创建上下文时提供的解析函数获取目标对象。
+     * 组件内的频道消息回复解析为频道 [KookChatChannel]，私聊消息回复解析为私聊会话 [KookUserChat]。
+     * 解析私聊会话可能请求平台 API。
+     * **每次**调用都会执行解析函数，未提供时返回 null。
+     */
+    @STP
     override suspend fun target(): Any? = resolveTarget()
 
     override fun withMessage(message: InteractionMessage): KookMessageReplyContext =
