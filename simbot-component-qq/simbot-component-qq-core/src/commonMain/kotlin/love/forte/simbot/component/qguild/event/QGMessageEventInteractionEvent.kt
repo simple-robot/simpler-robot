@@ -21,8 +21,11 @@
  *
  */
 
+@file:OptIn(InternalSimbotAPI::class)
+
 package love.forte.simbot.component.qguild.event
 
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
 import love.forte.simbot.event.*
