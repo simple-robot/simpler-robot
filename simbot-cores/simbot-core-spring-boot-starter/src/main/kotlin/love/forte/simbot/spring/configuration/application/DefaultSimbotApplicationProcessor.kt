@@ -38,6 +38,7 @@ import love.forte.simbot.spring.common.BotConfigResourceLoadOnFailureException
 import love.forte.simbot.spring.common.MismatchConfigurableBotManagerException
 import love.forte.simbot.spring.common.application.*
 import love.forte.simbot.spring.configuration.SimbotEventDispatcherProcessor
+import love.forte.simbot.spring.configuration.SimbotInterceptorRegistrarProcessor
 import love.forte.simbot.spring.configuration.listener.SimbotEventListenerResolver
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,13 +67,15 @@ public open class DefaultSimbotSpringApplicationProcessorConfiguration {
         @Autowired(required = false) preConfigurer: List<SimbotApplicationPreConfigurer>? = null,
         @Autowired(required = false) postConfigurer: List<SimbotApplicationPostConfigurer>? = null,
         @Autowired(required = false) eventDispatcherProcessor: SimbotEventDispatcherProcessor,
+        @Autowired(required = false) interceptorRegistrarProcessor: SimbotInterceptorRegistrarProcessor? = null,
     ): DefaultSimbotApplicationProcessor =
         DefaultSimbotApplicationProcessor(
             properties = properties,
             eventListenerResolvers = eventListenerResolvers ?: emptyList(),
             preConfigurer = preConfigurer ?: emptyList(),
             postConfigurer = postConfigurer ?: emptyList(),
-            eventDispatcherProcessor
+            eventDispatcherProcessor,
+            interceptorRegistrarProcessor
         )
 
     public companion object {
@@ -96,6 +99,7 @@ public class DefaultSimbotApplicationProcessor(
     private val preConfigurer: List<SimbotApplicationPreConfigurer>,
     private val postConfigurer: List<SimbotApplicationPostConfigurer>,
     private val eventDispatcherProcessor: SimbotEventDispatcherProcessor,
+    private val interceptorRegistrarProcessor: SimbotInterceptorRegistrarProcessor? = null,
 ) : SimbotApplicationProcessor {
     override fun process(application: SpringApplication) {
         preConfigurer.forEach {
@@ -119,6 +123,7 @@ public class DefaultSimbotApplicationProcessor(
 
     private fun process0(application: SpringApplication) {
         eventDispatcherProcessor.process(application.eventDispatcher)
+        interceptorRegistrarProcessor?.process(application.interceptorManager)
         loadBots(application)
     }
 
