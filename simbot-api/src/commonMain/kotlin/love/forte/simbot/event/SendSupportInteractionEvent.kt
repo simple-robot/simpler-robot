@@ -21,9 +21,12 @@
  *
  */
 
+@file:OptIn(InternalSimbotAPI::class)
+
 package love.forte.simbot.event
 
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.definition.*
 import love.forte.simbot.suspendrunner.STP
 
@@ -37,8 +40,11 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteractionEvent {
     /**
      * 当前进行行为的 [SendSupport] 实例。
@@ -63,8 +69,11 @@ public interface SendSupportInteractionEvent : BotEvent, InternalMessageInteract
  * @see SendSupport
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface SendSupportPreSendEvent : SendSupportInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -79,8 +88,11 @@ public interface SendSupportPreSendEvent : SendSupportInteractionEvent, Internal
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface SendSupportPostSendEvent : SendSupportInteractionEvent, InternalMessagePostSendEvent
 
 //region Contact
@@ -91,8 +103,11 @@ public interface SendSupportPostSendEvent : SendSupportInteractionEvent, Interna
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactInteractionEvent : SendSupportInteractionEvent {
     override val content: Contact
 
@@ -106,8 +121,11 @@ public interface ContactInteractionEvent : SendSupportInteractionEvent {
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSendEvent {
     override val content: Contact
 
@@ -121,8 +139,11 @@ public interface ContactPreSendEvent : ContactInteractionEvent, SendSupportPreSe
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPostSendEvent {
     override val content: Contact
 
@@ -139,8 +160,11 @@ public interface ContactPostSendEvent : ContactInteractionEvent, SendSupportPost
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberInteractionEvent : SendSupportInteractionEvent {
     override val content: Member
 
@@ -154,8 +178,11 @@ public interface MemberInteractionEvent : SendSupportInteractionEvent {
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSendEvent {
     override val content: Member
 
@@ -169,8 +196,11 @@ public interface MemberPreSendEvent : MemberInteractionEvent, SendSupportPreSend
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSendEvent {
     override val content: Member
 
@@ -187,8 +217,11 @@ public interface MemberPostSendEvent : MemberInteractionEvent, SendSupportPostSe
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
     override val content: ChatRoom
 
@@ -202,8 +235,11 @@ public interface ChatRoomInteractionEvent : SendSupportInteractionEvent {
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPreSendEvent {
     override val content: ChatRoom
 
@@ -217,8 +253,11 @@ public interface ChatRoomPreSendEvent : ChatRoomInteractionEvent, SendSupportPre
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomPostSendEvent : ChatRoomInteractionEvent, SendSupportPostSendEvent {
     override val content: ChatRoom
 
@@ -234,8 +273,11 @@ public interface ChatRoomPostSendEvent : ChatRoomInteractionEvent, SendSupportPo
  * @see ChatGroup
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupInteractionEvent : ChatRoomInteractionEvent {
     override val content: ChatGroup
 
@@ -248,8 +290,11 @@ public interface ChatGroupInteractionEvent : ChatRoomInteractionEvent {
  * @see ChatGroup
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupPreSendEvent : ChatGroupInteractionEvent, ChatRoomPreSendEvent {
     override val content: ChatGroup
 
@@ -262,8 +307,11 @@ public interface ChatGroupPreSendEvent : ChatGroupInteractionEvent, ChatRoomPreS
  * @see ChatGroup
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupPostSendEvent : ChatGroupInteractionEvent, ChatRoomPostSendEvent {
     override val content: ChatGroup
 
@@ -281,8 +329,11 @@ public interface ChatGroupPostSendEvent : ChatGroupInteractionEvent, ChatRoomPos
  *
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelInteractionEvent : ChatRoomInteractionEvent {
     override val content: ChatChannel
 
@@ -295,8 +346,11 @@ public interface ChatChannelInteractionEvent : ChatRoomInteractionEvent {
  * @see ChatChannel
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelPreSendEvent :
     ChatChannelInteractionEvent,
     ChatRoomPreSendEvent {
@@ -311,8 +365,11 @@ public interface ChatChannelPreSendEvent :
  * @see ChatChannel
  * @since 4.11.0
  */
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelPostSendEvent :
     ChatChannelInteractionEvent,
     ChatRoomPostSendEvent {

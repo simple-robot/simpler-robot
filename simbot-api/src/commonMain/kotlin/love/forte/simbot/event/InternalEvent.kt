@@ -68,7 +68,7 @@ public interface InternalNotificationEvent : InternalEvent
  *
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息拦截事件已停止使用，消息拦截器的异常会直接向调用方传播。")
+@Deprecated("旧消息拦截事件已停止使用，由新的拦截器机制代替。", level = DeprecationLevel.ERROR)
 public interface InternalInterceptionEvent : InternalEvent
 
 /**
@@ -78,7 +78,7 @@ public interface InternalInterceptionEvent : InternalEvent
  * @see InternalInterceptionEvent
  * @since 4.11.0
  */
-@Deprecated("旧消息拦截事件已停止使用，消息拦截器的异常会直接向调用方传播。")
+@Deprecated("旧消息拦截事件已停止使用，由新的拦截器机制代替。", level = DeprecationLevel.ERROR)
 public open class InternalInterceptionException : RuntimeException {
     public constructor() : super()
     public constructor(message: String?) : super(message)

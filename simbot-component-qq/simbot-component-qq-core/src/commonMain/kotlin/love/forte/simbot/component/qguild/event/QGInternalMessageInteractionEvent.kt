@@ -23,10 +23,8 @@
 
 package love.forte.simbot.component.qguild.event
 
-import love.forte.simbot.event.FuzzyEventTypeImplementation
-import love.forte.simbot.event.InternalMessageInteractionEvent
-import love.forte.simbot.event.InternalMessagePostSendEvent
-import love.forte.simbot.event.InternalMessagePreSendEvent
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.event.*
 
 /**
  * QQ组件中针对 [InternalMessageInteractionEvent] 的子类型实现。
@@ -34,9 +32,13 @@ import love.forte.simbot.event.InternalMessagePreSendEvent
  * @author ForteScarlet
  * @since 4.2.0
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGInternalMessageInteractionEvent : InternalMessageInteractionEvent, QGInternalEvent
 
 /**
@@ -44,9 +46,13 @@ public interface QGInternalMessageInteractionEvent : InternalMessageInteractionE
  * @author ForteScarlet
  * @since 4.2.0
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGInternalMessagePreSendEvent : QGInternalMessageInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -54,7 +60,11 @@ public interface QGInternalMessagePreSendEvent : QGInternalMessageInteractionEve
  * @author ForteScarlet
  * @since 4.2.0
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
-@Deprecated("旧消息 pre/post 事件已停止分发，请使用 MessageSendInterceptionPoint 拦截发送或回复。")
-@Suppress("DEPRECATION")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGInternalMessagePostSendEvent : QGInternalMessageInteractionEvent, InternalMessagePostSendEvent
