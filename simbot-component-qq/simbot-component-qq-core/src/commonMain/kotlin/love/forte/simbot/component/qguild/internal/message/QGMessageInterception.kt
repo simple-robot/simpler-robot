@@ -39,7 +39,10 @@ import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.dms.QGDmsContactImpl
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
-import love.forte.simbot.component.qguild.message.*
+import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageReplyContext
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
+import love.forte.simbot.component.qguild.message.QGMessageSendTarget
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.event.MessageSentEvent
 import love.forte.simbot.interception.MessageSendContext
@@ -67,7 +70,7 @@ internal suspend inline fun QGBotImpl.interceptSend(
 
 /**
  * 保留回复来源、延迟解析目标，并直接调用终端以避免再次进入 send 链。
- * 回复引用通过上下文选项传递。
+ * 上下文保留调用方的选项，回复终端根据最终选项和原消息确定引用。
  */
 internal suspend inline fun QGBotImpl.interceptReply(
     source: ReplySupport,
@@ -82,7 +85,7 @@ internal suspend inline fun QGBotImpl.interceptReply(
         source,
         message,
         source.replyDestination(),
-        source.initialReplyOptions(options),
+        options,
         target,
     ),
 ) { context ->
@@ -142,16 +145,4 @@ private fun ReplySupport.replyDestination(): QGMessageSendTarget = when (this) {
     is QGC2CMessageCreateEvent -> QGMessageSendTarget.user(sourceEventEntity.data.author.userOpenid.ID
     )
     else -> error("Unsupported QQ reply source: $this")
-}
-
-private fun ReplySupport.initialReplyOptions(options: List<ReplyOption>): List<ReplyOption> {
-    if (options.any { it is QGMessageReferenceOption }) return options
-    val id = when (this) {
-        is QGAtMessageCreateEvent -> sourceEventEntity.id
-        is QGDirectMessageCreateEvent -> sourceEventEntity.id
-        is QGGroupAtMessageCreateEvent -> sourceEventEntity.data.id
-        is QGGroupMessageCreateEvent -> sourceEventEntity.data.id
-        else -> return options
-    }
-    return listOf(QGMessageReferenceOption.create(id.ID)) + options
 }

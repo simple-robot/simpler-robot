@@ -24,10 +24,10 @@
 package love.forte.simbot.component.qgguild.test
 
 import io.ktor.client.engine.mock.*
-import io.ktor.http.content.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.ability.*
@@ -42,6 +42,7 @@ import love.forte.simbot.component.qguild.internal.group.idGroup
 import love.forte.simbot.component.qguild.internal.guild.QGMemberImpl
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
 import love.forte.simbot.component.qguild.message.*
+import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.MessageReceipt
@@ -183,20 +184,23 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
             }
             replySources(bot).forEach { source ->
                 val before = contexts.size
+                val reference = QGMessageReferenceOption.create("reference".ID)
                 assertSame(receipt, source.reply("text"))
                 assertSame(receipt, source.reply(Text { "text" }))
                 assertSame(receipt, source.reply(content))
-                assertSame(receipt, source.reply("text", replyOption))
-                assertSame(receipt, source.reply(Text { "text" }, replyOption))
-                assertSame(receipt, source.reply(content, replyOption))
+                assertSame(receipt, source.reply("text", replyOption, reference))
+                assertSame(receipt, source.reply(Text { "text" }, replyOption, reference))
+                assertSame(receipt, source.reply(content, replyOption, reference))
                 val captured = contexts.drop(before)
                 assertEquals(6, captured.size)
                 captured.forEach {
                     assertSame(source, it.source)
                     assertIs<QGMessageReplyContext>(it)
                 }
-                captured.takeLast(3)
-                    .forEach { assertEquals(listOf(replyOption), assertIs<MessageSendContext.Reply>(it).options.filterNot { option -> option is QGMessageReferenceOption }) }
+                captured.take(3).forEach { assertTrue(assertIs<QGMessageReplyContext>(it).options.isEmpty()) }
+                captured.takeLast(3).forEach {
+                    assertEquals(listOf(replyOption, reference), assertIs<QGMessageReplyContext>(it).options)
+                }
             }
         } finally {
             app.cancel()
@@ -205,33 +209,49 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
     }
 
 
+    /**
+     * 校验真实请求中的引用回退与显式覆盖，包括没有默认引用的 C2C 入口。
+     */
     @Test
-    fun replyOptionsReplaceAndRemoveAutomaticReferences() = runTest {
-        var clear = false
-        var requests = 0
+    fun replyReferencesUseFinalExplicitOptionsBeforeFallingBackToSource() = runTest {
+        val references = mutableListOf<String?>()
+        val explicit = QGMessageReferenceOption.create("explicit".ID)
+        val replacement = QGMessageReferenceOption.create("replacement".ID)
         val app = app { request ->
-            requests++
-            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
-            if (clear) {
-                assertTrue(body["message_reference"] == null || body["message_reference"] == kotlinx.serialization.json.JsonNull, body.toString())
+            val body = Json.parseToJsonElement(request.body.toByteArray().decodeToString()).jsonObject
+            references += body["message_reference"]?.takeUnless { it == JsonNull }
+                ?.jsonObject?.getValue("message_id")?.jsonPrimitive?.content
+            if (request.url.encodedPath.startsWith("/v2/")) {
+                respondOk("""{"id":"sent","timestamp":1698435200}""")
             } else {
-                assertEquals("replacement", body.getValue("message_reference").jsonObject.getValue("message_id").jsonPrimitive.content)
+                respondOk("""{"id":"sent","channel_id":"channel","guild_id":"guild","content":"text","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":1}""")
             }
-            respondOk("""{"id":"sent","channel_id":"channel","guild_id":"guild","content":"text","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":1}""")
         }
         val bot = app.bot() as QGBotImpl
         try {
             app.interceptors {
                 onMessageSend { _, context, chain ->
                     val reply = assertIs<QGMessageReplyContext>(context)
-                    chain.proceed(reply.withOptions(if (clear) emptyList() else listOf(QGMessageReferenceOption.create("replacement".ID))))
+                    val message = assertIs<InteractionMessage.Text>(reply.message)
+                    val next = when (message.text) {
+                        "intercepted" -> reply.withOptions(reply.options + replacement)
+                        "cleared" -> reply.withOptions(emptyList())
+                        else -> reply
+                    }
+                    chain.proceed(next)
                 }
             }
-            val sources = replySources(bot).take(2)
-            for (source in sources) source.reply("text")
-            clear = true
-            for (source in sources) source.reply("text")
-            assertEquals(4, requests)
+            for (source in replySources(bot)) {
+                val fallback = if (source is QGC2CMessageCreateEventImpl) null else "message"
+                source.reply("default", replyOption)
+                source.reply("explicit", replyOption, explicit)
+                source.reply("intercepted", replyOption)
+                source.reply("cleared", explicit)
+                assertEquals(listOf(fallback, "explicit", "replacement", fallback), references.takeLast(4))
+                val requests = references.size
+                assertFailsWith<IllegalArgumentException> { source.reply("duplicate", explicit, replacement) }
+                assertEquals(requests, references.size)
+            }
         } finally {
             app.cancel()
             bot.cancel()

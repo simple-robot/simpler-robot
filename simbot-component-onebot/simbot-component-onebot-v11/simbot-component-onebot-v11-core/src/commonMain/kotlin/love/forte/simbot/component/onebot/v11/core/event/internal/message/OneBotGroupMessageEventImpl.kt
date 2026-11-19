@@ -23,7 +23,6 @@
 
 package love.forte.simbot.component.onebot.v11.core.event.internal.message
 
-import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroup
@@ -38,7 +37,6 @@ import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupMess
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNormalGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotNoticeGroupMessageEvent
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
-import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
@@ -71,9 +69,11 @@ internal abstract class OneBotGroupMessageEventImpl(
     override val replyDestination: OneBotMessageSendTarget
         get() = OneBotMessageSendTarget.group(sourceEvent.groupId)
 
-    override val defaultReplyOptions: List<ReplyOption>
-        get() = listOf(OneBotMessageReplyOption.quote(sourceEvent.messageId))
-
+    /**
+     * 群消息回复默认引用触发回复的消息。
+     */
+    override val defaultReplyQuote: ID
+        get() = sourceEvent.messageId
 
     override suspend fun replyTarget(): Any? = content()
 

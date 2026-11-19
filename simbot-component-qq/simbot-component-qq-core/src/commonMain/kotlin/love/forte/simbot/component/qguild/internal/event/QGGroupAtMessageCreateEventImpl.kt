@@ -129,10 +129,11 @@ internal class QGGroupAtMessageCreateEventImpl(
 
     private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
         val message = context.message
-        val reference = context.options.qgMessageReference()?.literal
+        // 群聊默认引用由回复终端补齐，拦截器提供的显式引用优先。
+        val reference = context.options.qgMessageReference()?.literal ?: sourceEventEntity.data.id
         fun GroupAndC2CSendBody.configRefAndMsgIdAndSeq() {
             if (messageReference == null) {
-                messageReference = reference?.let { love.forte.simbot.qguild.model.Message.Reference(it) }
+                messageReference = love.forte.simbot.qguild.model.Message.Reference(reference)
             }
             if (msgId == null) {
                 msgId = sourceEventEntity.data.id

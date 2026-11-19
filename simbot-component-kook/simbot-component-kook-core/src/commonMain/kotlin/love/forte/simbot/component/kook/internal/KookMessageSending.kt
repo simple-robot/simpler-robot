@@ -25,9 +25,7 @@ package love.forte.simbot.component.kook.internal
 
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.kook.KookChatCapableChannel
@@ -215,30 +213,23 @@ internal fun MessageSendContext.kookMessageOptions(): KookChannelMessageSendOpti
         is MessageSendContext.Reply -> options.filterIsInstance<KookChannelMessageSendOption>()
     }.toKookChannelMessageSendOptions()
 
-internal fun initialKookReplyOptions(
-    options: List<ReplyOption>,
-    quote: String? = null,
+/**
+ * 发送频道消息，并在终端应用回复入口提供的协议默认值。
+ */
+internal suspend fun KookChatCapableChannel.sendChannelMessage(
+    context: MessageSendContext,
+    defaultQuote: String? = null,
     defaultTempTargetId: String? = null,
-): List<ReplyOption> = buildList {
-    if (quote != null && options.none { it is KookChannelMessageSendOption.Quote }) {
-        add(KookChannelMessageSendOption.quote(quote.ID))
-    }
-    if (defaultTempTargetId != null && options.none { it is KookChannelMessageSendOption.DefaultTempTarget }) {
-        add(KookChannelMessageSendOption.defaultTempTarget(defaultTempTargetId.ID))
-    }
-    addAll(options)
-}
-
-internal suspend fun KookChatCapableChannel.sendChannelMessage(context: MessageSendContext): KookMessageReceipt {
+): KookMessageReceipt {
     val options = context.kookMessageOptions()
     return sendChannelMessage(
-        context.message,
-        options?.quote,
-        options?.defaultTempTargetId,
-        options?.tempTargetId,
-        options?.nonce,
-        options?.templateId,
-        (context.destination as KookMessageSendTarget.Channel).id,
+        message = context.message,
+        quote = options?.quote ?: defaultQuote,
+        defaultTempTargetId = options?.defaultTempTargetId ?: defaultTempTargetId,
+        tempTargetId = options?.tempTargetId,
+        nonce = options?.nonce,
+        templateId = options?.templateId,
+        targetId = (context.destination as KookMessageSendTarget.Channel).id,
     )
 }
 

@@ -130,7 +130,7 @@ public sealed class MessageSendContext private constructor(
         message: InteractionMessage,
     ) : MessageSendContext(bot, originalMessage, message) {
         /**
-         * 当前回复选项。
+         * 当前显式回复选项，初始值按原顺序保留调用方传入的选项，也可由拦截器替换。
          * @since 5.0
          */
         public abstract val options: List<ReplyOption>

@@ -65,6 +65,7 @@ import love.forte.simbot.kook.stdlib.BotConfiguration
 import love.forte.simbot.kook.stdlib.BotFactory
 import love.forte.simbot.kook.stdlib.Ticket
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.message.Messages
 import love.forte.simbot.message.Text
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.*
@@ -176,8 +177,13 @@ class KookMessageSendInterceptionTests {
             source.reply("original", option)
             source.reply(Text.of("original"))
             source.reply(event().toContent(false, bot))
-            contexts.takeLast(3).forEach { assertSame(source, it.source) }
-            assertEquals(listOf(option), contexts[contexts.size - 3].options.filterNot { it is KookChannelMessageSendOption })
+            val (explicit, message, content) = contexts.takeLast(3)
+            assertSame(source, explicit.source)
+            assertSame(source, message.source)
+            assertSame(source, content.source)
+            assertEquals(listOf(option), explicit.options)
+            assertTrue(message.options.isEmpty())
+            assertTrue(content.options.isEmpty())
         }
         assertEquals(12, contexts.size)
         assertEquals(12, requests)
@@ -722,46 +728,67 @@ class KookMessageSendInterceptionTests {
         assertEquals("initial-quote", original.quote)
     }
 
+    /**
+     * 频道回复在终端补齐协议默认值，最终的显式选项仍可覆盖这些值。
+     */
     @Test
-    fun replyOptionsCanReplaceAndRemoveAutomaticProtocolParameters() = runTest {
+    fun channelReplyUsesProtocolDefaultsAfterInterception() = runTest {
         val manager = InterceptorManager()
-        var replace = false
-        var requests = 0
+        val requests = mutableListOf<Triple<String, String, String?>>()
         val bot = bot(manager, backgroundScope.coroutineContext) { request ->
-            requests++
             val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
-            if (replace) {
-                assertEquals("new-quote", body.getValue("quote").jsonPrimitive.content)
-                assertEquals("new-nonce", body.getValue("nonce").jsonPrimitive.content)
-            } else {
-                assertTrue("quote" !in body && "nonce" !in body)
-            }
+            requests += Triple(
+                body.getValue("quote").jsonPrimitive.content,
+                body.getValue("temp_target_id").jsonPrimitive.content,
+                body["nonce"]?.jsonPrimitive?.content,
+            )
             success()
         }
-        val channel = channel(bot)
         val member = KookMemberImpl(bot, user, "guild")
         val guild = KookGuildImpl(bot, SimpleGuild("guild", "guild", "", "owner", "", 0, "", false, "", "", ""))
-        val sources = listOf(
-            KookChannelMessageEventImpl(bot, event(), member, channel, guild, ""),
-            KookBotSelfChannelMessageEventImpl(bot, event(), channel, member, guild, ""),
-            KookContactMessageEventImpl(bot, event(), ""),
-            KookBotSelfMessageEventImpl(bot, event(), ""),
+        val source = KookChannelMessageEventImpl(bot, event(), member, channel(bot), guild, "")
+        val message = Messages.of(Text.of("text"), KookTempTarget.current())
+        val callerOptions = listOf(
+            KookChannelMessageSendOption.quote("caller-quote".ID),
+            KookChannelMessageSendOption.nonce("caller-nonce"),
+            KookChannelMessageSendOption.defaultTempTarget("caller-user".ID),
         )
+        val interceptorOptions = listOf(
+            KookChannelMessageSendOption.quote("interceptor-quote".ID),
+            KookChannelMessageSendOption.defaultTempTarget("interceptor-user".ID),
+        )
+        val initialOptions = mutableListOf<List<ReplyOption>>()
+        manager.onMessageSend(priority = -100) { _, context, chain ->
+            val reply = assertIs<KookMessageReplyContext>(context)
+            initialOptions += reply.options
+            chain.proceed(reply)
+        }
+        source.reply(message)
+        source.reply(message, *callerOptions.toTypedArray())
+
+        val replacement = manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<KookMessageReplyContext>(context)
+            chain.proceed(reply.withOptions(interceptorOptions))
+        }
+        source.reply(message)
+        replacement.dispose()
+
         manager.onMessageSend { _, context, chain ->
             val reply = assertIs<KookMessageReplyContext>(context)
-            chain.proceed(reply.withOptions(if (replace) listOf(
-                KookChannelMessageSendOption.quote("new-quote".ID),
-                KookChannelMessageSendOption.nonce("new-nonce"),
-            ) else emptyList()))
+            chain.proceed(reply.withOptions(emptyList()))
         }
-        for (source in sources) {
-            source.reply("text")
-        }
-        replace = true
-        for (source in sources) {
-            source.reply("text")
-        }
-        assertEquals(8, requests)
+        source.reply(message, *callerOptions.toTypedArray())
+
+        assertEquals(listOf(emptyList(), callerOptions, emptyList(), callerOptions), initialOptions)
+        assertEquals(
+            listOf(
+                Triple("incoming", "user", null),
+                Triple("caller-quote", "caller-user", "caller-nonce"),
+                Triple("interceptor-quote", "interceptor-user", null),
+                Triple("incoming", "user", null),
+            ),
+            requests,
+        )
     }
 
     private val user = SimpleUser("user", "user", "")

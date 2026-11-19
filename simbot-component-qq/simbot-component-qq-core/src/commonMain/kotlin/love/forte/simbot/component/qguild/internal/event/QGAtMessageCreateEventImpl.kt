@@ -117,15 +117,15 @@ internal class QGAtMessageCreateEventImpl(
 
     private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
         val message = context.message
-        val reference = context.options.qgMessageReference()?.literal
-        var ref: Message.Reference? = null
+        // 仅在构建请求时使用原消息作为默认引用，使拦截上下文只保留显式选项。
+        val reference = Message.Reference(context.options.qgMessageReference()?.literal ?: sourceEventEntity.id)
 
         fun MessageSendApi.Body.Builder.configMsgIdAndRef() {
             if (msgId == null) {
                 msgId = sourceEventEntity.id
             }
             if (messageReference == null) {
-                messageReference = reference?.let { id -> ref ?: Message.Reference(id).also { ref = it } }
+                messageReference = reference
             }
         }
 

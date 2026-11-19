@@ -113,15 +113,15 @@ internal class QGDirectMessageCreateEventImpl(
 
     private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
         val message = context.message
-        val reference = context.options.qgMessageReference()?.literal
-        var ref: Message.Reference? = null
+        // 频道私信在没有显式引用时引用原消息。
+        val reference = Message.Reference(context.options.qgMessageReference()?.literal ?: sourceEventEntity.id)
 
         fun MessageSendApi.Body.Builder.configMsgIdAndRef() {
             if (msgId == null) {
                 msgId = sourceEventEntity.id
             }
             if (messageReference == null) {
-                messageReference = reference?.let { id -> ref ?: Message.Reference(id).also { ref = it } }
+                messageReference = reference
             }
         }
 

@@ -32,7 +32,6 @@ import love.forte.simbot.component.onebot.v11.core.event.internal.notifyMessageS
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
-import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.message.oneBotReplyQuote
 import love.forte.simbot.component.onebot.v11.core.utils.resolveInteractionMessage
@@ -62,7 +61,10 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
 
     protected abstract val replyDestination: OneBotMessageSendTarget
 
-    protected open val defaultReplyOptions: List<ReplyOption> get() = emptyList()
+    /**
+     * 提供终端在没有显式引用选项时使用的消息 ID。
+     */
+    protected open val defaultReplyQuote: ID? get() = null
 
     /**
      * 执行平台回复。
@@ -124,15 +126,11 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
             source = this,
             message = message,
             destination = replyDestination,
-            options = if (options.any { it is OneBotMessageReplyOption.Quote }) {
-                options
-            } else {
-                defaultReplyOptions + options
-            },
+            options = options,
             target = { replyTarget() },
         ),
     ) { context ->
-        val quote = (context as OneBotMessageReplyContext).options.oneBotReplyQuote()
+        val quote = (context as? OneBotMessageReplyContext)?.options?.oneBotReplyQuote() ?: defaultReplyQuote
         val segments = context.message.segmentsOrNull
         val result = if (segments != null) {
             replySegments(segments, quote)

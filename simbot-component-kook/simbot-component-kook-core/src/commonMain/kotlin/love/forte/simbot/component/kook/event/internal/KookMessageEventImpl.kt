@@ -102,11 +102,15 @@ internal class KookChannelMessageEventImpl(
                 source = this,
                 message = message,
                 destination = KookMessageSendTarget.channel(_channel.source.id),
-                options = initialKookReplyOptions(options, sourceEvent.msgId, _author.source.id),
+                options = options,
                 target = { content() },
             ),
-        ) {
-            _channel.sendChannelMessage(it)
+        ) { context ->
+            _channel.sendChannelMessage(
+                context,
+                defaultQuote = sourceEvent.msgId,
+                defaultTempTargetId = _author.source.id,
+            )
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)
@@ -234,11 +238,11 @@ internal class KookBotSelfChannelMessageEventImpl(
                 source = this,
                 message = message,
                 destination = KookMessageSendTarget.channel(_channel.source.id),
-                options = initialKookReplyOptions(options, sourceEvent.msgId),
+                options = options,
                 target = { content() },
             ),
-        ) {
-            _channel.sendChannelMessage(it)
+        ) { context ->
+            _channel.sendChannelMessage(context, defaultQuote = sourceEvent.msgId)
         }
 
     override val messageContent: KookReceiveMessageContent = sourceEvent.toContent(false, bot)

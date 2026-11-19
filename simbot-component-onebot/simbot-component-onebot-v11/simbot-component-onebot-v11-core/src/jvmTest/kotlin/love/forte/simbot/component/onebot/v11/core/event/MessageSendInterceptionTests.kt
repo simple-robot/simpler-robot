@@ -180,7 +180,7 @@ class MessageSendInterceptionTests {
     }
 
     /**
-     * 回复保留事件来源、原始消息引用与 options，不重复进入 send。
+     * 各重载保留调用来源与传入选项，群回复由终端补全引用。
      */
     @Test
     fun repliesRetainSourceAndPlatformReferenceAcrossAllOverloads() = runTest {
@@ -220,12 +220,13 @@ class MessageSendInterceptionTests {
                         assertEquals(OneBotMessageSendTarget.privateTarget(id), assertIs<OneBotMessageSendTarget.Private>(destination))
                     }
                 }
-                calls.take(3).forEach { assertTrue(it.options.filterNot { option -> option is OneBotMessageReplyOption }.isEmpty()) }
-                calls.drop(3).forEach { assertEquals(listOf(replyOption), it.options.filterNot { option -> option is OneBotMessageReplyOption }) }
+                calls.take(3).forEach { assertTrue(it.options.isEmpty()) }
+                calls.drop(3).forEach { assertEquals(listOf(replyOption), it.options) }
                 for (request in requests.takeLast(6)) {
                     if (index < 4) {
                         val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(request.message).segments
-                        assertIs<OneBotReply>(segments.first())
+                        val source = assertIs<OneBotGroupMessageEventImpl>(replier)
+                        assertEquals(source.sourceEvent.messageId, assertIs<OneBotReply>(segments.first()).data.id)
                         assertEquals("changed", assertIs<OneBotText>(segments.last()).data.text)
                     } else {
                         assertEquals("changed", assertIs<OneBotMessageOutgoing.StringValue>(request.message).value)
@@ -239,8 +240,11 @@ class MessageSendInterceptionTests {
     }
 
 
+    /**
+     * 显式引用优先，清空选项后回到群回复默认引用，重复引用在请求前报错。
+     */
     @Test
-    fun replyOptionsReplaceAndRemoveTheAutomaticReference() = runTest {
+    fun replyOptionsOverrideAndFallBackToTheDefaultReference() = runTest {
         val manager = InterceptorManager()
         val bot = bot(manager)
         val requests = mutableListOf<SendMsgApi.Body>()
@@ -248,19 +252,43 @@ class MessageSendInterceptionTests {
             requests += assertIs<SendMsgApi.Body>(assertIs<SendMsgApi>(firstArg()).body)
             SendMsgResult(114.ID)
         }
-        var clear = false
+        val callerQuote = OneBotMessageReplyOption.quote(41.ID)
+        val interceptorQuote = OneBotMessageReplyOption.quote(42.ID)
+        val trailingOption = object : ReplyOption {}
+        val optionsSeen = mutableListOf<List<ReplyOption>>()
+        var replacement: List<ReplyOption>? = null
         manager.onMessageSend { _, context, chain ->
             val reply = assertIs<OneBotMessageReplyContext>(context)
-            chain.proceed(reply.withOptions(if (clear) emptyList() else listOf(OneBotMessageReplyOption.quote(42.ID))))
+            optionsSeen += reply.options
+            val options = replacement
+            chain.proceed(if (options == null) reply else reply.withOptions(options))
         }
         try {
-            val source = repliers(bot).first()
-            source.reply("text")
-            val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(requests.single().message).segments
-            assertEquals(42.ID, assertIs<OneBotReply>(segments.first()).data.id)
-            clear = true
-            source.reply("text")
-            assertEquals("text", assertIs<OneBotMessageOutgoing.StringValue>(requests.last().message).value)
+            val source = assertIs<OneBotGroupMessageEventImpl>(repliers(bot).first())
+            source.reply("text", replyOption, callerQuote, trailingOption)
+            replacement = listOf(interceptorQuote)
+            source.reply("text", callerQuote)
+            replacement = emptyList()
+            source.reply("text", callerQuote)
+            replacement = null
+            assertFailsWith<IllegalArgumentException> {
+                source.reply("text", callerQuote, interceptorQuote)
+            }
+
+            assertEquals(
+                listOf(
+                    listOf(replyOption, callerQuote, trailingOption),
+                    listOf(callerQuote),
+                    listOf(callerQuote),
+                    listOf(callerQuote, interceptorQuote),
+                ),
+                optionsSeen,
+            )
+            val sentQuotes = requests.map {
+                val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(it.message).segments
+                assertIs<OneBotReply>(segments.first()).data.id
+            }
+            assertEquals(listOf(41.ID, 42.ID, source.sourceEvent.messageId), sentQuotes)
         } finally {
             bot.cancel()
         }
