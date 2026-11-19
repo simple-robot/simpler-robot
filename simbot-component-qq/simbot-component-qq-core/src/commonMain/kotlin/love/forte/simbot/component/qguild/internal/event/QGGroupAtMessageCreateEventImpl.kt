@@ -28,7 +28,6 @@ import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.event.QGGroupAtMessageCreateEvent
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.group.QGGroupAuthor
@@ -129,12 +128,9 @@ internal class QGGroupAtMessageCreateEventImpl(
 
     private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
         val message = context.message
-        // 群聊默认引用由回复终端补齐，拦截器提供的显式引用优先。
-        val reference = context.options.qgMessageReference()?.literal ?: sourceEventEntity.data.id
+        val resolveReference = context.replyReferenceResolver(sourceEventEntity.data.id)
         fun GroupAndC2CSendBody.configRefAndMsgIdAndSeq() {
-            if (messageReference == null) {
-                messageReference = love.forte.simbot.qguild.model.Message.Reference(reference)
-            }
+            messageReference = resolveReference(messageReference)
             if (msgId == null) {
                 msgId = sourceEventEntity.data.id
             }

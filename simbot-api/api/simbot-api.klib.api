@@ -82,6 +82,16 @@ final enum class love.forte.simbot.ability/StandardDeleteOption : kotlin/Enum<lo
     }
 }
 
+final enum class love.forte.simbot.ability/StandardReplyOption : kotlin/Enum<love.forte.simbot.ability/StandardReplyOption>, love.forte.simbot.ability/ReplyOption { // love.forte.simbot.ability/StandardReplyOption|null[0]
+    enum entry NO_REFERENCE // love.forte.simbot.ability/StandardReplyOption.NO_REFERENCE|null[0]
+
+    final val entries // love.forte.simbot.ability/StandardReplyOption.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.ability/StandardReplyOption> // love.forte.simbot.ability/StandardReplyOption.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): love.forte.simbot.ability/StandardReplyOption // love.forte.simbot.ability/StandardReplyOption.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<love.forte.simbot.ability/StandardReplyOption> // love.forte.simbot.ability/StandardReplyOption.values|values#static(){}[0]
+}
+
 abstract fun interface <#A: in kotlin/Any?> love.forte.simbot.application/NormalApplicationEventHandler : love.forte.simbot.application/ApplicationEventHandler { // love.forte.simbot.application/NormalApplicationEventHandler|null[0]
     abstract fun invoke(#A) // love.forte.simbot.application/NormalApplicationEventHandler.invoke|invoke(1:0){}[0]
 }

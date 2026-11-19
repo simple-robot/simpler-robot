@@ -2227,21 +2227,6 @@ final class love.forte.simbot.component.qguild.message/QGMessageSendContext : lo
     final suspend fun target(): kotlin/Any? // love.forte.simbot.component.qguild.message/QGMessageSendContext.target|target(){}[0]
 }
 
-final class love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget|null[0]
-    final val destination // love.forte.simbot.component.qguild.message/QGMessageSendTarget.destination|{}destination[0]
-        final fun <get-destination>(): love.forte.simbot.qguild.stdlib/MessageDestination // love.forte.simbot.component.qguild.message/QGMessageSendTarget.destination.<get-destination>|<get-destination>(){}[0]
-    final val guildId // love.forte.simbot.component.qguild.message/QGMessageSendTarget.guildId|{}guildId[0]
-        final fun <get-guildId>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.qguild.message/QGMessageSendTarget.guildId.<get-guildId>|<get-guildId>(){}[0]
-    final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.id|{}id[0]
-        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.id.<get-id>|<get-id>(){}[0]
-
-    final fun create(love.forte.simbot.qguild.stdlib/MessageDestination, love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget // love.forte.simbot.component.qguild.message/QGMessageSendTarget.create|create#static(love.forte.simbot.qguild.stdlib.MessageDestination;love.forte.simbot.common.id.ID){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.hashCode|hashCode(){}[0]
-    final fun member(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget // love.forte.simbot.component.qguild.message/QGMessageSendTarget.member|member#static(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID){}[0]
-    final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.toString|toString(){}[0]
-}
-
 final class love.forte.simbot.component.qguild.message/QGReference : love.forte.simbot.component.qguild.message/QGMessageElement, love.forte.simbot.message/MessageReference { // love.forte.simbot.component.qguild.message/QGReference|null[0]
     final val channelId // love.forte.simbot.component.qguild.message/QGReference.channelId|{}channelId[0]
         final fun <get-channelId>(): love.forte.simbot.common.id/ID? // love.forte.simbot.component.qguild.message/QGReference.channelId.<get-channelId>|<get-channelId>(){}[0]
@@ -2697,6 +2682,76 @@ sealed class love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange { 
         final fun remove(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Delete // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.remove|remove(love.forte.simbot.common.id.ID){}[0]
         final fun update(love.forte.simbot.common.id/ID, kotlin.time/Instant): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.update|update(love.forte.simbot.common.id.ID;kotlin.time.Instant){}[0]
         final fun updateAtMilliseconds(love.forte.simbot.common.id/ID, kotlin/Long): love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Update // love.forte.simbot.component.qguild.group/QGGroupMemberMuteChange.Companion.updateAtMilliseconds|updateAtMilliseconds(love.forte.simbot.common.id.ID;kotlin.Long){}[0]
+    }
+}
+
+sealed class love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget|null[0]
+    abstract val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.id.<get-id>|<get-id>(){}[0]
+
+    final fun channel(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel // love.forte.simbot.component.qguild.message/QGMessageSendTarget.channel|channel#static(love.forte.simbot.common.id.ID){}[0]
+    final fun dms(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms // love.forte.simbot.component.qguild.message/QGMessageSendTarget.dms|dms#static(love.forte.simbot.common.id.ID){}[0]
+    final fun group(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group // love.forte.simbot.component.qguild.message/QGMessageSendTarget.group|group#static(love.forte.simbot.common.id.ID){}[0]
+    final fun member(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member // love.forte.simbot.component.qguild.message/QGMessageSendTarget.member|member#static(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID){}[0]
+    final fun user(love.forte.simbot.common.id/ID): love.forte.simbot.component.qguild.message/QGMessageSendTarget.User // love.forte.simbot.component.qguild.message/QGMessageSendTarget.user|user#static(love.forte.simbot.common.id.ID){}[0]
+
+    final class Channel : love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Channel.toString|toString(){}[0]
+    }
+
+    final class Dms : love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Dms.toString|toString(){}[0]
+    }
+
+    final class Group : love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Group.toString|toString(){}[0]
+    }
+
+    final class Member : love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID, love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.<init>|<init>(love.forte.simbot.common.id.ID;love.forte.simbot.common.id.ID){}[0]
+
+        final val guildId // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.guildId|{}guildId[0]
+            final fun <get-guildId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.guildId.<get-guildId>|<get-guildId>(){}[0]
+        final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.id.<get-id>|<get-id>(){}[0]
+        final val memberId // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.memberId|{}memberId[0]
+            final fun <get-memberId>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.memberId.<get-memberId>|<get-memberId>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.Member.toString|toString(){}[0]
+    }
+
+    final class User : love.forte.simbot.component.qguild.message/QGMessageSendTarget { // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.qguild.message/QGMessageSendTarget.User.toString|toString(){}[0]
     }
 }
 

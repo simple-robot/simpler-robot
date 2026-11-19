@@ -1057,6 +1057,12 @@ public abstract class love/forte/simbot/component/kook/event/KookMessagePinEvent
 	public abstract synthetic fun source (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract class love/forte/simbot/component/kook/event/KookMessageSentEvent : love/forte/simbot/component/kook/event/KookEvent, love/forte/simbot/event/MessageSentEvent {
+	public fun <init> ()V
+	public abstract fun getReceipt ()Llove/forte/simbot/component/kook/message/KookMessageReceipt;
+	public synthetic fun getReceipt ()Llove/forte/simbot/message/MessageReceipt;
+}
+
 public abstract class love/forte/simbot/component/kook/event/KookPinnedMessageEvent : love/forte/simbot/component/kook/event/KookMessagePinEvent {
 	public fun <init> ()V
 	public fun getChannelId ()Llove/forte/simbot/common/id/ID;
@@ -1547,7 +1553,10 @@ public final class love/forte/simbot/component/kook/message/KookMessageReplyCont
 	public fun getOptions ()Ljava/util/List;
 	public synthetic fun getSource ()Ljava/lang/Object;
 	public fun getSource ()Llove/forte/simbot/ability/ReplySupport;
-	public fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getTarget ()Ljava/lang/Object;
+	public fun getTargetAsync ()Ljava/util/concurrent/CompletableFuture;
+	public fun getTargetReserve ()Llove/forte/simbot/suspendrunner/reserve/SuspendReserve;
+	public synthetic fun target (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/component/kook/message/KookMessageReplyContext;
 	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext$Reply;
 	public synthetic fun withMessage (Llove/forte/simbot/event/InteractionMessage;)Llove/forte/simbot/interception/MessageSendContext;

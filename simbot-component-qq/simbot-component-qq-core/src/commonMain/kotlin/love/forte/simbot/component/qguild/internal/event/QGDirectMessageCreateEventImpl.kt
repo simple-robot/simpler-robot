@@ -26,7 +26,6 @@ package love.forte.simbot.component.qguild.internal.event
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.event.QGDirectMessageCreateEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
@@ -113,16 +112,13 @@ internal class QGDirectMessageCreateEventImpl(
 
     private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
         val message = context.message
-        // 频道私信在没有显式引用时引用原消息。
-        val reference = Message.Reference(context.options.qgMessageReference()?.literal ?: sourceEventEntity.id)
+        val resolveReference = context.replyReferenceResolver(sourceEventEntity.id)
 
         fun MessageSendApi.Body.Builder.configMsgIdAndRef() {
             if (msgId == null) {
                 msgId = sourceEventEntity.id
             }
-            if (messageReference == null) {
-                messageReference = reference
-            }
+            messageReference = resolveReference(messageReference)
         }
 
         return when (message) {

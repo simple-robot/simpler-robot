@@ -1821,6 +1821,7 @@ public final class love/forte/simbot/kook/api/message/SendDirectMessageApi : lov
 	public static final fun builderByTargetId (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Builder;
 	public static final fun createByChatCode (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi;
 	public static final fun createByTargetId (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi;
+	public final fun getQuote ()Ljava/lang/String;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
 

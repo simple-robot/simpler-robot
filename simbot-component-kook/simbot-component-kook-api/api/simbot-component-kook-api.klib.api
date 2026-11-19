@@ -2160,6 +2160,8 @@ final class love.forte.simbot.kook.api.message/SendChannelMessageApi : love.fort
 }
 
 final class love.forte.simbot.kook.api.message/SendDirectMessageApi : love.forte.simbot.kook.api/KookPostApi<love.forte.simbot.kook.api.message/SendMessageResult> { // love.forte.simbot.kook.api.message/SendDirectMessageApi|null[0]
+    final val quote // love.forte.simbot.kook.api.message/SendDirectMessageApi.quote|{}quote[0]
+        final fun <get-quote>(): kotlin/String? // love.forte.simbot.kook.api.message/SendDirectMessageApi.quote.<get-quote>|<get-quote>(){}[0]
     final val resultDeserializationStrategy // love.forte.simbot.kook.api.message/SendDirectMessageApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.kook.api.message/SendMessageResult> // love.forte.simbot.kook.api.message/SendDirectMessageApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
 

@@ -863,6 +863,38 @@ sealed interface <#A: kotlin/Any> love.forte.simbot.component.onebot.v11.core.ap
     }
 }
 
+sealed interface love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget|null[0]
+    abstract val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id|{}id[0]
+        abstract fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id.<get-id>|<get-id>(){}[0]
+
+    final class Group : love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group.toString|toString(){}[0]
+    }
+
+    final class Private : love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private|null[0]
+        constructor <init>(love.forte.simbot.common.id/ID) // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.<init>|<init>(love.forte.simbot.common.id.ID){}[0]
+
+        final val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.id|{}id[0]
+            final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.id.<get-id>|<get-id>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private.toString|toString(){}[0]
+    }
+
+    final object Companion { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Companion|null[0]
+        final fun group(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Group // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Companion.group|group(love.forte.simbot.common.id.ID){}[0]
+        final fun privateTarget(love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Private // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Companion.privateTarget|privateTarget(love.forte.simbot.common.id.ID){}[0]
+    }
+}
+
 abstract class love.forte.simbot.component.onebot.v11.core.bot/OneBotBotManager : love.forte.simbot.bot/BotManager, love.forte.simbot.bot/JobBasedBotManager { // love.forte.simbot.component.onebot.v11.core.bot/OneBotBotManager|null[0]
     constructor <init>() // love.forte.simbot.component.onebot.v11.core.bot/OneBotBotManager.<init>|<init>(){}[0]
 
@@ -2305,29 +2337,6 @@ final class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSen
     final fun withMessage(love.forte.simbot.event/InteractionMessage): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.withMessage|withMessage(love.forte.simbot.event.InteractionMessage){}[0]
     final fun withOptions(kotlin.collections/Collection<love.forte.simbot.ability/SendOption>): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.withOptions|withOptions(kotlin.collections.Collection<love.forte.simbot.ability.SendOption>){}[0]
     final suspend fun target(): kotlin/Any? // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendContext.target|target(){}[0]
-}
-
-final class love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget|null[0]
-    final val id // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id|{}id[0]
-        final fun <get-id>(): love.forte.simbot.common.id/ID // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.id.<get-id>|<get-id>(){}[0]
-    final val type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.type|{}type[0]
-        final fun <get-type>(): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.type.<get-type>|<get-type>(){}[0]
-
-    final fun create(love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type, love.forte.simbot.common.id/ID): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.create|create#static(love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget.Type;love.forte.simbot.common.id.ID){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.toString|toString(){}[0]
-
-    final enum class Type : kotlin/Enum<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> { // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type|null[0]
-        enum entry GROUP // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.GROUP|null[0]
-        enum entry PRIVATE // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.PRIVATE|null[0]
-
-        final val entries // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.entries|#static{}entries[0]
-            final fun <get-entries>(): kotlin.enums/EnumEntries<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.entries.<get-entries>|<get-entries>#static(){}[0]
-
-        final fun valueOf(kotlin/String): love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.valueOf|valueOf#static(kotlin.String){}[0]
-        final fun values(): kotlin/Array<love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type> // love.forte.simbot.component.onebot.v11.core.message/OneBotMessageSendTarget.Type.values|values#static(){}[0]
-    }
 }
 
 final value class love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutableScope { // love.forte.simbot.component.onebot.v11.core.api/OneBotApiExecutableScope|null[0]

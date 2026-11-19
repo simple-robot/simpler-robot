@@ -21,6 +21,9 @@
  *
  */
 
+// 这些测试验证废弃事件接口在仍保留期间的兼容行为。
+@file:Suppress("DEPRECATION_ERROR")
+
 package event
 
 import io.mockk.every

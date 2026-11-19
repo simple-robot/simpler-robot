@@ -647,6 +647,13 @@ abstract class love.forte.simbot.component.kook.event/KookMessagePinEvent : love
     abstract suspend fun source(): love.forte.simbot.component.kook/KookGuild // love.forte.simbot.component.kook.event/KookMessagePinEvent.source|source(){}[0]
 }
 
+abstract class love.forte.simbot.component.kook.event/KookMessageSentEvent : love.forte.simbot.component.kook.event/KookEvent, love.forte.simbot.event/MessageSentEvent { // love.forte.simbot.component.kook.event/KookMessageSentEvent|null[0]
+    constructor <init>() // love.forte.simbot.component.kook.event/KookMessageSentEvent.<init>|<init>(){}[0]
+
+    abstract val receipt // love.forte.simbot.component.kook.event/KookMessageSentEvent.receipt|{}receipt[0]
+        abstract fun <get-receipt>(): love.forte.simbot.component.kook.message/KookMessageReceipt // love.forte.simbot.component.kook.event/KookMessageSentEvent.receipt.<get-receipt>|<get-receipt>(){}[0]
+}
+
 abstract class love.forte.simbot.component.kook.event/KookPinnedMessageEvent : love.forte.simbot.component.kook.event/KookMessagePinEvent { // love.forte.simbot.component.kook.event/KookPinnedMessageEvent|null[0]
     constructor <init>() // love.forte.simbot.component.kook.event/KookPinnedMessageEvent.<init>|<init>(){}[0]
 

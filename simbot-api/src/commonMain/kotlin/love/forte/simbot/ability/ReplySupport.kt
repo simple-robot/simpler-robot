@@ -36,6 +36,7 @@ import love.forte.simbot.suspendrunner.ST
  *
  * 与 [SendSupport] 相比，[ReplySupport] 在使用 [reply]
  * 的时候可能会使用或追加一些额外的内容，例如自动添加对指定消息的引用等。
+ * 默认的带选项重载会在发送前拒绝 [StandardReplyOption]。有能力处理标准选项的实现应覆写对应重载。
  *
  * @author ForteScarlet
  */
@@ -85,7 +86,11 @@ public interface ReplySupport {
      * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
-    public suspend fun reply(text: String, vararg options: ReplyOption): MessageReceipt = reply(text)
+    public suspend fun reply(text: String, vararg options: ReplyOption): MessageReceipt {
+        // TODO 移除默认实现并变为抽象
+        options.requireNoStandardReplyOptions()
+        return reply(text)
+    }
 
     /**
      * 发送一个消息 [Message]。
@@ -101,7 +106,10 @@ public interface ReplySupport {
      * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
-    public suspend fun reply(message: Message, vararg options: ReplyOption): MessageReceipt = reply(message)
+    public suspend fun reply(message: Message, vararg options: ReplyOption): MessageReceipt {
+        options.requireNoStandardReplyOptions()
+        return reply(message)
+    }
 
     /**
      * 使用 [MessageContent] 作为消息发送。
@@ -120,7 +128,17 @@ public interface ReplySupport {
      * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
-    public suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): MessageReceipt =
-        reply(messageContent)
+    public suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): MessageReceipt {
+        options.requireNoStandardReplyOptions()
+        return reply(messageContent)
+    }
 
+}
+
+/**
+ * 避免兼容重载忽略已知的标准选项，进而发出不满足调用方要求的回复。
+ */
+private fun Array<out ReplyOption>.requireNoStandardReplyOptions() {
+    val unsupported = firstOrNull { it is StandardReplyOption } ?: return
+    throw UnsupportedOperationException("Unsupported standard reply option: $unsupported")
 }

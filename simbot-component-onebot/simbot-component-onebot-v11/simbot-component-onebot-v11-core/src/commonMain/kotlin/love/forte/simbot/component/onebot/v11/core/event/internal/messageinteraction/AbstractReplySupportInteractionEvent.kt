@@ -25,10 +25,13 @@ package love.forte.simbot.component.onebot.v11.core.event.internal.messageintera
 
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.ReplySupport
+import love.forte.simbot.ability.StandardReplyOption
+import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.notifyMessageSent
+import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.segmentsOrNull
 import love.forte.simbot.component.onebot.v11.core.internal.message.toReceipt
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
@@ -38,7 +41,10 @@ import love.forte.simbot.component.onebot.v11.core.utils.resolveInteractionMessa
 import love.forte.simbot.component.onebot.v11.core.utils.resolveToOneBotSegmentList
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotUnknownSegment
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.interception.invokeWithReceipt
 import love.forte.simbot.message.Message
@@ -130,19 +136,47 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
             target = { replyTarget() },
         ),
     ) { context ->
-        val quote = (context as? OneBotMessageReplyContext)?.options?.oneBotReplyQuote() ?: defaultReplyQuote
-        val segments = context.message.segmentsOrNull
-        val result = if (segments != null) {
-            replySegments(segments, quote)
+        val finalOptions = (context as? MessageSendContext.Reply)?.options.orEmpty()
+        val explicitQuote = finalOptions.oneBotReplyQuote()
+        val noReference = StandardReplyOption.NO_REFERENCE in finalOptions
+        require(!noReference || explicitQuote == null) {
+            "NO_REFERENCE conflicts with a OneBot reply quote option"
+        }
+        val quote = if (noReference) null else explicitQuote ?: defaultReplyQuote
+        val outgoing = context.message
+        val nativeSegments = outgoing.segmentsOrNull
+
+        // 复制收到的消息内容时移除继承的引用，显式消息链与原生段则检查冲突。
+        val inheritedContent = nativeSegments == null && (
+            outgoing is InteractionMessage.MessageContent ||
+                (outgoing as? OneBotSegmentsInteractionMessage)?.message is InteractionMessage.MessageContent
+            )
+
+        suspend fun replyResolvedSegments(segments: List<OneBotMessageSegment>): SendMsgResult {
+            val outgoingSegments = when {
+                !noReference -> segments
+                inheritedContent -> segments.filterNot(OneBotMessageSegment::isReplySegment)
+                else -> {
+                    require(segments.none(OneBotMessageSegment::isReplySegment)) {
+                        "NO_REFERENCE conflicts with a OneBot reply message segment"
+                    }
+                    segments
+                }
+            }
+            return replySegments(outgoingSegments, quote)
+        }
+
+        val result = if (nativeSegments != null) {
+            replyResolvedSegments(nativeSegments)
         } else {
             resolveInteractionMessage(
-                interactionMessage = context.message,
-                onSegments = { replySegments(it, quote) },
+                interactionMessage = outgoing,
+                onSegments = { replyResolvedSegments(it) },
                 onMessage = {
                     if (it is PlainText) {
                         replyText(it.text, quote)
                     } else {
-                        replySegments(it.resolveToOneBotSegmentList(bot), quote)
+                        replyResolvedSegments(it.resolveToOneBotSegmentList(bot))
                     }
                 },
                 onText = { replyText(it, quote) },
@@ -151,3 +185,10 @@ internal abstract class AbstractReplySupportInteractionEvent : ReplySupport {
         result.toReceipt(bot).also { bot.notifyMessageSent(context, it) }
     }
 }
+
+/**
+ * 识别普通回复段与外部以原生类型提供的回复段。
+ */
+@OptIn(FragileSimbotAPI::class)
+private fun OneBotMessageSegment.isReplySegment(): Boolean =
+    this is OneBotReply || (this is OneBotUnknownSegment && type == OneBotReply.TYPE)

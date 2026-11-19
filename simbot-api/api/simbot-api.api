@@ -177,6 +177,13 @@ public final class love/forte/simbot/ability/StandardDeleteOption$StandardAnalys
 	public final synthetic fun unbox-impl ()I
 }
 
+public final class love/forte/simbot/ability/StandardReplyOption : java/lang/Enum, love/forte/simbot/ability/ReplyOption {
+	public static final field NO_REFERENCE Llove/forte/simbot/ability/StandardReplyOption;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Llove/forte/simbot/ability/StandardReplyOption;
+	public static fun values ()[Llove/forte/simbot/ability/StandardReplyOption;
+}
+
 public abstract class love/forte/simbot/application/AbstractApplicationBuilder : love/forte/simbot/application/ApplicationBuilder {
 	public fun <init> ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;

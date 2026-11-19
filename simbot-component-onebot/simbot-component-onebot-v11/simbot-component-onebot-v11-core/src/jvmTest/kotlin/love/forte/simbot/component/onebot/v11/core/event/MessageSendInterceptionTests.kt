@@ -23,10 +23,7 @@
 
 package love.forte.simbot.component.onebot.v11.core.event
 
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,8 +35,12 @@ import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.ability.SendOption
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.ability.StandardReplyOption.NO_REFERENCE
+import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.component.onebot.common.annotations.ApiResultConstructor
+import love.forte.simbot.component.onebot.common.annotations.ExperimentalOneBotAPI
+import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.core.OneBot11
 import love.forte.simbot.component.onebot.v11.core.actor.internal.OneBotFriendApiResultImpl
 import love.forte.simbot.component.onebot.v11.core.actor.internal.OneBotGroupApiResultImpl
@@ -53,6 +54,7 @@ import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.component.OneBot11Component
 import love.forte.simbot.component.onebot.v11.core.event.internal.message.*
 import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
+import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyContext
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageReplyOption
 import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendContext
@@ -61,6 +63,8 @@ import love.forte.simbot.component.onebot.v11.core.useOneBot11
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotReply
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText
+import love.forte.simbot.component.onebot.v11.message.segment.OneBotUnknownSegment
+import love.forte.simbot.component.onebot.v11.message.segment.toElement
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherImpl
@@ -72,10 +76,7 @@ import love.forte.simbot.event.process
 import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.message.Text
+import love.forte.simbot.message.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.*
@@ -289,6 +290,114 @@ class MessageSendInterceptionTests {
                 assertIs<OneBotReply>(segments.first()).data.id
             }
             assertEquals(listOf(41.ID, 42.ID, source.sourceEvent.messageId), sentQuotes)
+        } finally {
+            bot.cancel()
+        }
+    }
+
+    /**
+     * 无引用回复跳过默认引用，并过滤原生或通用消息内容继承的引用。
+     */
+    @Test
+    fun noReferenceSuppressesDefaultAndInheritedReferences() = runTest {
+        val manager = InterceptorManager()
+        val bot = bot(manager)
+        val requests = mutableListOf<SendMsgApi.Body>()
+        coEvery { bot.executeData<SendMsgResult>(any()) } coAnswers {
+            requests += assertIs<SendMsgApi.Body>(assertIs<SendMsgApi>(firstArg()).body)
+            SendMsgResult(114.ID)
+        }
+        val nativeContent = OneBotMessageContentImpl(
+            40.ID,
+            listOf(OneBotReply.create(41.ID), OneBotText.create("native")),
+            bot,
+        )
+        val genericContent = mockk<MessageContent>()
+        every { genericContent.messages } returns Messages.of(MessageIdReference(42.ID), Text { "generic" })
+
+        try {
+            for (replier in repliers(bot)) {
+                replier.reply("plain", NO_REFERENCE)
+                replier.reply(nativeContent, NO_REFERENCE)
+                replier.reply(genericContent, NO_REFERENCE)
+            }
+            assertEquals(21, requests.size)
+            for ((text, native, generic) in requests.chunked(3)) {
+                assertEquals("plain", assertIs<OneBotMessageOutgoing.StringValue>(text.message).value)
+                val nativeSegments = assertIs<OneBotMessageOutgoing.SegmentsValue>(native.message).segments
+                val genericSegments = assertIs<OneBotMessageOutgoing.SegmentsValue>(generic.message).segments
+                assertEquals("native", assertIs<OneBotText>(nativeSegments.single()).data.text)
+                assertEquals("generic", assertIs<OneBotText>(genericSegments.single()).data.text)
+            }
+        } finally {
+            bot.cancel()
+        }
+    }
+
+    /**
+     * 显式引用选项、消息链或原生段与无引用选项并用时，发送前拒绝。
+     */
+    @OptIn(ExperimentalOneBotAPI::class, FragileSimbotAPI::class, InternalOneBotAPI::class)
+    @Test
+    fun noReferenceRejectsExplicitReferencesBeforeSending() = runTest {
+        val manager = InterceptorManager()
+        val bot = bot(manager)
+        val replier = repliers(bot).first()
+        val oneBotReply = OneBotReply.create(41.ID)
+
+        try {
+            assertFailsWith<IllegalArgumentException> {
+                replier.reply("quote option", OneBotMessageReplyOption.quote(41.ID), NO_REFERENCE)
+            }
+            assertFailsWith<IllegalArgumentException> {
+                replier.reply(Messages.of(Text { "explicit" }, MessageIdReference(42.ID)), NO_REFERENCE)
+            }
+            assertFailsWith<IllegalArgumentException> {
+                replier.reply(oneBotReply.toElement(), NO_REFERENCE)
+            }
+
+            // 原生覆盖中的 reply 段是拦截器显式指定的，按最终上下文校验。
+            for (segment in listOf(oneBotReply, OneBotUnknownSegment(OneBotReply.TYPE))) {
+                val interceptor = manager.onMessageSend { _, context, chain ->
+                    val reply = assertIs<OneBotMessageReplyContext>(context)
+                    val native = OneBotSegmentsInteractionMessage.create(reply.message, listOf(segment))
+                    chain.proceed(reply.withMessage(native).withOptions(listOf(NO_REFERENCE)))
+                }
+                assertFailsWith<IllegalArgumentException> { replier.reply("native explicit") }
+                interceptor.dispose()
+            }
+            coVerify(exactly = 0) { bot.executeData<Any>(any()) }
+        } finally {
+            bot.cancel()
+        }
+    }
+
+    /**
+     * 发送终端以拦截器最终选择的引用行为为准。
+     */
+    @Test
+    fun noReferenceFollowsOptionsAfterInterception() = runTest {
+        val manager = InterceptorManager()
+        val bot = bot(manager)
+        val requests = mutableListOf<SendMsgApi.Body>()
+        coEvery { bot.executeData<SendMsgResult>(any()) } coAnswers {
+            requests += assertIs<SendMsgApi.Body>(assertIs<SendMsgApi>(firstArg()).body)
+            SendMsgResult(114.ID)
+        }
+        manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<OneBotMessageReplyContext>(context)
+            val options = if (NO_REFERENCE in reply.options) emptyList() else listOf(NO_REFERENCE)
+            chain.proceed(reply.withOptions(options))
+        }
+        try {
+            val replier = assertIs<OneBotGroupMessageEventImpl>(repliers(bot).first())
+            replier.reply("disabled")
+            replier.reply("restored", NO_REFERENCE)
+
+            assertEquals(2, requests.size)
+            assertEquals("disabled", assertIs<OneBotMessageOutgoing.StringValue>(requests[0].message).value)
+            val segments = assertIs<OneBotMessageOutgoing.SegmentsValue>(requests[1].message).segments
+            assertEquals(replier.sourceEvent.messageId, assertIs<OneBotReply>(segments.first()).data.id)
         } finally {
             bot.cancel()
         }

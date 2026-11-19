@@ -2952,14 +2952,54 @@ public final class love/forte/simbot/component/qguild/message/QGMessageSendConte
 	public synthetic fun withOptions (Ljava/util/Collection;)Llove/forte/simbot/interception/MessageSendContext$Send;
 }
 
-public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget {
-	public static final fun create (Llove/forte/simbot/qguild/stdlib/MessageDestination;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
+public abstract class love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public static final fun channel (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget$Channel;
+	public static final fun dms (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget$Dms;
+	public abstract fun getId ()Llove/forte/simbot/common/id/ID;
+	public static final fun group (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget$Group;
+	public static final fun member (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget$Member;
+	public static final fun user (Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget$User;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget$Channel : love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDestination ()Llove/forte/simbot/qguild/stdlib/MessageDestination;
-	public final fun getGuildId ()Llove/forte/simbot/common/id/ID;
-	public final fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
 	public fun hashCode ()I
-	public static final fun member (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)Llove/forte/simbot/component/qguild/message/QGMessageSendTarget;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget$Dms : love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget$Group : love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget$Member : love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public fun <init> (Llove/forte/simbot/common/id/ID;Llove/forte/simbot/common/id/ID;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGuildId ()Llove/forte/simbot/common/id/ID;
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public final fun getMemberId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class love/forte/simbot/component/qguild/message/QGMessageSendTarget$User : love/forte/simbot/component/qguild/message/QGMessageSendTarget {
+	public fun <init> (Llove/forte/simbot/common/id/ID;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Llove/forte/simbot/common/id/ID;
+	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 

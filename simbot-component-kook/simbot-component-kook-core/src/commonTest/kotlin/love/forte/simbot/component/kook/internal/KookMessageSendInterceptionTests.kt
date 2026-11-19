@@ -32,11 +32,13 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.ability.SendOption
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.ability.StandardReplyOption.NO_REFERENCE
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.kook.KookComponent
@@ -53,20 +55,22 @@ import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.kook.api.ApiResultType
+import love.forte.simbot.kook.api.message.GetChannelMessageViewApi
 import love.forte.simbot.kook.api.message.SendChannelMessageApi
+import love.forte.simbot.kook.api.message.SendDirectMessageApi
 import love.forte.simbot.kook.api.message.SendMessageResult
 import love.forte.simbot.kook.api.userchat.TargetInfo
 import love.forte.simbot.kook.api.userchat.UserChatView
 import love.forte.simbot.kook.event.TextEventExtra
+import love.forte.simbot.kook.messages.ChannelMessageDetails
+import love.forte.simbot.kook.objects.Quote
 import love.forte.simbot.kook.objects.SimpleChannel
 import love.forte.simbot.kook.objects.SimpleGuild
 import love.forte.simbot.kook.objects.SimpleUser
 import love.forte.simbot.kook.stdlib.BotConfiguration
 import love.forte.simbot.kook.stdlib.BotFactory
 import love.forte.simbot.kook.stdlib.Ticket
-import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.message.Messages
-import love.forte.simbot.message.Text
+import love.forte.simbot.message.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.*
 import love.forte.simbot.kook.event.Event as KEvent
@@ -789,6 +793,127 @@ class KookMessageSendInterceptionTests {
             ),
             requests,
         )
+    }
+
+    /**
+     * 各回复入口保留显式选项，并跳过入口及复用消息正文带来的默认引用。
+     */
+    @Test
+    fun noReferenceOmitsDefaultAndInheritedQuotesAcrossReplyEntries() = runTest {
+        val manager = InterceptorManager()
+        var requests = 0
+        val bot = bot(manager, backgroundScope.coroutineContext) { request ->
+            requests++
+            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
+            assertTrue(body["quote"] == null || body["quote"] == JsonNull)
+            assertEquals("kept", body.getValue("nonce").jsonPrimitive.content)
+            success()
+        }
+        val channel = channel(bot)
+        val member = KookMemberImpl(bot, user, "guild")
+        val guild = KookGuildImpl(bot, SimpleGuild("guild", "guild", "", "owner", "", 0, "", false, "", "", ""))
+        val sources = listOf(
+            KookChannelMessageEventImpl(bot, event(), member, channel, guild, ""),
+            KookBotSelfChannelMessageEventImpl(bot, event(), channel, member, guild, ""),
+            KookContactMessageEventImpl(bot, event(), ""),
+            KookBotSelfMessageEventImpl(bot, event(), ""),
+        )
+        val details = KookChannelMessageDetailsContent(
+            ChannelMessageDetails("existing", 1, user, "quoted content", quote = Quote("old", 1, "original", 0, user)),
+            bot,
+        )
+        val fallback = object : MessageContent by details {
+            override val messages = Messages.of(Text.of("fallback"), MessageIdReference("old".ID))
+        }
+        val nonce = KookChannelMessageSendOption.nonce("kept")
+        var interceptions = 0
+        manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<MessageSendContext.Reply>(context)
+            assertEquals(listOf(NO_REFERENCE, nonce), reply.options)
+            interceptions++
+            chain.proceed(reply)
+        }
+
+        for (source in sources) {
+            source.reply("text", NO_REFERENCE, nonce)
+            source.reply(details, NO_REFERENCE, nonce)
+            source.reply(fallback, NO_REFERENCE, nonce)
+        }
+        assertEquals(12, interceptions)
+        assertEquals(12, requests)
+    }
+
+    /**
+     * 冲突检查先于整条消息链的请求，包含显式原生引用和无法检查的原生请求。
+     */
+    @Test
+    fun noReferenceRejectsConflictingQuotesAndOpaqueNativeRequestsBeforeSending() = runTest {
+        val manager = InterceptorManager()
+        val bot = bot(manager, backgroundScope.coroutineContext) { request ->
+            error("Unexpected request: ${request.url}")
+        }
+        val member = KookMemberImpl(bot, user, "guild")
+        val guild = KookGuildImpl(bot, SimpleGuild("guild", "guild", "", "owner", "", 0, "", false, "", "", ""))
+        val source = KookChannelMessageEventImpl(bot, event(), member, channel(bot), guild, "")
+        assertFailsWith<IllegalArgumentException> {
+            source.reply("text", NO_REFERENCE, KookChannelMessageSendOption.quote("explicit".ID))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            source.reply(Messages.of(Text.of("first"), MessageIdReference("explicit".ID)), NO_REFERENCE)
+        }
+        val quotedChannel = SendChannelMessageApi.create(1, "channel", "native", quote = "explicit")
+        assertFailsWith<IllegalArgumentException> {
+            source.reply(Messages.of(Text.of("first"), KookApiMessage(quotedChannel)), NO_REFERENCE)
+        }
+        val quotedDirect = SendDirectMessageApi.createByTargetId("user", "native", quote = "explicit")
+        assertFailsWith<IllegalArgumentException> {
+            source.reply(Messages.of(Text.of("first"), KookApiMessage(quotedDirect)), NO_REFERENCE)
+        }
+        assertFailsWith<UnsupportedOperationException> {
+            source.reply(Messages.of(Text.of("first"), KookApiMessage(GetChannelMessageViewApi.create("opaque"))), NO_REFERENCE)
+        }
+
+        manager.onMessageSend { _, context, chain ->
+            chain.proceed(context.withMessage(KookChannelRequestMessage(quotedChannel)))
+        }
+        assertFailsWith<IllegalArgumentException> { source.reply("text", NO_REFERENCE) }
+    }
+
+    /**
+     * 拦截器可针对单次回复禁用引用或恢复源事件的默认引用。
+     */
+    @Test
+    fun noReferenceFollowsFinalInterceptionOptionsForEverySplitRequest() = runTest {
+        val manager = InterceptorManager()
+        val quotes = mutableListOf<String?>()
+        val tempTargets = mutableListOf<String?>()
+        val bot = bot(manager, backgroundScope.coroutineContext) { request ->
+            val body = Json.parseToJsonElement((request.body as TextContent).text).jsonObject
+            quotes += body["quote"]?.takeUnless { it == JsonNull }?.jsonPrimitive?.content
+            tempTargets += body["temp_target_id"]?.takeUnless { it == JsonNull }?.jsonPrimitive?.content
+            success()
+        }
+        val member = KookMemberImpl(bot, user, "guild")
+        val guild = KookGuildImpl(bot, SimpleGuild("guild", "guild", "", "owner", "", 0, "", false, "", "", ""))
+        val source = KookChannelMessageEventImpl(bot, event(), member, channel(bot), guild, "")
+        val split = Messages.of(
+            Text.of("first"),
+            KookTempTarget.current(),
+            KookApiMessage(SendChannelMessageApi.create(1, "channel", "second")),
+        )
+        val interceptor = manager.onMessageSend { _, context, chain ->
+            val reply = assertIs<MessageSendContext.Reply>(context)
+            val options = if (NO_REFERENCE in reply.options) emptyList() else listOf(NO_REFERENCE)
+            chain.proceed(reply.withOptions(options))
+        }
+        try {
+            source.reply(split)
+            source.reply("default", NO_REFERENCE)
+        } finally {
+            interceptor.dispose()
+        }
+        assertEquals(listOf(null, null, "incoming"), quotes)
+        assertEquals(listOf("user", null, null), tempTargets)
     }
 
     private val user = SimpleUser("user", "user", "")

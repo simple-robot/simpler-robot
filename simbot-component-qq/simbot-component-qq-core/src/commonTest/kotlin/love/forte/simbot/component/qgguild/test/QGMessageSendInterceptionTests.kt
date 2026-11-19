@@ -26,10 +26,7 @@ package love.forte.simbot.component.qgguild.test
 import io.ktor.client.engine.mock.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 import love.forte.simbot.ability.*
 import love.forte.simbot.application.interceptors
 import love.forte.simbot.common.id.StringID.Companion.ID
@@ -45,12 +42,12 @@ import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
-import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.message.Text
+import love.forte.simbot.message.*
 import love.forte.simbot.qguild.event.C2CMessageCreate
 import love.forte.simbot.qguild.event.GroupAtMessageCreate
 import love.forte.simbot.qguild.event.GroupMessageCreate
 import love.forte.simbot.qguild.model.*
+import love.forte.simbot.qguild.model.Message
 import kotlin.test.*
 
 /**
@@ -251,6 +248,115 @@ class QGMessageSendInterceptionTests : AbstractInteractionTests() {
                 val requests = references.size
                 assertFailsWith<IllegalArgumentException> { source.reply("duplicate", explicit, replacement) }
                 assertEquals(requests, references.size)
+            }
+        } finally {
+            app.cancel()
+            bot.cancel()
+        }
+    }
+
+    /**
+     * 验证无引用回复保留被动发送关联，并读取拦截后的最终选项。
+     */
+    @Test
+    fun replyWithoutReferenceUsesFinalOptionsAndKeepsPassiveFields() = runTest {
+        val requests = mutableListOf<JsonObject>()
+        val noReference = StandardReplyOption.NO_REFERENCE
+        val app = app { request ->
+            requests += Json.parseToJsonElement(request.body.toByteArray().decodeToString()).jsonObject
+            if (request.url.encodedPath.startsWith("/v2/")) {
+                respondOk("""{"id":"sent","timestamp":1698435200}""")
+            } else {
+                respondOk("""{"id":"sent","channel_id":"channel","guild_id":"guild","content":"text","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":1}""")
+            }
+        }
+        val bot = app.bot() as QGBotImpl
+        try {
+            val received = Json.decodeFromString(
+                Message.serializer(),
+                """{"id":"received","channel_id":"channel","guild_id":"guild","content":"received","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":"1","message_reference":{"message_id":"inherited"}}"""
+            )
+            val inherited = QGAtMessageCreateEventImpl(bot, "{}", received, "event").messageContent
+            val wrappedContent = object : MessageContent by inherited {
+                override val messages = Messages.of(Text { "wrapped" }, MessageIdReference("inherited".ID))
+            }
+            app.interceptors {
+                onMessageSend { _, context, chain ->
+                    val reply = assertIs<QGMessageReplyContext>(context)
+                    val next = when ((reply.message as? InteractionMessage.Text)?.text) {
+                        "added" -> reply.withOptions(reply.options + noReference)
+                        "removed" -> reply.withOptions(reply.options - noReference)
+                        else -> reply
+                    }
+                    chain.proceed(next)
+                }
+            }
+            val sources = replySources(bot)
+            for (source in sources) {
+                val baseline = requests.size
+                source.reply("without", noReference, noReference)
+                source.reply("added")
+                source.reply(inherited, noReference)
+                source.reply(Messages.of(Text { "passive" }, QGReplyTo("bound".ID, 24)), noReference)
+                source.reply("removed", noReference)
+
+                val (without, added, content, passive, restored) = requests.drop(baseline)
+                for (request in listOf(without, added, content, passive)) {
+                    assertNull(request["message_reference"]?.takeUnless { it == JsonNull })
+                }
+                for (request in listOf(without, added, content, restored)) {
+                    assertEquals("message", request.getValue("msg_id").jsonPrimitive.content)
+                }
+                assertEquals("bound", passive.getValue("msg_id").jsonPrimitive.content)
+                if (source is QGAtMessageCreateEventImpl || source is QGDirectMessageCreateEventImpl) {
+                    assertNull(passive["msg_seq"])
+                } else {
+                    assertEquals("1", without.getValue("msg_seq").jsonPrimitive.content)
+                    assertEquals("24", passive.getValue("msg_seq").jsonPrimitive.content)
+                }
+                val reference = restored["message_reference"]?.takeUnless { it == JsonNull }
+                    ?.jsonObject?.getValue("message_id")?.jsonPrimitive?.content
+                assertEquals(if (source is QGC2CMessageCreateEventImpl) null else "message", reference)
+
+                source.reply(wrappedContent, noReference)
+                assertNull(requests.last()["message_reference"]?.takeUnless { it == JsonNull })
+            }
+
+            val media = Json.decodeFromString<MessageMedia>("""{"file_uuid":"media","file_info":"file","ttl":0}""")
+            val split = Messages.of(QGMedia(media), QGMedia(media))
+            val baseline = requests.size
+            sources.filterIsInstance<QGGroupMessageCreateEventImpl>().single().reply(split, noReference)
+            val splitRequests = requests.drop(baseline)
+            assertEquals(2, splitRequests.size)
+            for (request in splitRequests) {
+                assertNull(request["message_reference"]?.takeUnless { it == JsonNull })
+                assertEquals("message", request.getValue("msg_id").jsonPrimitive.content)
+            }
+        } finally {
+            app.cancel()
+            bot.cancel()
+        }
+    }
+
+    /**
+     * 在发送或上传前拒绝同时传入的显式引用。
+     */
+    @Test
+    fun replyWithoutReferenceRejectsExplicitReferencesBeforeRequests() = runTest {
+        val app = app { error("Conflicting replies must not make requests") }
+        val bot = app.bot() as QGBotImpl
+        val noReference = StandardReplyOption.NO_REFERENCE
+        try {
+            for (source in replySources(bot)) {
+                assertFailsWith<IllegalArgumentException> {
+                    source.reply("text", noReference, QGMessageReferenceOption.create("reference".ID))
+                }
+                assertFailsWith<IllegalArgumentException> {
+                    source.reply(Messages.of(Text { "text" }, QGReference.create("reference".ID)), noReference)
+                }
+                assertFailsWith<IllegalArgumentException> {
+                    source.reply(Messages.of(Text { "text" }, MessageIdReference("reference".ID)), noReference)
+                }
             }
         } finally {
             app.cancel()
