@@ -53,21 +53,6 @@ class ReplySupportTests {
             override suspend fun reply(message: Message): MessageReceipt = receipt.also { sent += message }
             override suspend fun reply(messageContent: MessageContent): MessageReceipt =
                 receipt.also { sent += messageContent }
-
-            override suspend fun reply(
-                text: String,
-                vararg options: ReplyOption
-            ): MessageReceipt = reply(text)
-
-            override suspend fun reply(
-                message: Message,
-                vararg options: ReplyOption
-            ): MessageReceipt = reply(message)
-
-            override suspend fun reply(
-                messageContent: MessageContent,
-                vararg options: ReplyOption
-            ): MessageReceipt = reply(messageContent)
         }
         val message = Text.of("message")
         val content = mockk<MessageContent>()
