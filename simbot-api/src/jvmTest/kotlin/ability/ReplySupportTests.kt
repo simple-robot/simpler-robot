@@ -57,23 +57,17 @@ class ReplySupportTests {
             override suspend fun reply(
                 text: String,
                 vararg options: ReplyOption
-            ): MessageReceipt {
-                TODO("Not yet implemented")
-            }
+            ): MessageReceipt = reply(text)
 
             override suspend fun reply(
                 message: Message,
                 vararg options: ReplyOption
-            ): MessageReceipt {
-                TODO("Not yet implemented")
-            }
+            ): MessageReceipt = reply(message)
 
             override suspend fun reply(
                 messageContent: MessageContent,
                 vararg options: ReplyOption
-            ): MessageReceipt {
-                TODO("Not yet implemented")
-            }
+            ): MessageReceipt = reply(messageContent)
         }
         val message = Text.of("message")
         val content = mockk<MessageContent>()
