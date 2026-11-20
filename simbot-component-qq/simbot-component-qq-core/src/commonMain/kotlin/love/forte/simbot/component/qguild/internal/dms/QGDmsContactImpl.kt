@@ -53,8 +53,7 @@ internal class QGDmsContactImpl(
     private val currentMsgId: String?,
 ) : QGDmsContact {
     internal val sendDestination
-        get() = love.forte.simbot.component.qguild.message.QGMessageSendTarget.dms(guildId.ID,
-        )
+        get() = love.forte.simbot.component.qguild.message.QGMessageSendTarget.dms(guildId.ID)
 
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 

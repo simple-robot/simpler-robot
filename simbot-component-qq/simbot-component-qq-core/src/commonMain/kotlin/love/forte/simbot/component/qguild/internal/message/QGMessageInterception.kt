@@ -138,11 +138,14 @@ private fun SendSupport.sendDestination(): QGMessageSendTarget = when (this) {
 private fun ReplySupport.replyDestination(): QGMessageSendTarget = when (this) {
     is QGAtMessageCreateEvent -> QGMessageSendTarget.channel(sourceEventEntity.channelId.ID)
     is QGDirectMessageCreateEvent -> QGMessageSendTarget.dms(sourceEventEntity.guildId.ID)
-    is QGGroupAtMessageCreateEvent -> QGMessageSendTarget.group(sourceEventEntity.data.groupOpenid.ID
+    is QGGroupAtMessageCreateEvent -> QGMessageSendTarget.group(
+        sourceEventEntity.data.groupOpenid.ID
     )
-    is QGGroupMessageCreateEvent -> QGMessageSendTarget.group(sourceEventEntity.data.groupOpenid.ID
+    is QGGroupMessageCreateEvent -> QGMessageSendTarget.group(
+        sourceEventEntity.data.groupOpenid.ID
     )
-    is QGC2CMessageCreateEvent -> QGMessageSendTarget.user(sourceEventEntity.data.author.userOpenid.ID
+    is QGC2CMessageCreateEvent -> QGMessageSendTarget.user(
+        sourceEventEntity.data.author.userOpenid.ID
     )
     else -> error("Unsupported QQ reply source: $this")
 }
