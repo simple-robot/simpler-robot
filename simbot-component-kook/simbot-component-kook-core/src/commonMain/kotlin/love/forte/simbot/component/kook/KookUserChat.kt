@@ -27,7 +27,6 @@ import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.ability.DeleteSupport
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt
 import love.forte.simbot.component.kook.message.KookMessageReceipt
 import love.forte.simbot.definition.Contact
 import love.forte.simbot.kook.api.userchat.DeleteUserChatApi
@@ -89,7 +88,7 @@ public interface KookUserChat : Contact, DeleteSupport {
      * 向当前好友（私聊会话）发送消息。
      */
     @ST
-    override suspend fun send(text: String): KookMessageCreatedReceipt
+    override suspend fun send(text: String): KookMessageReceipt
 
     /**
      * 向当前好友（私聊会话）发送消息。

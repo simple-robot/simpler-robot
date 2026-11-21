@@ -45,7 +45,6 @@ import love.forte.simbot.qguild.QQGuildApiException
 import love.forte.simbot.qguild.api.MessageAuditedException
 import love.forte.simbot.qguild.api.guild.mute.MuteMemberApi
 import love.forte.simbot.qguild.api.role.GetGuildRoleListApi
-import love.forte.simbot.qguild.model.Role.Companion.isDefault
 import love.forte.simbot.suspendrunner.ST
 import kotlin.jvm.JvmSynthetic
 import kotlin.time.Duration

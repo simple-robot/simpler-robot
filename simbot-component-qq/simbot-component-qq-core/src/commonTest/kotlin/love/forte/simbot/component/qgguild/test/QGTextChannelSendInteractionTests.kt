@@ -33,11 +33,10 @@ import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.qguild.channel.QGTextChannel
-import love.forte.simbot.component.qguild.event.QGSendSupportInteractionEvent
-import love.forte.simbot.component.qguild.event.QGSendSupportPreSendEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.channel.QGTextChannelImpl
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.message.Text
 import love.forte.simbot.qguild.model.ChannelSubType
 import love.forte.simbot.qguild.model.ChannelType
@@ -98,18 +97,19 @@ class QGTextChannelSendInteractionTests : AbstractInteractionTests() {
     @Test
     fun testQGTextChannelSendInteraction() = runTest {
         // TEXT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to channel(it)
             },
             listener = { (atob, channel), e, _, _ ->
                 atob.value = true
-                assertIs<QGTextChannel>(e.content)
-                assertSame(channel, e.content)
+                assertIs<QGTextChannel>(e.source)
+                assertSame(channel, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
+                e
             }
         ) { (atob, channel), _ ->
             channel.send("TEXT")
@@ -117,20 +117,21 @@ class QGTextChannelSendInteractionTests : AbstractInteractionTests() {
         }
 
         // Message
-        testInteractionEvent<_, QGSendSupportPreSendEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to channel(it)
             },
             listener = { (atob, channel), e, _, _ ->
                 atob.value = true
-                assertIs<QGTextChannel>(e.content)
-                assertSame(channel, e.content)
+                assertIs<QGTextChannel>(e.source)
+                assertSame(channel, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Message>(message)
                 val messageMessage = message.message
                 assertIs<Text>(messageMessage)
                 assertEquals("TEXT", messageMessage.text)
+                e
             }
         ) { (atob, channel), _ ->
             channel.send(Text { "TEXT" })
@@ -138,21 +139,21 @@ class QGTextChannelSendInteractionTests : AbstractInteractionTests() {
         }
 
         // 修改TEXT->TEXT_EDIT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it, "TEXT_EDIT") },
             prepare = {
                 atomic(false) to channel(it)
             },
             listener = { (atob, channel), e, _, _ ->
                 atob.value = true
-                assertIs<QGSendSupportPreSendEvent>(e)
-                assertIs<QGTextChannel>(e.content)
-                assertSame(channel, e.content)
+                assertIs<MessageSendContext.Send>(e)
+                assertIs<QGTextChannel>(e.source)
+                assertSame(channel, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
                 // edit message
-                e.currentMessage = InteractionMessage.valueOf("TEXT_EDIT")
+                e.withMessage(InteractionMessage.valueOf("TEXT_EDIT"))
             }
         ) { (atob, channel), _ ->
             channel.send("TEXT")

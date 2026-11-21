@@ -44,12 +44,7 @@ import love.forte.simbot.component.qguild.bot.InternalForInheritanceQGBotApi
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.bot.config.QGBotComponentConfiguration
 import love.forte.simbot.component.qguild.channel.*
-import love.forte.simbot.component.qguild.event.QGInternalInterceptionException
-import love.forte.simbot.component.qguild.group.QGGroup
-import love.forte.simbot.component.qguild.group.QGGroupMemberWithInfo
-import love.forte.simbot.component.qguild.group.QGGroupJoinRequest
-import love.forte.simbot.component.qguild.group.QGGroupMemberMuteChange
-import love.forte.simbot.component.qguild.group.QGGroupRelation
+import love.forte.simbot.component.qguild.group.*
 import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.guild.QGGuildRelation
 import love.forte.simbot.component.qguild.internal.channel.*
@@ -64,9 +59,10 @@ import love.forte.simbot.component.qguild.internal.role.toGuildRole
 import love.forte.simbot.component.qguild.internal.role.toMemberRole
 import love.forte.simbot.component.qguild.message.QGMedia
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendDmsMessage
+import love.forte.simbot.component.qguild.message.sendDmsInteractionMessage
 import love.forte.simbot.component.qguild.message.sendMessage
 import love.forte.simbot.event.*
+import love.forte.simbot.interception.InterceptorContainer
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -77,6 +73,7 @@ import love.forte.simbot.qguild.api.channel.GetChannelApi
 import love.forte.simbot.qguild.api.channel.GetGuildChannelListApi
 import love.forte.simbot.qguild.api.files.UploadGroupFilesApi
 import love.forte.simbot.qguild.api.files.UploadUserFilesApi
+import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
 import love.forte.simbot.qguild.api.guild.GetGuildApi
 import love.forte.simbot.qguild.api.member.GetMemberApi
 import love.forte.simbot.qguild.api.role.GetGuildRoleListApi
@@ -86,7 +83,6 @@ import love.forte.simbot.qguild.ifNotFoundThenNull
 import love.forte.simbot.qguild.model.ChannelType
 import love.forte.simbot.qguild.model.SimpleChannel
 import love.forte.simbot.qguild.model.SimpleGuild
-import love.forte.simbot.qguild.api.group.ModifyGroupMemberBlacklistOp
 import love.forte.simbot.qguild.model.group.*
 import love.forte.simbot.qguild.stdlib.DisposableHandle
 import love.forte.simbot.qguild.stdlib.requestDataBy
@@ -105,7 +101,11 @@ internal class QGBotImpl(
     override val source: StdlibBot,
     override val component: QQGuildComponent,
     internal val eventDispatcher: EventDispatcher,
-    configuration: QGBotComponentConfiguration
+    configuration: QGBotComponentConfiguration,
+    /**
+     * 当前应用提供给发送流程的拦截器容器。
+     */
+    internal val interceptorContainer: InterceptorContainer,
 ) : QGBot, JobBasedBot() {
     internal val logger =
         LoggerFactory.getLogger("love.forte.simbot.component.qguild.bot.${source.ticket.secret}")
@@ -403,7 +403,7 @@ internal class QGBotImpl(
 
     override suspend fun sendDmsTo(id: ID, text: String): QGMessageReceipt {
         return try {
-            sendDmsMessage(id.literal, text)
+            sendDmsInteractionMessage(id.literal, InteractionMessage.valueOf(text))
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "Bot.sendDmsTo" }
         }
@@ -411,7 +411,7 @@ internal class QGBotImpl(
 
     override suspend fun sendDmsTo(id: ID, message: Message): QGMessageReceipt {
         return try {
-            sendDmsMessage(id.literal, message)
+            sendDmsInteractionMessage(id.literal, InteractionMessage.valueOf(message))
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "Bot.sendDmsTo" }
         }
@@ -419,7 +419,7 @@ internal class QGBotImpl(
 
     override suspend fun sendDmsTo(id: ID, message: MessageContent): QGMessageReceipt {
         return try {
-            sendDmsMessage(id.literal, message)
+            sendDmsInteractionMessage(id.literal, InteractionMessage.valueOf(message))
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "Bot.sendDmsTo" }
         }
@@ -477,8 +477,11 @@ internal class QGBotImpl(
         pushEvent(event).collect()
     }
 
-    internal fun pushEventAndCollectAsync(event: Event): Job {
-        return pushEvent(event).launchIn(this)
+    /**
+     * 在 Bot 作用域异步调度通知。
+     */
+    internal fun pushEventAndCollectAsync(event: Event): Job = launch {
+        pushEvent(event).collect()
     }
 
     private fun pushEvent(event: Event): Flow<EventResult> {
@@ -589,19 +592,6 @@ internal class QGBotImpl(
     private val isTransmitCacheable = cacheable && cacheConfig?.transmitCacheConfig?.enable == true
 
     internal fun <T> checkIfTransmitCacheable(target: T): T? = target.takeIf { isTransmitCacheable }
-
-    internal suspend fun emitMessagePreSendEvent(event: InternalMessagePreSendEvent) {
-        val errors = pushEvent(event)
-            .filterIsInstance<StandardEventResult.Error>()
-            .toList()
-
-        if (errors.isNotEmpty()) {
-            val ex = QGInternalInterceptionException("Internal message pre send event process failed")
-            errors.forEach { ex.addSuppressed(it.content) }
-            logger.error("Internal message pre send event process failed", ex)
-            throw ex
-        }
-    }
 
     override fun toString(): String {
         // 还未初始化

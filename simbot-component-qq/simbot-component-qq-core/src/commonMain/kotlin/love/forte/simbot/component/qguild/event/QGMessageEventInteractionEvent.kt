@@ -21,8 +21,11 @@
  *
  */
 
+@file:OptIn(InternalSimbotAPI::class)
+
 package love.forte.simbot.component.qguild.event
 
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
 import love.forte.simbot.event.*
@@ -34,6 +37,11 @@ import love.forte.simbot.event.*
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMessageEventInteractionEvent :
     MessageEventInteractionEvent,
     QGInternalMessageInteractionEvent {
@@ -48,6 +56,11 @@ public interface QGMessageEventInteractionEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMessageEventPreReplyEvent :
     QGMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -61,6 +74,11 @@ public interface QGMessageEventPreReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMessageEventPostReplyEvent :
     QGMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
@@ -74,6 +92,11 @@ public interface QGMessageEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGAtMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatChannelMessageEventInteractionEvent {
@@ -85,6 +108,11 @@ public interface QGAtMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGAtMessageCreateEventPreReplyEvent :
     QGAtMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -95,6 +123,11 @@ public interface QGAtMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGAtMessageCreateEventPostReplyEvent :
     QGAtMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -105,6 +138,11 @@ public interface QGAtMessageCreateEventPostReplyEvent :
  * @since 4.3.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -116,6 +154,11 @@ public interface QGGroupMessageCreateEventInteractionEvent :
  * @since 4.3.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupMessageCreateEventPreReplyEvent :
     QGGroupMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -126,6 +169,11 @@ public interface QGGroupMessageCreateEventPreReplyEvent :
  * @since 4.3.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupMessageCreateEventPostReplyEvent :
     QGGroupMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -136,6 +184,11 @@ public interface QGGroupMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDirectMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ContactMessageEventInteractionEvent {
@@ -147,6 +200,11 @@ public interface QGDirectMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDirectMessageCreateEventPreReplyEvent :
     QGDirectMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -157,6 +215,11 @@ public interface QGDirectMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDirectMessageCreateEventPostReplyEvent :
     QGDirectMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -167,6 +230,11 @@ public interface QGDirectMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGC2CMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ContactMessageEventInteractionEvent {
@@ -178,6 +246,11 @@ public interface QGC2CMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGC2CMessageCreateEventPreReplyEvent :
     QGC2CMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -188,6 +261,11 @@ public interface QGC2CMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGC2CMessageCreateEventPostReplyEvent :
     QGC2CMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,
@@ -198,6 +276,11 @@ public interface QGC2CMessageCreateEventPostReplyEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupAtMessageCreateEventInteractionEvent :
     QGMessageEventInteractionEvent,
     ChatGroupMessageEventInteractionEvent {
@@ -209,6 +292,11 @@ public interface QGGroupAtMessageCreateEventInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupAtMessageCreateEventPreReplyEvent :
     QGGroupAtMessageCreateEventInteractionEvent,
     QGMessageEventPreReplyEvent,
@@ -219,6 +307,11 @@ public interface QGGroupAtMessageCreateEventPreReplyEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupAtMessageCreateEventPostReplyEvent :
     QGGroupAtMessageCreateEventInteractionEvent,
     QGMessageEventPostReplyEvent,

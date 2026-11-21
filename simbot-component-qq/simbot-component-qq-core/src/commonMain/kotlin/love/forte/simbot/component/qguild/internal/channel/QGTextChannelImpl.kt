@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.channel
 
+import love.forte.simbot.ability.SendOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.channel.QGCategory
@@ -30,10 +31,10 @@ import love.forte.simbot.component.qguild.channel.QGTextChannel
 import love.forte.simbot.component.qguild.guild.QGGuild
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
-import love.forte.simbot.component.qguild.internal.event.QGTextChannelSendSupportPreSendEventImpl
+import love.forte.simbot.component.qguild.internal.message.interceptSend
 import love.forte.simbot.component.qguild.message.QGMessageReceipt
-import love.forte.simbot.component.qguild.message.sendMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
+import love.forte.simbot.component.qguild.message.sendMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -68,33 +69,50 @@ internal class QGTextChannelImpl internal constructor(
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
     override val id: ID = source.id.ID
 
-    override suspend fun send(message: Message): QGMessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(message))
-    }
+    override suspend fun send(message: Message): QGMessageReceipt =
+        send(message, *emptyArray<SendOption>())
 
-    override suspend fun send(messageContent: MessageContent): QGMessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(messageContent))
-    }
+    override suspend fun send(messageContent: MessageContent): QGMessageReceipt =
+        send(messageContent, *emptyArray<SendOption>())
 
-    override suspend fun send(text: String): QGMessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(text))
-    }
+    override suspend fun send(text: String): QGMessageReceipt =
+        send(text, *emptyArray<SendOption>())
 
-    private suspend fun emitPreSendEventAndSend(
-        message: InteractionMessage,
-    ): QGMessageReceipt {
-        val event = QGTextChannelSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = message
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(text),
+            options.toList(),
+            ::sendByInteractionMessage
         )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
 
-        return sendByInteractionMessage(message)
-    }
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(message),
+            options.toList(),
+            ::sendByInteractionMessage
+        )
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): QGMessageReceipt {
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            this,
+            InteractionMessage.valueOf(messageContent),
+            options.toList(),
+            ::sendByInteractionMessage
+        )
+
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         fun MessageSendApi.Body.Builder.configMsgId() {
             if (msgId == null) {
                 msgId = currentMsgId
@@ -104,25 +122,25 @@ internal class QGTextChannelImpl internal constructor(
         try {
             return when (message) {
                 is InteractionMessage.Message -> {
-                    bot.sendMessage(source.id, message.message) {
+                    bot.sendMessageDirect(source.id, message.message) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.MessageContent -> {
-                    bot.sendMessage(source.id, message.messageContent) {
+                    bot.sendMessageDirect(source.id, message.messageContent) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Text -> {
-                    bot.sendMessage(source.id, message.text) {
+                    bot.sendMessageDirect(source.id, message.text) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message.")
-            }.alsoEmitPostSendEvent(bot, this, message)
+            }
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "textChannel.send" }
         }

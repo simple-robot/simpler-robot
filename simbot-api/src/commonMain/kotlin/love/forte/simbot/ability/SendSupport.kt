@@ -25,7 +25,7 @@ package love.forte.simbot.ability
 
 import love.forte.simbot.definition.Actor
 import love.forte.simbot.definition.Contact
-import love.forte.simbot.event.InternalInterceptionException
+import love.forte.simbot.interception.MessageSendInterceptionPoint
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.MessageReceipt
@@ -43,10 +43,9 @@ public interface SendSupport {
      * 发送一段纯文本消息。
      *
      * @param text 要发送的消息
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      */
     public suspend fun send(text: String): MessageReceipt
 
@@ -54,10 +53,9 @@ public interface SendSupport {
      * 发送一个消息 [Message]。
      *
      * @param message 要发送的消息
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      */
     public suspend fun send(message: Message): MessageReceipt
 
@@ -67,10 +65,9 @@ public interface SendSupport {
      * 并在不支持的情况下降级为使用 [MessageContent.messages]。
      *
      * @param messageContent 要发送的消息
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      */
     public suspend fun send(messageContent: MessageContent): MessageReceipt
 
@@ -83,10 +80,9 @@ public interface SendSupport {
      * @param text 要发送的消息
      * @param options 额外提供用于消息发送的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
      * 详见 [SendOption] 的说明。
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
     public suspend fun send(text: String, vararg options: SendOption): MessageReceipt = send(text)
@@ -100,10 +96,9 @@ public interface SendSupport {
      * @param message 要发送的消息
      * @param options 额外提供用于消息发送的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
      * 详见 [SendOption] 的说明。
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
     public suspend fun send(message: Message, vararg options: SendOption): MessageReceipt = send(message)
@@ -120,10 +115,9 @@ public interface SendSupport {
      * @param messageContent 要发送的消息。
      * @param options 额外提供用于消息发送的选项。如果 [options] 中存在预期内、但无法被满足的选项，则可能抛出异常。
      * 详见 [SendOption] 的说明。
-     * @return 消息发送成功后的回执
-     * @throws InternalInterceptionException 在拦截事件处理过程中产生的异常，
-     * 每一个具体的异常都会被收集在 [InternalInterceptionException.suppressedExceptions] 中。
+     * @return 消息发送成功后的回执。
      * @throws Exception 可能产生任何异常，例如 [options] 中存在预期内、但无法被满足的选项。
+     * 支持 [MessageSendInterceptionPoint] 的组件会直接传播消息发送拦截器抛出的异常。
      * @since 5.0
      */
     public suspend fun send(messageContent: MessageContent, vararg options: SendOption): MessageReceipt =

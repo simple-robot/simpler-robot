@@ -85,6 +85,8 @@ import org.springframework.context.annotation.Import
     DefaultBinderManagerProvidersConfiguration::class,
     // listeners directly
     DefaultSimbotEventListenerRegistrarProcessorConfiguration::class,
+    // interceptors
+    DefaultSimbotInterceptorRegistrarProcessorConfiguration::class,
     // launcher factory & launcher
     DefaultSimbotSpringApplicationLauncherFactoryConfiguration::class,
     DefaultSimbotApplicationLauncherFactoryProcessorConfiguration::class,

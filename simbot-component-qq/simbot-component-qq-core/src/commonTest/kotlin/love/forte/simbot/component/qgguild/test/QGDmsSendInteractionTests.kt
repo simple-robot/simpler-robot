@@ -29,10 +29,10 @@ import kotlinx.coroutines.test.runTest
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.UUID
 import love.forte.simbot.component.qguild.dms.QGDmsContact
-import love.forte.simbot.component.qguild.event.QGSendSupportInteractionEvent
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.dms.QGDmsContactImpl
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.message.Text
 import love.forte.simbot.qguild.model.User
 import kotlin.test.*
@@ -79,18 +79,19 @@ class QGDmsSendInteractionTests : AbstractInteractionTests() {
     @Test
     fun testQGMemberSendInteraction() = runTest {
         // TEXT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to dms(it)
             },
             listener = { (atob, dms), e, _, _ ->
                 atob.value = true
-                assertIs<QGDmsContact>(e.content)
-                assertSame(dms, e.content)
+                assertIs<QGDmsContact>(e.source)
+                assertSame(dms, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
+                e
             }
         ) { (atob, dms), _ ->
             dms.send("TEXT")
@@ -98,20 +99,21 @@ class QGDmsSendInteractionTests : AbstractInteractionTests() {
         }
 
         // Message
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to dms(it)
             },
             listener = { (atob, dms), e, _, _ ->
                 atob.value = true
-                assertIs<QGDmsContact>(e.content)
-                assertSame(dms, e.content)
+                assertIs<QGDmsContact>(e.source)
+                assertSame(dms, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Message>(message)
                 val messageMessage = message.message
                 assertIs<Text>(messageMessage)
                 assertEquals("TEXT", messageMessage.text)
+                e
             }
         ) { (atob, dms), _ ->
             dms.send(Text { "TEXT" })

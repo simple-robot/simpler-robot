@@ -40,4 +40,6 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+    // 这里通过编译 KSP 生成的 builder 验证处理器，并未定义运行时测试。
+    failOnNoDiscoveredTests = false
 }

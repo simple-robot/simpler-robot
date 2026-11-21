@@ -23,16 +23,18 @@
 
 package love.forte.simbot.component.qguild.internal.dms
 
+import love.forte.simbot.ability.SendOption
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.qguild.dms.QGDmsContact
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.bot.newSupervisorCoroutineContext
-import love.forte.simbot.component.qguild.internal.event.QGDmsContactSendSupportPreSendEventImpl
-import love.forte.simbot.component.qguild.message.sendDmsMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostSendEvent
+import love.forte.simbot.component.qguild.internal.message.interceptSend
+import love.forte.simbot.component.qguild.message.QGMessageReceipt
+import love.forte.simbot.component.qguild.message.QGMessageSendContext
+import love.forte.simbot.component.qguild.message.sendDmsMessageDirect
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.QQGuildApiException
 import love.forte.simbot.qguild.addStackTrace
 import love.forte.simbot.qguild.api.message.MessageSendApi
@@ -50,34 +52,55 @@ internal class QGDmsContactImpl(
     private val guildId: String,
     private val currentMsgId: String?,
 ) : QGDmsContact {
+    internal val sendDestination
+        get() = love.forte.simbot.component.qguild.message.QGMessageSendTarget.dms(guildId.ID)
+
     override val coroutineContext: CoroutineContext = bot.newSupervisorCoroutineContext()
 
-    override suspend fun send(text: String): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(text))
-    }
+    override suspend fun send(text: String): QGMessageReceipt =
+        send(text, *emptyArray<SendOption>())
 
-    override suspend fun send(message: Message): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(message))
-    }
+    override suspend fun send(message: Message): QGMessageReceipt =
+        send(message, *emptyArray<SendOption>())
 
-    override suspend fun send(messageContent: MessageContent): MessageReceipt {
-        return emitPreSendEventAndSend(InteractionMessage.valueOf(messageContent))
-    }
+    override suspend fun send(messageContent: MessageContent): QGMessageReceipt =
+        send(messageContent, *emptyArray<SendOption>())
 
-    private suspend fun emitPreSendEventAndSend(
-        message: InteractionMessage,
-    ): MessageReceipt {
-        val event = QGDmsContactSendSupportPreSendEventImpl(
-            bot = bot,
-            content = this,
-            message = message
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(text),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
         )
-        bot.emitMessagePreSendEvent(event)
-        val message = event.useMessage()
-        return sendByInteractionMessage(message)
-    }
 
-    private suspend fun sendByInteractionMessage(message: InteractionMessage): MessageReceipt {
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(message),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
+        )
+
+    /**
+     * 保留发送选项，并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): QGMessageReceipt =
+        bot.interceptSend(
+            source = this,
+            message = InteractionMessage.valueOf(messageContent),
+            options = options.toList(),
+            send = ::sendByInteractionMessage
+        )
+
+    private suspend fun sendByInteractionMessage(context: QGMessageSendContext): QGMessageReceipt {
+        val message = context.message
         fun MessageSendApi.Body.Builder.configMsgId() {
             if (msgId == null) {
                 msgId = currentMsgId
@@ -87,25 +110,25 @@ internal class QGDmsContactImpl(
         try {
             return when (message) {
                 is InteractionMessage.Message -> {
-                    bot.sendDmsMessage(guildId, message.message) {
+                    bot.sendDmsMessageDirect(guildId, message.message) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.MessageContent -> {
-                    bot.sendDmsMessage(guildId, message.messageContent) {
+                    bot.sendDmsMessageDirect(guildId, message.messageContent) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Text -> {
-                    bot.sendDmsMessage(guildId, message.text) {
+                    bot.sendDmsMessageDirect(guildId, message.text) {
                         configMsgId()
                     }
                 }
 
                 is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-            }.alsoEmitPostSendEvent(bot, this, message)
+            }
         } catch (e: QQGuildApiException) {
             throw e.addStackTrace { "dmsContact.send" }
         }

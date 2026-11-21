@@ -24,8 +24,9 @@
 package love.forte.simbot.application
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import org.jetbrains.annotations.Blocking
 import java.util.concurrent.CompletionStage
 import kotlin.coroutines.CoroutineContext
@@ -33,6 +34,9 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * 针对一些不同的 [ApplicationLaunchStage] 的事件阻塞处理器。
+ *
+ * 转为挂起处理器后，父调用取消会中断回调线程，仅对可中断的阻塞操作有效。
+ * 回调抛出的 [InterruptedException] 会转为 [kotlinx.coroutines.CancellationException]，其他业务异常直接传播。
  *
  * @see SuspendApplicationEventHandler
  */
@@ -51,6 +55,7 @@ public fun interface JBlockingSuspendApplicationEventHandler<in C> {
          * @param dispatcherContext The coroutine context to use for executing the handler's suspend functions. Defaults to [Dispatchers.IO].
          * @param handler The [JBlockingSuspendApplicationEventHandler] to convert.
          * @return The converted [SuspendApplicationEventHandler].
+         * @throws IllegalArgumentException 当 [dispatcherContext] 包含 [Job] 时。
          */
         @JvmStatic
         @JvmOverloads
@@ -77,8 +82,12 @@ private class JBlockingSuspendApplicationEventHandlerImpl<C>(
     private val handler: JBlockingSuspendApplicationEventHandler<C>,
     private val handlerContext: CoroutineContext
 ) : SuspendApplicationEventHandler<C> {
+    init {
+        require(handlerContext[Job] == null) { "Application handler context must not contain a Job" }
+    }
+
     override suspend fun invoke(context: C) {
-        withContext(handlerContext) {
+        runInterruptible(handlerContext) {
             handler.invoke(context)
         }
     }

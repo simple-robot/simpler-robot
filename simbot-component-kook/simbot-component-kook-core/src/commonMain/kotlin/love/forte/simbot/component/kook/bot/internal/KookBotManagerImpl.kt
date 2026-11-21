@@ -43,6 +43,7 @@ import love.forte.simbot.component.kook.bot.KookBotManagerConfiguration
 import love.forte.simbot.component.kook.event.internal.KookBotRegisteredEventImpl
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.event.onEachError
+import love.forte.simbot.interception.InterceptorContainer
 import love.forte.simbot.kook.stdlib.BotFactory
 import love.forte.simbot.kook.stdlib.Ticket
 import kotlin.coroutines.CoroutineContext
@@ -54,7 +55,8 @@ import kotlin.coroutines.CoroutineContext
 internal class KookBotManagerImpl(
     private val eventProcessor: EventProcessor,
     override val configuration: KookBotManagerConfiguration,
-    override val component: KookComponent
+    override val component: KookComponent,
+    private val interceptorContainer: InterceptorContainer,
 ) : KookBotManager(), CoroutineScope {
     override val job: Job = configuration.coroutineContext[Job]!!
     override val coroutineContext: CoroutineContext = configuration.coroutineContext
@@ -79,7 +81,7 @@ internal class KookBotManagerImpl(
             botConfiguration.coroutineContext = botConfiguration.coroutineContext.mergeWith(this.coroutineContext)
 
             val sourceBot = BotFactory.create(ticket, botConfiguration)
-            return KookBotImpl(eventProcessor, sourceBot, component, configuration)
+            return KookBotImpl(eventProcessor, sourceBot, component, configuration, interceptorContainer)
         }
 
         return botMap.computeValue(clientId) { id, old ->

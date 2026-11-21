@@ -33,17 +33,9 @@ import love.forte.simbot.component.onebot.v11.core.actor.OneBotGroupDeleteOption
 import love.forte.simbot.component.onebot.v11.core.actor.OneBotMember
 import love.forte.simbot.component.onebot.v11.core.api.*
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractMessagePreSendEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPostSendEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.OneBotGroupPreSendEventImpl
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotInternalMessagePostSendEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendGroupTextMsgApi
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.event.InteractionMessage
 import kotlin.concurrent.Volatile
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmInline
@@ -94,15 +86,6 @@ internal abstract class OneBotGroupImpl(
         )
     }
 
-    override fun preSendEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
-        return OneBotGroupPreSendEventImpl(
-            this,
-            bot,
-            interactionMessage
-        )
-    }
-
-
     override suspend fun sendText(text: String): SendMsgResult {
         return bot.executeData(
             sendGroupTextMsgApi(
@@ -118,17 +101,6 @@ internal abstract class OneBotGroupImpl(
                 target = id,
                 message = segments,
             )
-        )
-    }
-
-    override fun OneBotMessageReceipt.postSendEvent(
-        interactionMessage: InteractionMessage
-    ): OneBotInternalMessagePostSendEvent {
-        return OneBotGroupPostSendEventImpl(
-            content = this@OneBotGroupImpl,
-            bot = bot,
-            receipt = this,
-            message = interactionMessage.toOneBotSegmentsInteractionMessage()
         )
     }
 

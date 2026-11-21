@@ -51,7 +51,12 @@ public class SendDirectMessageApi private constructor(
      */
     private val chatCode: String? = null,
     private val content: String,
-    private val quote: String? = null,
+    /**
+     * 此请求显式引用的消息 ID。
+     *
+     * @since 5.0
+     */
+    public val quote: String? = null,
     private val nonce: String? = null,
 ) : KookPostApi<SendMessageResult>() {
     public companion object Factory {

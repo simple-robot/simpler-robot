@@ -41,13 +41,10 @@ import love.forte.simbot.core.event.SimpleEventDispatcher
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.plugin.Plugin
-import love.forte.simbot.plugin.PluginConfigureContext
-import love.forte.simbot.plugin.PluginFactoriesConfigurator
-import love.forte.simbot.plugin.Plugins
-import love.forte.simbot.plugin.toPlugins
+import love.forte.simbot.plugin.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -61,6 +58,7 @@ private class SimpleApplicationImpl(
     override val eventDispatcher: SimpleEventDispatcher,
     override val components: Components,
     override val plugins: Plugins,
+    override val interceptorManager: InterceptorManager,
     override val botManagers: BotManagers,
     val events: ApplicationLaunchStages
 ) : SimpleApplication {
@@ -197,6 +195,9 @@ public object Simple :
             c.invokeWith(registrar)
         }
 
+        // interceptorManager
+        val interceptorManager = InterceptorManager()
+
         // components
         val components = simpleConfigurer.componentFactoriesConfigurator.createAll(object : ComponentConfigureContext {
             override val applicationConfiguration: ApplicationConfiguration
@@ -221,6 +222,9 @@ public object Simple :
 
             override val eventDispatcher: EventDispatcher
                 get() = dispatcher
+
+            override val interceptorManager: InterceptorManager
+                get() = interceptorManager
         })
 
 
@@ -234,6 +238,7 @@ public object Simple :
             dispatcher,
             components,
             plugins,
+            interceptorManager,
             botManagers,
             events
         )

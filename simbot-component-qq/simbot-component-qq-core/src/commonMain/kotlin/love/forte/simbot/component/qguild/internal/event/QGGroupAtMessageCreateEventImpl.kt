@@ -23,6 +23,7 @@
 
 package love.forte.simbot.component.qguild.internal.event
 
+import love.forte.simbot.ability.ReplyOption
 import love.forte.simbot.common.atomic.AtomicInt
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.ID
@@ -34,14 +35,11 @@ import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.group.QGGroupAuthorImpl
 import love.forte.simbot.component.qguild.internal.group.toGroup
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
-import love.forte.simbot.component.qguild.message.QGGroupAndC2CMessageContent
-import love.forte.simbot.component.qguild.message.deleteGroupMessage
-import love.forte.simbot.component.qguild.message.sendGroupMessage
-import love.forte.simbot.component.qguild.utils.alsoEmitPostReplyEvent
+import love.forte.simbot.component.qguild.internal.message.interceptReply
+import love.forte.simbot.component.qguild.message.*
 import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.qguild.api.message.GroupAndC2CSendBody
 import love.forte.simbot.qguild.api.message.group.GroupMessageSendApi
 import love.forte.simbot.qguild.event.GroupAtMessageCreate
@@ -80,31 +78,59 @@ internal class QGGroupAtMessageCreateEventImpl(
     override suspend fun content(): QGGroup =
         sourceEventEntity.data.toGroup(bot, msgSeq)
 
-    override suspend fun reply(text: String): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(text))
-    }
+    override suspend fun reply(text: String): QGMessageReceipt =
+        reply(text, *emptyArray<ReplyOption>())
 
-    override suspend fun reply(message: Message): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(message))
-    }
+    override suspend fun reply(message: Message): QGMessageReceipt =
+        reply(message, *emptyArray<ReplyOption>())
 
-    override suspend fun reply(messageContent: MessageContent): MessageReceipt {
-        return emitPreReplyEventAndReply(InteractionMessage.valueOf(messageContent))
-    }
+    override suspend fun reply(messageContent: MessageContent): QGMessageReceipt =
+        reply(messageContent, *emptyArray<ReplyOption>())
 
-    private suspend fun emitPreReplyEventAndReply(message: InteractionMessage): MessageReceipt {
-        val event = QGGroupAtMessageCreateEventPreReplyEventImpl(bot, this, message)
-        bot.emitMessagePreSendEvent(event)
-        return replyByInteractionMessage(event.useMessage())
-    }
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(text: String, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(text),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
 
-    private suspend fun replyByInteractionMessage(message: InteractionMessage): MessageReceipt {
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(
+        message: love.forte.simbot.message.Message,
+        vararg options: ReplyOption
+    ): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(message),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
+
+    /**
+     * 在解析回复目标之前执行拦截，避免短路时产生额外请求。
+     */
+    override suspend fun reply(messageContent: MessageContent, vararg options: ReplyOption): QGMessageReceipt =
+        bot.interceptReply(
+            source = this,
+            message = InteractionMessage.valueOf(messageContent),
+            options = options.toList(),
+            target = { content() },
+            reply = ::replyByInteractionMessage
+        )
+
+    private suspend fun replyByInteractionMessage(context: QGMessageReplyContext): QGMessageReceipt {
+        val message = context.message
+        val resolveReference = context.replyReferenceResolver(sourceEventEntity.data.id)
         fun GroupAndC2CSendBody.configRefAndMsgIdAndSeq() {
-            if (messageReference == null) {
-                messageReference = love.forte.simbot.qguild.model.Message.Reference(
-                    sourceEventEntity.data.id,
-                )
-            }
+            messageReference = resolveReference(messageReference)
             if (msgId == null) {
                 msgId = sourceEventEntity.data.id
             }
@@ -115,7 +141,7 @@ internal class QGGroupAtMessageCreateEventImpl(
 
         return when (message) {
             is InteractionMessage.Message -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     message = message.message,
                 ) {
@@ -124,7 +150,7 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.MessageContent -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     messageContent = message.messageContent,
                 ) {
@@ -133,7 +159,7 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.Text -> {
-                bot.sendGroupMessage(
+                bot.sendGroupMessageDirect(
                     openid = sourceEventEntity.data.groupOpenid,
                     text = message.text,
                     msgType = GroupMessageSendApi.MSG_TYPE_TEXT,
@@ -143,6 +169,6 @@ internal class QGGroupAtMessageCreateEventImpl(
             }
 
             is InteractionMessage.Extension -> error("Unknown type of InteractionMessage: $message")
-        }.alsoEmitPostReplyEvent(bot, this, message)
+        }
     }
 }

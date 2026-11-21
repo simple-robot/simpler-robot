@@ -25,8 +25,15 @@ package love.forte.simbot.event
 
 import love.forte.simbot.ability.ReplySupport
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.suspendrunner.STP
+
+@InternalSimbotAPI
+public object InternalMessageInteractionEventDeprecates {
+    public const val MESSAGE: String = "旧消息 pre/post 事件已停止分发并废弃，" +
+        "请使用新的拦截器机制配合 MessageSendInterceptionPoint 拦截发送或回复、使用新的 MessageSentEvent 事件代替发送后的通知。"
+}
 
 /**
  * 在内部一个跟 [Message][love.forte.simbot.message.Message] 的交互有关的事件。
@@ -41,7 +48,12 @@ import love.forte.simbot.suspendrunner.STP
  *
  * @author ForteScarlet
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
 public interface InternalMessageInteractionEvent : InternalEvent {
     /**
      * 进行消息交互的实体。
@@ -92,7 +104,13 @@ public interface InternalMessageInteractionEvent : InternalEvent {
  *
  * @since 4.11.0
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Suppress("DEPRECATION_ERROR")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
 public interface InternalMessagePreSendEvent :
     InternalInterceptionEvent,
     InternalMessageInteractionEvent {
@@ -128,7 +146,13 @@ public interface InternalMessagePreSendEvent :
  *
  * @since 4.11.0
  */
+@OptIn(InternalSimbotAPI::class)
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Suppress("DEPRECATION_ERROR")
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
 public interface InternalMessagePostSendEvent : InternalNotificationEvent, InternalMessageInteractionEvent {
     /**
      * 在消息发送时

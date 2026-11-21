@@ -1763,7 +1763,14 @@ public final class love/forte/simbot/kook/api/message/SendChannelMessageApi : lo
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendChannelMessageApi;
 	public static final fun create (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendChannelMessageApi;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendChannelMessageApi;
+	public final fun getContent ()Ljava/lang/String;
+	public final fun getNonce ()Ljava/lang/String;
+	public final fun getQuote ()Ljava/lang/String;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
+	public final fun getTargetId ()Ljava/lang/String;
+	public final fun getTempTargetId ()Ljava/lang/String;
+	public final fun getTemplateId ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/Integer;
 }
 
 public final class love/forte/simbot/kook/api/message/SendChannelMessageApi$Builder {
@@ -1814,6 +1821,7 @@ public final class love/forte/simbot/kook/api/message/SendDirectMessageApi : lov
 	public static final fun builderByTargetId (Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi$Builder;
 	public static final fun createByChatCode (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi;
 	public static final fun createByTargetId (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Llove/forte/simbot/kook/api/message/SendDirectMessageApi;
+	public final fun getQuote ()Ljava/lang/String;
 	public fun getResultDeserializationStrategy ()Lkotlinx/serialization/DeserializationStrategy;
 }
 

@@ -27,6 +27,7 @@ package love.forte.simbot.component.qguild.event
  *
  * @author ForteScarlet
  */
+@Deprecated("旧消息拦截事件已停止使用，由新的拦截器机制代替。", level = DeprecationLevel.ERROR)
 public class QGInternalInterceptionException : RuntimeException {
     public constructor() : super()
     public constructor(cause: Throwable?) : super(cause)

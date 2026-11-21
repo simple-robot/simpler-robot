@@ -24,10 +24,7 @@
 package love.forte.simbot.component.onebot.v11.core.event.messageinteraction
 
 import love.forte.simbot.component.onebot.v11.core.event.OneBotInternalEvent
-import love.forte.simbot.event.FuzzyEventTypeImplementation
-import love.forte.simbot.event.InternalMessageInteractionEvent
-import love.forte.simbot.event.InternalMessagePostSendEvent
-import love.forte.simbot.event.InternalMessagePreSendEvent
+import love.forte.simbot.event.*
 import love.forte.simbot.message.Message
 
 /**
@@ -38,6 +35,11 @@ import love.forte.simbot.message.Message
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface OneBotInternalMessageInteractionEvent : OneBotInternalEvent, InternalMessageInteractionEvent
 
 /**
@@ -48,6 +50,11 @@ public interface OneBotInternalMessageInteractionEvent : OneBotInternalEvent, In
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface OneBotInternalMessagePreSendEvent :
     OneBotInternalMessageInteractionEvent,
     InternalMessagePreSendEvent
@@ -60,6 +67,11 @@ public interface OneBotInternalMessagePreSendEvent :
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface OneBotInternalMessagePostSendEvent :
     OneBotInternalMessageInteractionEvent,
     InternalMessagePostSendEvent {

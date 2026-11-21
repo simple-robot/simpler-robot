@@ -42,18 +42,44 @@ import kotlin.jvm.JvmSynthetic
  * @author ForteScarlet
  */
 public class SendChannelMessageApi private constructor(
-    private val type: Int? = null,
-    private val targetId: String,
-    private val content: String,
-    private val quote: String?,
-    private val nonce: String?,
-    private val tempTargetId: String?,
+    /**
+     * 消息类型。null 使用平台默认值。
+     * @since 5.0
+     */
+    public val type: Int? = null,
+    // TODO type -> value class
+
+    /**
+     * 实际发送的目标频道 ID。
+     * @since 5.0
+     */
+    public val targetId: String,
+    /**
+     * 原生消息内容；使用模板时为模板输入。
+     * @since 5.0
+     */
+    public val content: String,
+    /**
+     * 引用的消息 ID。
+     * @since 5.0
+     */
+    public val quote: String?,
+    /**
+     * 由平台原样返回的 nonce。
+     * @since 5.0
+     */
+    public val nonce: String?,
+    /**
+     * 临时消息的目标用户 ID。
+     * @since 5.0
+     */
+    public val tempTargetId: String?,
     /**
      * 模板消息id, 如果使用了，content会作为模板消息的input。
      * 参见[模板消息](https://developer.kookapp.cn/doc/http/template)
-     * @since 4.2.0
+     * @since 5.0
      */
-    private val templateId: String?
+    public val templateId: String?
 ) : KookPostApi<SendMessageResult>() {
     public companion object Factory {
         private val PATH = ApiPath.create("message", "create")
@@ -294,5 +320,4 @@ public class SendChannelMessageApi private constructor(
     )
 
 }
-
 

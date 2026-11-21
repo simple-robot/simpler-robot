@@ -27,6 +27,7 @@ import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.application.ApplicationEventRegistrar
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.interception.InterceptorManager
 
 /**
  * 提供给 [PluginFactoriesConfigurator] 用于配置 [Plugin] 的上下文信息。
@@ -53,4 +54,11 @@ public interface PluginConfigureContext {
      * 事件调度器。
      */
     public val eventDispatcher: EventDispatcher
+
+    /**
+     * 拦截器管理器。
+     *
+     * @since 5.0
+     */
+    public val interceptorManager: InterceptorManager
 }

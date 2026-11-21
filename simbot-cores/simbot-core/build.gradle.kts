@@ -51,7 +51,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-Xexpect-actual-classes"
+            "-Xexpect-actual-classes",
+            "-Xcompanion-blocks-and-extensions"
         )
     }
 

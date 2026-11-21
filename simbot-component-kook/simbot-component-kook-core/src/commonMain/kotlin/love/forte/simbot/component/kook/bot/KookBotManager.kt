@@ -142,7 +142,7 @@ public abstract class KookBotManager : JobBasedBotManager(), KookBotRegistrar {
             config.coroutineContext =
                 config.coroutineContext.mergeWith(context.applicationConfiguration.coroutineContext)
 
-            return KookBotManagerImpl(context.eventDispatcher, config, component)
+            return KookBotManagerImpl(context.eventDispatcher, config, component, context.interceptorManager)
         }
     }
 }

@@ -89,6 +89,26 @@ public class love/forte/simbot/spring/configuration/DefaultSimbotEventListenerRe
 public final class love/forte/simbot/spring/configuration/DefaultSimbotEventListenerRegistrarProcessorConfiguration$Companion {
 }
 
+public final class love/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessor : love/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor {
+	public static final field Companion Llove/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessor$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public fun process (Llove/forte/simbot/interception/InterceptorRegistrar;)V
+}
+
+public final class love/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessor$Companion {
+}
+
+public class love/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessorConfiguration {
+	public static final field Companion Llove/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessorConfiguration$Companion;
+	public static final field DEFAULT_SIMBOT_INTERCEPTOR_REGISTRAR_PROCESSOR_BEAN_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun defaultSimbotInterceptorRegistrarProcessor (Ljava/util/List;)Llove/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessor;
+	public static synthetic fun defaultSimbotInterceptorRegistrarProcessor$default (Llove/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessorConfiguration;Ljava/util/List;ILjava/lang/Object;)Llove/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessor;
+}
+
+public final class love/forte/simbot/spring/configuration/DefaultSimbotInterceptorRegistrarProcessorConfiguration$Companion {
+}
+
 public final class love/forte/simbot/spring/configuration/DefaultSimbotPluginInstallProcessor : love/forte/simbot/spring/configuration/SimbotPluginInstallProcessor {
 	public static final field Companion Llove/forte/simbot/spring/configuration/DefaultSimbotPluginInstallProcessor$Companion;
 	public fun <init> (ZZLjava/util/List;Ljava/util/List;)V
@@ -141,6 +161,14 @@ public abstract interface class love/forte/simbot/spring/configuration/SimbotEve
 	public abstract fun process (Llove/forte/simbot/event/EventListenerRegistrar;)V
 }
 
+public abstract interface class love/forte/simbot/spring/configuration/SimbotInterceptorRegistrar {
+	public abstract fun register (Llove/forte/simbot/interception/InterceptorRegistrar;)V
+}
+
+public abstract interface class love/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor {
+	public abstract fun process (Llove/forte/simbot/interception/InterceptorRegistrar;)V
+}
+
 public abstract interface class love/forte/simbot/spring/configuration/SimbotPluginInstallProcessor {
 	public abstract fun process (Llove/forte/simbot/plugin/PluginInstaller;)V
 }
@@ -176,7 +204,8 @@ public final class love/forte/simbot/spring/configuration/application/DefaultSim
 
 public final class love/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor : love/forte/simbot/spring/configuration/application/SimbotApplicationProcessor {
 	public static final field Companion Llove/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor$Companion;
-	public fun <init> (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;)V
+	public fun <init> (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;Llove/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor;)V
+	public synthetic fun <init> (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;Llove/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun process (Llove/forte/simbot/spring/common/application/SpringApplication;)V
 }
 
@@ -198,8 +227,8 @@ public class love/forte/simbot/spring/configuration/application/DefaultSimbotSpr
 	public static final field Companion Llove/forte/simbot/spring/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration$Companion;
 	public static final field DEFAULT_SIMBOT_APPLICATION_PROCESSOR_BEAN_NAME Ljava/lang/String;
 	public fun <init> ()V
-	public fun defaultSimbotApplicationProcessor (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;)Llove/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor;
-	public static synthetic fun defaultSimbotApplicationProcessor$default (Llove/forte/simbot/spring/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;ILjava/lang/Object;)Llove/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor;
+	public fun defaultSimbotApplicationProcessor (Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;Llove/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor;)Llove/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor;
+	public static synthetic fun defaultSimbotApplicationProcessor$default (Llove/forte/simbot/spring/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration;Llove/forte/simbot/spring/common/application/SpringApplicationConfigurationProperties;Ljava/util/List;Ljava/util/List;Ljava/util/List;Llove/forte/simbot/spring/configuration/SimbotEventDispatcherProcessor;Llove/forte/simbot/spring/configuration/SimbotInterceptorRegistrarProcessor;ILjava/lang/Object;)Llove/forte/simbot/spring/configuration/application/DefaultSimbotApplicationProcessor;
 }
 
 public final class love/forte/simbot/spring/configuration/application/DefaultSimbotSpringApplicationProcessorConfiguration$Companion {

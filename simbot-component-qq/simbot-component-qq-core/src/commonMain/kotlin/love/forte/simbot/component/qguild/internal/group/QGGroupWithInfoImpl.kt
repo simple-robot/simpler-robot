@@ -23,6 +23,8 @@
 
 package love.forte.simbot.component.qguild.internal.group
 
+import love.forte.simbot.ability.SendOption
+
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.qguild.ExperimentalQGApi
@@ -77,6 +79,24 @@ internal class QGGroupWithInfoImpl(
 
     override suspend fun send(messageContent: MessageContent): MessageReceipt =
         delegate.sendWithContent(this, InteractionMessage.valueOf(messageContent))
+
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(text), options.toList())
+
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(message), options.toList())
+
+    /**
+     * 发送消息并让本次操作只进入一次拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): MessageReceipt =
+        delegate.sendWithContent(this, InteractionMessage.valueOf(messageContent), options.toList())
 
     override fun toString(): String = "QGGroupWithInfo(id=$id, name=$name)"
 }

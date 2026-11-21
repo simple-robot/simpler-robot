@@ -21,9 +21,12 @@
  *
  */
 
+@file:OptIn(InternalSimbotAPI::class)
+
 package love.forte.simbot.event
 
 import love.forte.simbot.ability.ReplySupport
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.suspendrunner.STP
@@ -36,6 +39,11 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ReplySupportInteractionEvent : BotEvent, InternalMessageInteractionEvent {
     /**
      * 所属Bot。
@@ -64,6 +72,11 @@ public interface ReplySupportInteractionEvent : BotEvent, InternalMessageInterac
  * @see ReplySupport
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ReplySupportPreReplyEvent : ReplySupportInteractionEvent, InternalMessagePreSendEvent
 
 /**
@@ -78,6 +91,11 @@ public interface ReplySupportPreReplyEvent : ReplySupportInteractionEvent, Inter
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ReplySupportPostReplyEvent : ReplySupportInteractionEvent, InternalMessagePostSendEvent
 
 // region MessageEvent
@@ -89,6 +107,11 @@ public interface ReplySupportPostReplyEvent : ReplySupportInteractionEvent, Inte
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MessageEventInteractionEvent : ReplySupportInteractionEvent {
     override val content: MessageEvent
 }
@@ -101,6 +124,11 @@ public interface MessageEventInteractionEvent : ReplySupportInteractionEvent {
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MessageEventPreReplyEvent : MessageEventInteractionEvent, ReplySupportPreReplyEvent
 
 /**
@@ -111,6 +139,11 @@ public interface MessageEventPreReplyEvent : MessageEventInteractionEvent, Reply
  * @since 4.11.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MessageEventPostReplyEvent : MessageEventInteractionEvent, ReplySupportPostReplyEvent
 // endregion
 
@@ -123,6 +156,11 @@ public interface MessageEventPostReplyEvent : MessageEventInteractionEvent, Repl
  * @since 4.11.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ContactMessageEvent
 
@@ -143,6 +181,11 @@ public interface ContactMessageEventInteractionEvent : MessageEventInteractionEv
  * @see ContactMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: ContactMessageEvent
 
@@ -163,6 +206,11 @@ public interface ContactMessageEventPreReplyEvent : ContactMessageEventInteracti
  * @see ContactMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: ContactMessageEvent
 
@@ -186,6 +234,11 @@ public interface ContactMessageEventPostReplyEvent : ContactMessageEventInteract
  * @see ChatRoomMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatRoomMessageEvent
 
@@ -206,6 +259,11 @@ public interface ChatRoomMessageEventInteractionEvent : MessageEventInteractionE
  * @see ChatRoomMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: ChatRoomMessageEvent
 
@@ -226,6 +284,11 @@ public interface ChatRoomMessageEventPreReplyEvent : ChatRoomMessageEventInterac
  * @see ChatRoomMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: ChatRoomMessageEvent
 
@@ -246,6 +309,11 @@ public interface ChatRoomMessageEventPostReplyEvent : ChatRoomMessageEventIntera
  * @since 4.11.0
  * @see ChatGroupMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMessageEventInteractionEvent : ChatRoomMessageEventInteractionEvent {
     override val content: ChatGroupMessageEvent
 
@@ -265,6 +333,11 @@ public interface ChatGroupMessageEventInteractionEvent : ChatRoomMessageEventInt
  * @since 4.11.0
  * @see ChatGroupMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMessageEventPreReplyEvent :
     ChatGroupMessageEventInteractionEvent,
     ChatRoomMessageEventPreReplyEvent {
@@ -286,6 +359,11 @@ public interface ChatGroupMessageEventPreReplyEvent :
  * @since 4.11.0
  * @see ChatGroupMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMessageEventPostReplyEvent :
     ChatGroupMessageEventInteractionEvent,
     ChatRoomMessageEventPostReplyEvent {
@@ -308,6 +386,11 @@ public interface ChatGroupMessageEventPostReplyEvent :
  * @since 4.11.0
  * @see ChatChannelMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelMessageEventInteractionEvent : ChatRoomMessageEventInteractionEvent {
     override val content: ChatChannelMessageEvent
 
@@ -327,6 +410,11 @@ public interface ChatChannelMessageEventInteractionEvent : ChatRoomMessageEventI
  * @since 4.11.0
  * @see ChatChannelMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelMessageEventPreReplyEvent :
     ChatChannelMessageEventInteractionEvent,
     ChatRoomMessageEventPreReplyEvent {
@@ -348,6 +436,11 @@ public interface ChatChannelMessageEventPreReplyEvent :
  * @since 4.11.0
  * @see ChatChannelMessageEvent
  */
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatChannelMessageEventPostReplyEvent :
     ChatChannelMessageEventInteractionEvent,
     ChatRoomMessageEventPostReplyEvent {
@@ -373,6 +466,11 @@ public interface ChatChannelMessageEventPostReplyEvent :
  * @see MemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: MemberMessageEvent
 
@@ -393,6 +491,11 @@ public interface MemberMessageEventInteractionEvent : MessageEventInteractionEve
  * @see MemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteractionEvent, MessageEventPreReplyEvent {
     override val content: MemberMessageEvent
 
@@ -413,6 +516,11 @@ public interface MemberMessageEventPreReplyEvent : MemberMessageEventInteraction
  * @see MemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractionEvent, MessageEventPostReplyEvent {
     override val content: MemberMessageEvent
 
@@ -435,6 +543,11 @@ public interface MemberMessageEventPostReplyEvent : MemberMessageEventInteractio
  * @see GuildMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface GuildMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: GuildMemberMessageEvent
 
@@ -455,6 +568,11 @@ public interface GuildMemberMessageEventInteractionEvent : MessageEventInteracti
  * @see GuildMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface GuildMemberMessageEventPreReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -477,6 +595,11 @@ public interface GuildMemberMessageEventPreReplyEvent :
  * @see GuildMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface GuildMemberMessageEventPostReplyEvent :
     GuildMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {
@@ -501,6 +624,11 @@ public interface GuildMemberMessageEventPostReplyEvent :
  * @see ChatGroupMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMemberMessageEventInteractionEvent : MessageEventInteractionEvent {
     override val content: ChatGroupMemberMessageEvent
 
@@ -521,6 +649,11 @@ public interface ChatGroupMemberMessageEventInteractionEvent : MessageEventInter
  * @see ChatGroupMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMemberMessageEventPreReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPreReplyEvent {
@@ -543,6 +676,11 @@ public interface ChatGroupMemberMessageEventPreReplyEvent :
  * @see ChatGroupMemberMessageEvent
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface ChatGroupMemberMessageEventPostReplyEvent :
     ChatGroupMemberMessageEventInteractionEvent,
     MessageEventPostReplyEvent {

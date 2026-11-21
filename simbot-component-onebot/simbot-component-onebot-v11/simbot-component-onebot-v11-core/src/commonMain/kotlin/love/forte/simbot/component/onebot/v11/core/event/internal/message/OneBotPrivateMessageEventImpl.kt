@@ -33,21 +33,17 @@ import love.forte.simbot.component.onebot.v11.core.actor.internal.toMember
 import love.forte.simbot.component.onebot.v11.core.api.SendMsgResult
 import love.forte.simbot.component.onebot.v11.core.bot.internal.OneBotBotImpl
 import love.forte.simbot.component.onebot.v11.core.event.internal.eventToString
-import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.*
+import love.forte.simbot.component.onebot.v11.core.event.internal.messageinteraction.AbstractReplySupportInteractionEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotFriendMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotGroupPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.core.event.message.OneBotPrivateMessageEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotPrivateMessageEventPostReplyEvent
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.OneBotSegmentsInteractionMessage
-import love.forte.simbot.component.onebot.v11.core.event.messageinteraction.toOneBotSegmentsInteractionMessage
 import love.forte.simbot.component.onebot.v11.core.internal.message.OneBotMessageContentImpl
+import love.forte.simbot.component.onebot.v11.core.message.OneBotMessageSendTarget
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateMsgApi
 import love.forte.simbot.component.onebot.v11.core.utils.sendPrivateTextMsgApi
 import love.forte.simbot.component.onebot.v11.event.message.RawPrivateMessageEvent
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
-import love.forte.simbot.component.onebot.v11.message.OneBotMessageReceipt
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
-import love.forte.simbot.event.InteractionMessage
 
 
 internal abstract class OneBotPrivateMessageEventImpl(
@@ -66,29 +62,36 @@ internal abstract class OneBotPrivateMessageEventImpl(
         bot
     )
 
-    override suspend fun replyText(text: String): SendMsgResult {
+    override val replyDestination: OneBotMessageSendTarget
+        get() = OneBotMessageSendTarget.privateTarget(sourceEvent.userId)
+
+
+    override suspend fun replyTarget(): Any? = when (this) {
+        is OneBotFriendMessageEvent -> content()
+        is OneBotGroupPrivateMessageEvent -> content()
+        else -> null
+    }
+
+    override suspend fun replyText(text: String, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendPrivateTextMsgApi(
                 target = sourceEvent.userId,
                 text,
+                reply = reply,
             )
         )
     }
 
-    override suspend fun replySegments(segments: List<OneBotMessageSegment>): SendMsgResult {
+    override suspend fun replySegments(segments: List<OneBotMessageSegment>, reply: ID?): SendMsgResult {
         return bot.executeData(
             sendPrivateMsgApi(
                 target = sourceEvent.userId,
-                message = segments
+                message = segments,
+                reply = reply,
             )
         )
     }
 
-    abstract override fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage):
-        AbstractMessagePreSendEventImpl
-
-    abstract override fun OneBotMessageReceipt.postReplyEvent(interactionMessage: InteractionMessage):
-        OneBotPrivateMessageEventPostReplyEvent
 }
 
 internal class OneBotFriendMessageEventImpl(
@@ -99,25 +102,6 @@ internal class OneBotFriendMessageEventImpl(
     OneBotFriendMessageEvent {
     override suspend fun content(): OneBotFriend {
         return sourceEvent.sender.toFriend(bot)
-    }
-
-    override fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
-        return OneBotFriendMessageEventPreReplyEventImpl(
-            bot,
-            this,
-            interactionMessage
-        )
-    }
-
-    override fun OneBotMessageReceipt.postReplyEvent(
-        interactionMessage: InteractionMessage
-    ): OneBotPrivateMessageEventPostReplyEvent {
-        return OneBotFriendMessageEventPostReplyEventImpl(
-            bot,
-            content = this@OneBotFriendMessageEventImpl,
-            receipt = this,
-            message = interactionMessage.toOneBotSegmentsInteractionMessage()
-        )
     }
 
     override fun toString(): String =
@@ -139,25 +123,6 @@ internal class OneBotGroupPrivateMessageEventImpl(
         throw UnsupportedOperationException("The way to get the group id from PrivateMessageEvent is unknown yet.")
     }
 
-    override fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
-        return OneBotGroupPrivateMessageEventPreReplyEventImpl(
-            bot,
-            this,
-            interactionMessage
-        )
-    }
-
-    override fun OneBotMessageReceipt.postReplyEvent(
-        interactionMessage: InteractionMessage
-    ): OneBotPrivateMessageEventPostReplyEvent {
-        return OneBotGroupPrivateMessageEventPostReplyEventImpl(
-            bot,
-            content = this@OneBotGroupPrivateMessageEventImpl,
-            receipt = this,
-            message = interactionMessage.toOneBotSegmentsInteractionMessage()
-        )
-    }
-
     override fun toString(): String =
         eventToString("OneBotGroupPrivateMessageEvent")
 }
@@ -167,25 +132,6 @@ internal class OneBotDefaultPrivateMessageEventImpl(
     sourceEvent: RawPrivateMessageEvent,
     bot: OneBotBotImpl,
 ) : OneBotPrivateMessageEventImpl(sourceEvent, bot) {
-
-    override fun preReplyEvent(interactionMessage: OneBotSegmentsInteractionMessage): AbstractMessagePreSendEventImpl {
-        return OneBotDefaultPrivateMessageEventPreReplyEventImpl(
-            bot,
-            this,
-            interactionMessage
-        )
-    }
-
-    override fun OneBotMessageReceipt.postReplyEvent(
-        interactionMessage: InteractionMessage
-    ): OneBotPrivateMessageEventPostReplyEvent {
-        return OneBotDefaultPrivateMessageEventPostReplyEventImpl(
-            bot,
-            content = this@OneBotDefaultPrivateMessageEventImpl,
-            receipt = this,
-            message = interactionMessage.toOneBotSegmentsInteractionMessage()
-        )
-    }
 
     override fun toString(): String =
         eventToString("OneBotDefaultPrivateMessageEvent")

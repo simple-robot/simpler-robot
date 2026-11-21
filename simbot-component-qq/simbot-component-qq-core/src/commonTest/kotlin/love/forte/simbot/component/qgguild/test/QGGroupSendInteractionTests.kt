@@ -32,12 +32,11 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.UUID
-import love.forte.simbot.component.qguild.event.QGSendSupportInteractionEvent
-import love.forte.simbot.component.qguild.event.QGSendSupportPreSendEvent
 import love.forte.simbot.component.qguild.group.QGGroup
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.group.QGGroupImpl
 import love.forte.simbot.event.InteractionMessage
+import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.message.Text
 import kotlin.test.*
 
@@ -71,18 +70,19 @@ class QGGroupSendInteractionTests : AbstractInteractionTests() {
     @Test
     fun testQGGroupSendInteraction() = runTest {
         // TEXT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to group(it)
             },
             listener = { (atob, group), e, _, _ ->
                 atob.value = true
-                assertIs<QGGroup>(e.content)
-                assertSame(group, e.content)
+                assertIs<QGGroup>(e.source)
+                assertSame(group, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
+                e
             }
         ) { (atob, group), _ ->
             group.send("TEXT")
@@ -90,20 +90,21 @@ class QGGroupSendInteractionTests : AbstractInteractionTests() {
         }
 
         // Message
-        testInteractionEvent<_, QGSendSupportPreSendEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it) },
             prepare = {
                 atomic(false) to group(it)
             },
             listener = { (atob, group), e, _, _ ->
                 atob.value = true
-                assertIs<QGGroup>(e.content)
-                assertSame(group, e.content)
+                assertIs<QGGroup>(e.source)
+                assertSame(group, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Message>(message)
                 val messageMessage = message.message
                 assertIs<Text>(messageMessage)
                 assertEquals("TEXT", messageMessage.text)
+                e
             }
         ) { (atob, group), _ ->
             group.send(Text { "TEXT" })
@@ -111,21 +112,21 @@ class QGGroupSendInteractionTests : AbstractInteractionTests() {
         }
 
         // 修改TEXT->TEXT_EDIT
-        testInteractionEvent<_, QGSendSupportInteractionEvent>(
+        testMessageSend<_, MessageSendContext.Send>(
             mockClient = { respondSendOk(it, "TEXT_EDIT") },
             prepare = {
                 atomic(false) to group(it)
             },
             listener = { (atob, group), e, _, _ ->
                 atob.value = true
-                assertIs<QGSendSupportPreSendEvent>(e)
-                assertIs<QGGroup>(e.content)
-                assertSame(group, e.content)
+                assertIs<MessageSendContext.Send>(e)
+                assertIs<QGGroup>(e.source)
+                assertSame(group, e.source)
                 val message = e.message
                 assertIs<InteractionMessage.Text>(message)
                 assertEquals("TEXT", message.text)
                 // edit message
-                e.currentMessage = InteractionMessage.valueOf("TEXT_EDIT")
+                e.withMessage(InteractionMessage.valueOf("TEXT_EDIT"))
             }
         ) { (atob, group), _ ->
             group.send("TEXT")

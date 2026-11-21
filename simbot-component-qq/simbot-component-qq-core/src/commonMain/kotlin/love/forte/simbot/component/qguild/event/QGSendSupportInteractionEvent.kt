@@ -21,9 +21,12 @@
  *
  */
 
+@file:OptIn(InternalSimbotAPI::class)
+
 package love.forte.simbot.component.qguild.event
 
 import love.forte.simbot.ability.SendSupport
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.qguild.bot.QGBot
 import love.forte.simbot.component.qguild.channel.QGTextChannel
 import love.forte.simbot.component.qguild.dms.QGDmsContact
@@ -40,6 +43,11 @@ import love.forte.simbot.suspendrunner.STP
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGSendSupportInteractionEvent :
     QGInternalMessageInteractionEvent,
     SendSupportInteractionEvent {
@@ -55,6 +63,11 @@ public interface QGSendSupportInteractionEvent :
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGSendSupportPreSendEvent :
     SendSupportPreSendEvent,
     QGInternalMessagePreSendEvent,
@@ -68,6 +81,11 @@ public interface QGSendSupportPreSendEvent :
  * @author ForteScarlet
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGSendSupportPostSendEvent :
     SendSupportPostSendEvent,
     QGInternalMessagePostSendEvent,
@@ -82,6 +100,11 @@ public interface QGSendSupportPostSendEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGTextChannelSendSupportInteractionEvent :
     QGSendSupportInteractionEvent,
     ChatChannelInteractionEvent {
@@ -96,6 +119,11 @@ public interface QGTextChannelSendSupportInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGTextChannelSendSupportPreSendEvent :
     QGTextChannelSendSupportInteractionEvent,
     QGSendSupportPreSendEvent,
@@ -111,6 +139,11 @@ public interface QGTextChannelSendSupportPreSendEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGTextChannelSendSupportPostSendEvent :
     QGTextChannelSendSupportInteractionEvent,
     QGSendSupportPostSendEvent,
@@ -128,6 +161,11 @@ public interface QGTextChannelSendSupportPostSendEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMemberSendSupportInteractionEvent :
     QGSendSupportInteractionEvent,
     MemberInteractionEvent {
@@ -142,6 +180,11 @@ public interface QGMemberSendSupportInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMemberSendSupportPreSendEvent :
     QGMemberSendSupportInteractionEvent,
     QGSendSupportPreSendEvent,
@@ -158,6 +201,11 @@ public interface QGMemberSendSupportPreSendEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGMemberSendSupportPostSendEvent :
     QGMemberSendSupportInteractionEvent,
     QGSendSupportPostSendEvent,
@@ -176,6 +224,11 @@ public interface QGMemberSendSupportPostSendEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDmsContactSendSupportInteractionEvent :
     QGSendSupportInteractionEvent,
     ContactInteractionEvent {
@@ -190,6 +243,11 @@ public interface QGDmsContactSendSupportInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDmsContactSendSupportPreSendEvent :
     QGDmsContactSendSupportInteractionEvent,
     QGSendSupportPreSendEvent,
@@ -205,6 +263,11 @@ public interface QGDmsContactSendSupportPreSendEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGDmsContactSendSupportPostSendEvent :
     QGDmsContactSendSupportInteractionEvent,
     QGSendSupportPostSendEvent,
@@ -222,6 +285,11 @@ public interface QGDmsContactSendSupportPostSendEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGFriendSendSupportInteractionEvent :
     QGSendSupportInteractionEvent {
     override val content: QGFriend
@@ -235,6 +303,11 @@ public interface QGFriendSendSupportInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGFriendSendSupportPreSendEvent :
     QGFriendSendSupportInteractionEvent,
     QGSendSupportPreSendEvent {
@@ -249,6 +322,11 @@ public interface QGFriendSendSupportPreSendEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGFriendSendSupportPostSendEvent :
     QGFriendSendSupportInteractionEvent,
     QGSendSupportPostSendEvent {
@@ -265,6 +343,11 @@ public interface QGFriendSendSupportPostSendEvent :
  * @since 4.2.0
  */
 @SubclassOptInRequired(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupSendSupportInteractionEvent :
     QGSendSupportInteractionEvent {
     override val content: QGGroup
@@ -278,6 +361,11 @@ public interface QGGroupSendSupportInteractionEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupSendSupportPreSendEvent :
     QGGroupSendSupportInteractionEvent,
     QGSendSupportPreSendEvent {
@@ -292,6 +380,11 @@ public interface QGGroupSendSupportPreSendEvent :
  * @since 4.2.0
  */
 @OptIn(FuzzyEventTypeImplementation::class)
+@Deprecated(
+    message = InternalMessageInteractionEventDeprecates.MESSAGE,
+    level = DeprecationLevel.ERROR
+)
+@Suppress("DEPRECATION_ERROR")
 public interface QGGroupSendSupportPostSendEvent :
     QGGroupSendSupportInteractionEvent,
     QGSendSupportPostSendEvent {

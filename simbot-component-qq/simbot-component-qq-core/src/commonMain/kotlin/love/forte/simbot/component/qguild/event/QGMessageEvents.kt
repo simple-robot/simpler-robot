@@ -39,7 +39,6 @@ import love.forte.simbot.definition.Actor
 import love.forte.simbot.event.*
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.qguild.QQGuildApiException
-import love.forte.simbot.qguild.model.Message
 import love.forte.simbot.suspendrunner.STP
 import love.forte.simbot.qguild.model.Message as QGSourceMessage
 
@@ -102,9 +101,10 @@ public sealed class QGMessageEvent : QGBaseMessageEvent<QGSourceMessage>(), Cont
     /**
      * 基于当前事件进行消息回复。
      *
-     * 对于公域bot来说，也理应这么回复。[reply] 会默认根据当前事件为当前可能产生的所有消息体填充回复的目标（`msg_id` 或 `event_id`），
-     * 并且与 `send` 相比会默认追加一个 [引用效果][Message.messageReference] （如果 [message] 中存在 [自定义reference][love.forte.simbot.component.qguild.message.QGReference]
-     * 则在其影响范围内不会自动填充）。
+     * 发送终端根据当前事件填充被动回复目标。频道、频道私信和群聊回复默认引用原消息，
+     * 也可用 [love.forte.simbot.component.qguild.message.QGMessageReferenceOption] 指定引用。
+     * C2C 回复仅使用显式引用。消息已通过 [love.forte.simbot.component.qguild.message.QGReference]
+     * 指定引用时，优先使用对应消息体的引用。
      *
      * @throws QQGuildApiException 请求失败，例如无权限
      */

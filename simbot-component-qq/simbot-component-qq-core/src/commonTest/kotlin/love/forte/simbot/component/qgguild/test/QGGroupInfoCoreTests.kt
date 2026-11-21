@@ -24,25 +24,20 @@
 package love.forte.simbot.component.qgguild.test
 
 import io.ktor.client.engine.mock.*
-import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import love.forte.simbot.application.interceptors
 import love.forte.simbot.common.atomic.atomic
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.component.qguild.event.QGGroupSendSupportInteractionEvent
-import love.forte.simbot.component.qguild.event.QGSendSupportPostSendEvent
-import love.forte.simbot.component.qguild.event.QGSendSupportPreSendEvent
 import love.forte.simbot.component.qguild.group.QGGroupWithInfo
 import love.forte.simbot.component.qguild.internal.bot.QGBotImpl
 import love.forte.simbot.component.qguild.internal.group.QGGroupImpl
 import love.forte.simbot.component.qguild.internal.message.QGGroupAndC2CMessageContentImpl
+import love.forte.simbot.interception.MessageSendContext
+import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.Text
 import love.forte.simbot.qguild.QQGuildApiException
 import love.forte.simbot.qguild.event.GroupAtMessageCreate
@@ -130,53 +125,53 @@ class QGGroupInfoCoreTests : AbstractInteractionTests() {
     }
 
     /**
-     * 三种发送入口使用富化对象触发事件，并共享原消息 ID 和发送序号。
+     * 富化句柄的发送来源、消息 ID 和发送序号经过拦截后仍然保留。
      */
     @Test
     fun enrichedSendsPreserveEventIdentityAndSequence() = runTest {
-        val events = Channel<QGGroupSendSupportInteractionEvent>(Channel.UNLIMITED)
+        val contexts = mutableListOf<MessageSendContext>()
         var sends = 0
-        testInteractionEvent<_, QGGroupSendSupportInteractionEvent>(
-            mockClient = { request ->
-                when (request.url.encodedPath) {
-                    "/v2/groups/group/info" -> respondOk(info("snapshot"))
-                    "/v2/groups/group/messages" -> {
-                        val fields = Json.parseToJsonElement(request.body.toByteArray().decodeToString()).jsonObject
-                        assertEquals("source-message", fields["msg_id"]?.jsonPrimitive?.content)
-                        assertEquals((++sends).toString(), fields["msg_seq"]?.jsonPrimitive?.content)
-                        respondOk("""{"id":"sent-$sends","timestamp":1698435200}""")
-                    }
-                    else -> error("Unexpected path: ${request.url.encodedPath}")
+        val app = app { request ->
+            when (request.url.encodedPath) {
+                "/v2/groups/group/info" -> respondOk(info("snapshot"))
+                "/v2/groups/group/messages" -> {
+                    val fields = Json.parseToJsonElement(request.body.toByteArray().decodeToString()).jsonObject
+                    assertEquals("source-message", fields["msg_id"]?.jsonPrimitive?.content)
+                    assertEquals((++sends).toString(), fields["msg_seq"]?.jsonPrimitive?.content)
+                    respondOk("""{"id":"sent-$sends","timestamp":1698435200}""")
                 }
-            },
-            prepare = { bot ->
-                val source = Json.decodeFromString(
-                    GroupAtMessageCreate.Data.serializer(),
-                    """{"id":"source-message","author":{"member_openid":"member"},"content":"received","timestamp":"2023-11-06T13:37:18+08:00","group_openid":"group"}"""
-                )
-                val group = QGGroupImpl(bot, "group".ID, source, atomic(1), false)
-                group to group.includeInfo()
-            },
-            listener = { _, event, _, _ -> events.send(event) },
-        ) { (group, snapshot), _ ->
+                else -> error("Unexpected path: ${request.url.encodedPath}")
+            }
+        }
+        val bot = app.bot() as QGBotImpl
+        try {
+            val source = Json.decodeFromString(
+                GroupAtMessageCreate.Data.serializer(),
+                """{"id":"source-message","author":{"member_openid":"member"},"content":"received","timestamp":"2023-11-06T13:37:18+08:00","group_openid":"group"}"""
+            )
+            val group = QGGroupImpl(bot, "group".ID, source, atomic(1), false)
+            val snapshot = group.includeInfo()
+            app.interceptors {
+                onMessageSend { _, context, chain ->
+                    contexts.add(context)
+                    chain.proceed(context)
+                }
+            }
             snapshot.send("text")
             snapshot.send(Text { "message" })
             snapshot.send(QGGroupAndC2CMessageContentImpl("content".ID, "content", emptyList()))
-
-            // 发送后事件异步分发，使用实际调度器等待，避免测试虚拟时钟提前超时。
-            val received = withContext(Dispatchers.Default) {
-                withTimeout(5000) { List(6) { events.receive() } }
-            }
-            assertEquals(3, received.count { it is QGSendSupportPreSendEvent })
-            assertEquals(3, received.count { it is QGSendSupportPostSendEvent })
-            received.forEach {
-                assertSame(snapshot, it.content)
-                assertIs<QGGroupWithInfo>(it.content)
-                assertEquals("snapshot", it.content.name)
+            assertEquals(3, contexts.size)
+            contexts.forEach {
+                assertSame(snapshot, it.source)
+                assertSame(snapshot, it.target())
+                assertIs<QGGroupWithInfo>(it.source)
             }
             group.send("original")
+            assertSame(group, contexts.last().source)
             assertEquals(4, sends)
+        } finally {
+            app.cancel()
+            bot.cancel()
         }
-        events.close()
     }
 }

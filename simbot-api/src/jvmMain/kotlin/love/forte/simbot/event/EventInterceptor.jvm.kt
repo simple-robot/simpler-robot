@@ -26,41 +26,57 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.future.future
+import love.forte.simbot.common.coroutines.VirtualOrIO
+import love.forte.simbot.suspendrunner.runInBlocking
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.CoroutineContext
 
 /**
  * 以异步的方式实现 [EventInterceptor].
  *
  * Java 中可以直接通过 `EventInterceptors.async` 构建。
+ * 默认下游继承当前调用的执行环境。返回组合 future 时，
+ * 取消不会自动反向传递到源 future，源任务由用户管理。
  *
  * @see EventInterceptor
  */
 public fun interface JAsyncEventInterceptor : EventInterceptor {
     /**
-     * 供于 [JAsyncEventInterceptor] 中异步拦截API的阻塞 Context 代理类型。
-     * 如果 [scope] 为 `null`，则异步调度的作用域会使用 [source]。
+     * [JAsyncEventInterceptor] 的异步 Context 代理，通过指定 [scope] 执行下游。
      */
     public data class Context(
+        /**
+         * 被代理的事件拦截上下文。
+         */
         public val source: EventInterceptor.Context,
+        /**
+         * 下游 future 的执行作用域，其取消关系由调用方选择。
+         */
         public val scope: CoroutineScope,
     ) {
+        /**
+         * 启动下游执行，取消返回的 future 会取消对应任务。
+         */
         public fun invoke(): CompletableFuture<EventResult> =
             scope.future { source.invoke() }
 
+        /**
+         * 使用替换后的事件监听上下文启动下游执行。
+         */
         public fun invoke(eventListenerContext: EventListenerContext): CompletableFuture<EventResult> =
             scope.future { source.invoke(eventListenerContext) }
     }
 
     /**
-     * 构建 [Context]。可以实现此函数来重定义实现逻辑，
-     * 例如变更默认的异步执行作用域。
+     * 构建 [Context]。可以实现此函数来重定义实现逻辑，例如变更默认的异步执行作用域。
+     * 正常拦截入口使用当前调用的执行环境。手动调用此方法时回退到事件调度上下文。
      */
     public fun EventInterceptor.Context.createContext(): Context =
-        Context(this, this.eventListenerContext.context)
+        Context(this, this as? EventInterceptorEntryContext ?: eventListenerContext.context)
 
     /**
      * 以异步的形式实现 [EventInterceptor.intercept].
@@ -71,8 +87,10 @@ public fun interface JAsyncEventInterceptor : EventInterceptor {
     public fun intercept(context: Context): CompletableFuture<EventResult>
 
     @JvmSynthetic
-    override suspend fun EventInterceptor.Context.intercept(): EventResult =
-        intercept(createContext()).await()
+    override suspend fun EventInterceptor.Context.intercept(): EventResult {
+        val source = EventInterceptorEntryContext(this, currentCoroutineContext())
+        return intercept(source.createContext()).await()
+    }
 }
 
 /**
@@ -102,18 +120,40 @@ public fun async(function: JAsyncEventInterceptor): JAsyncEventInterceptor = fun
 
 /**
  * 以阻塞的方式实现 [EventInterceptor]
+ * Java 回调在 [Dispatchers.VirtualOrIO] 执行，下游恢复调用入口的完整协程环境。
+ * 父调用取消会取消挂起下游并中断 Java 回调线程，仅支持协作式取消或可中断的阻塞操作。
+ * 回调抛出的 [InterruptedException] 会转为 [kotlinx.coroutines.CancellationException]，其他业务异常直接传播。
  *
  * @see EventInterceptor
  */
 public fun interface JBlockEventInterceptor : EventInterceptor {
     /**
-     * 供于 [JBlockEventInterceptor] 中阻塞拦截API的阻塞 Context 代理类型。
+     * [JBlockEventInterceptor] 的阻塞 Context 代理。
+     * 框架创建的代理保留入口执行环境与取消关系。手动构造时沿用全局阻塞桥接配置。
      */
     public data class Context(public val source: EventInterceptor.Context) {
-        public fun invoke(): EventResult = runInNoScopeBlocking { source.invoke() }
+        /**
+         * 阻塞等待下游执行结果，异常直接向调用方传播。
+         */
+        public fun invoke(): EventResult = invokeInBlocking { source.invoke() }
 
+        /**
+         * 使用替换后的事件监听上下文阻塞等待下游结果。
+         */
         public fun invoke(eventListenerContext: EventListenerContext): EventResult =
-            runInNoScopeBlocking { source.invoke(eventListenerContext) }
+            invokeInBlocking { source.invoke(eventListenerContext) }
+
+        /**
+         * 入口环境由委托上下文携带，保留数据类原有构造和复制语义。
+         */
+        private fun invokeInBlocking(block: suspend () -> EventResult): EventResult {
+            val entryContext = (source as? EventInterceptorEntryContext)?.entryContext
+            return if (entryContext == null) {
+                runInNoScopeBlocking(block = block)
+            } else {
+                runInBlocking(entryContext) { block() }
+            }
+        }
     }
 
     /**
@@ -127,8 +167,21 @@ public fun interface JBlockEventInterceptor : EventInterceptor {
     public fun Context.intercept(): EventResult
 
     @JvmSynthetic
-    override suspend fun EventInterceptor.Context.intercept(): EventResult =
-        Context(this).intercept()
+    override suspend fun EventInterceptor.Context.intercept(): EventResult {
+        val source = EventInterceptorEntryContext(this, currentCoroutineContext())
+        return runInterruptible(Dispatchers.VirtualOrIO) { Context(source).intercept() }
+    }
+}
+
+/**
+ * 通过委托携带调用入口环境，保留公开 Context 数据类及非挂起 createContext 扩展点。
+ */
+private class EventInterceptorEntryContext(
+    source: EventInterceptor.Context,
+    val entryContext: CoroutineContext
+) : EventInterceptor.Context by source, CoroutineScope {
+    // 阻塞桥接需要入口 Job，独立 future 则只继承入口的执行环境。
+    override val coroutineContext: CoroutineContext = entryContext.minusKey(Job)
 }
 
 /**

@@ -24,23 +24,19 @@
 package love.forte.simbot.component.kook.internal
 
 import io.ktor.http.*
-import love.forte.simbot.ability.DeleteFailureException
-import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.*
 import love.forte.simbot.ability.StandardDeleteOption.Companion.standardAnalysis
-import love.forte.simbot.ability.isIgnoreOnFailure
-import love.forte.simbot.ability.isIgnoreOnNoSuchTarget
 import love.forte.simbot.common.exception.initExceptionCause
 import love.forte.simbot.component.kook.KookUserChat
 import love.forte.simbot.component.kook.bot.internal.KookBotImpl
-import love.forte.simbot.component.kook.message.*
-import love.forte.simbot.component.kook.message.KookMessageCreatedReceipt.Companion.asReceipt
-import love.forte.simbot.component.kook.util.requestDataBy
+import love.forte.simbot.component.kook.message.KookMessageReceipt
+import love.forte.simbot.component.kook.message.KookMessageSendContext
+import love.forte.simbot.component.kook.message.KookMessageSendTarget
 import love.forte.simbot.component.kook.util.requestResultBy
+import love.forte.simbot.event.InteractionMessage
 import love.forte.simbot.kook.api.ApiResponseException
-import love.forte.simbot.kook.api.message.SendDirectMessageApi
 import love.forte.simbot.kook.api.userchat.DeleteUserChatApi
 import love.forte.simbot.kook.api.userchat.UserChatView
-import love.forte.simbot.kook.messages.MessageType
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import kotlin.coroutines.CoroutineContext
@@ -59,47 +55,52 @@ internal class KookUserChatImpl(
         return "KookUserChat(code=${source.code}, target=${source.targetInfo})"
     }
 
-    override suspend fun send(text: String): KookMessageCreatedReceipt {
-        return SendDirectMessageApi
-            .createByTargetId(source.targetInfo.id, text, MessageType.TEXT.type, null, null)
-            .requestDataBy(bot)
-            .asReceipt(true, bot)
-    }
+    override suspend fun send(text: String): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), emptyList())
 
-    override suspend fun send(message: Message): KookMessageReceipt {
-        return message.sendToDirectByTargetId(bot, source.targetInfo.id, null, null, null)
-            ?: throw IllegalArgumentException("Valid messages must not be empty.")
-    }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(text: String, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(text), options.toList())
 
-    override suspend fun send(messageContent: MessageContent): KookMessageReceipt {
-        return when (messageContent) {
-            is KookReceiveMessageContent -> {
-                val source = messageContent.source
-                SendDirectMessageApi.createByTargetId(
-                    targetId = this.source.targetInfo.id,
-                    content = source.content,
-                    type = source.type?.value,
-                    quote = null,
-                    nonce = null,
-                ).requestDataBy(bot).asReceipt(true, bot)
-            }
+    override suspend fun send(message: Message): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), emptyList())
 
-            is KookChannelMessageDetailsContent -> {
-                val details = messageContent.details
-                SendDirectMessageApi.createByTargetId(
-                    targetId = this.source.targetInfo.id,
-                    content = details.content,
-                    type = details.type,
-                    quote = details.quote?.id,
-                    nonce = null,
-                ).requestDataBy(bot).asReceipt(true, bot)
-            }
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(message: Message, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(message), options.toList())
 
-            else -> {
-                send(messageContent.messages)
-            }
+    override suspend fun send(messageContent: MessageContent): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), emptyList())
+
+    /**
+     * 保留本次发送选项并进入共享拦截链。
+     */
+    override suspend fun send(messageContent: MessageContent, vararg options: SendOption): KookMessageReceipt =
+        send(InteractionMessage.valueOf(messageContent), options.toList())
+
+    /**
+     * 直接使用用户 ID 发送，避免内部委托丢失成员或会话这一调用来源。
+     */
+    private suspend inline fun send(
+        message: InteractionMessage,
+        options: List<SendOption>
+    ): KookMessageReceipt =
+        bot.interceptMessageSend(
+            KookMessageSendContext.create(
+                bot = bot,
+                source = this,
+                message = message,
+                destination = KookMessageSendTarget.user(source.targetInfo.id),
+                options = options,
+                target = { this },
+            )
+        ) {
+            sendDirectMessage(bot, it)
         }
-    }
 
     override suspend fun delete(vararg options: DeleteOption) {
         val stdOpts = options.standardAnalysis()

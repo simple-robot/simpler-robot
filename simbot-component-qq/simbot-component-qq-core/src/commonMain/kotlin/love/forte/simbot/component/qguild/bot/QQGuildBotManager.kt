@@ -221,6 +221,7 @@ public interface QQGuildBotManager : BotManager {
 
             return QQGuildBotManagerImpl(
                 eventDispatcher = context.eventDispatcher,
+                interceptorContainer = context.interceptorManager,
                 configuration = configuration,
                 component = component,
                 job = job,

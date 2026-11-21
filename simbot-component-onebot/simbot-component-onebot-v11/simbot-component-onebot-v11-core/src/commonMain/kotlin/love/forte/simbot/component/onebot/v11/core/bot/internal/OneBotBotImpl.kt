@@ -30,7 +30,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.DeserializationStrategy
@@ -89,7 +91,11 @@ import love.forte.simbot.component.onebot.v11.event.request.RawGroupRequestEvent
 import love.forte.simbot.component.onebot.v11.event.resolveEventSerializer
 import love.forte.simbot.component.onebot.v11.event.resolveEventSubTypeFieldName
 import love.forte.simbot.component.onebot.v11.message.OneBotMessageContent
-import love.forte.simbot.event.*
+import love.forte.simbot.event.Event
+import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.event.EventResult
+import love.forte.simbot.interception.InterceptorContainer
+import love.forte.simbot.interception.InterceptorManager
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.isDebugEnabled
 import kotlin.concurrent.Volatile
@@ -115,6 +121,10 @@ internal class OneBotBotImpl(
     override val component: OneBot11Component,
     private val eventProcessor: EventProcessor,
     private val baseDecoderJson: Json,
+    /**
+     * 来自所属 Application 的消息发送拦截器容器。
+     */
+    internal val interceptorContainer: InterceptorContainer = InterceptorManager(),
 ) : OneBotBot, JobBasedBot() {
     companion object {
         private const val BASE_LOGGER_NAME =
@@ -505,6 +515,10 @@ internal class OneBotBotImpl(
                 // 等待关闭完成
                 val reason = kotlin.runCatching {
                     currentSession.closeReason.await()
+                }.onFailure {
+                    if (it is CancellationException) {
+                        currentCoroutineContext().ensureActive()
+                    }
                 }.getOrElse { e ->
                     logger.debug("Failed to get close reason for session: {}", e.message, e)
                     null
@@ -721,24 +735,6 @@ internal class OneBotBotImpl(
         return eventProcessor
             .push(event)
             .onEachErrorLog(logger)
-    }
-
-    internal fun pushEventAndLaunch(event: Event): Job {
-        return pushEvent(event).launchIn(this)
-    }
-
-    internal suspend fun emitMessagePreSendEvent(event: InternalMessagePreSendEvent) {
-        val errors = eventProcessor
-            .push(event)
-            .filterIsInstance<StandardEventResult.Error>()
-            .toList()
-
-        if (errors.isNotEmpty()) {
-            val ex = OneBotInternalInterceptionException("Internal message pre send event process failed")
-            errors.forEach { ex.addSuppressed(it.content) }
-            logger.error("Internal message pre send event process failed", ex)
-            throw ex
-        }
     }
 
     override fun toString(): String =

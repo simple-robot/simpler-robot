@@ -114,7 +114,8 @@ public abstract class OneBotBotManager : BotManager, JobBasedBotManager() {
                 managerContext,
                 component,
                 context.eventDispatcher,
-                context.components.serializersModule
+                context.components.serializersModule,
+                context.interceptorManager
             )
         }
     }

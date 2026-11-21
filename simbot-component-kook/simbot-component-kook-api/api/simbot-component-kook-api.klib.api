@@ -2096,8 +2096,22 @@ final class love.forte.simbot.kook.api.message/MessageReactor { // love.forte.si
 }
 
 final class love.forte.simbot.kook.api.message/SendChannelMessageApi : love.forte.simbot.kook.api/KookPostApi<love.forte.simbot.kook.api.message/SendMessageResult> { // love.forte.simbot.kook.api.message/SendChannelMessageApi|null[0]
+    final val content // love.forte.simbot.kook.api.message/SendChannelMessageApi.content|{}content[0]
+        final fun <get-content>(): kotlin/String // love.forte.simbot.kook.api.message/SendChannelMessageApi.content.<get-content>|<get-content>(){}[0]
+    final val nonce // love.forte.simbot.kook.api.message/SendChannelMessageApi.nonce|{}nonce[0]
+        final fun <get-nonce>(): kotlin/String? // love.forte.simbot.kook.api.message/SendChannelMessageApi.nonce.<get-nonce>|<get-nonce>(){}[0]
+    final val quote // love.forte.simbot.kook.api.message/SendChannelMessageApi.quote|{}quote[0]
+        final fun <get-quote>(): kotlin/String? // love.forte.simbot.kook.api.message/SendChannelMessageApi.quote.<get-quote>|<get-quote>(){}[0]
     final val resultDeserializationStrategy // love.forte.simbot.kook.api.message/SendChannelMessageApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.kook.api.message/SendMessageResult> // love.forte.simbot.kook.api.message/SendChannelMessageApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
+    final val targetId // love.forte.simbot.kook.api.message/SendChannelMessageApi.targetId|{}targetId[0]
+        final fun <get-targetId>(): kotlin/String // love.forte.simbot.kook.api.message/SendChannelMessageApi.targetId.<get-targetId>|<get-targetId>(){}[0]
+    final val tempTargetId // love.forte.simbot.kook.api.message/SendChannelMessageApi.tempTargetId|{}tempTargetId[0]
+        final fun <get-tempTargetId>(): kotlin/String? // love.forte.simbot.kook.api.message/SendChannelMessageApi.tempTargetId.<get-tempTargetId>|<get-tempTargetId>(){}[0]
+    final val templateId // love.forte.simbot.kook.api.message/SendChannelMessageApi.templateId|{}templateId[0]
+        final fun <get-templateId>(): kotlin/String? // love.forte.simbot.kook.api.message/SendChannelMessageApi.templateId.<get-templateId>|<get-templateId>(){}[0]
+    final val type // love.forte.simbot.kook.api.message/SendChannelMessageApi.type|{}type[0]
+        final fun <get-type>(): kotlin/Int? // love.forte.simbot.kook.api.message/SendChannelMessageApi.type.<get-type>|<get-type>(){}[0]
 
     final class Builder { // love.forte.simbot.kook.api.message/SendChannelMessageApi.Builder|null[0]
         constructor <init>() // love.forte.simbot.kook.api.message/SendChannelMessageApi.Builder.<init>|<init>(){}[0]
@@ -2146,6 +2160,8 @@ final class love.forte.simbot.kook.api.message/SendChannelMessageApi : love.fort
 }
 
 final class love.forte.simbot.kook.api.message/SendDirectMessageApi : love.forte.simbot.kook.api/KookPostApi<love.forte.simbot.kook.api.message/SendMessageResult> { // love.forte.simbot.kook.api.message/SendDirectMessageApi|null[0]
+    final val quote // love.forte.simbot.kook.api.message/SendDirectMessageApi.quote|{}quote[0]
+        final fun <get-quote>(): kotlin/String? // love.forte.simbot.kook.api.message/SendDirectMessageApi.quote.<get-quote>|<get-quote>(){}[0]
     final val resultDeserializationStrategy // love.forte.simbot.kook.api.message/SendDirectMessageApi.resultDeserializationStrategy|{}resultDeserializationStrategy[0]
         final fun <get-resultDeserializationStrategy>(): kotlinx.serialization/DeserializationStrategy<love.forte.simbot.kook.api.message/SendMessageResult> // love.forte.simbot.kook.api.message/SendDirectMessageApi.resultDeserializationStrategy.<get-resultDeserializationStrategy>|<get-resultDeserializationStrategy>(){}[0]
 

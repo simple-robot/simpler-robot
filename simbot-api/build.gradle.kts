@@ -64,7 +64,8 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-Xexpect-actual-classes"
+            "-Xexpect-actual-classes",
+            "-Xcompanion-blocks-and-extensions"
         )
         optIn.addAll(
             "love.forte.simbot.resource.ResourceImplementation",

@@ -41,13 +41,9 @@ import java.lang.invoke.MethodType
 import java.util.*
 import java.util.concurrent.*
 import java.util.concurrent.CancellationException
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -350,7 +346,6 @@ private inline fun initDispatcher(
             if (useDispatcher != null) {
                 val limitedParallelism = systemInt(dispatcherLimitedParallelismPropertyName)
 
-                @OptIn(ExperimentalCoroutinesApi::class)
                 if (limitedParallelism != null) {
                     logger.debug(
                         "Dispatcher runner limited parallelism: {}={}",
@@ -551,10 +546,10 @@ public fun setRunInBlockingStrategy(strategy: RunInBlockingStrategy) {
 // region run in no scope blocking strategy
 
 /**
- * 无作用域的阻塞API所使用的执行策略。
+ * 不提供 [CoroutineScope] 接收者的阻塞 API 执行策略。
  *
  * 可以通过 [setRunInNoScopeBlockingStrategy]
- * 来自定义一个**全局**的无作用域阻塞函数执行策略。
+ * 来自定义一个**全局**的阻塞函数执行策略。默认通过 [runBlocking] 执行。
  *
  */
 @ExperimentalSimbotAPI
@@ -570,16 +565,7 @@ private var runInNoScopeBlockingStrategy: RunInNoScopeBlockingStrategy = Default
 private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy {
     @kotlin.jvm.Throws(Exception::class)
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
-        val runner = SuspendRunner<T>(context)
-        block.startCoroutine(runner)
-        return runner.await(SuspendRunner.isWaitTimeoutEnabled)
-    }
-
-    @kotlin.jvm.Throws(Exception::class)
-    fun <T> invokeWithoutTimeoutLog(context: CoroutineContext, block: suspend () -> T): T {
-        val runner = SuspendRunner<T>(context)
-        block.startCoroutine(runner)
-        return runner.await(isWaitTimeoutEnabled = false)
+        return runBlocking(context) { block() }
     }
 
 }
@@ -587,7 +573,7 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
 /**
  * 设置一个 [runInNoScopeBlocking] 函数的实际调度逻辑。
  *
- * 默认情况下 [runInNoScopeBlocking] 的策略为在当前线程上阻塞并等待。
+ * 默认使用 [runBlocking]，在当前线程阻塞等待本次协程及其子任务完成。
  */
 @ExperimentalSimbotAPI
 public fun setRunInNoScopeBlockingStrategy(strategy: RunInNoScopeBlockingStrategy) {
@@ -603,7 +589,7 @@ public fun setRunInNoScopeBlockingStrategy(strategy: RunInNoScopeBlockingStrateg
  * 在默认未提供上下文的情况下，[runInBlocking] 所使用的 [context] 为 [DefaultBlockingContext].
  *
  * @throws Exception 原函数可能被抛出的任何异常
- * @throws RunInBlockingException 当出现执行 [block] 过程中由于 future 或线程中断等非 [block] 本身产生的异常时被包装为 [RunInBlockingException]
+ * @throws InterruptedException 默认策略下，阻塞线程被中断时取消本次协程调用并抛出。
  *
  * @see DefaultBlockingContext
  * @see runBlocking
@@ -633,7 +619,7 @@ public fun <T> runInTimeoutBlocking(
     block: suspend CoroutineScope.() -> T,
 ): T = try {
     runInBlockingStrategy(context) {
-        withTimeout(timeout, block)
+        withTimeout(timeout.milliseconds, block)
     }
 } catch (timeout: TimeoutCancellationException) {
     throw timeout
@@ -643,12 +629,21 @@ public fun <T> runInTimeoutBlocking(
 
 /**
  *
- * 在simbot中提供的 [runBlocking] 包装。
+ * 不提供 [CoroutineScope] 接收者的阻塞桥接 API，默认通过 [runBlocking] 执行 [block]。
+ * “NoScope”仅表示参数没有作用域接收者，不表示执行时没有 [Job]。
  *
- * 在默认未提供上下文的情况下，[runInBlocking] 所使用的 [context] 为 [DefaultBlockingContext].
+ * 默认策略为本次调用创建协程，其父任务为 [context] 中的 [Job]（如果存在），
+ * 并等待本次协程及其子任务完成。其他上下文元素按 [runBlocking] 的规则安装和恢复。
+ * 父任务取消会取消本次调用；阻塞线程中断也会取消本次调用，并等待其结束后抛出异常。
+ * [block] 的业务异常及取消异常直接传播，不再由旧执行器包装。
+ * 取消需要执行逻辑协作，无法强制终止忽略取消或中断的代码。
  *
- * @throws Exception 原函数可能被抛出的任何异常
- * @throws RunInBlockingException 当出现执行 [block] 过程中由于 future 或线程中断等非 [block] 本身产生的异常时被包装为 [RunInBlockingException]
+ * 默认 [context] 为 [DefaultBlockingContext]。默认策略不再输出长时间等待告警，
+ * 旧的 `simbot.blockingRunner.waitTimeoutMilliseconds`、`disableWaitTimeout`、
+ * `waitTimeoutLogIfVirtual` 配置不再生效。自定义策略的行为由其实现决定。
+ *
+ * @throws Exception [block] 执行时产生的异常。
+ * @throws InterruptedException 默认策略下，阻塞线程被中断时取消本次调用并抛出。
  * @see DefaultBlockingContext
  * @see runBlocking
  */
@@ -660,28 +655,27 @@ public fun <T> runInNoScopeBlocking(
 ): T = runInNoScopeBlockingStrategy(context, block)
 
 /**
- * @suppress 内部API
+ * 长时间等待告警已移除，此入口仅为兼容已有调用而保留。
  *
- * @throws Exception 原函数可能被抛出的任何异常
- * @throws RunInBlockingException 当出现执行 [block] 过程中由于 future 或线程中断等非 [block] 本身产生的异常时被包装为 [RunInBlockingException]
+ * 与 [runInNoScopeBlocking] 使用相同策略及执行语义。
+ *
+ * @suppress 内部API
  *
  * @see runInNoScopeBlocking
  * @see DefaultBlockingContext
  * @see runBlocking
  */
-@OptIn(ExperimentalSimbotAPI::class)
 @Throws(Exception::class)
 @InternalSimbotAPI
+@Deprecated(
+    "Long-wait diagnostics have been removed; use runInNoScopeBlocking instead",
+    ReplaceWith("runInNoScopeBlocking(context, block)")
+)
 public fun <T> runInNoScopeBlockingWithoutTimeoutDebug(
     context: CoroutineContext = DefaultBlockingContext,
     block: suspend () -> T,
 ): T {
-    val strategy = runInNoScopeBlockingStrategy
-    if (strategy is DefaultRunInNoScopeBlockingStrategy) {
-        return DefaultRunInNoScopeBlockingStrategy.invokeWithoutTimeoutLog(context, block)
-    }
-
-    return strategy(context, block)
+    return runInNoScopeBlocking(context, block)
 }
 
 /**
@@ -697,7 +691,7 @@ public fun <T> runInNoScopeTimeoutBlocking(
     block: suspend () -> T,
 ): T = runInNoScopeBlockingStrategy(context) {
     try {
-        withTimeout(timeout) { block() }
+        withTimeout(timeout.milliseconds) { block() }
     } catch (timeout: TimeoutCancellationException) {
         throw TimeoutException(timeout.localizedMessage).initCause(timeout)
     }
@@ -746,15 +740,15 @@ public fun <T> `$$asReserve`(block: suspend () -> T, scope: CoroutineScope? = nu
     asReserve(scope = scope, context = EmptyCoroutineContext, block = block)
 
 /**
- * 将 [block] 包装为 [org.reactivestreams.Publisher].
+ * 将 [block] 包装为 [org.reactivestreams.Publisher]。
+ * [context] 提供订阅执行环境，其中的 [Job] 不会作为父任务，执行生命周期由订阅管理。
  */
 @InternalSimbotAPI
 public fun <T> asPublisher(
     context: CoroutineContext? = null,
     block: suspend () -> T
 ): Publisher<T & Any> {
-    // 响应式实际调度上下文由调用处控制，此处无所谓，不是用 context.
-    return publish {
+    return publish(context?.minusKey(Job) ?: EmptyCoroutineContext) {
         block()?.also { send(it) }
     }
 }
@@ -807,10 +801,8 @@ public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineSc
 }
 
 /**
- * 使用在 `runBlocking` 或相关函数中，用于将运行其中的函数所抛出的函数捕获并包装。
- *
- * [RunInBlockingException] 只会包装那些由 future 或者线程中断导致的异常，
- * 实际执行的blocking函数所抛出的异常会被原样抛出。
+ * 阻塞桥接的兼容异常包装，目前仍用于 [runInTimeoutBlocking] 的非超时异常。
+ * [runInNoScopeBlocking] 的默认策略不使用此包装。
  *
  * 通常来讲，[cause] 可能是：
  * - [CancellationException]
@@ -822,220 +814,5 @@ public sealed class RunInBlockingException(cause: Throwable) : RuntimeException(
 @Suppress("unused", "ClassName")
 private class `$RunInBlockingException$`(cause: Throwable) : RunInBlockingException(cause)
 
-private fun throwRunInBlockingException(cause: Throwable): Nothing =
-    throw `$RunInBlockingException$`(cause)
-
-// Yes. I am the BlockingRunner.
-private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
-    @Suppress("unused")
-    @Volatile
-    var s: Int = SIGNAL_NONE
-    // 1 = resume - success
-    // 2 = resume - exception
-    // 3 = suspend
-
-    @Volatile
-    var value: Any? = null
-    // 1 -> value
-    // 2 -> ex
-    // 3 -> CompletableFuture<T>
-
-    private object NULL
-
-    override fun resumeWith(result: Result<T>) {
-        // 先变更信号
-        val resumed =
-            signalUpdater.compareAndSet(
-                this,
-                SIGNAL_NONE,
-                if (result.isSuccess) SIGNAL_RESUME_SUCCESS else SIGNAL_RESUME_FAILED
-            )
-
-        // 信号变更失败，说明现在信号是 SUSPEND
-        // 那么 value 就已经有一个 future 值了，或者它应该被初始化为一个 future
-        if (!resumed) {
-            // value is a Future.
-            @Suppress("UNCHECKED_CAST")
-            valueUpdater.updateAndGet(this) { curr ->
-                (curr as? CompletableFuture<T> ?: CompletableFuture()).also { f ->
-                    result.onSuccess { value ->
-                        f.complete(value)
-                    }.onFailure { e ->
-                        f.completeExceptionally(e)
-                    }
-                }
-            }
-        } else {
-            // resume success, set value
-            result.onSuccess { value ->
-                valueUpdater.set(this, value ?: NULL)
-            }.onFailure { e ->
-                valueUpdater.set(this, e)
-            }
-        }
-    }
-
-    /**
-     * @param isWaitTimeoutEnabled 是否输出长时间阻塞警告
-     *
-     * @see CompletableFuture.join
-     * @see CompletableFuture.get
-     * @throws CancellationException cancellation
-     * @throws CompletionException completion
-     * @throws InterruptedException
-     * @throws RunInBlockingException
-     */
-    @Suppress("UNCHECKED_CAST", "ReturnCount", "ThrowsCount")
-    @Throws(Exception::class)
-    fun await(isWaitTimeoutEnabled: Boolean): T {
-        val future: CompletableFuture<T>
-
-        // 预期为异步挂起。如果成功，value设置为 CompletableFuture.
-        if (signalUpdater.compareAndSet(this, SIGNAL_NONE, SIGNAL_SUSPEND)) {
-            future = valueUpdater.updateAndGet(this) { curr ->
-                curr as? CompletableFuture<T> ?: CompletableFuture<T>()
-            } as CompletableFuture<T>
-        } else {
-            // 失败，则获取，或等待结果
-            var value: Any?
-            do {
-                value = valueUpdater.get(this)
-            } while (value == null)
-
-            if (value == NULL) {
-                return null as T
-            }
-
-            // success or failed
-            if (signalUpdater.get(this) == SIGNAL_RESUME_SUCCESS) {
-                return value as T
-            }
-
-            throw value as Throwable
-        }
-
-        // 不需要检测长时间等待的日志,
-        // 或者不需要在virtual时输出日志，且当前是virtual thread
-        if (!isWaitTimeoutEnabled || (!logIfVirtual && Thread.currentThread().isVirtualThread())) {
-            try {
-                return future.get()
-            } catch (cancellation: CancellationException) {
-                throwRunInBlockingException(cancellation)
-            } catch (execution: ExecutionException) {
-                // 一般来讲 ExecutionException.cause 不会是 null
-                throw execution.cause ?: throwRunInBlockingException(execution)
-            }
-            // InterruptedException 直接向外传递
-        }
-
-        // 需要输出长时间等待日志
-
-        var times = 0
-        while (!future.isDone) {
-            if (Thread.interrupted()) {
-                throw InterruptedException()
-            }
-
-            if (times > 0) {
-                val duration = (waitTimeout * times).milliseconds
-                if (logger.isDebugEnabled) {
-                    val durationString = duration.toString()
-                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
-                    val e: Throwable = ProlongedBlockingException(durationString)
-                    logger.debug(
-                        "Prolonged blocking duration at least {}",
-                        durationString,
-                        e
-                    )
-                } else {
-                    logger.warn(
-                        "Blocking runner has been blocking for at least {}. " +
-                            "Enable debug logging for '{}' for more stack information.",
-                        duration.toString(),
-                        LOGGER_NAME
-                    )
-                }
-            }
-
-            try {
-                return future.get(waitTimeout, TimeUnit.MILLISECONDS)
-            } catch (_: TimeoutException) {
-                times += 1
-            } catch (cancellation: CancellationException) {
-                throwRunInBlockingException(cancellation)
-            } catch (execution: ExecutionException) {
-                throw execution.cause ?: throwRunInBlockingException(execution)
-            }
-        }
-
-        // Is done, but not in the future.get(timeout)
-        try {
-            return future.join()
-        } catch (cancellation: CancellationException) {
-            throwRunInBlockingException(cancellation)
-        } catch (execution: CompletionException) {
-            throwRunInBlockingException(execution)
-        }
-    }
-
-    // Used only to show the stack
-    private class ProlongedBlockingException(message: String) : RuntimeException(message)
-
-    companion object {
-        private const val SIGNAL_NONE = 0
-        private const val SIGNAL_RESUME_SUCCESS = 1
-        private const val SIGNAL_RESUME_FAILED = 2
-        private const val SIGNAL_SUSPEND = 3
-        private val signalUpdater = AtomicIntegerFieldUpdater.newUpdater(SuspendRunner::class.java, "s")
-        private val valueUpdater =
-            AtomicReferenceFieldUpdater.newUpdater(SuspendRunner::class.java, Any::class.java, "value")
-//        private val futureUpdater = AtomicReferenceFieldUpdater.newUpdater(SuspendRunner::class.java, CompletableFuture::class.java, "future")
-
-        // ignore for Virtual thread?
-        // val threadIsV = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
-
-        private val isVirtualThreadFunc = runCatching<(Thread) -> Boolean> {
-            val mh = MethodHandles.publicLookup()
-                .findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
-            return@runCatching { t -> mh.invoke(t) as Boolean }
-        }.getOrElse {
-            return@getOrElse { false }
-        }
-
-        private fun Thread.isVirtualThread(): Boolean = isVirtualThreadFunc(this)
-
-        private const val BLOCKING_RUNNER_WAIT_TIME_LOG_IF_VIRTUAL_PROPERTY_NAME =
-            "simbot.blockingRunner.waitTimeoutLogIfVirtual"
-
-        private const val BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME =
-            "simbot.blockingRunner.waitTimeoutMilliseconds"
-        private const val BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME = "simbot.blockingRunner.disableWaitTimeout"
-        private const val DEFAULT_WAIT_TIME = 60_000L // 60s
-        private val waitTimeout =
-            systemLong(BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME)?.takeIf { it > 0 } ?: DEFAULT_WAIT_TIME
-        val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
-
-        private val logIfVirtual = systemBool(BLOCKING_RUNNER_WAIT_TIME_LOG_IF_VIRTUAL_PROPERTY_NAME)
-
-        init {
-            if (isWaitTimeoutEnabled) {
-                logger.info(
-                    "Blocking runner wait timeout is enabled with wait timeout {}. " +
-                        "You can enable debug logging for '$LOGGER_NAME' " +
-                        "for more stack information " +
-                        "or disable it with the JVM parameter " +
-                        "'-D$BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME=true'.",
-                    waitTimeout.milliseconds.toString(),
-                )
-            } else {
-                logger.debug("Blocking runner wait timeout is disabled.")
-            }
-        }
-    }
-}
-
 private fun systemLong(key: String): Long? = System.getProperty(key)?.toLongOrNull()
 private fun systemInt(key: String): Int? = System.getProperty(key)?.toIntOrNull()
-
-@Suppress("SameParameterValue")
-private fun systemBool(key: String): Boolean = System.getProperty(key).toBoolean()
