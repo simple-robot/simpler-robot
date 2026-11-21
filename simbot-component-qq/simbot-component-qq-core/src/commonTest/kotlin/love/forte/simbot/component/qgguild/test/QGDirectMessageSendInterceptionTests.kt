@@ -24,9 +24,10 @@
 package love.forte.simbot.component.qgguild.test
 
 import io.ktor.client.engine.mock.*
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -46,14 +47,11 @@ import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
 import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.message.Text
-import love.forte.simbot.qguild.QGInternalApi
 import kotlin.test.*
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * 验证按 ID 发送与公开解析辅助的完整拦截边界。
  */
-@OptIn(QGInternalApi::class)
 class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
     private val receipt = object : QGMessageReceipt {
         override suspend fun delete(vararg options: DeleteOption) = Unit
@@ -99,7 +97,7 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
             }
             assertEquals(11, contexts.size)
             contexts.forEach {
-                val direct = assertIs<QGMessageSendContext>(it)
+                assertIs<QGMessageSendContext>(it)
                 assertSame(bot, it.bot)
                 assertSame(bot, it.source)
                 assertSame(it.originalMessage, it.message)
@@ -254,17 +252,18 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
     /**
      * 真实发送后的通知独立于最外层回执校验结果，并保留最终直发上下文。
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun successfulDirectSendNotifiesEvenWhenOuterReceiptIsInvalid() = runTest {
-        val sentEvent = CompletableDeferred<MessageSentEvent>()
+        val events = mutableListOf<MessageSentEvent>()
         var requests = 0
-        val app = app {
+        val app = app(StandardTestDispatcher(testScheduler)) {
             requests++
             respondOk("""{"id":"sent","channel_id":"channel","guild_id":"guild","content":"replacement","timestamp":"2023-11-06T13:37:18+08:00","author":{"id":"user","username":"user"},"seq_in_channel":1}""")
         }
         val bot = app.bot()
         try {
-            app.listeners { process<MessageSentEvent> { sentEvent.complete(it) } }
+            app.listeners { process<MessageSentEvent> { events += it } }
             app.interceptors {
                 onMessageSend { _, context, chain ->
                     chain.proceed(context.withMessage(InteractionMessage.valueOf("replacement")))
@@ -274,7 +273,9 @@ class QGDirectMessageSendInterceptionTests : AbstractInteractionTests() {
                 }
             }
             assertFailsWith<IllegalStateException> { bot.sendTo("channel".ID, "original") }
-            val event = withTimeout(5_000.milliseconds) { sentEvent.await() }
+            // 发送终端异步派发通知，推进共享调度器后再检查监听结果。
+            runCurrent()
+            val event = events.single()
             assertIs<QGMessageReceipt>(event.receipt)
             val context = assertIs<QGMessageSendContext>(event.context)
             assertSame(bot, context.source)

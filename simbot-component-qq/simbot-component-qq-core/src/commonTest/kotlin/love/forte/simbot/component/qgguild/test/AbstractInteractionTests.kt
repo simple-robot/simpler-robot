@@ -34,16 +34,26 @@ import love.forte.simbot.core.application.SimpleApplication
 import love.forte.simbot.core.application.launchSimpleApplication
 import love.forte.simbot.interception.MessageSendContext
 import love.forte.simbot.interception.onMessageSend
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  *
  * @author ForteScarlet
  */
 abstract class AbstractInteractionTests {
+    /**
+     * 启动使用模拟 HTTP 引擎的 QQ 应用。
+     *
+     * @param appCoroutineContext 应用和事件分发共用的协程上下文。
+     */
     internal suspend inline fun app(
+        appCoroutineContext: CoroutineContext = EmptyCoroutineContext,
         crossinline mockClient: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData
     ): SimpleApplication {
         return launchSimpleApplication {
+            config { coroutineContext = appCoroutineContext }
+            eventDispatcher { coroutineContext = appCoroutineContext }
             useQQGuild {
                 botManager {
                     botConfigure { _, _, _ ->
@@ -71,7 +81,7 @@ abstract class AbstractInteractionTests {
         crossinline listener: suspend (T, E, SimpleApplication, QGBotImpl) -> MessageSendContext,
         block: suspend SimpleApplication.(T, QGBotImpl) -> Unit,
     ) {
-        val app = app(mockClient)
+        val app = app(mockClient = mockClient)
         val bot = app.bot() as QGBotImpl
         try {
             val t = app.prepare(bot)
