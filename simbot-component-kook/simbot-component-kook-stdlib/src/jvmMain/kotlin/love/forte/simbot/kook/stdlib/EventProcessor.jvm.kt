@@ -28,12 +28,16 @@ package love.forte.simbot.kook.stdlib
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.publish
 import kotlinx.coroutines.runInterruptible
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.kook.event.Event
 import love.forte.simbot.kook.event.EventExtra
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
@@ -173,3 +177,89 @@ public fun <E : EventExtra> async(type: Class<E>, function: TypedJAsyncEventProc
         }
     }
 
+/**
+ * 用于在 Java 中实现响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun interface JReactiveEventProcessor : EventProcessor {
+    /**
+     * 处理 [event] 并通过返回的 [Publisher] 报告完成或失败。
+     *
+     * @param raw 事件的原始 JSON 文本。
+     */
+    @NonBlocking
+    @Throws(Exception::class)
+    public fun reactive(event: Event<*>, raw: String): Publisher<Void>
+
+    @JvmSynthetic
+    override suspend fun Event<*>.invoke(raw: String) {
+        reactive(this, raw).awaitFirstOrNull()
+    }
+}
+
+/**
+ * 用于在 Java 中为指定附加数据类型实现响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun interface TypedJReactiveEventProcessor<E : EventExtra> {
+    /**
+     * 处理 [event] 并通过返回的 [Publisher] 报告完成或失败。
+     *
+     * @param raw 事件的原始 JSON 文本。
+     */
+    @NonBlocking
+    @Throws(Exception::class)
+    public fun reactive(event: Event<E>, raw: String): Publisher<Void>
+}
+
+/**
+ * 构建一个响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun reactive(function: JReactiveEventProcessor): EventProcessor = function
+
+/**
+ * 构建一个仅处理 [Event.type] 为 [type] 的响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun reactive(type: Event.Type, function: JReactiveEventProcessor): EventProcessor =
+    reactive { event, raw ->
+        if (event.type == type) {
+            function.reactive(event, raw)
+        } else {
+            publish { }
+        }
+    }
+
+/**
+ * 构建一个仅处理指定附加数据类型的响应式 [EventProcessor]。
+ *
+ * @param type 事件附加数据的类型。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@Suppress("UNCHECKED_CAST")
+public fun <E : EventExtra> reactive(
+    type: Class<E>,
+    function: TypedJReactiveEventProcessor<E>,
+): EventProcessor =
+    reactive { event, raw ->
+        if (type.isInstance(event.extra)) {
+            function.reactive(event as Event<E>, raw)
+        } else {
+            publish { }
+        }
+    }

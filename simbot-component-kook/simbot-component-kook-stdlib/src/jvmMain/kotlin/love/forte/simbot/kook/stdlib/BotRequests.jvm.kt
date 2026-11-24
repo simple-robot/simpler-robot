@@ -28,13 +28,16 @@ package love.forte.simbot.kook.stdlib
 
 import io.ktor.client.statement.*
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.kook.api.ApiResult
 import love.forte.simbot.kook.api.KookApi
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.asReserve
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -152,3 +155,51 @@ public fun <T : Any> KookApi<T>.requestDataByAsync(bot: Bot): CompletableFuture<
 @OptIn(InternalSimbotAPI::class)
 public fun <T : Any> KookApi<T>.requestDataByReserve(bot: Bot): SuspendReserve<T> =
     asReserve(scope = bot) { requestDataBy(bot) }
+
+/**
+ * 使用 [bot] 发起请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestByReactive(bot: Bot): Publisher<HttpResponse> =
+    asPublisher { requestBy(bot) }
+
+/**
+ * 使用 [bot] 发起请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @see requestTextBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestTextByReactive(bot: Bot): Publisher<String> =
+    asPublisher { requestTextBy(bot) }
+
+/**
+ * 使用 [bot] 发起请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestResultBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestResultByReactive(bot: Bot): Publisher<ApiResult> =
+    asPublisher { requestResultBy(bot) }
+
+/**
+ * 使用 [bot] 发起请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @see requestDataBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T : Any> KookApi<T>.requestDataByReactive(bot: Bot): Publisher<T> =
+    asPublisher { requestDataBy(bot) }

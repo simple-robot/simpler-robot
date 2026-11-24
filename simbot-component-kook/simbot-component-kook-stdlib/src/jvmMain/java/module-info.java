@@ -1,5 +1,7 @@
 module simbot.component.kook.stdlib {
     requires kotlin.stdlib;
+    requires static org.reactivestreams;
+    requires static kotlinx.coroutines.reactive;
     requires static simbot.common.annotations;
     requires transitive simbot.component.kook.api;
     requires simbot.common.stageloop;

@@ -1,5 +1,7 @@
 module simbot.component.qq.stdlib {
     requires kotlin.stdlib;
+    requires static org.reactivestreams;
+    requires static kotlinx.coroutines.reactive;
     requires transitive simbot.component.qq.api;
     // simbot
     requires transitive simbot.common.stageloop;

@@ -136,12 +136,7 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
 
         val session = SimpleSessionImpl(key, job, channel, subScope)
 
-        job.invokeOnCompletion {
-            sessions.removeValue(key) { session }
-            channel.cancel(it?.let { e -> CancellationException(e.message, e) })
-        }
-
-        launchScope.launch {
+        val receiverJob = launchScope.launch(start = CoroutineStart.LAZY) {
             kotlin.runCatching {
                 inSession.run { session.invoke() }
             }.onFailure { e ->
@@ -150,6 +145,17 @@ private class SimpleContinuousSessionContext<T, R>(coroutineContext: CoroutineCo
                 job.complete()
             }
         }
+
+        job.invokeOnCompletion { cause ->
+            sessions.removeValue(key) { session }
+            val cancellation = cause?.let { CancellationException(it.message, it) }
+            channel.cancel(cancellation)
+            // 关闭会话也会停止正在等待外部结果的接收逻辑。
+            if (cancellation != null) {
+                receiverJob.cancel(cancellation)
+            }
+        }
+        receiverJob.start()
 
         return session
     }
@@ -291,4 +297,3 @@ private class SimpleSessionImpl<C, T, R>(
         return createSimpleSessionContinuation(context, value, continuation, handle)
     }
 }
-

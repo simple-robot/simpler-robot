@@ -31,13 +31,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.asPublisher
 import kotlinx.coroutines.reactor.asFlux
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.asAsync
 import love.forte.simbot.common.collection.asIterator
 import love.forte.simbot.common.function.Action
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -302,6 +309,19 @@ public fun <T> Collectable<T>.toListAsync(scope: CoroutineScope? = null): Comple
     else -> (scope ?: GlobalScope).future { asFlow().toList() }
 }
 
+/**
+ * 在订阅时收集 [Collectable] 的元素，并发送一个列表。
+ * 空序列会发送空列表。取消订阅会取消收集。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T> Collectable<T>.toListReactive(): Publisher<List<T>> = asPublisher {
+    asFlow().toList()
+}
+
 // / collector
 
 /**
@@ -352,6 +372,18 @@ public fun <T, R> Collectable<T>.collectAsync(
     }
 }
 
+/**
+ * 在订阅时使用 [collector] 收集元素，并发送收集结果。
+ * 结果为 `null` 时空完成。取消订阅会取消收集。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T, R> Collectable<T>.collectReactive(collector: Collector<T, *, R>): Publisher<R & Any> =
+    asPublisher { asFlow().collectBy(collector) }
+
 // / transform
 
 /**
@@ -392,6 +424,28 @@ public fun <T, R> Collectable<T>.transform(
  */
 public fun <T : Any> Collectable<T>.asFlux(): Flux<T> =
     asFlow().asFlux()
+
+/**
+ * 将 [Collectable] 转为按需发送元素的 Reactive Streams [Publisher]。
+ * 收集在订阅时开始，是否支持重复订阅取决于原始 [Collectable]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun <T : Any> Collectable<T>.asPublisher(): Publisher<T> =
+    asFlow().asPublisher()
+
+/**
+ * 将 Reactive Streams [Publisher] 转为 [Collectable]。
+ * 每次收集都会订阅原始 [Publisher]，取消收集会取消对应的订阅。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmName("valueOf")
+public fun <T : Any> Publisher<T>.asCollectable(): Collectable<T> = asFlow().asCollectable()
 
 
 /**

@@ -31,11 +31,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.reactive.publish
 import kotlinx.coroutines.reactor.flux
 import kotlinx.coroutines.reactor.mono
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.suspendrunner.DefaultBlockingContext
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
@@ -87,6 +92,49 @@ private object AsyncTransformer : SuspendReserve.Transformer<Any?, CompletableFu
         context: CoroutineContext,
         block: suspend () -> T1
     ): CompletableFuture<*> = scope.future(context) { block() }
+}
+
+/**
+ * 得到一个在订阅时执行挂起操作并发送结果的转化器。
+ * 结果为 `null` 时空完成。订阅继承执行上下文，并独立管理执行的生命周期。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@Suppress("UNCHECKED_CAST")
+public fun <T> publisher(): SuspendReserve.Transformer<T, Publisher<T & Any>> =
+    PublisherTransformer as SuspendReserve.Transformer<T, Publisher<T & Any>>
+
+private object PublisherTransformer : SuspendReserve.Transformer<Any?, Publisher<Any>> {
+    @OptIn(InternalSimbotAPI::class)
+    override fun <T1> invoke(
+        scope: CoroutineScope,
+        context: CoroutineContext,
+        block: suspend () -> T1
+    ): Publisher<Any> = asPublisher(scope.coroutineContext + context) { block() }
+}
+
+/**
+ * 得到一个在订阅时收集 [Flow] 并按需发送各个元素的转化器。
+ * 订阅继承执行上下文，并独立管理收集的生命周期。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@Suppress("UNCHECKED_CAST")
+public fun <T : Any> flowPublisher(): SuspendReserve.Transformer<Flow<T>, Publisher<T>> =
+    FlowPublisherTransformer as SuspendReserve.Transformer<Flow<T>, Publisher<T>>
+
+private object FlowPublisherTransformer : SuspendReserve.Transformer<Flow<Any>, Publisher<Any>> {
+    override fun <T1 : Flow<Any>> invoke(
+        scope: CoroutineScope,
+        context: CoroutineContext,
+        block: suspend () -> T1
+    ): Publisher<Any> = publish((scope.coroutineContext + context).minusKey(Job)) {
+        block().collect { send(it) }
+    }
 }
 
 /**

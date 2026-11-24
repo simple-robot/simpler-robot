@@ -195,99 +195,91 @@ private object CollectableReactivelyResultAbilityHolder {
 
     @Suppress("ReturnCount")
     suspend fun tryCollect(content: Any): Any? {
-        when {
-            reactorSupport -> {
-                when (content) {
-                    is reactor.core.publisher.Flux<*> ->
-                        return if (reactorKotlinSupport) content.collectList().awaitSingleOrNull() else content
+        // Try the adapter for each available library until one handles the result type.
+        if (reactorSupport) {
+            when (content) {
+                is reactor.core.publisher.Flux<*> ->
+                    return if (reactorKotlinSupport) content.collectList().awaitSingleOrNull() else content
 
-                    is reactor.core.publisher.Mono<*> ->
-                        return if (reactorKotlinSupport) content.awaitSingleOrNull() else content
-                }
+                is reactor.core.publisher.Mono<*> ->
+                    return if (reactorKotlinSupport) content.awaitSingleOrNull() else content
             }
+        }
 
-            rx2Support -> {
-                when (content) {
-                    is io.reactivex.CompletableSource -> {
-                        if (rx2KotlinSupport) {
-                            content.await() // Just await
-                            return null
-                        }
-
-                        return content
+        if (rx2Support) {
+            when (content) {
+                is io.reactivex.CompletableSource -> {
+                    if (rx2KotlinSupport) {
+                        content.await() // Just await
+                        return null
                     }
 
-                    is io.reactivex.SingleSource<*> ->
-                        return if (rx2KotlinSupport) content.await() else content
-
-                    is io.reactivex.MaybeSource<*> ->
-                        return if (rx2KotlinSupport) content.awaitSingleOrNull() else content
-
-                    is io.reactivex.ObservableSource<*> ->
-                        return if (reactiveKotlinSupport) {
-                            content.asFlow()
-                                .toList()
-                        } else {
-                            content
-                        }
-
-                    is io.reactivex.Flowable<*> -> return if (rx2KotlinSupport) content.toList().await() else content
+                    return content
                 }
-            }
 
-            rx3Support -> {
-                when (content) {
-                    is io.reactivex.rxjava3.core.Completable -> {
-                        if (rx3KotlinSupport) {
-                            content.await() // Just await
-                            return null
-                        }
-                    }
+                is io.reactivex.SingleSource<*> ->
+                    return if (rx2KotlinSupport) content.await() else content
 
-                    is io.reactivex.rxjava3.core.SingleSource<*> -> {
-                        return if (rx3KotlinSupport) {
-                            @Suppress("UNCHECKED_CAST")
-                            (content as io.reactivex.rxjava3.core.SingleSource<Any>).await()
-                        } else {
-                            content
-                        }
-                    }
+                is io.reactivex.MaybeSource<*> ->
+                    return if (rx2KotlinSupport) content.awaitSingleOrNull() else content
 
-                    is io.reactivex.rxjava3.core.MaybeSource<*> -> {
-                        return if (rx3KotlinSupport) {
-                            @Suppress("UNCHECKED_CAST")
-                            (content as io.reactivex.rxjava3.core.MaybeSource<Any>).awaitSingleOrNull()
-                        } else {
-                            content
-                        }
-                    }
-
-                    is io.reactivex.rxjava3.core.ObservableSource<*> -> return if (rx3KotlinSupport) {
+                is io.reactivex.ObservableSource<*> ->
+                    return if (rx2KotlinSupport) {
                         content.asFlow()
                             .toList()
                     } else {
                         content
                     }
 
-                    is io.reactivex.rxjava3.core.Flowable<*> -> return if (rx3KotlinSupport) {
+                is io.reactivex.Flowable<*> -> return if (rx2KotlinSupport) content.toList().await() else content
+            }
+        }
+
+        if (rx3Support) {
+            when (content) {
+                is io.reactivex.rxjava3.core.Completable -> {
+                    if (rx3KotlinSupport) {
+                        content.await() // Just await
+                        return null
+                    }
+                }
+
+                is io.reactivex.rxjava3.core.SingleSource<*> -> {
+                    return if (rx3KotlinSupport) {
                         @Suppress("UNCHECKED_CAST")
-                        (content.toList() as io.reactivex.rxjava3.core.Single<List<*>>).await()
+                        (content as io.reactivex.rxjava3.core.SingleSource<Any>).await()
                     } else {
                         content
                     }
                 }
-            }
 
-            reactiveSupport -> {
-                when (content) {
-                    is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) {
-                        content.asFlow()
-                            .toList()
+                is io.reactivex.rxjava3.core.MaybeSource<*> -> {
+                    return if (rx3KotlinSupport) {
+                        @Suppress("UNCHECKED_CAST")
+                        (content as io.reactivex.rxjava3.core.MaybeSource<Any>).awaitSingleOrNull()
                     } else {
                         content
                     }
                 }
+
+                is io.reactivex.rxjava3.core.ObservableSource<*> -> return if (rx3KotlinSupport) {
+                    content.asFlow()
+                        .toList()
+                } else {
+                    content
+                }
+
+                is io.reactivex.rxjava3.core.Flowable<*> -> return if (rx3KotlinSupport) {
+                    @Suppress("UNCHECKED_CAST")
+                    (content.toList() as io.reactivex.rxjava3.core.Single<List<*>>).await()
+                } else {
+                    content
+                }
             }
+        }
+
+        if (reactiveSupport && content is org.reactivestreams.Publisher<*> && reactiveKotlinSupport) {
+            return content.asFlow().toList()
         }
 
         return content

@@ -31,11 +31,14 @@ import io.ktor.client.engine.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.coroutines.EmptyCoroutineContext
@@ -243,5 +246,61 @@ public fun <T : Any> KookApi<T>.requestDataReserve(
     suspendReserve(scope ?: client, EmptyCoroutineContext) { requestData(client, authorization) }
 //endregion
 
+//region reactive
 
+/**
+ * 使用 [client] 发起请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @param authorization 请求的鉴权信息。
+ *
+ * @see request
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestReactive(client: HttpClient, authorization: String): Publisher<HttpResponse> =
+    asPublisher { request(client, authorization) }
 
+/**
+ * 使用 [client] 发起请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @param authorization 请求的鉴权信息。
+ *
+ * @see requestText
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestTextReactive(client: HttpClient, authorization: String): Publisher<String> =
+    asPublisher { requestText(client, authorization) }
+
+/**
+ * 使用 [client] 发起请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @param authorization 请求的鉴权信息。
+ *
+ * @see requestResult
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestResultReactive(client: HttpClient, authorization: String): Publisher<ApiResult> =
+    asPublisher { requestResult(client, authorization) }
+
+/**
+ * 使用 [client] 发起请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @param authorization 请求的鉴权信息。
+ *
+ * @see requestData
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T : Any> KookApi<T>.requestDataReactive(client: HttpClient, authorization: String): Publisher<T> =
+    asPublisher { requestData(client, authorization) }
+//endregion

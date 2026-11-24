@@ -28,14 +28,17 @@ package love.forte.simbot.component.kook.util
 
 import io.ktor.client.statement.*
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.kook.bot.KookBot
 import love.forte.simbot.kook.api.ApiResult
 import love.forte.simbot.kook.api.KookApi
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.asReserve
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 
 //region request
@@ -274,4 +277,103 @@ public fun KookApi<*>.requestResultByAsync(bot: KookBot): CompletableFuture<out 
 @OptIn(InternalSimbotAPI::class)
 public fun KookApi<*>.requestResultByReserve(bot: KookBot): SuspendReserve<ApiResult> =
     asReserve(scope = bot) { requestResultBy(bot) }
+//endregion
+
+//region reactive
+
+/**
+ * 发起 [api] 请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @see request
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookBot.requestReactive(api: KookApi<*>): Publisher<HttpResponse> =
+    asPublisher { request(api) }
+
+/**
+ * 使用 [bot] 发起请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestByReactive(bot: KookBot): Publisher<HttpResponse> =
+    asPublisher { requestBy(bot) }
+
+/**
+ * 发起 [api] 请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @see requestText
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookBot.requestTextReactive(api: KookApi<*>): Publisher<String> =
+    asPublisher { requestText(api) }
+
+/**
+ * 使用 [bot] 发起请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @see requestTextBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestTextByReactive(bot: KookBot): Publisher<String> =
+    asPublisher { requestTextBy(bot) }
+
+/**
+ * 发起 [api] 请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestResult
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookBot.requestResultReactive(api: KookApi<*>): Publisher<ApiResult> =
+    asPublisher { requestResult(api) }
+
+/**
+ * 使用 [bot] 发起请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestResultBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun KookApi<*>.requestResultByReactive(bot: KookBot): Publisher<ApiResult> =
+    asPublisher { requestResultBy(bot) }
+
+/**
+ * 发起 [api] 请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @see requestData
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T : Any> KookBot.requestDataReactive(api: KookApi<T>): Publisher<T> =
+    asPublisher { requestData(api) }
+
+/**
+ * 使用 [bot] 发起请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @see requestDataBy
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T : Any> KookApi<T>.requestDataByReactive(bot: KookBot): Publisher<T> =
+    asPublisher { requestDataBy(bot) }
 //endregion

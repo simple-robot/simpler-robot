@@ -34,7 +34,7 @@ import kotlin.jvm.JvmSynthetic
  * 使用于 [ContinuousSessionContext.session] 中的 `receiver` 逻辑函数。
  *
  * 在 Java 中，可以使用 `InSessions` 中提供的各种静态工厂函数构建它，例如
- * `InSessions.async`、`InSessions.mono` 等。
+ * `InSessions.async`、`InSessions.reactive` 等。
  *
  * 在 `ContinuousSession` 中使用时，我们强烈建议使用非阻塞的 [InSession] 实现，
  * 或者为 `ContinuousSession` 的调度器配置为 **虚拟线程调度器** 。
@@ -128,7 +128,7 @@ public interface ContinuousSessionContext<T, R> {
      * @param strategy 当 [key] 出现冲突时的处理策略
      * @param inSession 在**异步**中进行会话逻辑的函数实例。
      * 在 Java 中可使用 `InSessions` 中提供的静态工厂函数构建实例，
-     * 例如 `InSessions.async`、`InSessions.mono` 等。
+     * 例如 `InSessions.async`、`InSessions.reactive` 等。
      * 在 `ContinuousSession` 中使用时，我们强烈建议使用非阻塞的 [InSession] 实现，
      * 或者为 `ContinuousSession` 的调度器配置为 **虚拟线程调度器** 。
      *
@@ -188,5 +188,4 @@ public interface ContinuousSessionContext<T, R> {
         EXISTING
     }
 }
-
 

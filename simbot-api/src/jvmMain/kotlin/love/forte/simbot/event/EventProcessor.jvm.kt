@@ -27,16 +27,22 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toCollection
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.reactive.asPublisher
 import kotlinx.coroutines.reactor.asFlux
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
+import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.collectable.collectBy
 import love.forte.simbot.common.collection.asIterator
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.function.Supplier
 import java.util.stream.Collector
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -52,6 +58,56 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 public fun EventProcessor.pushAndAsFlux(event: Event): Flux<EventResult> =
     push(event).asFlux()
+
+/**
+ * 每次订阅都推送一次 [event]，并按需发送 [EventProcessor.push] 产生的结果。
+ * 取消订阅会停止收集结果。运行时需要 `kotlinx-coroutines-reactive`。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun EventProcessor.pushReactive(event: Event): Publisher<EventResult> =
+    flow { emitAll(push(event)) }.asPublisher()
+
+/**
+ * 每次订阅都推送一次 [event]，将结果追加到本次订阅的集合并发送该集合。
+ *
+ * @param collectionFactory 为每次订阅提供独立的可变集合。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <C : MutableCollection<in EventResult>> EventProcessor.pushAndCollectToReactive(
+    event: Event,
+    collectionFactory: Supplier<C>
+): Publisher<C> = asPublisher { push(event).toCollection(collectionFactory.get()) }
+
+/**
+ * 每次订阅都推送一次 [event]，使用 [collector] 收集全部结果后发送汇总值。
+ * 汇总值为 `null` 时直接完成。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <R> EventProcessor.pushAndCollectToReactive(
+    event: Event,
+    collector: Collector<EventResult, *, R>
+): Publisher<R & Any> = asPublisher { push(event).collectBy(collector) }
+
+/**
+ * 每次订阅都推送一次 [event]，收集完成后发送包含全部结果的列表。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun EventProcessor.pushAndCollectToListReactive(event: Event): Publisher<List<EventResult>> =
+    asPublisher { push(event).toList() }
 
 @Deprecated(
     "Use collectBy",

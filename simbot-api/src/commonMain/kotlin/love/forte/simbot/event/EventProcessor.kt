@@ -72,16 +72,10 @@ import kotlin.jvm.JvmSynthetic
  * ## Java API
  *
  * 在 `EventProcessors` 的静态API中提供了一些非挂起的可供 Java 友好调用的API，
- * 例如:
+ * 例如，使用 Reactive Streams 订阅处理结果。
  *
  * ```java
- * List<EventResult> resultList = EventProcessors.pushAndCollectToListAsync(processor, event, scope);
- * // ...
- * ```
- *
- * ```java
- * Flux<EventResult> resultList = EventProcessors.pushAndAsFlux(processor, event, scope);
- * // ...
+ * Publisher<EventResult> results = EventProcessors.pushReactive(processor, event);
  * ```
  *
  * 其中提供了一些异步或响应式相关的转化、处理API。
@@ -137,21 +131,8 @@ public interface EventProcessor {
      *
      * ## Java API
      *
-     * 在 `EventProcessors` 的静态API中提供了一些非挂起的可供 Java 友好调用的API，
-     * 例如:
-     *
-     * ```java
-     * List<EventResult> resultList = EventProcessors.pushAndCollectToListAsync(processor, event, scope);
-     * // ...
-     * ```
-     *
-     * ```java
-     * Flux<EventResult> resultList = EventProcessors.pushAndAsFlux(processor, event, scope);
-     * // ...
-     * ```
-     *
-     * 其中提供了一些异步或响应式相关的转化、处理API。
-     * 对于它们各自的说明、限制、要求则在 [push] 的基础上参考它们的文档说明。
+     * Java 可通过 `EventProcessors.pushReactive` 订阅处理结果，
+     * 也可用 `EventProcessors.pushAndCollectToListAsync` 异步收集全部结果。
      *
      * @return [EventResult] 结果。如果具有特殊含义，那么可能是 [StandardEventResult] 中的某类型。
      *

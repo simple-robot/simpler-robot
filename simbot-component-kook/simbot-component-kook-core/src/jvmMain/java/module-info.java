@@ -29,6 +29,7 @@ import love.forte.simbot.plugin.PluginFactoryProvider;
 
 module simbot.component.kook.core {
     requires kotlin.stdlib;
+    requires static org.reactivestreams;
     requires transitive simbot.component.kook.stdlib;
     requires static simbot.api;
     requires static simbot.common.annotations;

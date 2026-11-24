@@ -32,11 +32,14 @@ import io.ktor.utils.io.charsets.Charset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.component.onebot.v11.core.OneBot11
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.text.Charsets
@@ -559,6 +562,184 @@ public fun <T : Any> BasicOneBotApi<T>.requestDataReserve(
             decoder
         )
     }
+//endregion
+
+
+//region reactive
+
+/**
+ * 发起请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @see request
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun BasicOneBotApi<*>.requestReactive(
+    client: HttpClient,
+    host: Url,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+): Publisher<HttpResponse> = asPublisher { request(client, host, accessToken, actionSuffixes) }
+
+/**
+ * 发起请求并获取原始 HTTP 响应。每次订阅都会执行一次请求。
+ *
+ * @see request
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun BasicOneBotApi<*>.requestReactive(
+    client: HttpClient,
+    host: String,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+): Publisher<HttpResponse> = asPublisher { request(client, host, accessToken, actionSuffixes) }
+
+/**
+ * 发起请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @see requestRaw
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun BasicOneBotApi<*>.requestRawReactive(
+    client: HttpClient,
+    host: Url,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8
+): Publisher<String> = asPublisher { requestRaw(client, host, accessToken, actionSuffixes, charset) }
+
+/**
+ * 发起请求并获取响应文本。每次订阅都会执行一次请求。
+ *
+ * @see requestRaw
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun BasicOneBotApi<*>.requestRawReactive(
+    client: HttpClient,
+    host: String,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8
+): Publisher<String> = asPublisher { requestRaw(client, host, accessToken, actionSuffixes, charset) }
+
+/**
+ * 发起请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestResult
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun <T : Any> BasicOneBotApi<T>.requestResultReactive(
+    client: HttpClient,
+    host: Url,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): Publisher<OneBotApiResult<T>> = asPublisher {
+    requestResult(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
+
+/**
+ * 发起请求并解析 API 响应。每次订阅都会执行一次请求。
+ *
+ * @see requestResult
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun <T : Any> BasicOneBotApi<T>.requestResultReactive(
+    client: HttpClient,
+    host: String,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): Publisher<OneBotApiResult<T>> = asPublisher {
+    requestResult(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
+
+/**
+ * 发起请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @see requestData
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun <T : Any> BasicOneBotApi<T>.requestDataReactive(
+    client: HttpClient,
+    host: Url,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): Publisher<T> = asPublisher {
+    requestData(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
+
+/**
+ * 发起请求并获取响应中的数据。每次订阅都会执行一次请求。
+ *
+ * @see requestData
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@JvmOverloads
+public fun <T : Any> BasicOneBotApi<T>.requestDataReactive(
+    client: HttpClient,
+    host: String,
+    accessToken: String? = null,
+    actionSuffixes: Collection<String>? = null,
+    charset: Charset = Charsets.UTF_8,
+    decoder: Json = OneBot11.DefaultJson,
+): Publisher<T> = asPublisher {
+    requestData(
+        client,
+        host,
+        accessToken,
+        actionSuffixes,
+        charset,
+        decoder
+    )
+}
 //endregion
 
 

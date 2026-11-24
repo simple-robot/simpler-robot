@@ -30,6 +30,7 @@ import love.forte.simbot.plugin.PluginFactoryProvider;
 
 module simbot.component.onebot11v.core {
     requires kotlin.stdlib;
+    requires static org.reactivestreams;
     requires simbot.logger;
     requires simbot.common.suspendrunner;
     requires simbot.component.onebot.common;

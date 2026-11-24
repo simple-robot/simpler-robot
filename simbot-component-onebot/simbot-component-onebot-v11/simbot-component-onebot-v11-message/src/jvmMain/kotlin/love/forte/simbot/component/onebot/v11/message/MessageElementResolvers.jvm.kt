@@ -26,14 +26,17 @@ package love.forte.simbot.component.onebot.v11.message
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.component.onebot.common.annotations.InternalOneBotAPI
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotMessageSegment
 import love.forte.simbot.message.Message
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -104,4 +107,28 @@ public fun Message.Element.resolveToOneBotSegmentReserve(): SuspendReserve<OneBo
         EmptyCoroutineContext
     ) { resolveToOneBotSegment() }
 
+/**
+ * 订阅时将消息解析为 OneBot API 使用的消息段列表。
+ *
+ * @see resolveToOneBotSegmentList
+ * @since 5.0
+ */
+@InternalOneBotAPI
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun Message.resolveToOneBotSegmentListReactive(): Publisher<List<OneBotMessageSegment>> =
+    asPublisher { resolveToOneBotSegmentList() }
 
+/**
+ * 订阅时将消息元素解析为 OneBot API 使用的消息段。元素无法转换时，订阅直接完成。
+ *
+ * @see resolveToOneBotSegment
+ * @since 5.0
+ */
+@InternalOneBotAPI
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun Message.Element.resolveToOneBotSegmentReactive(): Publisher<OneBotMessageSegment> =
+    asPublisher { resolveToOneBotSegment() }

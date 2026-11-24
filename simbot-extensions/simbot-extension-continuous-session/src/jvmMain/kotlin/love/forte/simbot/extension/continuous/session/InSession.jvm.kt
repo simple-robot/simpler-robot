@@ -27,10 +27,14 @@
 package love.forte.simbot.extension.continuous.session
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.runInterruptible
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletionStage
 import kotlin.coroutines.CoroutineContext
@@ -112,3 +116,36 @@ public fun interface MonoInSession<C, T, R> : InSession<C, T, R> {
 @JvmName("mono")
 @Api4J
 public fun <C, T, R> monoInSession(function: MonoInSession<C, T, R>): InSession<C, T, R> = function
+
+/**
+ * 通过 Reactive Streams [Publisher] 实现会话接收逻辑。
+ * 会话等待完成信号，错误信号会终止会话，取消会话会取消订阅。
+ * 运行时需要提供 `kotlinx-coroutines-reactive`。
+ *
+ * @see reactiveInSession
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun interface ReactiveInSession<C, T, R> : InSession<C, T, R> {
+    @JvmSynthetic
+    override suspend fun ContinuousSessionReceiver<C, T, R>.invoke() {
+        reactive(this).asFlow().collect()
+    }
+
+    /**
+     * 返回处理 [receiver] 的 publisher，通过完成信号报告会话接收逻辑结束。
+     */
+    @Throws(Exception::class)
+    public fun reactive(receiver: ContinuousSessionReceiver<C, T, R>): Publisher<Void>
+}
+
+/**
+ * 使用响应式回调 [function] 构造 [InSession]。
+ *
+ * @since 5.0
+ */
+@JvmName("reactive")
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun <C, T, R> reactiveInSession(function: ReactiveInSession<C, T, R>): InSession<C, T, R> = function

@@ -29,8 +29,12 @@ package love.forte.simbot.common.async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.asDeferred
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.function.Action
+import love.forte.simbot.suspendrunner.asPublisher
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -184,3 +188,14 @@ public actual class Async<out T> @PublishedApi internal actual constructor(publi
 public fun <T> CompletableFuture<out T>.asAsync(): Async<T> = asDeferred().asAsync().also {
     it.setInternalSourceFuture(this)
 }
+
+/**
+ * 订阅时等待同一个 [Async] 操作的结果，结果为 `null` 时空完成。
+ * 取消订阅只会结束本次等待。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+@OptIn(InternalSimbotAPI::class)
+public fun <T> Async<T>.asPublisher(): Publisher<T & Any> = asPublisher { deferred.await() }

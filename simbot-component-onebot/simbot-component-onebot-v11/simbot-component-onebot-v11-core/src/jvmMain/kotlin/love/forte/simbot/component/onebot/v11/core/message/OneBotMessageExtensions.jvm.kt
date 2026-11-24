@@ -27,6 +27,7 @@ package love.forte.simbot.component.onebot.v11.core.message
 
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.component.onebot.v11.core.api.GetImageApi
 import love.forte.simbot.component.onebot.v11.core.api.GetImageResult
 import love.forte.simbot.component.onebot.v11.core.api.GetRecordApi
@@ -34,10 +35,12 @@ import love.forte.simbot.component.onebot.v11.core.api.GetRecordResult
 import love.forte.simbot.component.onebot.v11.core.bot.OneBotBot
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotImage
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotRecord
+import love.forte.simbot.suspendrunner.asPublisher
 import love.forte.simbot.suspendrunner.reserve.SuspendReserve
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInAsync
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -181,3 +184,38 @@ public fun OneBotRecord.getRecordInfoReserve(
     suspendReserve(scope ?: bot, context ?: EmptyCoroutineContext) {
         getRecordInfo(bot, outFormat)
     }
+
+/**
+ * 通过 [bot] 查询图片地址。每次订阅都会执行一次请求。
+ *
+ * @see getImageInfo
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun OneBotImage.getImageInfoReactive(bot: OneBotBot): Publisher<GetImageResult> =
+    asPublisher { getImageInfo(bot) }
+
+/**
+ * 通过 [bot] 查询图片元素的图片地址。每次订阅都会执行一次请求。
+ *
+ * @see getImageInfo
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun OneBotImage.Element.getImageInfoReactive(bot: OneBotBot): Publisher<GetImageResult> =
+    asPublisher { getImageInfo(bot) }
+
+/**
+ * 通过 [bot] 查询语音地址。每次订阅都会执行一次请求。
+ *
+ * @param outFormat 语音文件的目标格式，见 [GetRecordApi]。
+ *
+ * @see getRecordInfo
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun OneBotRecord.getRecordInfoReactive(bot: OneBotBot, outFormat: String): Publisher<GetRecordResult> =
+    asPublisher { getRecordInfo(bot, outFormat) }

@@ -30,10 +30,13 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.test.runTest
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.suspendrunner.reserve.*
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.*
+import kotlinx.coroutines.reactive.awaitSingle as awaitPublisherSingle
 import kotlinx.coroutines.rx2.awaitSingleOrNull as awaitRx2
 import kotlinx.coroutines.rx3.awaitSingleOrNull as awaitRx3
 
@@ -41,6 +44,21 @@ import kotlinx.coroutines.rx3.awaitSingleOrNull as awaitRx3
  * 响应式 Reserve 继承 scope 的执行环境，但生命周期仍由订阅管理。
  */
 class ReserveContextTests {
+    /**
+     * Reserve 转为 Publisher 后保留作用域的调度器，并使用新的 Job 执行。
+     * 单值转换使用显式上下文覆盖同键元素，发布原值后完成。
+     * 流转换按原顺序发布两个元素后完成。
+     */
+    @OptIn(Api4J::class, ExperimentalReactiveBridgingApi::class)
+    @Test
+    fun publishersInheritReserveEnvironment() = runTest {
+        verifyEnvironment("value", explicit = true) { it.transform(publisher()).awaitPublisherSingle() }
+
+        verifyEnvironment(flowOf("first", "second"), expected = listOf("first", "second")) {
+            it.transform(flowPublisher()).asFlow().toList()
+        }
+    }
+
     /**
      * Mono 保留 scope 环境。
      */

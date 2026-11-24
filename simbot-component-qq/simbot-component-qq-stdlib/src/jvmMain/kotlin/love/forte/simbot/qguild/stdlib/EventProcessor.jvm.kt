@@ -29,10 +29,15 @@ package love.forte.simbot.qguild.stdlib
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.publish
 import kotlinx.coroutines.runInterruptible
+import love.forte.simbot.annotations.Api4J
+import love.forte.simbot.annotations.ExperimentalReactiveBridgingApi
 import love.forte.simbot.qguild.event.Signal
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
+import org.reactivestreams.Publisher
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
@@ -131,5 +136,75 @@ public fun <T : Signal.Dispatch> async(type: Class<T>, function: TypedJAsyncEven
             function.async(type.cast(event), raw)
         } else {
             CompletableFuture.completedFuture(null)
+        }
+    }
+
+/**
+ * 用于在 Java 中实现响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun interface JReactiveEventProcessor : EventProcessor {
+    /**
+     * 处理 [event] 并通过返回的 [Publisher] 报告完成或失败。
+     *
+     * @param raw 事件的原始 JSON 文本。
+     */
+    @NonBlocking
+    @Throws(Exception::class)
+    public fun reactive(event: Signal.Dispatch, raw: String): Publisher<Void>
+
+    @JvmSynthetic
+    override suspend fun Signal.Dispatch.invoke(raw: String) {
+        reactive(this, raw).awaitFirstOrNull()
+    }
+}
+
+/**
+ * 用于在 Java 中为指定事件类型实现响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun interface TypedJReactiveEventProcessor<T : Signal.Dispatch> {
+    /**
+     * 处理 [event] 并通过返回的 [Publisher] 报告完成或失败。
+     *
+     * @param raw 事件的原始 JSON 文本。
+     */
+    @NonBlocking
+    @Throws(Exception::class)
+    public fun reactive(event: T, raw: String): Publisher<Void>
+}
+
+/**
+ * 构建一个响应式 [EventProcessor]。
+ *
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun reactive(function: JReactiveEventProcessor): JReactiveEventProcessor = function
+
+/**
+ * 构建一个仅处理指定事件类型的响应式 [EventProcessor]。
+ *
+ * @param type 事件类型。
+ * @since 5.0
+ */
+@Api4J
+@ExperimentalReactiveBridgingApi
+public fun <T : Signal.Dispatch> reactive(
+    type: Class<T>,
+    function: TypedJReactiveEventProcessor<T>,
+): JReactiveEventProcessor =
+    reactive { event, raw ->
+        if (type.isInstance(event)) {
+            function.reactive(type.cast(event), raw)
+        } else {
+            publish { }
         }
     }
