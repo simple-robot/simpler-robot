@@ -162,49 +162,49 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ env.GPG_KEY_CONTENTS }}
 
   # parallel=true 容易出现 Metaspace 的异常? 去了试试
-
-  deploy-doc:
-    name: Deploy snapshots API doc
-    needs: publish-snapshot
-    runs-on: ubuntu-latest
-    steps:
-      # 检出仓库代码
-      - name: Check out repo
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      # setup Java
-      - name: Setup java
-        uses: actions/setup-java@v6
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-
-      # setup Gradle
-      - name: Cache Kotlin Native
-        uses: ./.github/actions/cache-kotlin-native
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Generate documentation
-        run: gradle dokkaGenerate -s --warning-mode all -x test
-        env:
-          SIMBOT_IS_SNAPSHOT: true
-          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
-
-      # https://github.com/marketplace/actions/github-pages-action
-      - name: Push to doc repository
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.PUSH_TOKEN }}
-          external_repository: simple-robot-library/simbot3-api-docs
-          publish_branch: kdoc-deploy/snapshots/main
-          publish_dir: ./build/dokka/html
-          destination_dir: snapshots/main
+# 快照版本就先不发 doc 了
+#  deploy-doc:
+#    name: Deploy snapshots API doc
+#    needs: publish-snapshot
+#    runs-on: ubuntu-latest
+#    steps:
+#      # 检出仓库代码
+#      - name: Check out repo
+#        uses: actions/checkout@v7
+#        with:
+#          persist-credentials: false
+#          fetch-depth: 0
+#
+#      # setup Java
+#      - name: Setup java
+#        uses: actions/setup-java@v6
+#        with:
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#          java-version: ${{ env.JAVA_VERSION }}
+#
+#      # setup Gradle
+#      - name: Cache Kotlin Native
+#        uses: ./.github/actions/cache-kotlin-native
+#
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v5
+#        with:
+#          gradle-version: ${{ env.GRADLE_VERSION }}
+#          cache-read-only: ${{ github.event_name == 'pull_request' }}
+#          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+#
+#      - name: Generate documentation
+#        run: gradle dokkaGenerate -s --warning-mode all -x test
+#        env:
+#          SIMBOT_IS_SNAPSHOT: true
+#          ORG_GRADLE_PROJECT_org.gradle.jvmargs: "-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+#
+#      # https://github.com/marketplace/actions/github-pages-action
+#      - name: Push to doc repository
+#        uses: peaceiris/actions-gh-pages@v4
+#        with:
+#          personal_token: ${{ secrets.PUSH_TOKEN }}
+#          external_repository: simple-robot-library/simbot3-api-docs
+#          publish_branch: kdoc-deploy/snapshots/main
+#          publish_dir: ./build/dokka/html
+#          destination_dir: snapshots/main
