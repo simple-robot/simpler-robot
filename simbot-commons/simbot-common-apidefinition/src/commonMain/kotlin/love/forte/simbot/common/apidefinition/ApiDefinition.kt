@@ -29,7 +29,7 @@ import kotlinx.serialization.DeserializationStrategy
 
 
 /**
- * 一个针对 HTTP API 的基本形式的同于约束定义。
+ * 一个针对 HTTP API 的基本形式的统一约束定义。
  *
  * [ApiDefinition] 是一种针对某个 HTTP API 的定义，
  * 使其对外提供一个API所需的基本信息。
@@ -49,7 +49,7 @@ import kotlinx.serialization.DeserializationStrategy
  *
  * ```kotlin
  * class FooApi private contractor(private val name: String) : ApiDefinition<Foo> {
- *    companion object Factory {
+ *    companion {
  *        // 提供工厂
  *        fun create(name: String): FooApi = FooApi(name)
  *    }
@@ -81,7 +81,7 @@ public interface ApiDefinition<out R : Any> {
     public val url: Url
 
     /**
-     * api 请求时需要携带的 headers。
+     * api 请求时需要携带的*额外* headers。
      * 默认为 [Headers.Empty]。
      */
     public val headers: Headers
@@ -92,13 +92,26 @@ public interface ApiDefinition<out R : Any> {
      * 可能会是 `Ktor` 的特殊类型，例如 [OutgoingContent]。
      *
      * 除了特殊类型以外，[body] 的类型都应当是可序列化的。至少应支持 `kotlinx.serialization`。
+     * 对 Ktor 而言，不会对 `body` 的类型做任何校验，因此也假如要返回 JSON 的话，建议直接提供 JSON 字符串，
+     * 而不是一个可序列化对象。
      */
     public val body: Any?
 
     /**
      * API 响应结果的反序列化器。
      */
+    // TODO 废弃、不强制
     public val resultDeserializationStrategy: DeserializationStrategy<R>
+
+    // TODO
+    /**
+     * 将服务端相应的结果字符串解析为 [R] 类型。
+     *
+     * @since 5.0
+     */
+    public fun resolveResult(payload: String): R {
+        TODO() // ?
+    }
 }
 
 
