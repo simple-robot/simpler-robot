@@ -43,8 +43,6 @@ mavenPublishing {
     if (!isSimbotLocal()) {
         signAllPublications()
     }
-    coordinates(groupId = p.group.toString(), artifactId = p.name, version = p.version.toString())
-
     pom {
         name = p.name
         description = p.description
