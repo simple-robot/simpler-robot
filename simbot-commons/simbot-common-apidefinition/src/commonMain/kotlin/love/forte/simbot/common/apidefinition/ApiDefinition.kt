@@ -100,18 +100,7 @@ public interface ApiDefinition<out R : Any> {
     /**
      * API 响应结果的反序列化器。
      */
-    // TODO 废弃、不强制
     public val resultDeserializationStrategy: DeserializationStrategy<R>
-
-    // TODO
-    /**
-     * 将服务端相应的结果字符串解析为 [R] 类型。
-     *
-     * @since 5.0
-     */
-    public fun resolveResult(payload: String): R {
-        TODO() // ?
-    }
 }
 
 

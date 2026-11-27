@@ -381,6 +381,10 @@ public final class love/forte/simbot/application/JBlockingSuspendApplicationEven
 	public static synthetic fun toHandler$default (Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler$Companion;Lkotlin/coroutines/CoroutineContext;Llove/forte/simbot/application/JBlockingSuspendApplicationEventHandler;ILjava/lang/Object;)Llove/forte/simbot/application/SuspendApplicationEventHandler;
 }
 
+public final class love/forte/simbot/application/JReactiveApplicationLauncher$Companion {
+	public final fun toLauncher (Llove/forte/simbot/application/JReactiveApplicationLauncher;)Llove/forte/simbot/application/ApplicationLauncher;
+}
+
 public abstract interface class love/forte/simbot/application/NormalApplicationEventHandler : love/forte/simbot/application/ApplicationEventHandler {
 	public abstract fun invoke (Ljava/lang/Object;)V
 }
@@ -2045,6 +2049,22 @@ public final class love/forte/simbot/event/JNonBlockEventListener$Companion {
 	public final fun toListener (Llove/forte/simbot/event/JNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
 }
 
+public final class love/forte/simbot/event/JReactiveEventDispatchInterceptor$Context {
+	public final fun getSource ()Llove/forte/simbot/event/EventDispatchInterceptor$Context;
+	public final fun invoke ()Lorg/reactivestreams/Publisher;
+	public final fun invoke (Llove/forte/simbot/event/EventContext;)Lorg/reactivestreams/Publisher;
+}
+
+public final class love/forte/simbot/event/JReactiveEventInterceptor$Context {
+	public final fun getSource ()Llove/forte/simbot/event/EventInterceptor$Context;
+	public final fun invoke ()Lorg/reactivestreams/Publisher;
+	public final fun invoke (Llove/forte/simbot/event/EventListenerContext;)Lorg/reactivestreams/Publisher;
+}
+
+public final class love/forte/simbot/event/JReactiveEventListener$Companion {
+	public final fun toListener (Llove/forte/simbot/event/JReactiveEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
 public abstract interface class love/forte/simbot/event/MemberAuthorAwareMessageEvent : love/forte/simbot/event/ActorAuthorAwareMessageEvent {
 	public abstract synthetic fun author (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun getAuthor ()Llove/forte/simbot/common/id/IDContainer;
@@ -2418,6 +2438,10 @@ public abstract interface class love/forte/simbot/event/TypedJNonBlockEventListe
 
 public final class love/forte/simbot/event/TypedJNonBlockEventListener$Companion {
 	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJNonBlockEventListener;)Llove/forte/simbot/event/EventListener;
+}
+
+public final class love/forte/simbot/event/TypedJReactiveEventListener$Companion {
+	public final fun toListener (Ljava/lang/Class;Llove/forte/simbot/event/TypedJReactiveEventListener;)Llove/forte/simbot/event/EventListener;
 }
 
 public abstract class love/forte/simbot/interception/AsyncInterceptor : love/forte/simbot/interception/JvmPlatformInterceptor {

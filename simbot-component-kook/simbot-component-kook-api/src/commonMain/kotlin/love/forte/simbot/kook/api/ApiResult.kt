@@ -29,12 +29,8 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
 import love.forte.simbot.kook.InternalKookApi
 import love.forte.simbot.kook.api.KookApiResults.SUCCESS_CODE
-import love.forte.simbot.kook.api.RateLimit.Companion.DEFAULT_LIMIT
-import love.forte.simbot.kook.api.RateLimit.Companion.DEFAULT_REMAINING
-import love.forte.simbot.kook.api.RateLimit.Companion.DEFAULT_RESET
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
@@ -51,7 +47,7 @@ import kotlin.jvm.JvmSynthetic
  *{
  *    "code" : 0, // integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
  *    "message" : "error info", // string, 错误消息，具体的返回消息会根据Accept-Language来返回。
- *    "data" : [], // mixed, 具体的数据。
+ *    "data" : [] // mixed, 具体的数据。
  *}
  * ```
  *

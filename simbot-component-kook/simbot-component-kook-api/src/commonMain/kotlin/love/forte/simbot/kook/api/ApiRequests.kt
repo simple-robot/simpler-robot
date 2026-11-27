@@ -26,8 +26,6 @@
 package love.forte.simbot.kook.api
 
 import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.client.utils.*
@@ -107,7 +105,7 @@ public suspend fun KookApi<*>.requestResult(client: HttpClient, authorization: S
         text
     )
 
-    val result = KookApi.DEFAULT_JSON.decodeFromString(ApiResult.serializer(), text)
+    val result = resolveKookApiResult(text)
     result.httpStatus = response.status
     result.raw = text
 
@@ -170,21 +168,18 @@ private suspend inline fun KookApi<*>.reqForResp(
     when (val body = this@reqForResp.body) {
         null -> setBody(EmptyContent)
         is OutgoingContent -> setBody(body)
+        is String -> setBody(body)
         else -> {
-            if (client.pluginOrNull(ContentNegotiation) != null) {
-                setBody(body)
-            } else {
+            try {
+                val ser = guessSerializer(body, KookApi.DEFAULT_JSON.serializersModule)
+                val bodyJson = KookApi.DEFAULT_JSON.encodeToString(ser, body)
+                setBody(bodyJson)
+            } catch (e: Throwable) {
                 try {
-                    val ser = guessSerializer(body, KookApi.DEFAULT_JSON.serializersModule)
-                    val bodyJson = KookApi.DEFAULT_JSON.encodeToString(ser, body)
-                    setBody(bodyJson)
-                } catch (e: Throwable) {
-                    try {
-                        setBody(body)
-                    } catch (e0: Throwable) {
-                        e0.addSuppressed(e)
-                        throw e0
-                    }
+                    setBody(body)
+                } catch (e0: Throwable) {
+                    e0.addSuppressed(e)
+                    throw e0
                 }
             }
         }

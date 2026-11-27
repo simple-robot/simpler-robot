@@ -23,10 +23,8 @@
 
 package love.forte.simbot.kook.api
 
-import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import love.forte.simbot.common.apidefinition.ApiDefinition
 import love.forte.simbot.kook.InternalKookApi
@@ -62,6 +60,14 @@ public interface KookApi<T : Any> : ApiDefinition<T> {
     override val resultDeserializationStrategy: DeserializationStrategy<T>
 
     /**
+     * 将 [payload] 反序列化为 [ApiResult]。
+     */
+    @InternalKookApi
+    public fun resolveKookApiResult(payload: String): ApiResult {
+        return DEFAULT_JSON.decodeFromString(ApiResult.serializer(), payload)
+    }
+
+    /**
      * 此次请求所发送的Body数据。为null则代表没有参数。
      */
     override val body: Any?
@@ -82,7 +88,6 @@ public interface KookApi<T : Any> : ApiDefinition<T> {
          */
         public const val DEFAULT_START_PAGE: Int = 1
 
-        @OptIn(ExperimentalSerializationApi::class)
         @InternalKookApi
         public val DEFAULT_JSON: Json = Json {
             isLenient = true
@@ -160,6 +165,7 @@ public abstract class BaseKookApi<T : Any> : KookApi<T> {
         internal abstract val apiPath: List<String>
         internal abstract fun includeTo(builder: URLBuilder)
 
+        @Suppress("RedundantVisibilityModifier")
         public companion object {
             public fun create(isEncoded: Boolean, vararg apiPath: String): ApiPath {
                 return if (isEncoded) {

@@ -27,14 +27,12 @@
 package love.forte.simbot.qguild.api
 
 import io.ktor.client.*
-import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.StringFormat
@@ -105,35 +103,21 @@ public suspend fun <R : Any> QQGuildApi<R>.request(
         }
 
         when (val body = api.body) {
-            null -> {
-                setBody(EmptyContent)
-            }
-
-            is OutgoingContent -> {
-                setBody(body)
-            }
-
+            null -> setBody(EmptyContent)
+            is OutgoingContent -> setBody(body)
+            is String -> setBody(body)
             else -> {
-                if (client.pluginOrNull(ContentNegotiation) != null) {
-                    setBody(body)
-                } else {
+                try {
+                    val json = QQ.DefaultJson
+                    val ser = guessSerializer(body, json.serializersModule)
+                    val bodyJson = json.encodeToString(ser, body)
+                    setBody(bodyJson)
+                } catch (e: Throwable) {
                     try {
-                        val json = QQ.DefaultJson
-                        val ser = guessSerializer(body, json.serializersModule)
-                        val bodyJson = json.encodeToString(ser, body)
-                        setBody(bodyJson)
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Throwable) {
-                        try {
-                            setBody(body)
-                        } catch (e0: CancellationException) {
-                            e0.addSuppressed(e)
-                            throw e0
-                        } catch (e0: Throwable) {
-                            e0.addSuppressed(e)
-                            throw e0
-                        }
+                        setBody(body)
+                    } catch (e0: Throwable) {
+                        e0.addSuppressed(e)
+                        throw e0
                     }
                 }
             }
