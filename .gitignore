@@ -115,9 +115,8 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
-website/.docusaurus
-website/build
-website/node_modules
+# Website is maintained as a separate repository
+/website/
 
 generated-docs
 

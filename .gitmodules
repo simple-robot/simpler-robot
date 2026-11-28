@@ -1,3 +1,0 @@
-[submodule "website"]
-	path = website
-	url = git@github.com:simple-robot-library/simbot4-website.git
